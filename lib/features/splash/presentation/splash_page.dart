@@ -35,7 +35,7 @@ class _SplashPageState extends State<SplashPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const FlutterLogo(size: 96),
+            Image.asset('assets/images/logo.png', width: 120),
             const SizedBox(height: 24),
             Text(
               context.l10n.appTitle,
