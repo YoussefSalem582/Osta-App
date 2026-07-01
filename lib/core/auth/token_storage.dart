@@ -13,6 +13,8 @@ class TokenStorage {
 
   Future<String?> readAccessToken() => _storage.read(key: _accessTokenKey);
 
+  Future<String?> readRefreshToken() => _storage.read(key: _refreshTokenKey);
+
   Future<void> writeTokens({
     required String accessToken,
     required String refreshToken,
