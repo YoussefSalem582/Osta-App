@@ -4,10 +4,12 @@ import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/core/theme/theme_mode_controller.dart';
 import 'package:osta/shared/formatters/app_formatters.dart';
+import 'package:osta/shared/ui/app_bottom_nav_bar.dart';
 import 'package:osta/shared/ui/app_bottom_sheet.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
+import 'package:osta/shared/ui/app_top_bar.dart';
 import 'package:osta/shared/ui/status_states.dart';
 
 /// Dev gallery previewing every shared component under the live theme.
@@ -102,6 +104,16 @@ class ComponentGalleryPage extends StatelessWidget {
               ),
             ],
           ),
+          _section(context, 'Top bar'),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            child: const AppTopBar(
+              title: 'Screen title',
+              actions: [Icon(Icons.more_vert)],
+            ),
+          ),
+          _section(context, 'Bottom nav'),
+          const _BottomNavDemo(),
           _section(context, 'Formatters ($locale)'),
           Text(EgpFormatter.format(1250.5, locale: locale)),
           Text(EgpFormatter.compact(12500, locale: locale)),
@@ -132,4 +144,44 @@ class ComponentGalleryPage extends StatelessWidget {
     ),
     child: Text(name, style: TextStyle(color: fg)),
   );
+}
+
+class _BottomNavDemo extends StatefulWidget {
+  const _BottomNavDemo();
+
+  @override
+  State<_BottomNavDemo> createState() => _BottomNavDemoState();
+}
+
+class _BottomNavDemoState extends State<_BottomNavDemo> {
+  var _index = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppRadii.md),
+      child: AppBottomNavBar(
+        currentIndex: _index,
+        onChanged: (i) => setState(() => _index = i),
+        items: const [
+          AppBottomNavItem(
+            icon: Icons.home_outlined,
+            selectedIcon: Icons.home,
+            label: 'Home',
+          ),
+          AppBottomNavItem(
+            icon: Icons.map_outlined,
+            selectedIcon: Icons.map,
+            label: 'Map',
+          ),
+          AppBottomNavItem(
+            icon: Icons.notifications_outlined,
+            selectedIcon: Icons.notifications,
+            label: 'Alerts',
+            badgeCount: 3,
+          ),
+        ],
+      ),
+    );
+  }
 }
