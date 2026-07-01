@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:osta/core/theme/osta_tokens.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 
 /// Brand modal bottom sheet — rounded top + drag handle come from
 /// [BottomSheetThemeData]; this adds token padding and an optional title.
-abstract final class OstaBottomSheet {
+abstract final class AppBottomSheet {
   static Future<T?> show<T>(
     BuildContext context, {
     required Widget child,
@@ -15,10 +15,10 @@ abstract final class OstaBottomSheet {
     builder: (context) => SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
-          OstaSpacing.md,
+          AppSpacing.md,
           0,
-          OstaSpacing.md,
-          OstaSpacing.md,
+          AppSpacing.md,
+          AppSpacing.md,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -30,7 +30,7 @@ abstract final class OstaBottomSheet {
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: OstaSpacing.md),
+              const SizedBox(height: AppSpacing.md),
             ],
             child,
           ],

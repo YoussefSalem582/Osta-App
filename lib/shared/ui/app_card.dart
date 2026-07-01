@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:osta/core/theme/osta_tokens.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 
 /// Brand card — token padding, optional tap, styling from [CardThemeData].
-class OstaCard extends StatelessWidget {
-  const OstaCard({
+class AppCard extends StatelessWidget {
+  const AppCard({
     required this.child,
     this.onTap,
-    this.padding = const EdgeInsets.all(OstaSpacing.md),
+    this.padding = const EdgeInsets.all(AppSpacing.md),
     super.key,
   });
 

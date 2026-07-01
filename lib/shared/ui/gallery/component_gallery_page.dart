@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:osta/core/theme/osta_colors.dart';
-import 'package:osta/core/theme/osta_tokens.dart';
+import 'package:osta/core/theme/app_colors.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/core/theme/theme_mode_controller.dart';
-import 'package:osta/shared/formatters/osta_formatters.dart';
-import 'package:osta/shared/ui/osta_bottom_sheet.dart';
-import 'package:osta/shared/ui/osta_button.dart';
-import 'package:osta/shared/ui/osta_card.dart';
-import 'package:osta/shared/ui/osta_text_field.dart';
+import 'package:osta/shared/formatters/app_formatters.dart';
+import 'package:osta/shared/ui/app_bottom_sheet.dart';
+import 'package:osta/shared/ui/app_button.dart';
+import 'package:osta/shared/ui/app_card.dart';
+import 'package:osta/shared/ui/app_text_field.dart';
 import 'package:osta/shared/ui/status_states.dart';
 
 /// Dev gallery previewing every shared component under the live theme.
@@ -20,7 +20,7 @@ class ComponentGalleryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).languageCode;
-    final colors = context.ostaColors;
+    final colors = context.appColors;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Component gallery'),
@@ -39,41 +39,41 @@ class ComponentGalleryPage extends StatelessWidget {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(OstaSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           _section(context, 'Buttons'),
-          OstaButton(label: 'Primary', onPressed: () {}),
-          const SizedBox(height: OstaSpacing.sm),
-          OstaButton(
+          AppButton(label: 'Primary', onPressed: () {}),
+          const SizedBox(height: AppSpacing.sm),
+          AppButton(
             label: 'Secondary',
-            variant: OstaButtonVariant.secondary,
+            variant: AppButtonVariant.secondary,
             icon: Icons.add,
             onPressed: () {},
           ),
-          const SizedBox(height: OstaSpacing.sm),
-          OstaButton(
+          const SizedBox(height: AppSpacing.sm),
+          AppButton(
             label: 'Text',
-            variant: OstaButtonVariant.text,
+            variant: AppButtonVariant.text,
             onPressed: () {},
           ),
-          const SizedBox(height: OstaSpacing.sm),
-          OstaButton(label: 'Loading', loading: true, onPressed: () {}),
+          const SizedBox(height: AppSpacing.sm),
+          AppButton(label: 'Loading', loading: true, onPressed: () {}),
           _section(context, 'Text field'),
-          const OstaTextField(
+          const AppTextField(
             label: 'Label',
             hint: 'Hint text',
             prefixIcon: Icons.search,
           ),
           _section(context, 'Card'),
-          OstaCard(
+          AppCard(
             onTap: () {},
             child: const Text('Tappable card content'),
           ),
           _section(context, 'Bottom sheet'),
-          OstaButton(
+          AppButton(
             label: 'Open sheet',
-            variant: OstaButtonVariant.secondary,
-            onPressed: () => OstaBottomSheet.show<void>(
+            variant: AppButtonVariant.secondary,
+            onPressed: () => AppBottomSheet.show<void>(
               context,
               title: 'Sheet title',
               child: const Text('Sheet body'),
@@ -89,8 +89,8 @@ class ComponentGalleryPage extends StatelessWidget {
           ),
           _section(context, 'Semantic colors'),
           Wrap(
-            spacing: OstaSpacing.sm,
-            runSpacing: OstaSpacing.sm,
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
             children: [
               _swatch('accent', colors.accent, colors.onAccent),
               _swatch('success', colors.success, colors.onSuccess),
@@ -107,7 +107,7 @@ class ComponentGalleryPage extends StatelessWidget {
           Text(EgpFormatter.compact(12500, locale: locale)),
           Text(NumberFormatter.decimal(1234567.89, locale: locale)),
           Text(NumberFormatter.percent(0.42, locale: locale)),
-          const SizedBox(height: OstaSpacing.xl),
+          const SizedBox(height: AppSpacing.xl),
         ],
       ),
     );
@@ -115,20 +115,20 @@ class ComponentGalleryPage extends StatelessWidget {
 
   Widget _section(BuildContext context, String title) => Padding(
     padding: const EdgeInsets.only(
-      top: OstaSpacing.lg,
-      bottom: OstaSpacing.sm,
+      top: AppSpacing.lg,
+      bottom: AppSpacing.sm,
     ),
     child: Text(title, style: Theme.of(context).textTheme.titleMedium),
   );
 
   Widget _swatch(String name, Color bg, Color fg) => Container(
     padding: const EdgeInsets.symmetric(
-      horizontal: OstaSpacing.md,
-      vertical: OstaSpacing.sm,
+      horizontal: AppSpacing.md,
+      vertical: AppSpacing.sm,
     ),
     decoration: BoxDecoration(
       color: bg,
-      borderRadius: BorderRadius.circular(OstaRadii.sm),
+      borderRadius: BorderRadius.circular(AppRadii.sm),
     ),
     child: Text(name, style: TextStyle(color: fg)),
   );

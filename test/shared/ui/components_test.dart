@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
-import 'package:osta/core/theme/osta_theme.dart';
-import 'package:osta/shared/ui/osta_button.dart';
-import 'package:osta/shared/ui/osta_card.dart';
-import 'package:osta/shared/ui/osta_text_field.dart';
+import 'package:osta/core/theme/app_theme.dart';
+import 'package:osta/shared/ui/app_button.dart';
+import 'package:osta/shared/ui/app_card.dart';
+import 'package:osta/shared/ui/app_text_field.dart';
 import 'package:osta/shared/ui/status_states.dart';
 
 /// Pumps [child] under a full Osta theme in the given mode and locale
@@ -16,9 +16,7 @@ Future<void> pumpThemed(
   required String locale,
 }) => tester.pumpWidget(
   MaterialApp(
-    theme: brightness == Brightness.light
-        ? OstaTheme.light()
-        : OstaTheme.dark(),
+    theme: brightness == Brightness.light ? AppTheme.light() : AppTheme.dark(),
     locale: Locale(locale),
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
@@ -43,9 +41,9 @@ void main() {
         Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            OstaButton(label: 'Go', onPressed: () {}),
-            const OstaTextField(label: 'Name', hint: 'Hint'),
-            const OstaCard(child: Text('Card')),
+            AppButton(label: 'Go', onPressed: () {}),
+            const AppTextField(label: 'Name', hint: 'Hint'),
+            const AppCard(child: Text('Card')),
             const Expanded(child: EmptyState(title: 'Empty')),
           ],
         ),
@@ -70,7 +68,7 @@ void main() {
     var taps = 0;
     await pumpThemed(
       tester,
-      OstaButton(label: 'Save', loading: true, onPressed: () => taps++),
+      AppButton(label: 'Save', loading: true, onPressed: () => taps++),
       brightness: Brightness.light,
       locale: 'en',
     );
@@ -89,15 +87,15 @@ void main() {
       Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          OstaButton(label: 'p', onPressed: () {}),
-          OstaButton(
+          AppButton(label: 'p', onPressed: () {}),
+          AppButton(
             label: 's',
-            variant: OstaButtonVariant.secondary,
+            variant: AppButtonVariant.secondary,
             onPressed: () {},
           ),
-          OstaButton(
+          AppButton(
             label: 't',
-            variant: OstaButtonVariant.text,
+            variant: AppButtonVariant.text,
             onPressed: () {},
           ),
         ],

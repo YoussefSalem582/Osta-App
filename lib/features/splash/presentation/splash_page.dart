@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:osta/core/constants/app_images.dart';
 import 'package:osta/features/role/presentation/role_selection_page.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
@@ -35,7 +36,7 @@ class _SplashPageState extends State<SplashPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset('assets/images/logo.png', width: 120),
+            Image.asset(AppImages.logo, width: 120),
             const SizedBox(height: 24),
             Text(
               context.l10n.appTitle,

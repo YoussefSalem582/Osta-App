@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
 import 'package:osta/core/router/app_router.dart';
-import 'package:osta/core/theme/osta_theme.dart';
+import 'package:osta/core/theme/app_theme.dart';
 import 'package:osta/core/theme/theme_mode_controller.dart';
 
 /// Root widget. Wires the Osta themes (light + dark, user-persisted mode),
@@ -19,8 +19,8 @@ class OstaApp extends StatelessWidget {
         builder: (context, themeMode) => MaterialApp.router(
           onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
           debugShowCheckedModeBanner: false,
-          theme: OstaTheme.light(),
-          darkTheme: OstaTheme.dark(),
+          theme: AppTheme.light(),
+          darkTheme: AppTheme.dark(),
           themeMode: themeMode,
           routerConfig: getIt<AppRouter>().router,
           localizationsDelegates: AppLocalizations.localizationsDelegates,

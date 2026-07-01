@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Cairo (bundled variable font, OFL) covers Arabic and Latin in one family —
 /// RTL-friendly metrics, no runtime font download.
-abstract final class OstaTypography {
+abstract final class AppTypography {
   static const fontFamily = 'Cairo';
 
   /// Applies Cairo across the whole scale, mapping each style's

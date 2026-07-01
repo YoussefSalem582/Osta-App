@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:osta/core/theme/osta_tokens.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 
-enum OstaButtonVariant { primary, secondary, text }
+enum AppButtonVariant { primary, secondary, text }
 
 /// Brand button. One widget, three variants, built-in loading state
 /// (spinner replaces the label and taps are ignored while loading).
-class OstaButton extends StatelessWidget {
-  const OstaButton({
+class AppButton extends StatelessWidget {
+  const AppButton({
     required this.label,
     required this.onPressed,
-    this.variant = OstaButtonVariant.primary,
+    this.variant = AppButtonVariant.primary,
     this.loading = false,
     this.icon,
     super.key,
@@ -17,7 +17,7 @@ class OstaButton extends StatelessWidget {
 
   final String label;
   final VoidCallback? onPressed;
-  final OstaButtonVariant variant;
+  final AppButtonVariant variant;
   final bool loading;
   final IconData? icon;
 
@@ -32,15 +32,15 @@ class OstaButton extends StatelessWidget {
     final effectiveOnPressed = loading ? null : onPressed;
 
     return switch (variant) {
-      OstaButtonVariant.primary => FilledButton(
+      AppButtonVariant.primary => FilledButton(
         onPressed: effectiveOnPressed,
         child: child,
       ),
-      OstaButtonVariant.secondary => OutlinedButton(
+      AppButtonVariant.secondary => OutlinedButton(
         onPressed: effectiveOnPressed,
         child: child,
       ),
-      OstaButtonVariant.text => TextButton(
+      AppButtonVariant.text => TextButton(
         onPressed: effectiveOnPressed,
         child: child,
       ),
@@ -53,7 +53,7 @@ class OstaButton extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon, size: 20),
-        const SizedBox(width: OstaSpacing.sm),
+        const SizedBox(width: AppSpacing.sm),
         Text(label),
       ],
     );

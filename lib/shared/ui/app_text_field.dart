@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:osta/core/theme/osta_tokens.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 
 /// Brand text field — thin wrapper over [TextFormField]; visual styling
 /// comes from the shared [InputDecorationTheme].
-class OstaTextField extends StatelessWidget {
-  const OstaTextField({
+class AppTextField extends StatelessWidget {
+  const AppTextField({
     this.label,
     this.hint,
     this.controller,
@@ -39,7 +39,7 @@ class OstaTextField extends StatelessWidget {
       children: [
         if (label != null) ...[
           Text(label!, style: Theme.of(context).textTheme.labelLarge),
-          const SizedBox(height: OstaSpacing.xs),
+          const SizedBox(height: AppSpacing.xs),
         ],
         TextFormField(
           controller: controller,

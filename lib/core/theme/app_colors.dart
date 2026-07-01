@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 /// [brandGreen]) covers primary/surface/error roles; this extension carries
 /// the custom semantic roles the scheme lacks, split per light & dark.
 @immutable
-class OstaColors extends ThemeExtension<OstaColors> {
-  const OstaColors({
+class AppColors extends ThemeExtension<AppColors> {
+  const AppColors({
     required this.accent,
     required this.onAccent,
     required this.success,
@@ -22,7 +22,7 @@ class OstaColors extends ThemeExtension<OstaColors> {
   /// Brand accent — Osta lime.
   static const brandLime = Color(0xFFB2D235);
 
-  static const light = OstaColors(
+  static const light = AppColors(
     accent: brandLime,
     onAccent: Color(0xFF1A2E05),
     success: Color(0xFF166534),
@@ -31,7 +31,7 @@ class OstaColors extends ThemeExtension<OstaColors> {
     onWarning: Colors.white,
   );
 
-  static const dark = OstaColors(
+  static const dark = AppColors(
     accent: brandLime,
     onAccent: Color(0xFF1A2E05),
     success: Color(0xFF4ADE80),
@@ -48,14 +48,14 @@ class OstaColors extends ThemeExtension<OstaColors> {
   final Color onWarning;
 
   @override
-  OstaColors copyWith({
+  AppColors copyWith({
     Color? accent,
     Color? onAccent,
     Color? success,
     Color? onSuccess,
     Color? warning,
     Color? onWarning,
-  }) => OstaColors(
+  }) => AppColors(
     accent: accent ?? this.accent,
     onAccent: onAccent ?? this.onAccent,
     success: success ?? this.success,
@@ -65,9 +65,9 @@ class OstaColors extends ThemeExtension<OstaColors> {
   );
 
   @override
-  OstaColors lerp(OstaColors? other, double t) {
+  AppColors lerp(AppColors? other, double t) {
     if (other == null) return this;
-    return OstaColors(
+    return AppColors(
       accent: Color.lerp(accent, other.accent, t)!,
       onAccent: Color.lerp(onAccent, other.onAccent, t)!,
       success: Color.lerp(success, other.success, t)!,
@@ -78,7 +78,7 @@ class OstaColors extends ThemeExtension<OstaColors> {
   }
 }
 
-/// Shortcut: `context.ostaColors.success`.
-extension OstaColorsX on BuildContext {
-  OstaColors get ostaColors => Theme.of(this).extension<OstaColors>()!;
+/// Shortcut: `context.appColors.success`.
+extension AppColorsX on BuildContext {
+  AppColors get appColors => Theme.of(this).extension<AppColors>()!;
 }

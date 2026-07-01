@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:osta/core/theme/osta_colors.dart';
-import 'package:osta/core/theme/osta_theme.dart';
+import 'package:osta/core/theme/app_colors.dart';
+import 'package:osta/core/theme/app_theme.dart';
 
 /// WCAG relative-contrast ratio between two colors.
 double contrastRatio(Color a, Color b) {
@@ -24,22 +24,22 @@ void main() {
         (t.colorScheme.onSurface, t.colorScheme.surface),
     'onError/error': (t) => (t.colorScheme.onError, t.colorScheme.error),
     'onAccent/accent': (t) {
-      final c = t.extension<OstaColors>()!;
+      final c = t.extension<AppColors>()!;
       return (c.onAccent, c.accent);
     },
     'onSuccess/success': (t) {
-      final c = t.extension<OstaColors>()!;
+      final c = t.extension<AppColors>()!;
       return (c.onSuccess, c.success);
     },
     'onWarning/warning': (t) {
-      final c = t.extension<OstaColors>()!;
+      final c = t.extension<AppColors>()!;
       return (c.onWarning, c.warning);
     },
   };
 
   for (final (name, builder) in [
-    ('light', OstaTheme.light),
-    ('dark', OstaTheme.dark),
+    ('light', AppTheme.light),
+    ('dark', AppTheme.dark),
   ]) {
     group('$name theme meets WCAG AA', () {
       pairs.forEach((label, extract) {
