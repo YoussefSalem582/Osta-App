@@ -3,5 +3,6 @@
   "appTitle": "OSTA",
   "chooseRole": "Choose how you want to continue",
   "roleCustomer": "I'm a customer",
-  "roleBusiness": "I'm a business"
+  "roleBusiness": "I'm a business",
+  "retry": "Try again"
 }
