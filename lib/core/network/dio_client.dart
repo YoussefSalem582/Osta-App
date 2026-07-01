@@ -1,17 +1,20 @@
 import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:injectable/injectable.dart';
+import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/config/app_config.dart';
+import 'package:osta/core/network/auth_events.dart';
+import 'package:osta/core/network/auth_interceptor.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-/// Provides the shared [Dio] client for the app.
+/// Provides the shared [Dio] client every feature request flows through.
 ///
-/// Configured against [AppConfig.baseUrl] with automatic retries and a
-/// redacted logger. No live endpoints are wired here yet.
+/// Configured against [AppConfig.baseUrl] (`/api/v1`) with Sanctum auth,
+/// automatic retries, and a redacted logger.
 @module
 abstract class NetworkModule {
   @lazySingleton
-  Dio dio(AppConfig config) {
+  Dio dio(AppConfig config, TokenStorage tokens, AuthEvents events) {
     final client = Dio(
       BaseOptions(
         baseUrl: config.baseUrl,
@@ -20,9 +23,10 @@ abstract class NetworkModule {
       ),
     );
     client.interceptors
+      // Auth first: token attach + 401 refresh-retry-once.
+      ..add(AuthInterceptor(tokens, events, config: config))
       ..add(RetryInterceptor(dio: client))
-      // Redacted: response bodies are never logged (defaults keep headers and
-      // request bodies off too).
+      // Redacted: headers (incl. Authorization) and bodies are never logged.
       ..add(PrettyDioLogger(responseBody: false));
     return client;
   }
