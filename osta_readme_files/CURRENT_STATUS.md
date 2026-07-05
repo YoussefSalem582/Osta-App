@@ -2,7 +2,7 @@
 
 > [INDEX](INDEX.md) > Current Status
 >
-> **Last Updated:** Jul 5, 2026 — **Documentation set created**, then amended to match the deferral refactor ([`../docs/ROADMAP.md`](../docs/ROADMAP.md)). `AGENTS.md` + `CLAUDE.md` shim at the root, and this `osta_readme_files/` tree (INDEX, guides, feature docs mirroring the GitHub epics, ADRs, reference docs, delivery plan). Detail: [`DOCUMENTATION_UPDATE_SUMMARY.md`](DOCUMENTATION_UPDATE_SUMMARY.md).
+> **Last Updated:** Jul 5, 2026 — **Documentation set created**, then amended to match the deferral refactor ([`../docs/ROADMAP.md`](../docs/ROADMAP.md)). `AGENTS.md` + `CLAUDE.md` shim at the root, and this `osta_readme_files/` tree (INDEX, guides, feature docs mirroring the GitHub epics, ADRs, reference docs, delivery plan). Also vendored the official Dart/Flutter agent skills (14 curated, 7 excluded) into [`.claude/skills/`](../.claude/skills/README.md). Detail: [`DOCUMENTATION_UPDATE_SUMMARY.md`](DOCUMENTATION_UPDATE_SUMMARY.md).
 > **Version:** `1.0.0+1` — not released; no store presence yet.
 > **Flutter:** SDK constraint `^3.12.1` (Dart); CI pins Flutter 3.44.1.
 > **Status:** 🚧 **M0 foundation complete** ([#28](https://github.com/YoussefSalem582/Osta-App/issues/28) ✅ scaffolding+CI, [#29](https://github.com/YoussefSalem582/Osta-App/issues/29) ✅ design system, [#31](https://github.com/YoussefSalem582/Osta-App/issues/31) ✅ networking) | 🔄 [#30](https://github.com/YoussefSalem582/Osta-App/issues/30) localization & RTL open | 📋 All feature epics open — see [DELIVERY_PLAN.md](reference/DELIVERY_PLAN.md)
@@ -114,7 +114,7 @@ Full mirror with owners and backend state: [DELIVERY_PLAN.md](reference/DELIVERY
 
 The design system is fully wired and verified by tests; there is no dev gallery route.
 
-> ‏نظام التصميم موصول بالكامل ومُتحقَّق منه بالاختبارات؛ لا يوجد مسار جاليري للمطوّرين.
+> ‏نظام التصميم موصول بالكامل ومُتحقّق منه بالاختبارات؛ لا يوجد مسار جاليري للمطوّرين.
 
 - Brand: green `#0E7A3B` seed + lime `#B2D235`; semantic accent/success/warning pairs (light + dark) via `ThemeExtension`
 - Tokens: spacing 4/8/16/24/32 · radii 8/12/16/pill · elevation 0/1/3/6
