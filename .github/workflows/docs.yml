@@ -1,0 +1,48 @@
+name: docs
+
+# Docs hygiene on every PR/push that touches a markdown file. Catches markdown
+# lint regressions and broken intra-repo / external links across the doc set
+# (AGENTS.md, CONTRIBUTING.md, ARCHITECTURE.md, docs/, osta_readme_files/, and
+# the per-tool shims in .agents/.codex/.cursor/.github).
+
+on:
+  pull_request:
+    paths:
+      - '**/*.md'
+      - '.github/workflows/docs.yml'
+  push:
+    branches: [main]
+    paths:
+      - '**/*.md'
+      - '.github/workflows/docs.yml'
+
+jobs:
+  markdownlint:
+    name: markdownlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run markdownlint-cli2
+        run: npx -y markdownlint-cli2 "**/*.md" "#**/node_modules"
+
+  link-check:
+    name: link-check (lychee)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lychee link check
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # Warn-only on transient remote failures; fail on broken intra-repo links.
+          args: >-
+            --no-progress
+            --max-redirects 5
+            --accept '200..=299, 429'
+            --exclude-mail
+            --exclude '^file:'
+            --exclude 'http(s)?://localhost'
+            './**/*.md'
+          fail: true
