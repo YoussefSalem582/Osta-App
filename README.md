@@ -10,27 +10,27 @@ Feature-first `lib/`, strict shared lints, and a CI pipeline that gates every PR
 git clone https://github.com/YoussefSalem582/Osta-App.git
 cd Osta-App                        # working dir: osta_app
 flutter pub get
-dart run build_runner build --delete-conflicting-outputs   # freezed / injectable / json
-flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1 --dart-define=FLAVOR=dev
+flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1
 ```
 
 The app boots into a splash screen, then the first-run **role selection**.
-Generated code (`*.g.dart`, `*.freezed.dart`, `*.config.dart`, `lib/core/l10n/`)
-is git-ignored — run `build_runner` after a fresh clone. Localizations
-(`flutter gen-l10n`) are generated automatically on `flutter run`/`build`.
+No code generation is required — models, DI and error handling are plain,
+hand-written Dart (see [docs/ROADMAP.md](docs/ROADMAP.md) for the codegen
+tooling deferred while the team ramps up on Flutter). Only localizations are
+generated (`lib/core/l10n/`, git-ignored); `flutter gen-l10n` runs
+automatically on `flutter run`/`build`.
 
-## Flavors / environment
+## Environment
 
-Configuration is compile-time via `--dart-define` (no secrets in the repo):
-
-| Var        | dev (default)                     | staging                                 | prod                              |
-| ---------- | --------------------------------- | --------------------------------------- | --------------------------------- |
-| `BASE_URL` | `https://api.osta.dev/api/v1`     | `https://api.staging.osta.dev/api/v1`   | `https://api.osta.sa/api/v1`      |
-| `FLAVOR`   | `dev`                             | `staging`                               | `prod`                            |
+The API base URL is compile-time via `--dart-define` (no secrets in the repo);
+it defaults to the dev API when omitted:
 
 ```bash
-flutter run --dart-define=BASE_URL=<url> --dart-define=FLAVOR=<dev|staging|prod>
+flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1
 ```
+
+Multi-flavor (dev/staging/prod) builds are deferred — see
+[docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Project structure
 
@@ -39,14 +39,14 @@ lib/
   main.dart            # boot: DI init → runApp(OstaApp)
   app.dart             # MaterialApp.router + theme + l10n
   core/                # cross-cutting foundation
-    config/            # AppConfig, AppFlavor (--dart-define)
+    config/            # AppConfig (single BASE_URL via --dart-define)
     network/           # Dio client (retry + redacted logger)
     auth/              # secure token storage
     router/            # go_router (splash → role)
     theme/             # Material 3 light/dark
     l10n/              # generated AppLocalizations (en, ar — RTL)
-    error/             # Failure + fpdart Result<T>
-    di/                # get_it + injectable
+    error/             # Failure (sealed hierarchy)
+    di/                # get_it (manual registration)
   features/            # one folder per area, each split data/ domain/ presentation/
     splash/  role/  auth/  customer/  business/  shop/  notifications/
   shared/              # reusable widgets + extensions
@@ -55,13 +55,14 @@ lib/
 ## Quality gates
 
 `flutter analyze` runs under **very_good_analysis** (strict, shared app-wide via
-root `analysis_options.yaml`). CI (`.github/workflows/ci.yml`) runs on every PR:
+root `analysis_options.yaml`). CI (`.github/workflows/ci.yml`) runs a single job
+on every PR:
 
-1. `dart format` (tracked files) → `flutter analyze` → `flutter test`
-2. build APK (Android)
-3. build iOS (`--no-codesign`)
+`flutter pub get` → `flutter gen-l10n` → `dart format` (tracked files) →
+`flutter analyze` → `flutter test`.
 
-A red stage fails the PR.
+A red step fails the PR. (Platform build jobs — APK / iOS — are deferred; see
+[docs/ROADMAP.md](docs/ROADMAP.md).)
 
 ## Branch & PR conventions
 
