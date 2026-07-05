@@ -1,12 +1,9 @@
 import 'dart:async';
 
-import 'package:injectable/injectable.dart';
-
 /// Global auth signals emitted by the networking layer.
 ///
 /// The router/auth epics listen to [onSessionExpired] to force logout when a
 /// 401 survives the single refresh-and-retry.
-@lazySingleton
 class AuthEvents {
   final _sessionExpired = StreamController<void>.broadcast();
 
@@ -15,6 +12,6 @@ class AuthEvents {
 
   void emitSessionExpired() => _sessionExpired.add(null);
 
-  @disposeMethod
+  /// Wired to get_it's `dispose` callback in `configureDependencies()`.
   Future<void> dispose() => _sessionExpired.close();
 }

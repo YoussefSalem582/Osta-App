@@ -1,11 +1,9 @@
-import 'package:injectable/injectable.dart';
 import 'package:osta/core/config/app_flavor.dart';
 
 /// Runtime configuration resolved from `--dart-define` values at compile time.
 ///
 /// Base URL points at the `/api/v1` envelope; endpoints are wired in later
 /// auth/data epics.
-@lazySingleton
 class AppConfig {
   AppConfig()
     : baseUrl = const String.fromEnvironment(

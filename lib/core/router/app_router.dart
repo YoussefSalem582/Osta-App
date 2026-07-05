@@ -1,11 +1,9 @@
 import 'package:go_router/go_router.dart';
-import 'package:injectable/injectable.dart';
 import 'package:osta/features/role/presentation/role_selection_page.dart';
 import 'package:osta/features/splash/presentation/splash_page.dart';
 import 'package:osta/shared/ui/gallery/component_gallery_page.dart';
 
 /// Declarative app router. Boots at splash, then the first-run role selection.
-@lazySingleton
 class AppRouter {
   final GoRouter router = GoRouter(
     initialLocation: SplashPage.path,
