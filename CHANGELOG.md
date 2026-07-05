@@ -1,0 +1,20 @@
+# Changelog
+
+All notable changes to the OSTA app are documented here.
+Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/).
+
+## [Unreleased]
+
+### Changed
+
+- **Docs synced to the plain-Dart refactor + made bilingual (EN/AR)** (2026-07-05) — after the "defer advanced tooling" refactor ([PR #69](https://github.com/YoussefSalem582/Osta-App/pull/69)) dropped `fpdart`, `freezed`, `json_serializable`, `injectable`, `build_runner`, build flavors, the `/gallery` route, and the 3-job CI matrix, the whole documentation set was corrected to match (sealed `Failure` + `try`/`catch`; plain `Equatable` models + hand-written JSON; manual `get_it` DI; single `BASE_URL`; one `format · analyze · test` CI job) and cross-linked to [`docs/ROADMAP.md`](docs/ROADMAP.md). ADR 004 (error handling), ADR 005 (codegen), and ADR 008 (CI) rewritten accordingly. `AGENTS.md`, `CLAUDE.md`, and every `osta_readme_files/` doc now carry Arabic (RTL) alongside English prose.
+
+### Added
+
+- **Documentation set** (2026-07-02) — `AGENTS.md` (canonical agent conventions) + `CLAUDE.md` shim, and `osta_readme_files/` mirroring the GitHub epics: `INDEX.md`, `CURRENT_STATUS.md`, 11 numbered guides, 22 feature docs matched to the [Osta-App epics](https://github.com/YoussefSalem582/Osta-App/issues), 8 ADRs, and reference docs (onboarding, glossary, pitfalls, troubleshooting, delivery plan cross-linking [osta_backend](https://github.com/YoussefSalem582/osta_backend/issues)).
+- **Shared navigation widgets** ([PR #66](https://github.com/YoussefSalem582/Osta-App/pull/66)) — `AppTopBar` (RTL-safe AppBar wrapper) and `AppBottomNavBar`/`AppBottomNavItem` (badge support).
+- **Design system & theming** ([PR #65](https://github.com/YoussefSalem582/Osta-App/pull/65), epic [#29](https://github.com/YoussefSalem582/Osta-App/issues/29)) — Material 3 light/dark themes seeded from brand green `#0E7A3B` + lime `#B2D235`; `AppColors` ThemeExtension; `AppSpacing`/`AppRadii`/`AppElevation` tokens; Cairo variable-font typography; persisted `ThemeModeController` (Cubit); shared components (`AppButton`, `AppCard`, `AppTextField`, `AppBottomSheet`, `EmptyState`/`ErrorState`/`LoadingState`); `EgpFormatter`/`NumberFormatter` with Arabic-Indic digits; dev component gallery at `/gallery`; contrast + persistence + formatter + component tests. `Osta*` prefixes renamed to `App*`; `AppImages` asset constants added.
+- **API client & networking layer** ([PR #64](https://github.com/YoussefSalem582/Osta-App/pull/64), epic [#31](https://github.com/YoussefSalem582/Osta-App/issues/31)) — envelope-aware `ApiClient` (typed `ApiException`s, `ApiResult<T>` + `PaginationMeta`); Sanctum `AuthInterceptor` with queued 401 refresh-retry-once; `SocialTokenExchange`; `TokenStorage` (secure storage); `AuthEvents` session-expired stream; retry + redacted logging interceptors; network test suite.
+- **App scaffolding & CI** ([PR #63](https://github.com/YoussefSalem582/Osta-App/pull/63), epic [#28](https://github.com/YoussefSalem582/Osta-App/issues/28)) — feature-first single-app layout (`core`/`features`/`shared`), core dependency stack (bloc, get_it+injectable, go_router, dio, fpdart, freezed), `very_good_analysis` strict lints, ARB l10n config (EN + AR, Arabic default), splash + role-selection pages, GitHub Actions pipeline (format → analyze → test → debug APK + iOS builds), README, smoke tests.
+
+[Unreleased]: https://github.com/YoussefSalem582/Osta-App/commits/main

@@ -4,7 +4,9 @@ Single Flutter app (Android + iOS) hosting **every role flow** — customer &
 business now, mechanic/tow later — in **one** app target. No monorepo, no Melos.
 Feature-first `lib/`, strict shared lints, and a CI pipeline that gates every PR.
 
-## Getting started
+> ‏تطبيق Flutter واحد (أندرويد + iOS) يحتوي على **كل مسارات الأدوار** — العميل وصاحب العمل الآن، والميكانيكي وخدمة السحب لاحقًا — في هدف تطبيق **واحد**. بدون monorepo وبدون Melos. بنية `lib/` قائمة على المزايا (feature-first)، وقواعد lint صارمة ومشتركة، وخط CI يفحص كل PR.
+
+## Getting started / البدء
 
 ```bash
 git clone https://github.com/YoussefSalem582/Osta-App.git
@@ -20,10 +22,14 @@ tooling deferred while the team ramps up on Flutter). Only localizations are
 generated (`lib/core/l10n/`, git-ignored); `flutter gen-l10n` runs
 automatically on `flutter run`/`build`.
 
-## Environment
+> ‏يبدأ التطبيق بشاشة splash، ثم **اختيار الدور** في أول تشغيل. لا حاجة لأي توليد كود — الموديلات وحقن الاعتماديات (DI) ومعالجة الأخطاء كلها Dart عادي ومكتوب باليد (راجع [docs/ROADMAP.md](docs/ROADMAP.md) لأدوات توليد الكود المؤجَّلة ريثما يكتسب الفريق خبرة في Flutter). الشيء الوحيد الذي يُولَّد هو ملفات الترجمة (`lib/core/l10n/`، وهي مُستبعَدة من git)؛ ويعمل `flutter gen-l10n` تلقائيًا مع `flutter run`/`build`.
+
+## Environment / البيئة
 
 The API base URL is compile-time via `--dart-define` (no secrets in the repo);
 it defaults to the dev API when omitted:
+
+> ‏عنوان الـ API الأساسي يُحدَّد وقت الترجمة عبر `--dart-define` (بدون أي أسرار داخل المستودع)؛ وعند حذفه يرجع افتراضيًا إلى واجهة الـ dev.
 
 ```bash
 flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1
@@ -32,7 +38,9 @@ flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1
 Multi-flavor (dev/staging/prod) builds are deferred — see
 [docs/ROADMAP.md](docs/ROADMAP.md).
 
-## Project structure
+> ‏بناء عدة نكهات (dev/staging/prod) مؤجَّل — راجع [docs/ROADMAP.md](docs/ROADMAP.md).
+
+## Project structure / بنية المشروع
 
 ```
 lib/
@@ -52,11 +60,13 @@ lib/
   shared/              # reusable widgets + extensions
 ```
 
-## Quality gates
+## Quality gates / بوابات الجودة
 
 `flutter analyze` runs under **very_good_analysis** (strict, shared app-wide via
 root `analysis_options.yaml`). CI (`.github/workflows/ci.yml`) runs a single job
 on every PR:
+
+> ‏يعمل `flutter analyze` تحت **very_good_analysis** (صارم، ومشترك على مستوى التطبيق كله عبر `analysis_options.yaml` في الجذر). ويشغّل الـ CI (`.github/workflows/ci.yml`) مهمة واحدة على كل PR:
 
 `flutter pub get` → `flutter gen-l10n` → `dart format` (tracked files) →
 `flutter analyze` → `flutter test`.
@@ -64,8 +74,12 @@ on every PR:
 A red step fails the PR. (Platform build jobs — APK / iOS — are deferred; see
 [docs/ROADMAP.md](docs/ROADMAP.md).)
 
-## Branch & PR conventions
+> ‏أي خطوة تفشل تُسقِط الـ PR. (مهام بناء المنصّات — APK / iOS — مؤجَّلة؛ راجع [docs/ROADMAP.md](docs/ROADMAP.md).)
+
+## Branch & PR conventions / أعراف الفروع والـ PR
 
 - Branch off `main`: `feat/<issue>-<slug>` (e.g. `feat/28-app-scaffolding-ci`).
 - PR **base is `main`**; keep CI green.
 - PR description in **Arabic + English**; reference the issue (`Closes #<n>`).
+
+> ‏افرِّع من `main` بالنمط `feat/<issue>-<slug>` (مثل `feat/28-app-scaffolding-ci`). قاعدة الـ PR هي `main`، وحافظ على الـ CI باللون الأخضر. واكتب وصف الـ PR **بالعربية والإنجليزية**، مع الإشارة إلى الـ issue (`Closes #<n>`).
