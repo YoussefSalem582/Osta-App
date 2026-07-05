@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Holds the user's theme choice (light / dark / system) and persists it
 /// locally — not synced to the backend in M0.
 ///
-/// The More screen (#40) surfaces the toggle; until then the component
-/// gallery exposes it for preview.
-@lazySingleton
+/// The More screen (#40) surfaces the toggle.
 class ThemeModeController extends Cubit<ThemeMode> {
   ThemeModeController(this._prefs) : super(_load(_prefs));
 
@@ -29,15 +26,8 @@ class ThemeModeController extends Cubit<ThemeMode> {
     await _prefs.setString(_prefsKey, mode.name);
   }
 
-  /// Cycles light → dark → system (gallery/debug convenience).
+  /// Cycles light → dark → system (debug convenience).
   Future<void> cycle() => setMode(
     ThemeMode.values[(state.index + 1) % ThemeMode.values.length],
   );
-}
-
-/// Async singletons resolved before the app starts.
-@module
-abstract class PreferencesModule {
-  @preResolve
-  Future<SharedPreferences> get prefs => SharedPreferences.getInstance();
 }

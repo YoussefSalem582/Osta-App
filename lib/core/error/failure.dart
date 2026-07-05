@@ -1,11 +1,9 @@
-import 'package:fpdart/fpdart.dart';
-
-/// Typed result used across the app: [Left] is a [Failure], [Right] is success.
-typedef Result<T> = Either<Failure, T>;
-
 /// Base failure for the domain layer. A native `sealed` class keeps the error
 /// model exhaustive without pulling codegen into every error site.
-sealed class Failure {
+///
+/// Implements [Exception] so failures can be thrown and caught with plain
+/// try/catch — the beginner-friendly error style used across the app.
+sealed class Failure implements Exception {
   const Failure(this.message);
 
   final String message;
