@@ -48,7 +48,7 @@ abstract final class AuthValidators {
   /// with `1` (e.g. `1012345678`). A leading `0` is tolerated and stripped by
   /// [normalizeEgyptPhone].
   static String? egyptPhone(BuildContext context, String? value) {
-    final digits = _digitsOnly(value).replaceFirst(RegExp(r'^0'), '');
+    final digits = _digitsOnly(value).replaceFirst(RegExp('^0'), '');
     if (digits.isEmpty) return context.l10n.validationRequired;
     if (!RegExp(r'^1[0-9]{9}$').hasMatch(digits)) {
       return context.l10n.validationPhone;
@@ -58,10 +58,10 @@ abstract final class AuthValidators {
 
   /// Normalizes a validated Egyptian mobile to E.164 (`+201XXXXXXXXX`).
   static String normalizeEgyptPhone(String value) {
-    final digits = _digitsOnly(value).replaceFirst(RegExp(r'^0'), '');
+    final digits = _digitsOnly(value).replaceFirst(RegExp('^0'), '');
     return '+20$digits';
   }
 
   static String _digitsOnly(String? value) =>
-      (value ?? '').replaceAll(RegExp(r'[^0-9]'), '');
+      (value ?? '').replaceAll(RegExp('[^0-9]'), '');
 }
