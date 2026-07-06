@@ -127,6 +127,7 @@ class _AuthViewState extends State<_AuthView> {
                       label: l10n.authPassword,
                       controller: _password,
                       obscureText: true,
+                      obscureToggle: true,
                       validator: (v) =>
                           _validatePassword(context, v, isRegister: isRegister),
                     ),
