@@ -41,6 +41,7 @@
 | Need | File |
 |------|------|
 | Project conventions (everything-doc) | [`AGENTS.md`](AGENTS.md) |
+| Official Dart/Flutter agent skills (curated, auto-discovered) | [`.claude/skills/README.md`](.claude/skills/README.md) |
 | Deferred tooling & phased plan | [`docs/ROADMAP.md`](docs/ROADMAP.md) |
 | Doc index & task map | [`osta_readme_files/INDEX.md`](osta_readme_files/INDEX.md) |
 | What to build next (milestones/owners) | [`osta_readme_files/reference/DELIVERY_PLAN.md`](osta_readme_files/reference/DELIVERY_PLAN.md) |
