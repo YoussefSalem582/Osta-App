@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:injectable/injectable.dart';
 import 'package:osta/core/network/auth_events.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:osta/core/session/session_state.dart';
@@ -13,7 +12,8 @@ import 'package:osta/core/session/session_store.dart';
 /// redirects on every emitted [SessionState]. Also listens for the networking
 /// layer's session-expired signal and drops the token so the user is routed
 /// back to auth.
-@lazySingleton
+///
+/// Registered by hand in `configureDependencies()` — no injectable codegen.
 class SessionController extends Cubit<SessionState> {
   SessionController(this._store, this._authEvents)
     : super(const SessionState()) {

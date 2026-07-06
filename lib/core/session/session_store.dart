@@ -1,4 +1,3 @@
-import 'package:injectable/injectable.dart';
 import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,7 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// the [AppRole] the user last acted as. Tokens live in [TokenStorage] (secure
 /// storage); the role/locale flags live in [SharedPreferences] — together they
 /// form the `{token, activeRole}` the splash reads on boot.
-@lazySingleton
+///
+/// Registered by hand in `configureDependencies()` — no injectable codegen.
 class SessionStore {
   SessionStore(this._prefs, this._tokens);
 

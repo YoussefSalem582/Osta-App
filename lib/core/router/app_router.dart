@@ -1,5 +1,4 @@
 import 'package:go_router/go_router.dart';
-import 'package:injectable/injectable.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/router/go_router_refresh_stream.dart';
 import 'package:osta/core/router/session_redirect.dart';
@@ -11,12 +10,12 @@ import 'package:osta/features/onboarding/presentation/language_page.dart';
 import 'package:osta/features/role/presentation/coming_soon_page.dart';
 import 'package:osta/features/role/presentation/role_chooser_page.dart';
 import 'package:osta/features/splash/presentation/splash_page.dart';
-import 'package:osta/shared/ui/gallery/component_gallery_page.dart';
 
 /// Declarative app router. Boots at the splash and defers all navigation to a
 /// single [resolveRedirect] guard keyed on the [SessionController] state, so
 /// the first-run/role-split flow lives in one pure, tested place.
-@lazySingleton
+///
+/// Registered by hand in `configureDependencies()` — no injectable codegen.
 class AppRouter {
   AppRouter(SessionController session) : router = _build(session);
 
@@ -57,11 +56,6 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.comingSoon,
         builder: (context, state) => const ComingSoonPage(),
-      ),
-      // Dev-facing component gallery (not linked from product UI).
-      GoRoute(
-        path: AppRoutes.gallery,
-        builder: (context, state) => const ComponentGalleryPage(),
       ),
     ],
   );

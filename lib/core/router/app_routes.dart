@@ -8,7 +8,4 @@ abstract final class AppRoutes {
   static const customerShell = '/customer';
   static const businessShell = '/business';
   static const comingSoon = '/coming-soon';
-
-  /// Dev-only component gallery (not linked from product UI).
-  static const gallery = '/gallery';
 }

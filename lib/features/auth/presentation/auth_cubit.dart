@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:injectable/injectable.dart';
 import 'package:osta/core/network/api_exception.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:osta/core/session/session_controller.dart';
@@ -30,7 +29,8 @@ class AuthState extends Equatable {
 /// Drives the auth screen. Sends `account_type = activeRole` on every request
 /// and, on success, hands the authoritative role back to [SessionController]
 /// (which self-heals a wrong-shell choice). The router then leaves this screen.
-@injectable
+///
+/// Registered as a factory by hand in `configureDependencies()`.
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit(this._repo, this._session) : super(const AuthState());
 

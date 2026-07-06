@@ -1,4 +1,3 @@
-import 'package:injectable/injectable.dart';
 import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_exception.dart';
@@ -9,7 +8,8 @@ import 'package:osta/features/auth/domain/auth_repository.dart';
 /// Talks to `/auth/*`, stores the Sanctum token pair on success, and reads the
 /// authoritative role from the embedded `user.type` — the same value
 /// `GET /me` returns.
-@LazySingleton(as: AuthRepository)
+///
+/// Registered by hand in `configureDependencies()` — no injectable codegen.
 class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._api, this._tokens);
 

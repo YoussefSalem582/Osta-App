@@ -76,13 +76,5 @@ void main() {
         AppRoutes.customerShell,
       );
     });
-
-    test('the dev gallery is always reachable', () {
-      const state = SessionState();
-      expect(
-        resolveRedirect(session: state, location: AppRoutes.gallery),
-        isNull,
-      );
-    });
   });
 }

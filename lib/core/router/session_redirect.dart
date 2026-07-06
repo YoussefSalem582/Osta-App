@@ -21,9 +21,6 @@ String? resolveRedirect({
   required SessionState session,
   required String location,
 }) {
-  // The dev gallery sits outside the product flow.
-  if (location == AppRoutes.gallery) return null;
-
   // Hold on the splash until persisted state has been read.
   if (!session.bootstrapped) {
     return location == AppRoutes.splash ? null : AppRoutes.splash;
