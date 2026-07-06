@@ -39,8 +39,14 @@ String? resolveRedirect({
   }
 
   // Role chosen but no token: authenticate (sends `account_type = activeRole`).
+  // The password-recovery screens hang off the same unauthenticated surface.
   if (!session.hasToken) {
-    return location == AppRoutes.auth ? null : AppRoutes.auth;
+    const authSurface = {
+      AppRoutes.auth,
+      AppRoutes.forgotPassword,
+      AppRoutes.resetPassword,
+    };
+    return authSurface.contains(location) ? null : AppRoutes.auth;
   }
 
   // Authenticated with a role: land in — and stay pinned to — its shell.

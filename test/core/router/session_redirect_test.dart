@@ -44,6 +44,23 @@ void main() {
       );
     });
 
+    test('password-recovery routes are reachable without a token', () {
+      final state = _enrolled.copyWith(activeRole: AppRole.customer);
+      expect(
+        resolveRedirect(session: state, location: AppRoutes.forgotPassword),
+        isNull,
+      );
+      expect(
+        resolveRedirect(session: state, location: AppRoutes.resetPassword),
+        isNull,
+      );
+      // Any other unauthenticated location still bounces to auth.
+      expect(
+        resolveRedirect(session: state, location: AppRoutes.customerShell),
+        AppRoutes.auth,
+      );
+    });
+
     group('authenticated role lands in the matching shell', () {
       const cases = {
         AppRole.customer: AppRoutes.customerShell,
