@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:osta/core/di/injection.dart';
+import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/auth/presentation/auth_cubit.dart';
+import 'package:osta/features/auth/presentation/auth_validators.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
@@ -35,17 +38,22 @@ class _AuthViewState extends State<_AuthView> {
   final _formKey = GlobalKey<FormState>();
   final _firstName = TextEditingController();
   final _lastName = TextEditingController();
+  final _username = TextEditingController();
   final _email = TextEditingController();
   final _phone = TextEditingController();
   final _password = TextEditingController();
+  final _confirm = TextEditingController();
+  bool _acceptedTerms = false;
 
   @override
   void dispose() {
     _firstName.dispose();
     _lastName.dispose();
+    _username.dispose();
     _email.dispose();
     _phone.dispose();
     _password.dispose();
+    _confirm.dispose();
     super.dispose();
   }
 
@@ -61,9 +69,10 @@ class _AuthViewState extends State<_AuthView> {
         cubit.register(
           firstName: _firstName.text.trim(),
           lastName: _lastName.text.trim(),
+          username: _username.text.trim(),
           email: _email.text.trim(),
           password: _password.text,
-          phone: _phone.text.trim(),
+          phone: AuthValidators.normalizeEgyptPhone(_phone.text),
         ),
       );
     }
@@ -78,6 +87,7 @@ class _AuthViewState extends State<_AuthView> {
         child: BlocBuilder<AuthCubit, AuthState>(
           builder: (context, state) {
             final isRegister = state.mode == AuthMode.register;
+            final canSubmit = !isRegister || _acceptedTerms;
             return SingleChildScrollView(
               padding: const EdgeInsets.all(AppSpacing.lg),
               child: Form(
@@ -97,21 +107,25 @@ class _AuthViewState extends State<_AuthView> {
                         label: l10n.authFirstName,
                         controller: _firstName,
                         textInputAction: TextInputAction.next,
-                        validator: (v) => _required(context, v),
+                        validator: (v) =>
+                            AuthValidators.requiredField(context, v),
                       ),
                       const SizedBox(height: AppSpacing.md),
                       AppTextField(
                         label: l10n.authLastName,
                         controller: _lastName,
                         textInputAction: TextInputAction.next,
-                        validator: (v) => _required(context, v),
+                        validator: (v) =>
+                            AuthValidators.requiredField(context, v),
                       ),
                       const SizedBox(height: AppSpacing.md),
                       AppTextField(
-                        label: l10n.authPhoneOptional,
-                        controller: _phone,
-                        keyboardType: TextInputType.phone,
+                        label: l10n.authUsername,
+                        controller: _username,
                         textInputAction: TextInputAction.next,
+                        errorText: state.fieldErrors['username']?.first,
+                        validator: (v) =>
+                            AuthValidators.requiredField(context, v),
                       ),
                       const SizedBox(height: AppSpacing.md),
                     ],
@@ -120,18 +134,65 @@ class _AuthViewState extends State<_AuthView> {
                       controller: _email,
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
-                      validator: (v) => _validateEmail(context, v),
+                      errorText: state.fieldErrors['email']?.first,
+                      validator: (v) => AuthValidators.email(context, v),
                     ),
+                    if (isRegister) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      AppTextField(
+                        label: l10n.authPhone,
+                        controller: _phone,
+                        prefixText: '+20 ',
+                        keyboardType: TextInputType.phone,
+                        textInputAction: TextInputAction.next,
+                        errorText: state.fieldErrors['phone']?.first,
+                        validator: (v) => AuthValidators.egyptPhone(context, v),
+                      ),
+                    ],
                     const SizedBox(height: AppSpacing.md),
                     AppTextField(
                       label: l10n.authPassword,
                       controller: _password,
                       obscureText: true,
                       obscureToggle: true,
-                      validator: (v) =>
-                          _validatePassword(context, v, isRegister: isRegister),
+                      errorText: state.fieldErrors['password']?.first,
+                      validator: (v) => AuthValidators.password(
+                        context,
+                        v,
+                        enforceStrength: isRegister,
+                      ),
                     ),
-                    if (state.status == AuthStatus.failure) ...[
+                    if (isRegister) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      AppTextField(
+                        label: l10n.authConfirmPassword,
+                        controller: _confirm,
+                        obscureText: true,
+                        obscureToggle: true,
+                        validator: (v) =>
+                            AuthValidators.confirm(context, v, _password.text),
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      CheckboxListTile(
+                        value: _acceptedTerms,
+                        onChanged: (v) =>
+                            setState(() => _acceptedTerms = v ?? false),
+                        contentPadding: EdgeInsets.zero,
+                        controlAffinity: ListTileControlAffinity.leading,
+                        title: Text(l10n.authAcceptTerms),
+                      ),
+                    ],
+                    if (!isRegister)
+                      Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: TextButton(
+                          onPressed: () =>
+                              unawaited(context.push(AppRoutes.forgotPassword)),
+                          child: Text(l10n.authForgotPassword),
+                        ),
+                      ),
+                    if (state.status == AuthStatus.failure &&
+                        state.fieldErrors.isEmpty) ...[
                       const SizedBox(height: AppSpacing.md),
                       Text(
                         state.errorMessage ?? l10n.authFailed,
@@ -144,7 +205,7 @@ class _AuthViewState extends State<_AuthView> {
                     AppButton(
                       label: l10n.authSubmit,
                       loading: state.isSubmitting,
-                      onPressed: () => _submit(state),
+                      onPressed: canSubmit ? () => _submit(state) : null,
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     AppButton(
@@ -164,30 +225,5 @@ class _AuthViewState extends State<_AuthView> {
         ),
       ),
     );
-  }
-
-  String? _required(BuildContext context, String? value) =>
-      (value == null || value.trim().isEmpty)
-      ? context.l10n.validationRequired
-      : null;
-
-  String? _validateEmail(BuildContext context, String? value) {
-    final v = value?.trim() ?? '';
-    if (v.isEmpty) return context.l10n.validationRequired;
-    if (!v.contains('@') || !v.contains('.')) {
-      return context.l10n.validationEmail;
-    }
-    return null;
-  }
-
-  String? _validatePassword(
-    BuildContext context,
-    String? value, {
-    required bool isRegister,
-  }) {
-    final v = value ?? '';
-    if (v.isEmpty) return context.l10n.validationRequired;
-    if (isRegister && v.length < 8) return context.l10n.validationPassword;
-    return null;
   }
 }

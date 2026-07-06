@@ -55,6 +55,7 @@ class FakeAuthRepository implements AuthRepository {
   Future<AppRole> register({
     required String firstName,
     required String lastName,
+    required String username,
     required String email,
     required String password,
     required AppRole accountType,
