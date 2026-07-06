@@ -175,11 +175,12 @@ Plus `EgpFormatter` / `NumberFormatter` (`shared/formatters/`) and `context.l10n
 | Classes | `PascalCase`; shared widgets prefixed `App*` |
 | Variables/functions | `camelCase` |
 | Private members | `_prefixed` |
-| Branches | `feat/<issue>-<slug>` off `main` |
+| Branches | `<type>/<issue>-<slug>` off `main`, hand-written kebab-case (e.g. `feat/44-booking-funnel`, `fix/auth-401-loop`) — never tool-generated names like `claude/...` |
 
 ## Git & PRs / الالتزامات والطلبات
 
-- Branch off `main` as `feat/<issue>-<slug>`; PR base is `main`.
+- Branch off `main` as `feat/<issue>-<slug>` (or `fix/`, `refactor/`, `test/`, `docs/`, `chore/` + `<scope>`); PR base is `main`.
+- Branch names are **hand-written, descriptive, lowercase kebab-case** (e.g. `feat/35-auth-email-password`, `fix/auth-401-loop`, `chore/talker-logging`). **Never** keep an auto-generated/tool-default branch name (random suffixes, `claude/...`, `cursor/...`, `codex/...`) — rename it before opening the PR: `git branch -m <type>/<issue>-<slug>`.
 - PR descriptions are **bilingual (Arabic + English)**.
 - Plain commit messages (conventional-commit style: `feat(ui): …`). No AI/agent attribution trailers.
 - Never commit generated l10n (`lib/core/l10n/`).

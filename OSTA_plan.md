@@ -95,6 +95,7 @@ And the hard **NEVER** list (violations block merge):
 - **NEVER** add `shimmer` (use `skeletonizer`, §10) or `flutter_screenutil` (use `AppBreakpoints`, §8.2).
 - **NEVER** commit generated l10n (`lib/core/l10n/`) — regenerate with `flutter gen-l10n`.
 - **NEVER** commit directly to `main`; **NEVER** add AI/agent attribution to commits or PRs.
+- **NEVER** keep auto-generated/tool-default branch names (`claude/...`, `cursor/...`, random suffixes) — branch names are hand-written `<type>/<issue>-<slug>` (§13.1).
 - **NEVER** use `print`/`debugPrint` — log through `Talker` (§9).
 
 ---
@@ -486,6 +487,10 @@ Per epic, the minimum bar (CI runs `format · analyze · test` on every PR; all 
 - `main` is always releasable. **Never commit to it directly.**
 - One epic (or chore) per branch: `feat/<issue>-<slug>` (e.g. `feat/44-booking-funnel`); also `fix/`,
   `refactor/`, `test/`, `docs/`, `chore/`. Branch off up-to-date `main`; PR base is `main`.
+- **Branch names are hand-written, descriptive, lowercase kebab-case** (`feat/44-booking-funnel`,
+  `fix/auth-401-loop`, `chore/talker-logging`). **NEVER** keep an auto-generated or tool-default branch name
+  (random suffixes, `claude/...`, `cursor/...`, `codex/...`). If your tooling created the branch for you,
+  rename it before the first push: `git branch -m <type>/<issue>-<slug>`.
 - **Small commits, clean graph:** Conventional Commits (`feat(booking): ...`), subject ≤ 72 chars, imperative,
   one logical change per commit. Build a feature **layer by layer** — `domain → data → presentation → tests →
   docs` — so the history reads as a story. Forbidden subjects: `WIP`, `update`, `misc`, `fixes`.

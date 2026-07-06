@@ -9,9 +9,9 @@ Thanks for working on OSTA. Read [`AGENTS.md`](AGENTS.md) (canonical conventions
 - **`main`** — always stable and releasable. PRs target it.
 - **Working branches** — one unit of work each, branched from `main`: `feat/<issue>-<slug>` (e.g. `feat/35-auth-email-password`), plus `fix/<scope>`, `refactor/<scope>`, `test/<scope>`, `docs/<scope>`, `chore/<scope>`.
 
-Never commit directly to `main`. Never mix unrelated changes in one branch.
+Never commit directly to `main`. Never mix unrelated changes in one branch. Branch names are **hand-written, descriptive, lowercase kebab-case** — never auto-generated/tool-default names (random suffixes, `claude/...`, `cursor/...`, `codex/...`); if a tool created one, rename it before opening the PR: `git branch -m <type>/<issue>-<slug>`.
 
-> ‏فرع `main` مستقرّ دائمًا وقابل للإصدار، وطلبات الدمج تستهدفه. كل فرع عمل مهمّة واحدة مُفرَّعة من `main` بصيغة `feat/<issue>-<slug>`. ممنوع الالتزام المباشر على `main` أو خلط تغييرات غير مترابطة في فرع واحد.
+> ‏فرع `main` مستقرّ دائمًا وقابل للإصدار، وطلبات الدمج تستهدفه. كل فرع عمل مهمّة واحدة مُفرَّعة من `main` بصيغة `feat/<issue>-<slug>`. ممنوع الالتزام المباشر على `main` أو خلط تغييرات غير مترابطة في فرع واحد. أسماء الفروع تُكتب يدويًا وتكون وصفية بحروف صغيرة — ويُمنع إبقاء الأسماء المولَّدة تلقائيًا من الأدوات (لواحق عشوائية أو `claude/...` أو `cursor/...`)؛ وإذا أنشأت أداةٌ اسمًا كهذا فأعد تسميته قبل فتح الـ PR بأمر `git branch -m`.
 
 ## Commits / الالتزامات
 

@@ -147,6 +147,6 @@ Laravel 12 · `/api/v1` · MVP **feature-complete except M3.5 payments** ([#47](
 
 - Working branch: `main` (origin default/HEAD is `design-assets`, which also hosts `mockups/*.png`)
 - Merged PRs: [#63](https://github.com/YoussefSalem582/Osta-App/pull/63) scaffolding+CI · [#64](https://github.com/YoussefSalem582/Osta-App/pull/64) networking · [#65](https://github.com/YoussefSalem582/Osta-App/pull/65) design system · [#66](https://github.com/YoussefSalem582/Osta-App/pull/66) nav bars
-- Branch convention: `feat/<issue>-<slug>` off `main`; PR base `main`; bilingual descriptions
+- Branch convention: `feat/<issue>-<slug>` off `main` (hand-written kebab-case — never tool-generated names like `claude/...`); PR base `main`; bilingual descriptions
 
 > ‏فرع العمل `main` (رأس/افتراضي origin هو `design-assets` الذي يستضيف أيضًا `mockups/*.png`). عُرف الفروع: `feat/<issue>-<slug>` من `main`، وقاعدة الـ PR هي `main`، بوصف ثنائي اللغة.

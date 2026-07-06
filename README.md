@@ -78,8 +78,8 @@ A red step fails the PR. (Platform build jobs — APK / iOS — are deferred; se
 
 ## Branch & PR conventions / أعراف الفروع والـ PR
 
-- Branch off `main`: `feat/<issue>-<slug>` (e.g. `feat/28-app-scaffolding-ci`).
+- Branch off `main`: `feat/<issue>-<slug>` (e.g. `feat/28-app-scaffolding-ci`) — hand-written kebab-case names only; **never** tool-generated names like `claude/...` (rename with `git branch -m` first).
 - PR **base is `main`**; keep CI green.
 - PR description in **Arabic + English**; reference the issue (`Closes #<n>`).
 
-> ‏افرِّع من `main` بالنمط `feat/<issue>-<slug>` (مثل `feat/28-app-scaffolding-ci`). قاعدة الـ PR هي `main`، وحافظ على الـ CI باللون الأخضر. واكتب وصف الـ PR **بالعربية والإنجليزية**، مع الإشارة إلى الـ issue (`Closes #<n>`).
+> ‏افرِّع من `main` بالنمط `feat/<issue>-<slug>` (مثل `feat/28-app-scaffolding-ci`) — أسماء الفروع تُكتب يدويًا فقط، ويُمنع الإبقاء على الأسماء المولَّدة من الأدوات مثل `claude/...` (أعد التسمية بـ `git branch -m` أولًا). قاعدة الـ PR هي `main`، وحافظ على الـ CI باللون الأخضر. واكتب وصف الـ PR **بالعربية والإنجليزية**، مع الإشارة إلى الـ issue (`Closes #<n>`).
