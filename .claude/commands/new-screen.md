@@ -29,4 +29,4 @@ Read the feature's epic + doc in [`osta_readme_files/features/`](../../osta_read
 - [ ] Strings in both ARB files; `flutter gen-l10n` run; accessed via `context.l10n`.
 - [ ] `dart format .`, `flutter analyze` clean, `flutter test` green. No `build_runner`.
 - [ ] Docs updated: `CHANGELOG.md`, `osta_readme_files/DOCUMENTATION_UPDATE_SUMMARY.md`, `osta_readme_files/CURRENT_STATUS.md`.
-- [ ] Branch `feat/<issue>-<slug>`, PR base `main`, bilingual (AR+EN) description, conventional commits, no AI co-author trailer.
+- [ ] Branch `feat/<issue>-<slug>` (hand-written kebab-case — never a tool-generated name like `claude/...`; rename with `git branch -m` first), PR base `main`, bilingual (AR+EN) description, conventional commits, no AI co-author trailer.

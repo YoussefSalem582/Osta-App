@@ -28,4 +28,4 @@ Read the matching GitHub epic + its feature doc in [`osta_readme_files/features/
 
 - Run `dart format .`, `flutter analyze` (clean), `flutter test` (green). No `build_runner`.
 - Update docs: `CHANGELOG.md`, `osta_readme_files/DOCUMENTATION_UPDATE_SUMMARY.md`, `osta_readme_files/CURRENT_STATUS.md` (and the feature doc).
-- Branch `feat/<issue>-<slug>`, PR base `main`, bilingual (AR+EN) description, conventional commits, no AI co-author trailer.
+- Branch `feat/<issue>-<slug>` (hand-written kebab-case — never a tool-generated name like `claude/...`; rename with `git branch -m` first), PR base `main`, bilingual (AR+EN) description, conventional commits, no AI co-author trailer.

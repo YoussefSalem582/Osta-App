@@ -16,9 +16,9 @@ Advanced tooling (freezed, injectable, fpdart, build flavors) was **deferred, no
 
 1. **Read the epic.** Find the matching GitHub issue and its feature doc in [../features/](../features/README.md). Don't invent scope — the epic defines screens, endpoints, and test expectations.
 2. **Check the endpoint is ready.** [09_api_endpoints.md](09_api_endpoints.md) + [11_backend_feature_connectivity.md](11_backend_feature_connectivity.md) tell you if the backend route exists (most do) or is blocked.
-3. **Branch:** `feat/<issue>-<slug>` off `main`.
+3. **Branch:** `feat/<issue>-<slug>` off `main` — hand-written kebab-case, never a tool-generated name like `claude/...` (rename with `git branch -m` if a tool created one).
 
-> ‏قبل ما تبدأ: اقرأ الـ epic ولاقي issue بتاعتها ومستند الميزة في ../features/ — ما تخترعش نطاق، الـ epic هي اللي بتحدد الشاشات والـ endpoints وتوقعات الاختبار. اتأكد إن الـ endpoint جاهز من 09_api_endpoints.md و 11_backend_feature_connectivity.md. بعدين اعمل فرع `feat/<issue>-<slug>` من `main`.
+> ‏قبل ما تبدأ: اقرأ الـ epic ولاقي issue بتاعتها ومستند الميزة في ../features/ — ما تخترعش نطاق، الـ epic هي اللي بتحدد الشاشات والـ endpoints وتوقعات الاختبار. اتأكد إن الـ endpoint جاهز من 09_api_endpoints.md و 11_backend_feature_connectivity.md. بعدين اعمل فرع `feat/<issue>-<slug>` من `main` — اسم الفرع بيتكتب يدوي ووصفي، وممنوع تسيب اسم مولّد من أداة زي `claude/...` (غيّره بـ `git branch -m` الأول).
 
 ---
 

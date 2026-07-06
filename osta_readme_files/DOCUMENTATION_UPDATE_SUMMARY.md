@@ -4,6 +4,30 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-05 — Branch-naming rule tightened (no tool-generated names)
+
+All docs and AI-agent configs now require **hand-written, descriptive, lowercase kebab-case** branch names (`<type>/<issue>-<slug>`, e.g. `feat/44-booking-funnel`, `fix/auth-401-loop`) and forbid auto-generated/tool-default names (random suffixes, `claude/...`, `cursor/...`, `codex/...`) — rename with `git branch -m <type>/<issue>-<slug>` before opening a PR.
+
+> ‏كل المستندات وإعدادات وكلاء الذكاء الاصطناعي أصبحت تشترط أسماء فروع مكتوبة يدويًا ووصفية بصيغة `<type>/<issue>-<slug>` (مثل `feat/44-booking-funnel`)، وتمنع الأسماء المولَّدة تلقائيًا من الأدوات (لواحق عشوائية أو `claude/...` أو `cursor/...`) — أعد التسمية بـ `git branch -m` قبل فتح الـ PR.
+
+Touched: `AGENTS.md`, `CONTRIBUTING.md`, `README.md`, `ARCHITECTURE.md`, `OSTA_plan.md`, `OSTA_TODO.md`, `guides/03_how_to_add_new_feature.md`, `CURRENT_STATUS.md`, `.cursor/rules/git-commits.mdc`, `.claude/commands/{add-feature,new-screen}.md`, `.agents/skills/add-feature/SKILL.md`, `.cursor/skills/add-feature/SKILL.md`. Docs-only change.
+
+## 2026-07-05 — `OSTA_TODO.md` zero-to-production checklist
+
+Added [`../OSTA_TODO.md`](../OSTA_TODO.md) — the trackable checkbox roadmap companion to [`../OSTA_plan.md`](../OSTA_plan.md) (the plan is the rulebook; the TODO is the what/when).
+
+> ‏أُضيف [`../OSTA_TODO.md`](../OSTA_TODO.md) — قائمة مهام قابلة للتتبّع بمربّعات اختيار، مرافقة لـ [`../OSTA_plan.md`](../OSTA_plan.md) (الخطة هي كتاب القواعد، وقائمة المهام هي ماذا ومتى).
+
+Phases: 0 foundation (✅ pre-checked) → 1 M0 wrap (l10n #30 + talker/offline/motion chores) → 2–8 the feature milestones with per-epic owners/branches/key ACs and a 🏷️ release tag per phase → **9 production readiness & launch** (platform config, production credentials for Maps/Firebase/social/Paymob/Reverb, signing + store listings with data-safety/privacy labels, release CI, crash-reporting ADR, hardening drills — offline/realtime/push/payments/perf/a11y/security/l10n — beta tracks, staged `v1.0.0` rollout) → 10 post-launch/Phase 2. Cross-linked from `OSTA_plan.md` §0/§14, `INDEX.md`, and `CURRENT_STATUS.md`. Docs-only change.
+
+## 2026-07-05 — `OSTA_plan.md` master build instructions for AI agents
+
+Added [`../OSTA_plan.md`](../OSTA_plan.md) — a root-level, English, system-prompt-style plan that AI agents follow to deliver the 31 open epics on top of the existing M0 foundation.
+
+> ‏أُضيف [`../OSTA_plan.md`](../OSTA_plan.md) — خطة بأسلوب موجّهات النظام (بالإنجليزية) في جذر المستودع يتبعها وكلاء الذكاء الاصطناعي لتسليم الملاحم المفتوحة الـ 31 فوق أساس M0 الحالي.
+
+Contents: the 11 owner mandates (Clean Architecture + BLoC, dark/light, responsive, ar/en RTL, animations/transitions, reusable widgets + centralized colors/fonts/images/icons/text, `talker`, `skeletonizer`, document everything, offline-first, clean git graph with releases/tags); **four explicit amendments to the canon** — `talker_*` replaces `pretty_dio_logger`, `skeletonizer` for all loading states (overrides epic `shimmer` mentions), a new offline-first spec (`lib/core/offline/`: `sqflite` JSON-document cache + pending-operations queue + `SyncEngine` + `connectivity_plus`, with a per-feature cached/queued/online-only policy table), and a SemVer release/tag convention (`v0.<n>.0` per milestone, `v1.0.0` = MVP, annotated tags on `main`); source-of-truth precedence with a warning that the epics' stale codegen/Riverpod package stanza is superseded ([PR #69](https://github.com/YoussefSalem582/Osta-App/pull/69)); and the milestone-by-milestone execution plan (M0 finish → M1…M5 → Shop/Home/Notifications → M6/Phase 2) with per-epic branch names, key ACs, endpoints, offline policies, and a global/per-epic/never package policy. Docs-only change — no code affected; a follow-up to sync `AGENTS.md` with the four amendments is noted in the plan's appendix.
+
 ## 2026-07-05 — Official Dart & Flutter agent skills vendored into `.claude/skills/`
 
 Vendored a curated copy of the official Agent Skills published by the Flutter and Dart teams ([announcement](https://blog.flutter.dev/introducing-skills-for-dart-and-flutter-23837c6ec0ae) · upstream [`flutter/skills`](https://github.com/flutter/skills) @ `0d624f3`, [`dart-lang/skills`](https://github.com/dart-lang/skills) @ `8ce8492`). Claude Code auto-discovers each `SKILL.md` and loads it on demand.
