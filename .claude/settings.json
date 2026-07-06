@@ -14,12 +14,15 @@
       "Bash(git log:*)",
       "Bash(git branch:*)",
       "Bash(git add:*)",
+      "Bash(git push origin:*)",
+      "Bash(git push -u origin:*)",
       "Bash(rg:*)",
       "Read(//Volumes/files/projects/depi/osta/osta_app/**)"
     ],
     "deny": [
       "Read(./lib/core/l10n/**)",
-      "Bash(git push:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
       "Bash(flutter build:*)"
     ]
   }
