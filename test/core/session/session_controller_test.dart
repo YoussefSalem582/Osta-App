@@ -10,12 +10,19 @@ import '../network/fakes.dart';
 
 typedef _Harness = (SessionController, FakeTokenStorage, AuthEvents);
 
-Future<_Harness> _build(Map<String, Object> seed) async {
+Future<_Harness> _build(
+  Map<String, Object> seed, {
+  FakeAuthRepository? repo,
+}) async {
   SharedPreferences.setMockInitialValues(seed);
   final prefs = await SharedPreferences.getInstance();
   final tokens = FakeTokenStorage();
   final events = AuthEvents();
-  final controller = SessionController(SessionStore(prefs, tokens), events);
+  final controller = SessionController(
+    SessionStore(prefs, tokens),
+    events,
+    repo ?? FakeAuthRepository(),
+  );
   return (controller, tokens, events);
 }
 
@@ -106,6 +113,25 @@ void main() {
 
     expect(harness.$1.state.correctedRole, isNull);
     expect(harness.$1.state.hasToken, isTrue);
+    await _teardown(harness);
+  });
+
+  test('signOut revokes server-side and clears the token and role', () async {
+    final repo = FakeAuthRepository();
+    final harness = await _build({
+      'session_locale': 'en',
+      'session_active_role': 'customer',
+    }, repo: repo);
+    final (controller, tokens, _) = harness;
+    tokens.access = 'token';
+    await controller.bootstrap();
+
+    await controller.signOut();
+
+    expect(repo.logoutCalls, 1);
+    expect(controller.state.hasToken, isFalse);
+    expect(controller.state.activeRole, isNull);
+    expect(tokens.access, isNull);
     await _teardown(harness);
   });
 
