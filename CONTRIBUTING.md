@@ -6,12 +6,13 @@ Thanks for working on OSTA. Read [`AGENTS.md`](AGENTS.md) (canonical conventions
 
 ## Branch model / نموذج الفروع
 
-- **`main`** — always stable and releasable. PRs target it.
-- **Working branches** — one unit of work each, branched from `main`: `feat/<issue>-<slug>` (e.g. `feat/35-auth-email-password`), plus `fix/<scope>`, `refactor/<scope>`, `test/<scope>`, `docs/<scope>`, `chore/<scope>`.
+- **`develop`** — the default integration branch. All working branches start from it and merge back into it.
+- **`main`** — the release branch: protected, always stable and releasable, updated **only** by a `develop → main` release PR (tagged `v0.<n>.0` per milestone, `v1.0.0` = MVP).
+- **Working branches** — one unit of work each, branched from `develop`: `feat/<issue>-<slug>` (e.g. `feat/35-auth-email-password`), plus `fix/<scope>`, `refactor/<scope>`, `test/<scope>`, `docs/<scope>`, `chore/<scope>`.
 
-Never commit directly to `main`. Never mix unrelated changes in one branch. Branch names are **hand-written, descriptive, lowercase kebab-case** — never auto-generated/tool-default names (random suffixes, `claude/...`, `cursor/...`, `codex/...`); if a tool created one, rename it before opening the PR: `git branch -m <type>/<issue>-<slug>`.
+Never commit directly to `develop` or `main`. Never mix unrelated changes in one branch. Branch names are **hand-written, descriptive, lowercase kebab-case** — never auto-generated/tool-default names (random suffixes, `claude/...`, `cursor/...`, `codex/...`); if a tool created one, rename it before opening the PR: `git branch -m <type>/<issue>-<slug>`.
 
-> ‏فرع `main` مستقرّ دائمًا وقابل للإصدار، وطلبات الدمج تستهدفه. كل فرع عمل مهمّة واحدة مُفرَّعة من `main` بصيغة `feat/<issue>-<slug>`. ممنوع الالتزام المباشر على `main` أو خلط تغييرات غير مترابطة في فرع واحد. أسماء الفروع تُكتب يدويًا وتكون وصفية بحروف صغيرة — ويُمنع إبقاء الأسماء المولَّدة تلقائيًا من الأدوات (لواحق عشوائية أو `claude/...` أو `cursor/...`)؛ وإذا أنشأت أداةٌ اسمًا كهذا فأعد تسميته قبل فتح الـ PR بأمر `git branch -m`.
+> ‏**`develop`** فرع التكامل الافتراضي: كل فروع العمل تبدأ منه وتُدمج فيه. و**`main`** فرع الإصدار المحميّ المستقرّ الذي لا يُحدَّث إلا بطلب دمج `develop → main` (بوسم `v0.<n>.0` لكل مرحلة و`v1.0.0` عند الـ MVP). كل فرع عمل مهمّة واحدة مُفرَّعة من `develop` بصيغة `feat/<issue>-<slug>`. ممنوع الالتزام المباشر على `develop` أو `main` أو خلط تغييرات غير مترابطة في فرع واحد. أسماء الفروع تُكتب يدويًا وتكون وصفية بحروف صغيرة — ويُمنع إبقاء الأسماء المولَّدة تلقائيًا من الأدوات (لواحق عشوائية أو `claude/...` أو `cursor/...`)؛ وإذا أنشأت أداةٌ اسمًا كهذا فأعد تسميته قبل فتح الـ PR بأمر `git branch -m`.
 
 ## Commits / الالتزامات
 
@@ -28,12 +29,12 @@ Never commit directly to `main`. Never mix unrelated changes in one branch. Bran
 
 ## Pull requests / طلبات الدمج
 
-- PR base is `main`.
+- PR base is `develop`. A completed version/milestone reaches `main` via a `develop → main` release PR (then tag the release on `main`).
 - **Description is bilingual — Arabic + English** (matches the epic style).
 - Link the GitHub issue it closes/advances.
 - After any meaningful change, update the docs (below).
 
-> ‏قاعدة الـ PR هي `main`، ووصفه **ثنائي اللغة عربي + إنجليزي**، ويربط الـ issue المعنيّ، ويُحدّث التوثيق.
+> ‏قاعدة الـ PR هي `develop`، وتصل النسخة/المرحلة المكتملة إلى `main` عبر طلب دمج `develop → main` (ثم يوضع وسم الإصدار على `main`). ووصف الـ PR **ثنائي اللغة عربي + إنجليزي**، ويربط الـ issue المعنيّ، ويُحدّث التوثيق.
 
 ## Local quality gate / بوابة الجودة المحلية
 
