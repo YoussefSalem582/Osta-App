@@ -14,6 +14,7 @@ import 'package:osta/core/theme/theme_mode_controller.dart';
 import 'package:osta/features/auth/data/auth_repository_impl.dart';
 import 'package:osta/features/auth/domain/auth_repository.dart';
 import 'package:osta/features/auth/presentation/auth_cubit.dart';
+import 'package:osta/features/auth/presentation/password_recovery_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Global service locator.
@@ -60,5 +61,8 @@ Future<void> configureDependencies() async {
       () => SessionController(getIt(), getIt(), getIt()),
     )
     ..registerFactory<AuthCubit>(() => AuthCubit(getIt(), getIt()))
+    ..registerFactory<PasswordRecoveryCubit>(
+      () => PasswordRecoveryCubit(getIt()),
+    )
     ..registerLazySingleton<AppRouter>(() => AppRouter(getIt()));
 }

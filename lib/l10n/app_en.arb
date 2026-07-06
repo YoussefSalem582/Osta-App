@@ -22,6 +22,19 @@
   "authToLogin": "Have an account? Sign in",
   "authToRegister": "New here? Create an account",
   "authFailed": "Something went wrong. Please try again.",
+  "authForgotPassword": "Forgot password?",
+  "authForgotTitle": "Reset your password",
+  "authForgotSubtitle": "Enter your email and we'll send you a reset link.",
+  "authSendResetLink": "Send reset link",
+  "authResetEmailSent": "If that email exists, a reset link is on its way. Check your inbox.",
+  "authHaveResetCode": "I have a reset code",
+  "authResetTitle": "Set a new password",
+  "authResetCode": "Reset code",
+  "authNewPassword": "New password",
+  "authConfirmPassword": "Confirm password",
+  "authResetSubmit": "Reset password",
+  "authResetSuccess": "Password updated. Please sign in.",
+  "authBackToLogin": "Back to sign in",
   "roleCorrected": "We matched you to the right app for your account.",
   "switchRole": "Switch role",
   "signOut": "Sign out",
@@ -34,5 +47,7 @@
   "comingSoonBody": "This experience isn't ready yet.",
   "validationRequired": "Required",
   "validationEmail": "Enter a valid email",
-  "validationPassword": "At least 8 characters"
+  "validationPassword": "At least 8 characters",
+  "validationPasswordMatch": "Passwords don't match",
+  "validationPhone": "Enter a valid Egyptian mobile number"
 }

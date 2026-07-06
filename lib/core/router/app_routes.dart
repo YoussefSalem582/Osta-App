@@ -5,6 +5,8 @@ abstract final class AppRoutes {
   static const language = '/language';
   static const role = '/role';
   static const auth = '/auth';
+  static const forgotPassword = '/auth/forgot-password';
+  static const resetPassword = '/auth/reset-password';
   static const customerShell = '/customer';
   static const businessShell = '/business';
   static const comingSoon = '/coming-soon';

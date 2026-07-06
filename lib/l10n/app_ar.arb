@@ -22,6 +22,19 @@
   "authToLogin": "لديك حساب؟ سجّل الدخول",
   "authToRegister": "مستخدم جديد؟ أنشئ حسابًا",
   "authFailed": "حدث خطأ ما. حاول مرة أخرى.",
+  "authForgotPassword": "نسيت كلمة المرور؟",
+  "authForgotTitle": "إعادة تعيين كلمة المرور",
+  "authForgotSubtitle": "أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة التعيين.",
+  "authSendResetLink": "إرسال رابط إعادة التعيين",
+  "authResetEmailSent": "إذا كان هذا البريد مسجّلًا، فرابط إعادة التعيين في طريقه إليك. تحقّق من صندوق الوارد.",
+  "authHaveResetCode": "لديّ رمز إعادة تعيين",
+  "authResetTitle": "تعيين كلمة مرور جديدة",
+  "authResetCode": "رمز إعادة التعيين",
+  "authNewPassword": "كلمة المرور الجديدة",
+  "authConfirmPassword": "تأكيد كلمة المرور",
+  "authResetSubmit": "إعادة تعيين كلمة المرور",
+  "authResetSuccess": "تم تحديث كلمة المرور. سجّل الدخول من فضلك.",
+  "authBackToLogin": "العودة لتسجيل الدخول",
   "roleCorrected": "طابقنا حسابك مع التطبيق الصحيح.",
   "switchRole": "تبديل الدور",
   "signOut": "تسجيل الخروج",
@@ -34,5 +47,7 @@
   "comingSoonBody": "هذه التجربة ليست جاهزة بعد.",
   "validationRequired": "مطلوب",
   "validationEmail": "أدخل بريدًا إلكترونيًا صحيحًا",
-  "validationPassword": "٨ أحرف على الأقل"
+  "validationPassword": "٨ أحرف على الأقل",
+  "validationPasswordMatch": "كلمتا المرور غير متطابقتين",
+  "validationPhone": "أدخل رقم هاتف مصري صحيح"
 }
