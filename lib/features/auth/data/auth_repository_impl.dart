@@ -31,6 +31,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<AppRole> register({
     required String firstName,
     required String lastName,
+    required String username,
     required String email,
     required String password,
     required AppRole accountType,
@@ -38,6 +39,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }) => _authenticate('/auth/register', {
     'first_name': firstName,
     'last_name': lastName,
+    'username': username,
     'email': email,
     'password': password,
     'password_confirmation': password,

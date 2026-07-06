@@ -62,6 +62,7 @@ void main() {
     final role = await _repo(adapter, storage).register(
       firstName: 'Youssef',
       lastName: 'Salem',
+      username: 'youssef',
       email: 'y@osta.dev',
       password: 'Passw0rd',
       accountType: AppRole.business,
@@ -71,6 +72,7 @@ void main() {
     expect(role, AppRole.business);
     final body = adapter.bodies.single! as Map<String, dynamic>;
     expect(body['account_type'], 'business');
+    expect(body['username'], 'youssef');
     expect(body['password'], 'Passw0rd');
     expect(body['password_confirmation'], 'Passw0rd');
     expect(body['phone'], '01000000000');
@@ -85,6 +87,7 @@ void main() {
     await _repo(adapter, FakeTokenStorage()).register(
       firstName: 'A',
       lastName: 'B',
+      username: 'ab',
       email: 'a@b.com',
       password: 'Passw0rd',
       accountType: AppRole.customer,
