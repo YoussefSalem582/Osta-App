@@ -27,8 +27,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
     ),
     (
       image: AppImages.mascot,
-      title: 'استكشف القيمة',
-      description: 'اعرف أقرب مركز وخدماته.',
+      title: 'اختر اللغة',
+      description: '',
     ),
     (
       image: AppImages.logo,
@@ -74,7 +74,48 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        if (index == 2)
+
+                        // الصفحة الثانية
+                        if (index == 1)
+                          Column(
+                            children: [
+                              SizedBox(
+                                width: double.infinity,
+                                height: 55,
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    // TODO: Arabic
+                                  },
+                                  child: const Text(
+                                    'العربية',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                width: double.infinity,
+                                height: 55,
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    // TODO: English
+                                  },
+                                  child: const Text(
+                                    'English',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        // الصفحة الثالثة
+                        else if (index == 2)
                           Column(
                             children: [
                               socialButton(
@@ -93,6 +134,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                               ),
                             ],
                           )
+                        // الصفحة الأولى
                         else
                           Text(
                             page.description,
