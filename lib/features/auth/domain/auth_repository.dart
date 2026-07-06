@@ -22,4 +22,19 @@ abstract interface class AuthRepository {
     required AppRole accountType,
     String? phone,
   });
+
+  /// `POST /auth/logout`. Best-effort server-side token revocation; always
+  /// clears the locally stored token pair, even when the request fails.
+  Future<void> logout();
+
+  /// `POST /forgot-password`. Triggers the email broker to send a reset link.
+  Future<void> forgotPassword({required String email});
+
+  /// `POST /reset-password`. Completes the reset with the emailed token and a
+  /// new password.
+  Future<void> resetPassword({
+    required String email,
+    required String token,
+    required String password,
+  });
 }

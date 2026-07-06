@@ -53,11 +53,11 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<SessionStore>(
       () => SessionStore(getIt(), getIt()),
     )
-    ..registerLazySingleton<SessionController>(
-      () => SessionController(getIt(), getIt()),
-    )
     ..registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(getIt(), getIt()),
+    )
+    ..registerLazySingleton<SessionController>(
+      () => SessionController(getIt(), getIt(), getIt()),
     )
     ..registerFactory<AuthCubit>(() => AuthCubit(getIt(), getIt()))
     ..registerLazySingleton<AppRouter>(() => AppRouter(getIt()));
