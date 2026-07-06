@@ -4,6 +4,14 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-06 — First-run flow & 4-role split rebased onto `main`
+
+The first-run flow & 4-role split ([epic #32](https://github.com/YoussefSalem582/Osta-App/issues/32) · [PR #67](https://github.com/YoussefSalem582/Osta-App/pull/67)) was rebased onto current `main` and adapted to the post-[#69](https://github.com/YoussefSalem582/Osta-App/pull/69) plain-Dart conventions: the feature's `injectable`/`freezed`/`fpdart` annotations and the removed dev `/gallery` route were dropped, session/auth dependencies are registered by hand in `configureDependencies()` (`AuthCubit` as a factory, `AppRouter` built with the `SessionController` singleton), and the obsolete gallery redirect test was deleted.
+
+> ‏أُعيد ترتيب فرع تدفّق أول تشغيل وانقسام الأدوار الأربعة ([الملحمة #32](https://github.com/YoussefSalem582/Osta-App/issues/32) · [PR #67](https://github.com/YoussefSalem582/Osta-App/pull/67)) فوق `main` الحالي وجرت مواءمته مع اصطلاحات Dart البسيطة بعد [#69](https://github.com/YoussefSalem582/Osta-App/pull/69): حُذفت تعليقات `injectable`/`freezed`/`fpdart` ومسار `/gallery` التطويري المُزال، وسُجِّلت تبعيات الجلسة والمصادقة يدويًا في `configureDependencies()` (‏`AuthCubit` كمصنع، و`AppRouter` يُبنى بمفرد `SessionController`)، وحُذف اختبار توجيه المعرض المتقادم.
+
+`CHANGELOG.md` and `CURRENT_STATUS.md` updated to match. Code + docs change on the feature branch — no app code merged to `main` yet.
+
 ## 2026-07-05 — Branch-naming rule tightened (no tool-generated names)
 
 All docs and AI-agent configs now require **hand-written, descriptive, lowercase kebab-case** branch names (`<type>/<issue>-<slug>`, e.g. `feat/44-booking-funnel`, `fix/auth-401-loop`) and forbid auto-generated/tool-default names (random suffixes, `claude/...`, `cursor/...`, `codex/...`) — rename with `git branch -m <type>/<issue>-<slug>` before opening a PR.
