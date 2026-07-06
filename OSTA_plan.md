@@ -94,7 +94,7 @@ And the hard **NEVER** list (violations block merge):
 - **NEVER** store tokens in `SharedPreferences` — auth tokens live only in `TokenStorage` (secure storage).
 - **NEVER** add `shimmer` (use `skeletonizer`, §10) or `flutter_screenutil` (use `AppBreakpoints`, §8.2).
 - **NEVER** commit generated l10n (`lib/core/l10n/`) — regenerate with `flutter gen-l10n`.
-- **NEVER** commit directly to `main`; **NEVER** add AI/agent attribution to commits or PRs.
+- **NEVER** commit directly to `develop` or `main`; **NEVER** add AI/agent attribution to commits or PRs.
 - **NEVER** keep auto-generated/tool-default branch names (`claude/...`, `cursor/...`, random suffixes) — branch names are hand-written `<type>/<issue>-<slug>` (§13.1).
 - **NEVER** use `print`/`debugPrint` — log through `Talker` (§9).
 
@@ -484,9 +484,9 @@ Per epic, the minimum bar (CI runs `format · analyze · test` on every PR; all 
 
 ### 13.1 Branches & commits (existing convention — restated)
 
-- `main` is always releasable. **Never commit to it directly.**
+- **`develop` integrates; `main` releases.** `develop` is the default branch all day-to-day work targets; `main` is always releasable and advances **only** through a `develop → main` release PR. **Never commit to either directly.**
 - One epic (or chore) per branch: `feat/<issue>-<slug>` (e.g. `feat/44-booking-funnel`); also `fix/`,
-  `refactor/`, `test/`, `docs/`, `chore/`. Branch off up-to-date `main`; PR base is `main`.
+  `refactor/`, `test/`, `docs/`, `chore/`. Branch off up-to-date `develop`; PR base is `develop`.
 - **Branch names are hand-written, descriptive, lowercase kebab-case** (`feat/44-booking-funnel`,
   `fix/auth-401-loop`, `chore/talker-logging`). **NEVER** keep an auto-generated or tool-default branch name
   (random suffixes, `claude/...`, `cursor/...`, `codex/...`). If your tooling created the branch for you,
@@ -505,14 +505,15 @@ Per epic, the minimum bar (CI runs `format · analyze · test` on every PR; all 
   Hotfixes on a release increment the patch (`v0.3.1`).
 - `pubspec.yaml` `version: X.Y.Z+B` — version matches the tag; build number `+B` increases monotonically with
   every release.
-- **Release procedure** (checklist):
-  1. Branch `chore/release-vX.Y.Z` off `main`.
+- **Release procedure** (checklist) — a `develop → main` release:
+  1. Branch `chore/release-vX.Y.Z` off up-to-date `develop` (the release candidate).
   2. Move `CHANGELOG.md` `[Unreleased]` content into a new `## [X.Y.Z] - YYYY-MM-DD` section (keep the
      Keep-a-Changelog link refs updated); bump `pubspec.yaml`.
   3. Update `CURRENT_STATUS.md` (version banner) + `DOCUMENTATION_UPDATE_SUMMARY.md`.
-  4. PR → review → merge to `main`.
+  4. Open the release PR **`chore/release-vX.Y.Z` → `main`** → review → merge (this is the only way `main` advances).
   5. Annotated tag on the merge commit: `git tag -a vX.Y.Z -m "OSTA vX.Y.Z — <milestone>"` → push the tag.
   6. GitHub Release from the tag with bilingual notes (optionally attach a debug APK).
+  7. Merge `main` back into `develop` so the release commit, version bump, and any hotfixes live on both.
 - Tag pushes touch the remote — do them only with the repo owner's approval, consistent with the approved
   command policy in `AGENTS.md`.
 
@@ -530,7 +531,7 @@ Per epic, the minimum bar (CI runs `format · analyze · test` on every PR; all 
 ...
 ```
 
-Small feature branches, merged one at a time, tags at milestone boundaries — a graph a human can read.
+Small feature branches merged one at a time into `develop`; `main` advances only through tagged `develop → main` releases at milestone boundaries — a graph a human can read.
 
 ---
 
