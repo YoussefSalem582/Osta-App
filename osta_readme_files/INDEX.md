@@ -20,6 +20,7 @@
 
 ### … know what to build next / أعرف ما الذي أبنيه تاليًا
 
+- [`../OSTA_TODO.md`](../OSTA_TODO.md) — **Zero-to-production checklist**: tick-boxed phases from foundation to staged `v1.0.0` launch.
 - [`../OSTA_plan.md`](../OSTA_plan.md) — **Master build instructions for AI agents**: mandates, amendments (talker, skeletonizer, offline-first, releases/tags), per-epic execution order.
 - [DELIVERY_PLAN.md](reference/DELIVERY_PLAN.md) — Milestones, owners, cross-repo issue map, suggested build order.
 - App tracker [#61](https://github.com/YoussefSalem582/Osta-App/issues/61) · Backend tracker [#63](https://github.com/YoussefSalem582/osta_backend/issues/63).

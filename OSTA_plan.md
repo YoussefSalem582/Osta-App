@@ -31,6 +31,9 @@ supersede anything older, including `AGENTS.md`, on these four points only):
 Outside those four areas, if this document and `AGENTS.md` ever disagree, **`AGENTS.md` wins** — and you should
 flag the discrepancy in your PR description.
 
+**Progress tracking:** the live zero-to-production checklist is [`OSTA_TODO.md`](OSTA_TODO.md) — tick items
+there as work merges; this document stays the rulebook.
+
 ---
 
 ## §1 Identity & mission
@@ -529,7 +532,8 @@ Small feature branches, merged one at a time, tags at milestone boundaries — a
 ## §14 Milestone execution plan (M0 → M7 + Phase 2)
 
 Execution order follows tracker [#61](https://github.com/YoussefSalem582/Osta-App/issues/61) and
-[`DELIVERY_PLAN.md`](osta_readme_files/reference/DELIVERY_PLAN.md). For each epic: read the issue + its feature
+[`DELIVERY_PLAN.md`](osta_readme_files/reference/DELIVERY_PLAN.md); tick progress in
+[`OSTA_TODO.md`](OSTA_TODO.md). For each epic: read the issue + its feature
 doc, honor §2–§13, and treat the 3–5 ACs below as headlines — **the epic body remains the full AC source**.
 Mockups live on the [`design-assets`](https://github.com/YoussefSalem582/Osta-App/tree/design-assets) branch.
 
