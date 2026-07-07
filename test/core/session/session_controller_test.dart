@@ -59,12 +59,41 @@ void main() {
     await _teardown(harness);
   });
 
-  test('chooseLanguage persists and emits the locale', () async {
-    final harness = await _build({});
-    await harness.$1.bootstrap();
-    await harness.$1.chooseLanguage(const Locale('ar'));
+  test(
+    'chooseLanguage persists the locale and marks it acknowledged',
+    () async {
+      final harness = await _build({});
+      await harness.$1.bootstrap();
+      await harness.$1.chooseLanguage(const Locale('ar'));
 
-    expect(harness.$1.state.locale, const Locale('ar'));
+      expect(harness.$1.state.locale, const Locale('ar'));
+      expect(harness.$1.state.languageAcknowledged, isTrue);
+      await _teardown(harness);
+    },
+  );
+
+  test('resetOnboarding re-opens onboarding (auth-choose back)', () async {
+    final harness = await _build({'session_locale': 'en'});
+    final controller = harness.$1;
+    await controller.bootstrap();
+    controller.acknowledgeOnboarding();
+    expect(controller.state.onboardingAcknowledged, isTrue);
+
+    controller.resetOnboarding();
+
+    expect(controller.state.onboardingAcknowledged, isFalse);
+    await _teardown(harness);
+  });
+
+  test('chooseRole persists the role and marks it acknowledged', () async {
+    final harness = await _build({'session_locale': 'en'});
+    final controller = harness.$1;
+    await controller.bootstrap();
+
+    await controller.chooseRole(AppRole.business);
+
+    expect(controller.state.activeRole, AppRole.business);
+    expect(controller.state.roleAcknowledged, isTrue);
     await _teardown(harness);
   });
 
@@ -76,12 +105,15 @@ void main() {
     final (controller, tokens, _) = harness;
     tokens.access = 'token';
     await controller.bootstrap();
+    controller.acknowledgeOnboarding();
 
     await controller.switchRole();
 
     expect(controller.state.activeRole, isNull);
     expect(controller.state.hasToken, isTrue);
     expect(tokens.access, 'token');
+    // Clearing the role must not re-trigger onboarding (auth-choose back).
+    expect(controller.state.onboardingAcknowledged, isTrue);
     await _teardown(harness);
   });
 
