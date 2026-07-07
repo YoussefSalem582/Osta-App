@@ -3,14 +3,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:osta/core/constants/app_images.dart';
 import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/auth/presentation/auth_validators.dart';
 import 'package:osta/features/auth/presentation/password_recovery_cubit.dart';
+import 'package:osta/features/auth/presentation/widgets/auth_form_error.dart';
+import 'package:osta/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
+import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
 
 /// Step 1 of password recovery: collect the email and ask the broker to send a
@@ -59,24 +63,19 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.authForgotTitle)),
-      body: SafeArea(
-        child: BlocBuilder<PasswordRecoveryCubit, PasswordRecoveryState>(
-          builder: (context, state) {
-            final sent = state.status == RecoveryStatus.emailSent;
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: sent
-                    ? _sentBody(context, l10n)
-                    : _formBody(context, l10n, state),
-              ),
-            );
-          },
-        ),
-      ),
+    return BlocBuilder<PasswordRecoveryCubit, PasswordRecoveryState>(
+      builder: (context, state) {
+        final sent = state.status == RecoveryStatus.emailSent;
+        return AuthScaffold(
+          logo: AppImages.logo,
+          logoHeight: AuthScaffold.markLogoHeight,
+          title: l10n.authForgotTitle,
+          subtitle: sent ? null : l10n.authForgotSubtitle,
+          children: sent
+              ? _sentBody(context, l10n)
+              : _formBody(context, l10n, state),
+        );
+      },
     );
   }
 
@@ -85,29 +84,28 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
     AppLocalizations l10n,
     PasswordRecoveryState state,
   ) => [
-    Text(
-      l10n.authForgotSubtitle,
-      style: Theme.of(context).textTheme.bodyMedium,
-    ),
-    const SizedBox(height: AppSpacing.lg),
-    Form(
-      key: _formKey,
-      child: AppTextField(
-        label: l10n.authEmail,
-        controller: _email,
-        keyboardType: TextInputType.emailAddress,
-        errorText: state.fieldErrors['email']?.first,
-        validator: (v) => AuthValidators.email(context, v),
+    AppCard(
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            AppTextField(
+              label: l10n.authEmail,
+              controller: _email,
+              keyboardType: TextInputType.emailAddress,
+              errorText: state.fieldErrors['email']?.first,
+              validator: (v) => AuthValidators.email(context, v),
+            ),
+            if (state.status == RecoveryStatus.failure &&
+                state.fieldErrors.isEmpty) ...[
+              const SizedBox(height: AppSpacing.md),
+              AuthFormError(state.errorMessage ?? l10n.authFailed),
+            ],
+          ],
+        ),
       ),
     ),
-    if (state.status == RecoveryStatus.failure &&
-        state.fieldErrors.isEmpty) ...[
-      const SizedBox(height: AppSpacing.md),
-      Text(
-        state.errorMessage ?? l10n.authFailed,
-        style: TextStyle(color: Theme.of(context).colorScheme.error),
-      ),
-    ],
     const SizedBox(height: AppSpacing.lg),
     AppButton(
       label: l10n.authSendResetLink,

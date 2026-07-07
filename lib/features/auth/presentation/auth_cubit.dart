@@ -52,6 +52,13 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
+  /// Sets the initial mode from the auth-choose landing (`?mode=`). No-op when
+  /// already in that idle mode, so it's safe to call on every build.
+  void setMode(AuthMode mode) {
+    if (state.mode == mode && state.status == AuthStatus.idle) return;
+    emit(AuthState(mode: mode));
+  }
+
   Future<void> login({required String email, required String password}) {
     final role = _accountType;
     return _run(

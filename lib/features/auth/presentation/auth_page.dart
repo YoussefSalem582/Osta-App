@@ -4,25 +4,33 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:osta/core/constants/app_images.dart';
 import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/auth/presentation/auth_cubit.dart';
 import 'package:osta/features/auth/presentation/auth_validators.dart';
+import 'package:osta/features/auth/presentation/widgets/auth_form_error.dart';
+import 'package:osta/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
+import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
 
 /// Auth entry for the chosen role. Login and register both send
 /// `account_type = activeRole`; success hands the authoritative role to the
-/// session and the router leaves this screen.
+/// session and the router leaves this screen. The initial mode comes from the
+/// auth-choose landing via `?mode=login|register` (defaults to login); the
+/// in-page toggle still flips between the two.
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final modeParam = GoRouterState.of(context).uri.queryParameters['mode'];
+    final mode = modeParam == 'register' ? AuthMode.register : AuthMode.login;
     return BlocProvider<AuthCubit>(
-      create: (_) => getIt<AuthCubit>(),
+      create: (_) => getIt<AuthCubit>()..setMode(mode),
       child: const _AuthView(),
     );
   }
@@ -93,27 +101,23 @@ class _AuthViewState extends State<_AuthView> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.appTitle)),
-      body: SafeArea(
-        child: BlocBuilder<AuthCubit, AuthState>(
-          builder: (context, state) {
-            final isRegister = state.mode == AuthMode.register;
-            final canSubmit = !isRegister || _acceptedTerms;
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.lg),
+    return BlocBuilder<AuthCubit, AuthState>(
+      builder: (context, state) {
+        final isRegister = state.mode == AuthMode.register;
+        final canSubmit = !isRegister || _acceptedTerms;
+        return AuthScaffold(
+          logo: AppImages.logo,
+          logoHeight: AuthScaffold.markLogoHeight,
+          title: isRegister ? l10n.authRegisterTitle : l10n.authSignInTitle,
+          // Back to the login/register chooser (both live in the auth surface).
+          onBack: () => context.go(AppRoutes.authChoose),
+          children: [
+            AppCard(
               child: Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      isRegister
-                          ? l10n.authRegisterTitle
-                          : l10n.authSignInTitle,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
                     if (isRegister) ...[
                       AppTextField(
                         label: l10n.authFirstName,
@@ -206,36 +210,29 @@ class _AuthViewState extends State<_AuthView> {
                     if (state.status == AuthStatus.failure &&
                         state.fieldErrors.isEmpty) ...[
                       const SizedBox(height: AppSpacing.md),
-                      Text(
-                        state.errorMessage ?? l10n.authFailed,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                      ),
+                      AuthFormError(state.errorMessage ?? l10n.authFailed),
                     ],
-                    const SizedBox(height: AppSpacing.lg),
-                    AppButton(
-                      label: l10n.authSubmit,
-                      loading: state.isSubmitting,
-                      onPressed: canSubmit ? () => _submit(state) : null,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    AppButton(
-                      label: isRegister
-                          ? l10n.authToLogin
-                          : l10n.authToRegister,
-                      variant: AppButtonVariant.text,
-                      onPressed: state.isSubmitting
-                          ? null
-                          : context.read<AuthCubit>().toggleMode,
-                    ),
                   ],
                 ),
               ),
-            );
-          },
-        ),
-      ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            AppButton(
+              label: l10n.authSubmit,
+              loading: state.isSubmitting,
+              onPressed: canSubmit ? () => _submit(state) : null,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            AppButton(
+              label: isRegister ? l10n.authToLogin : l10n.authToRegister,
+              variant: AppButtonVariant.text,
+              onPressed: state.isSubmitting
+                  ? null
+                  : context.read<AuthCubit>().toggleMode,
+            ),
+          ],
+        );
+      },
     );
   }
 }

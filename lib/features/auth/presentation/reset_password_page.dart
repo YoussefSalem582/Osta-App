@@ -3,14 +3,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:osta/core/constants/app_images.dart';
 import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/auth/presentation/auth_validators.dart';
 import 'package:osta/features/auth/presentation/password_recovery_cubit.dart';
+import 'package:osta/features/auth/presentation/widgets/auth_form_error.dart';
+import 'package:osta/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
+import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
 
 /// Step 2 of password recovery: set a new password using the emailed reset
@@ -71,24 +75,18 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.authResetTitle)),
-      body: SafeArea(
-        child: BlocBuilder<PasswordRecoveryCubit, PasswordRecoveryState>(
-          builder: (context, state) {
-            final done = state.status == RecoveryStatus.resetSuccess;
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: done
-                    ? _doneBody(context, l10n)
-                    : _formBody(context, l10n, state),
-              ),
-            );
-          },
-        ),
-      ),
+    return BlocBuilder<PasswordRecoveryCubit, PasswordRecoveryState>(
+      builder: (context, state) {
+        final done = state.status == RecoveryStatus.resetSuccess;
+        return AuthScaffold(
+          logo: AppImages.logo,
+          logoHeight: AuthScaffold.markLogoHeight,
+          title: l10n.authResetTitle,
+          children: done
+              ? _doneBody(context, l10n)
+              : _formBody(context, l10n, state),
+        );
+      },
     );
   }
 
@@ -97,54 +95,53 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
     AppLocalizations l10n,
     PasswordRecoveryState state,
   ) => [
-    Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          AppTextField(
-            label: l10n.authEmail,
-            controller: _email,
-            keyboardType: TextInputType.emailAddress,
-            errorText: state.fieldErrors['email']?.first,
-            validator: (v) => AuthValidators.email(context, v),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          AppTextField(
-            label: l10n.authResetCode,
-            controller: _token,
-            errorText: state.fieldErrors['token']?.first,
-            validator: (v) => AuthValidators.requiredField(context, v),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          AppTextField(
-            label: l10n.authNewPassword,
-            controller: _password,
-            obscureText: true,
-            obscureToggle: true,
-            errorText: state.fieldErrors['password']?.first,
-            validator: (v) => AuthValidators.password(context, v),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          AppTextField(
-            label: l10n.authConfirmPassword,
-            controller: _confirm,
-            obscureText: true,
-            obscureToggle: true,
-            validator: (v) =>
-                AuthValidators.confirm(context, v, _password.text),
-          ),
-        ],
+    AppCard(
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            AppTextField(
+              label: l10n.authEmail,
+              controller: _email,
+              keyboardType: TextInputType.emailAddress,
+              errorText: state.fieldErrors['email']?.first,
+              validator: (v) => AuthValidators.email(context, v),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            AppTextField(
+              label: l10n.authResetCode,
+              controller: _token,
+              errorText: state.fieldErrors['token']?.first,
+              validator: (v) => AuthValidators.requiredField(context, v),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            AppTextField(
+              label: l10n.authNewPassword,
+              controller: _password,
+              obscureText: true,
+              obscureToggle: true,
+              errorText: state.fieldErrors['password']?.first,
+              validator: (v) => AuthValidators.password(context, v),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            AppTextField(
+              label: l10n.authConfirmPassword,
+              controller: _confirm,
+              obscureText: true,
+              obscureToggle: true,
+              validator: (v) =>
+                  AuthValidators.confirm(context, v, _password.text),
+            ),
+            if (state.status == RecoveryStatus.failure &&
+                state.fieldErrors.isEmpty) ...[
+              const SizedBox(height: AppSpacing.md),
+              AuthFormError(state.errorMessage ?? l10n.authFailed),
+            ],
+          ],
+        ),
       ),
     ),
-    if (state.status == RecoveryStatus.failure &&
-        state.fieldErrors.isEmpty) ...[
-      const SizedBox(height: AppSpacing.md),
-      Text(
-        state.errorMessage ?? l10n.authFailed,
-        style: TextStyle(color: Theme.of(context).colorScheme.error),
-      ),
-    ],
     const SizedBox(height: AppSpacing.lg),
     AppButton(
       label: l10n.authResetSubmit,
