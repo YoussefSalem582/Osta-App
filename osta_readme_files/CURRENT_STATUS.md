@@ -2,7 +2,7 @@
 
 > [INDEX](INDEX.md) > Current Status
 >
-> **Last Updated:** Jul 7, 2026 — **Role selection screen widgets & RTL alignment added**: implemented `RoleCard`, `ComingSoonBadge`, and `InfoBanner` in `lib/features/role/presentation/widgets/`, enhanced `AppCard` with optional styling properties, fixed `AppColors.gray` syntax, and aligned headers to start for RTL support. Earlier: Jul 5, 2026 — **[`OSTA_plan.md`](../OSTA_plan.md) + [`OSTA_TODO.md`](../OSTA_TODO.md) added**: the master AI-agent execution plan for delivering the 31 open epics (11 owner mandates, offline-first + talker + skeletonizer + release/tag amendments, milestone-by-milestone build order) and its trackable zero-to-production checklist (per-phase release tags through the Phase-9 launch gate). Also vendored the official Dart/Flutter agent skills (14 curated, 7 excluded) into [`.claude/skills/`](../.claude/skills/README.md). Earlier the same day: documentation set created, then amended to match the deferral refactor ([`../docs/ROADMAP.md`](../docs/ROADMAP.md)) — `AGENTS.md` + `CLAUDE.md` shim at the root, and this `osta_readme_files/` tree (INDEX, guides, feature docs mirroring the GitHub epics, ADRs, reference docs, delivery plan). Detail: [`DOCUMENTATION_UPDATE_SUMMARY.md`](DOCUMENTATION_UPDATE_SUMMARY.md).
+> **Last Updated:** Jul 7, 2026 — **Business onboarding screens, widgets & routing added**: implemented `ProviderOnboardingPage`, `BusinessIdentityPage`, `BusinessCatalogPage`, 8 reusable widgets in `lib/features/business/onboarding/presentation/`, aligned `BusinessIdentityPage` 100% with exact user mockup, and registered declarative GoRouter routes in `AppRouter`. Earlier: Jul 7, 2026 — **Role selection screen widgets & RTL alignment added**: implemented `RoleCard`, `ComingSoonBadge`, and `InfoBanner` in `lib/features/role/presentation/widgets/`, enhanced `AppCard` with optional styling properties, fixed `AppColors.gray` syntax, and aligned headers to start for RTL support. Detail: [`DOCUMENTATION_UPDATE_SUMMARY.md`](DOCUMENTATION_UPDATE_SUMMARY.md).
 > **Version:** `1.0.0+1` — not released; no store presence yet.
 > **Flutter:** SDK constraint `^3.12.1` (Dart); CI pins Flutter 3.44.1.
 > **Status:** 🚧 **M0 foundation complete** ([#28](https://github.com/YoussefSalem582/Osta-App/issues/28) ✅ scaffolding+CI, [#29](https://github.com/YoussefSalem582/Osta-App/issues/29) ✅ design system, [#31](https://github.com/YoussefSalem582/Osta-App/issues/31) ✅ networking) | 🔄 [#30](https://github.com/YoussefSalem582/Osta-App/issues/30) localization & RTL open | 📋 All feature epics open — see [DELIVERY_PLAN.md](reference/DELIVERY_PLAN.md)
@@ -58,13 +58,13 @@ The table below summarizes the codebase footprint today.
 
 | Metric | Count | Status |
 |--------|-------|--------|
-| Hand-written Dart files | 40 | ✅ |
-| Screens/pages | 2 (SplashPage, RoleSelectionPage) | 🚧 |
+| Hand-written Dart files | 51 | ✅ |
+| Screens/pages | 5 (SplashPage, RoleSelectionPage, ProviderOnboardingPage, BusinessIdentityPage, BusinessCatalogPage) | 🚧 |
 | Blocs/Cubits | 1 (ThemeModeController) | 🚧 |
 | Repositories / use cases | 0 | 📋 stubs await features |
 | Shared UI components | 8 | ✅ |
 | Formatters | 2 (EgpFormatter, NumberFormatter) | ✅ |
-| Locales | 2 (ar default, en) — ~6 keys | 🚧 grows with features |
+| Locales | 2 (ar default, en) — ~70 keys | 🚧 grows with features |
 | Test files / cases | 11 / ~32 | ✅ green |
 | Open app epics | 31 (+2 trackers) | 📋 |
 
@@ -85,7 +85,7 @@ The map below groups the built modules by layer. No codegen is involved — only
 | `core/router` | GoRouter: `/splash`, `/role` |
 | `core/error` | `sealed class Failure implements Exception` (`NetworkFailure`/`ServerFailure`/`UnknownFailure`); repositories throw, callers `try`/`catch` |
 | `shared/ui` | AppButton, AppTopBar, AppBottomNavBar, AppCard, AppTextField, AppBottomSheet, Empty/Error/LoadingState |
-| `features/` | splash + role implemented (cards & coming soon badges built); auth (token model only), business/*, customer/*, shop, notifications = stub folders |
+| `features/` | splash + role + business onboarding screens implemented (cards, badges & wizard screens built); auth (token model only), customer/*, shop, notifications = stub folders |
 
 
 ---
@@ -104,7 +104,7 @@ Full mirror with owners and backend state: [DELIVERY_PLAN.md](reference/DELIVERY
 | M3 Booking + business bookings + team | #44, #45, #55, #62 | 📋 open, backend ready |
 | M3.5 Payments (Paymob) | #46 | ⛔ blocked — backend #47/#48/#49 open |
 | M4 Realtime + business dashboard | #47, #54 | 📋 open, backend ready |
-| M5 Garage + business catalog | #50, #56 | 📋 open, backend ready |
+| M5 Garage + business catalog | #50, #56 | 🔄 business onboarding & catalog screens ✅ · backend ready |
 | M7 Notifications + FCM | #52 | 📋 open, backend ready |
 | Home / Shop | #51, #48, #57 (+#49 P2) | 📋 open, backend ready |
 | Phase 2 | #58, #59, #60 | ⛔ backend blocked |

@@ -7,6 +7,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the pro
 
 ### Added
 
+- **Business onboarding screens, widgets & routing** (2026-07-07) — implemented the three business onboarding screens (`ProviderOnboardingPage`, `BusinessIdentityPage`, `BusinessCatalogPage`) and 8 reusable widgets in `lib/features/business/onboarding/presentation/`. Aligned `BusinessIdentityPage` 100% with exact user mockup (exact Arabic strings/numerals, separated phone field and `+20 🇪🇬` box, bottom-left camera icon in `LogoUploadBox`, bottom-right map CTA in `LocationPickerCard`, and placing map card above dropdowns). Registered static paths and wizard navigation routes (`/provider-onboarding` → `/business-identity` → `/business-catalog`) in `AppRouter`.
+
 - **Role selection screen widgets & RTL alignment** (2026-07-07) — implemented `RoleCard` (with active green border and disabled state with `ComingSoonBadge`), `ComingSoonBadge` / `ComingSoon`, and `InfoBanner` in `lib/features/role/presentation/widgets/`. Enhanced `AppCard` (`lib/shared/ui/app_card.dart`) with optional `border`, `color`, and `elevation` properties. Fixed syntax error in `AppColors` (`gray` token) and aligned role selection page headers to `start` for correct RTL rendering.
 
 

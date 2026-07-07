@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 
 /// Brand text field — thin wrapper over [TextFormField]; visual styling
@@ -13,6 +14,7 @@ class AppTextField extends StatelessWidget {
     this.keyboardType,
     this.textInputAction,
     this.prefixIcon,
+    this.prefixText,
     this.validator,
     this.onChanged,
     this.enabled = true,
@@ -27,6 +29,7 @@ class AppTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final IconData? prefixIcon;
+  final String? prefixText;
   final String? Function(String?)? validator;
   final ValueChanged<String>? onChanged;
   final bool enabled;
@@ -52,7 +55,17 @@ class AppTextField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hint,
             errorText: errorText,
+            prefixText: prefixText,
             prefixIcon: prefixIcon == null ? null : Icon(prefixIcon),
+            filled: true,
+            fillColor: AppColors.light.onSuccess,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppRadii.md),
+              borderSide: BorderSide(
+                color: AppColors.light.success,
+                width: 1.5,
+              ),
+            ),
           ),
         ),
       ],
