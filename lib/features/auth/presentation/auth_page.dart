@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/core/di/injection.dart';
@@ -38,6 +39,17 @@ class _AuthViewState extends State<_AuthView> {
   final _email = TextEditingController();
   final _phone = TextEditingController();
   final _password = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // ponytail: debug-only login prefill for the App Review / QA test account.
+    // Ships nothing in release (kDebugMode is compiled out).
+    if (kDebugMode) {
+      _email.text = 'test@osta.com';
+      _password.text = 'osta123123';
+    }
+  }
 
   @override
   void dispose() {

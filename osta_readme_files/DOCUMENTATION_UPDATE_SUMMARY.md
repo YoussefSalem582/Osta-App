@@ -4,6 +4,14 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-07 — Debug-only login prefill for the QA/App Review test account
+
+`AuthPage` now prefills the email/password fields with the test account (`test@osta.com` / `osta123123`) under `kDebugMode` only — release builds compile the block out. Speeds local sign-in and gives App Review a one-tap login; the account must still exist backend-side (`/auth/login`). Code + docs change.
+
+> ‏يملأ `AuthPage` الآن حقلي البريد وكلمة المرور بحساب الاختبار (`test@osta.com` / `osta123123`) في وضع التصحيح فقط (`kDebugMode`) — تُحذف الكتلة في إصدارات الإنتاج. يُسرّع تسجيل الدخول محليًا ويمنح مراجعة المتجر دخولًا بنقرة واحدة؛ ويجب أن يظل الحساب موجودًا في الخادم (`/auth/login`).
+
+Touched: `lib/features/auth/presentation/auth_page.dart`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
 ## 2026-07-06 — `develop`/`main` branching model adopted
 
 Introduced a long-lived **`develop`** integration branch and made **`main`** release-only: feature/chore branches now cut from `develop` and PR into `develop`; `main` advances **only** through a `develop → main` release PR + SemVer tag (`v0.<n>.0` per milestone, `v1.0.0` = MVP). Retargeted the open first-run PR ([#67](https://github.com/YoussefSalem582/Osta-App/pull/67)) to `develop`.
