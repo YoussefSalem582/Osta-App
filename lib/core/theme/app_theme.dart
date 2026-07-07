@@ -32,8 +32,9 @@ abstract final class AppTheme {
     );
 
     return base.copyWith(
-      scaffoldBackgroundColor:
-          brightness == Brightness.light ? const Color(0xFFF4F6F5) : null,
+      scaffoldBackgroundColor: brightness == Brightness.light
+          ? const Color(0xFFF4F6F5)
+          : null,
       textTheme: AppTypography.textTheme(base.textTheme),
       extensions: [tokens],
       appBarTheme: AppBarTheme(

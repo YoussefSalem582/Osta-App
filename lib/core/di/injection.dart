@@ -43,7 +43,6 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<ThemeModeController>(
       () => ThemeModeController(getIt()),
     )
-
     ..registerLazySingleton<Dio>(
       () => buildAppDio(getIt(), getIt(), getIt()),
     )
