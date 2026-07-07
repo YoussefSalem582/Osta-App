@@ -1,0 +1,19 @@
+---
+description: "Git commit rules — conventional commits, no AI/agent attribution trailers"
+alwaysApply: true
+---
+
+# Git Commits
+
+When creating commits on behalf of the user:
+
+- **Conventional Commits**: `type(scope): imperative summary` (`feat`, `fix`, `refactor`, `perf`, `test`, `docs`, `style`, `chore`) — matches the repo history (`feat(ui): …`, `test(theme): …`).
+- **Never** add `Co-authored-by:` trailers (Cursor, Copilot, Codex, Claude, or any AI/agent identity).
+- **Never** add tool-attribution lines such as `Made-with: Cursor` in commit messages.
+- Plain subject line plus an optional body describing the **why**. Subject ≤ 72 chars.
+- Do not modify `git config` `user.name` / `user.email`.
+- Branch `feat/<issue>-<slug>` off `main` (or `fix/`, `refactor/`, `test/`, `docs/`, `chore/` + `<scope>`); PR base `main`; PR description bilingual (Arabic + English).
+- **Never** keep auto-generated/tool-default branch names (random suffixes, `cursor/...`, `claude/...`, `codex/...`, `copilot/...`) — branch names are hand-written, descriptive, lowercase kebab-case (e.g. `feat/44-booking-funnel`, `fix/auth-401-loop`). If a tool created the branch, rename it before opening the PR: `git branch -m <type>/<issue>-<slug>`.
+- Each commit is one logical change that compiles, passes `flutter analyze`, and keeps tests green.
+
+**Cursor IDE:** disable auto-attribution under **Cursor Settings → Agents → Attribution** (turn off Commit Attribution and PR Attribution). If a background agent still injects a `Co-authored-by: Cursor` trailer, remove it before the commit lands.

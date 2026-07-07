@@ -1,19 +1,28 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
-
-part 'auth_token_model.freezed.dart';
-part 'auth_token_model.g.dart';
+import 'package:equatable/equatable.dart';
 
 /// Sanctum dual-token pair returned by the auth endpoints.
 ///
-/// Demonstrates the freezed + json_serializable codegen stack; real auth wiring
-/// lands in a later epic.
-@freezed
-abstract class AuthTokenModel with _$AuthTokenModel {
-  const factory AuthTokenModel({
-    required String accessToken,
-    required String refreshToken,
-  }) = _AuthTokenModel;
+/// Plain immutable model with hand-written JSON mapping — no codegen. Real auth
+/// wiring lands in a later epic.
+class AuthTokenModel extends Equatable {
+  const AuthTokenModel({
+    required this.accessToken,
+    required this.refreshToken,
+  });
 
-  factory AuthTokenModel.fromJson(Map<String, dynamic> json) =>
-      _$AuthTokenModelFromJson(json);
+  factory AuthTokenModel.fromJson(Map<String, dynamic> json) => AuthTokenModel(
+    accessToken: json['accessToken'] as String,
+    refreshToken: json['refreshToken'] as String,
+  );
+
+  final String accessToken;
+  final String refreshToken;
+
+  Map<String, dynamic> toJson() => {
+    'accessToken': accessToken,
+    'refreshToken': refreshToken,
+  };
+
+  @override
+  List<Object?> get props => [accessToken, refreshToken];
 }

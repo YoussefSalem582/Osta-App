@@ -1,4 +1,3 @@
-import 'package:injectable/injectable.dart';
 import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/token_pair.dart';
@@ -6,7 +5,6 @@ import 'package:osta/core/network/token_pair.dart';
 /// Exchanges a Google/Apple provider token for Sanctum dual tokens and
 /// persists them. The social-login UI epics (#35/#36) call this and then read
 /// the stored session — no token plumbing in screens.
-@lazySingleton
 class SocialTokenExchange {
   SocialTokenExchange(this._api, this._tokens);
 

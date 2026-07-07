@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:injectable/injectable.dart';
 import 'package:osta/core/network/api_exception.dart';
 import 'package:osta/core/network/api_result.dart';
 import 'package:osta/core/network/auth_interceptor.dart';
@@ -7,10 +6,9 @@ import 'package:osta/core/network/pagination_meta.dart';
 
 /// Envelope-aware HTTP client — the single entry point features use.
 ///
-/// Every call hits the env-configured `/api/v1` base (see `NetworkModule`),
+/// Every call hits the env-configured `/api/v1` base (see `buildAppDio`),
 /// parses the backend `ApiResponse` envelope into a typed [ApiResult], and
 /// throws a typed [ApiException] on failure so screens never touch raw JSON.
-@lazySingleton
 class ApiClient {
   ApiClient(this._dio);
 

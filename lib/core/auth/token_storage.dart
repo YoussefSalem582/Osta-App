@@ -1,8 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:injectable/injectable.dart';
 
 /// Secure storage for the Sanctum access/refresh tokens.
-@lazySingleton
 class TokenStorage {
   TokenStorage(this._storage);
 
@@ -24,11 +22,4 @@ class TokenStorage {
   }
 
   Future<void> clear() => _storage.deleteAll();
-}
-
-/// Provides the [FlutterSecureStorage] backing [TokenStorage].
-@module
-abstract class StorageModule {
-  @lazySingleton
-  FlutterSecureStorage get secureStorage => const FlutterSecureStorage();
 }

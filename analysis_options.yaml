@@ -3,10 +3,7 @@ include: package:very_good_analysis/analysis_options.yaml
 
 analyzer:
   exclude:
-    # Generated code — regenerated in CI, never hand-edited, not linted.
-    - "**/*.g.dart"
-    - "**/*.freezed.dart"
-    - "**/*.config.dart"
+    # Generated localizations — regenerated in CI, never hand-edited, not linted.
     - "lib/core/l10n/**"
 
 linter:
