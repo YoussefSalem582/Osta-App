@@ -5,6 +5,10 @@ import 'package:osta/core/router/session_redirect.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/features/auth/presentation/auth_page.dart';
 import 'package:osta/features/business/shell/presentation/business_shell_page.dart';
+import 'package:osta/features/customer/booking/presentation/real_time_booking_screen.dart';
+import 'package:osta/features/customer/garage/presentation/add_car_screen.dart';
+import 'package:osta/features/customer/garage/presentation/my_garage_screen.dart';
+import 'package:osta/features/customer/profile/presentation/profile_screen.dart';
 import 'package:osta/features/customer/shell/presentation/customer_shell_page.dart';
 import 'package:osta/features/onboarding/presentation/language_page.dart';
 import 'package:osta/features/role/presentation/coming_soon_page.dart';
@@ -56,6 +60,22 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.comingSoon,
         builder: (context, state) => const ComingSoonPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.garage,
+        builder: (context, state) => const MyGarageScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.addCar,
+        builder: (context, state) => const AddCarScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.bookingStatus,
+        builder: (context, state) => const RealTimeBookingScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.profile,
+        builder: (context, state) => const ProfileScreen(),
       ),
     ],
   );

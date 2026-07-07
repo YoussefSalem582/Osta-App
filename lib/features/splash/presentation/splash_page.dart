@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:osta/core/constants/app_images.dart';
+import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
@@ -20,6 +22,14 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
+    unawaited(_bootstrap());
+  }
+
+  Future<void> _bootstrap() async {
+    await Future<void>.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
+    context.go(AppRoutes.profile);
+
     unawaited(context.read<SessionController>().bootstrap());
   }
 

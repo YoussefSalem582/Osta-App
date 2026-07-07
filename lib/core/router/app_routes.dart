@@ -8,4 +8,8 @@ abstract final class AppRoutes {
   static const customerShell = '/customer';
   static const businessShell = '/business';
   static const comingSoon = '/coming-soon';
+  static const garage = '/garage';
+  static const addCar = '/add-car';
+  static const bookingStatus = '/booking-status';
+  static const profile = '/profile';
 }

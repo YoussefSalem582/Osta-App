@@ -10,13 +10,17 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.bottom,
     this.onBack,
+    this.centerTitle,
+    this.subtitle,
     super.key,
   });
 
   final String title;
+  final String? subtitle;
   final List<Widget>? actions;
   final Widget? leading;
   final PreferredSizeWidget? bottom;
+  final bool? centerTitle;
 
   /// Overrides the default pop behavior of the auto back button.
   final VoidCallback? onBack;
@@ -28,8 +32,32 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final canPop = ModalRoute.of(context)?.canPop ?? false;
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return AppBar(
-      title: Text(title),
+      centerTitle: centerTitle,
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (subtitle != null) ...[
+            const SizedBox(height: 5),
+            Text(
+              subtitle!,
+              style: textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
+              ),
+            ),
+          ],
+          const SizedBox(height: 5),
+          Text(
+            title,
+            style: textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
       leading:
           leading ??
           ((canPop || onBack != null) ? BackButton(onPressed: onBack) : null),

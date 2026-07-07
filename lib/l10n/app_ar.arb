@@ -8,6 +8,91 @@
   "chooseRole": "اختر كيف تريد المتابعة",
   "roleCustomer": "أنا عميل",
   "roleBusiness": "أنا نشاط تجاري",
+
+  "myGarage": "جراجي",
+  "garageSubtitle": "عربياتك وصيانتها",
+  "deleteCar": "حذف السيارة",
+  "deleteCarConfirm": "هل تريد حذف {brand} {model}؟",
+  "@deleteCarConfirm": {
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      },
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "إلغاء",
+  "delete": "حذف",
+  "emptyGarageTitle": "جراجك فاضي!",
+  "emptyGarageSubtitle": "أضف عربيتك الأولى وابدأ في متابعة صيانتها.",
+  "addCar": "إضافة عربية",
+  "km": "كم",
+  "setAsPrimary": "تعيين كأساسية",
+  "primary": "أساسية",
+  "addYourFirstCar": "أضف عربيتك الأولى",
+  "requiredStep": "خطوة لازمة، لا يمكن تخطيها",
+  "carDetailsPrompt": "محتاجين بيانات عربيتك عشان نرشحلك أقرب\nوأنسب مركز صيانة",
+  "brand": "الماركة",
+  "brandHint": "هيونداي",
+  "enterBrand": "أدخل الماركة",
+  "model": "الموديل",
+  "modelHint": "إلترا",
+  "enterModel": "أدخل الموديل",
+  "year": "سنة الصنع",
+  "yearHint": "2021",
+  "enterYear": "أدخل السنة",
+  "mileage": "الكيلومترات",
+  "mileageHint": "52,400",
+  "enterMileage": "أدخل الكيلومترات",
+  "plateNumber": "رقم اللوحة",
+  "plateNumberHint": "ص أ ٢ ٤ ٧",
+  "enterPlateNumber": "أدخل رقم اللوحة",
+  "saveAndProceed": "حفظ ومتابعة للرئيسية",
+
+  "bookingStatus": "حالة الحجز",
+  "bookingId": "رقم الحجز",
+  "currentStatus": "الحالة الحالية",
+  "workingOnYourCar": "جاري الشغل على عربيتك",
+  "mechanicLabel": "الميكانيكي",
+  "centerLabel": "المركز",
+  "bookingTimeline": "مسار الحجز",
+  "stepRequested": "تم الطلب",
+  "stepConfirmed": "تم التأكيد",
+  "stepInProgress": "قيد التنفيذ · الآن",
+  "stepCompleted": "مكتمل",
+  "liveUpdatesNotice": "التحديثات تصل لحظياً عبر القناة {channel}",
+  "@liveUpdatesNotice": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "contactCenter": "اتصال بالمركز",
+  "live": "مباشر",
+
+  "profile": "المزيد",
+  "account": "الحساب",
+  "addresses": "العناوين",
+  "addressesSubtitle": "المنزل · العمل",
+  "myCars": "عربياتي",
+  "myCarsSubtitle": "عربياتك",
+  "myStore": "متجري",
+  "myStoreSubtitle": "٣ منتجات",
+  "settings": "الإعدادات",
+  "language": "اللغة",
+  "appearance": "المظهر",
+  "notifications": "الإشعارات",
+  "notificationsSubtitle": "فعّالة",
+  "light": "فاتح",
+  "dark": "داكن",
+  "arabic": "عربي",
+  "english": "EN",
+  "editProfile": "تعديل",
+  "profileId": "OSTA-7F3K9",
+
   "roleMechanic": "ميكانيكي مستقل",
   "roleTow": "سطحة قطر",
   "comingSoon": "قريبًا",
