@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -44,6 +45,17 @@ class _AuthViewState extends State<_AuthView> {
   final _password = TextEditingController();
   final _confirm = TextEditingController();
   bool _acceptedTerms = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // ponytail: debug-only login prefill for the App Review / QA test account.
+    // Ships nothing in release (kDebugMode is compiled out).
+    if (kDebugMode) {
+      _email.text = 'test@osta.com';
+      _password.text = 'osta123123';
+    }
+  }
 
   @override
   void dispose() {

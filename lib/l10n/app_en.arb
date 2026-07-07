@@ -8,6 +8,90 @@
   "chooseRole": "Choose how you want to continue",
   "roleCustomer": "I'm a customer",
   "roleBusiness": "I'm a business",
+
+  "myGarage": "My Garage",
+  "garageSubtitle": "Your cars and their maintenance",
+  "deleteCar": "Delete Car",
+  "deleteCarConfirm": "Are you sure you want to delete {brand} {model}?",
+  "@deleteCarConfirm": {
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      },
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "emptyGarageTitle": "Your garage is empty!",
+  "emptyGarageSubtitle": "Add your first car and start tracking its maintenance.",
+  "addCar": "Add Car",
+  "km": "km",
+  "setAsPrimary": "Set as primary",
+  "primary": "Primary",
+  "addYourFirstCar": "Add your first car",
+  "requiredStep": "A required step, cannot be skipped",
+  "carDetailsPrompt": "We need your car details to recommend the nearest\nand most suitable service center",
+  "brand": "Brand",
+  "brandHint": "Hyundai",
+  "enterBrand": "Enter brand",
+  "model": "Model",
+  "modelHint": "Elantra",
+  "enterModel": "Enter model",
+  "year": "Year of manufacture",
+  "yearHint": "2021",
+  "enterYear": "Enter year",
+  "mileage": "Mileage",
+  "mileageHint": "52,400",
+  "enterMileage": "Enter mileage",
+  "plateNumber": "Plate Number",
+  "plateNumberHint": "A B 1 2 3",
+  "enterPlateNumber": "Enter plate number",
+  "saveAndProceed": "Save and proceed to main",
+
+  "bookingStatus": "Booking Status",
+  "bookingId": "Booking ID",
+  "currentStatus": "Current Status",
+  "workingOnYourCar": "Working on your car",
+  "mechanicLabel": "Mechanic",
+  "centerLabel": "Center",
+  "bookingTimeline": "Booking Timeline",
+  "stepRequested": "Requested",
+  "stepConfirmed": "Confirmed",
+  "stepInProgress": "In Progress · Now",
+  "stepCompleted": "Completed",
+  "liveUpdatesNotice": "Live updates arrive via {channel}",
+  "@liveUpdatesNotice": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "contactCenter": "Contact Center",
+  "live": "Live",
+
+  "profile": "More",
+  "account": "Account",
+  "addresses": "Addresses",
+  "addressesSubtitle": "Home · Work",
+  "myCars": "My Cars",
+  "myCarsSubtitle": "Your cars",
+  "myStore": "My Store",
+  "myStoreSubtitle": "3 products",
+  "settings": "Settings",
+  "language": "Language",
+  "appearance": "Appearance",
+  "notifications": "Notifications",
+  "notificationsSubtitle": "Active",
+  "light": "Light",
+  "dark": "Dark",
+  "arabic": "عربي",
+  "english": "EN",
+  "editProfile": "Edit",
+  "profileId": "OSTA-7F3K9",
   "roleMechanic": "Solo mechanic",
   "roleTow": "Tow truck",
   "comingSoon": "Coming soon",

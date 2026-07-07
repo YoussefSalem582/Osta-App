@@ -12,6 +12,7 @@ class AppButton extends StatelessWidget {
     this.variant = AppButtonVariant.primary,
     this.loading = false,
     this.icon,
+    this.style,
     super.key,
   });
 
@@ -20,6 +21,7 @@ class AppButton extends StatelessWidget {
   final AppButtonVariant variant;
   final bool loading;
   final IconData? icon;
+  final ButtonStyle? style;
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +36,17 @@ class AppButton extends StatelessWidget {
     return switch (variant) {
       AppButtonVariant.primary => FilledButton(
         onPressed: effectiveOnPressed,
+        style: style,
         child: child,
       ),
       AppButtonVariant.secondary => OutlinedButton(
         onPressed: effectiveOnPressed,
+        style: style,
         child: child,
       ),
       AppButtonVariant.text => TextButton(
         onPressed: effectiveOnPressed,
+        style: style,
         child: child,
       ),
     };

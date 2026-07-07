@@ -1,4 +1,10 @@
 import 'package:go_router/go_router.dart';
+import 'package:osta/features/onboarding/page/onboarding_page.dart';
+import 'package:osta/features/role/presentation/role_selection_page.dart';
+import 'package:osta/features/splash/presentation/splash_page.dart';
+
+/// Declarative app router.
+
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/router/go_router_refresh_stream.dart';
 import 'package:osta/core/router/session_redirect.dart';
@@ -7,6 +13,10 @@ import 'package:osta/features/auth/presentation/auth_page.dart';
 import 'package:osta/features/auth/presentation/forgot_password_page.dart';
 import 'package:osta/features/auth/presentation/reset_password_page.dart';
 import 'package:osta/features/business/shell/presentation/business_shell_page.dart';
+import 'package:osta/features/customer/booking/presentation/real_time_booking_screen.dart';
+import 'package:osta/features/customer/garage/presentation/add_car_screen.dart';
+import 'package:osta/features/customer/garage/presentation/my_garage_screen.dart';
+import 'package:osta/features/customer/profile/presentation/profile_screen.dart';
 import 'package:osta/features/customer/shell/presentation/customer_shell_page.dart';
 import 'package:osta/features/onboarding/presentation/language_page.dart';
 import 'package:osta/features/role/presentation/coming_soon_page.dart';
@@ -35,6 +45,12 @@ class AppRouter {
         path: AppRoutes.splash,
         builder: (context, state) => const SplashPage(),
       ),
+
+      GoRoute(
+        path: OnboardingPage.path,
+        builder: (context, state) => const OnboardingPage(),
+      ),
+
       GoRoute(
         path: AppRoutes.language,
         builder: (context, state) => const LanguagePage(),
@@ -70,6 +86,28 @@ class AppRouter {
         path: AppRoutes.comingSoon,
         builder: (context, state) => const ComingSoonPage(),
       ),
+      GoRoute(
+        path: AppRoutes.garage,
+        builder: (context, state) => const MyGarageScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.addCar,
+        builder: (context, state) => const AddCarScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.bookingStatus,
+        builder: (context, state) => const RealTimeBookingScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.profile,
+        builder: (context, state) => const ProfileScreen(),
+      ),
+
+      // Dev-facing component gallery (not linked from product UI).
+      // GoRoute(
+      //   path: ComponentGalleryPage.path,
+      //   builder: (context, state) => const ComponentGalleryPage(),
+      // ),
     ],
   );
 }

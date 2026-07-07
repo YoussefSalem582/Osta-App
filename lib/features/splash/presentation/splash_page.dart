@@ -2,7 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:osta/core/constants/app_images.dart';
+import 'package:osta/core/theme/app_colors.dart';
+import 'package:osta/features/onboarding/page/onboarding_page.dart';
+
+import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
@@ -16,25 +21,41 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> {
+final class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    unawaited(context.read<SessionController>().bootstrap());
+    unawaited(_bootstrap());
+  }
+
+  Future<void> _bootstrap() async {
+    await Future<void>.delayed(const Duration(seconds: 4));
+
+    if (!mounted) return;
+
+    context.go(OnboardingPage.path);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.brandGreen,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(AppImages.logo, width: 120),
-            const SizedBox(height: 24),
-            Text(
-              context.l10n.appTitle,
-              style: Theme.of(context).textTheme.headlineMedium,
+            Image.asset(
+              AppImages.logo,
+              height: 200,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'صلح عربيتك في دقائق',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
