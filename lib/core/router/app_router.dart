@@ -1,4 +1,10 @@
 import 'package:go_router/go_router.dart';
+import 'package:osta/features/onboarding/page/onboarding_page.dart';
+import 'package:osta/features/role/presentation/role_selection_page.dart';
+import 'package:osta/features/splash/presentation/splash_page.dart';
+
+/// Declarative app router.
+
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/router/go_router_refresh_stream.dart';
 import 'package:osta/core/router/session_redirect.dart';
@@ -37,6 +43,12 @@ class AppRouter {
         path: AppRoutes.splash,
         builder: (context, state) => const SplashPage(),
       ),
+
+      GoRoute(
+        path: OnboardingPage.path,
+        builder: (context, state) => const OnboardingPage(),
+      ),
+
       GoRoute(
         path: AppRoutes.language,
         builder: (context, state) => const LanguagePage(),
@@ -77,6 +89,12 @@ class AppRouter {
         path: AppRoutes.profile,
         builder: (context, state) => const ProfileScreen(),
       ),
+
+      // Dev-facing component gallery (not linked from product UI).
+      // GoRoute(
+      //   path: ComponentGalleryPage.path,
+      //   builder: (context, state) => const ComponentGalleryPage(),
+      // ),
     ],
   );
 }
