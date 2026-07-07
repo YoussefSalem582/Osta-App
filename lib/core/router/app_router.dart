@@ -1,7 +1,4 @@
 import 'package:go_router/go_router.dart';
-import 'package:osta/features/onboarding/page/onboarding_page.dart';
-import 'package:osta/features/role/presentation/role_selection_page.dart';
-import 'package:osta/features/splash/presentation/splash_page.dart';
 
 /// Declarative app router.
 
@@ -9,6 +6,7 @@ import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/router/go_router_refresh_stream.dart';
 import 'package:osta/core/router/session_redirect.dart';
 import 'package:osta/core/session/session_controller.dart';
+import 'package:osta/features/auth/presentation/auth_choose_page.dart';
 import 'package:osta/features/auth/presentation/auth_page.dart';
 import 'package:osta/features/auth/presentation/forgot_password_page.dart';
 import 'package:osta/features/auth/presentation/reset_password_page.dart';
@@ -18,6 +16,7 @@ import 'package:osta/features/customer/garage/presentation/add_car_screen.dart';
 import 'package:osta/features/customer/garage/presentation/my_garage_screen.dart';
 import 'package:osta/features/customer/profile/presentation/profile_screen.dart';
 import 'package:osta/features/customer/shell/presentation/customer_shell_page.dart';
+import 'package:osta/features/onboarding/page/onboarding_page.dart';
 import 'package:osta/features/onboarding/presentation/language_page.dart';
 import 'package:osta/features/role/presentation/coming_soon_page.dart';
 import 'package:osta/features/role/presentation/role_chooser_page.dart';
@@ -47,7 +46,7 @@ class AppRouter {
       ),
 
       GoRoute(
-        path: OnboardingPage.path,
+        path: AppRoutes.onboarding,
         builder: (context, state) => const OnboardingPage(),
       ),
 
@@ -58,6 +57,10 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.role,
         builder: (context, state) => const RoleChooserPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.authChoose,
+        builder: (context, state) => const AuthChoosePage(),
       ),
       GoRoute(
         path: AppRoutes.auth,
