@@ -10,11 +10,11 @@ import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/auth/presentation/auth_cubit.dart';
 import 'package:osta/features/auth/presentation/auth_validators.dart';
-import 'package:osta/features/auth/presentation/widgets/auth_form_error.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
+import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/brand_scaffold.dart';
 
 /// Auth entry for the chosen role. Login and register both send
@@ -60,8 +60,8 @@ class _AuthViewState extends State<_AuthView> {
     // ponytail: debug-only login prefill for the App Review / QA test account.
     // Ships nothing in release (kDebugMode is compiled out).
     if (kDebugMode) {
-      _email.text = 'test@osta.com';
-      _password.text = 'osta123123';
+      _email.text = AuthCubit.debugEmail;
+      _password.text = AuthCubit.debugPassword;
     }
   }
 
@@ -101,7 +101,14 @@ class _AuthViewState extends State<_AuthView> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return BlocBuilder<AuthCubit, AuthState>(
+    return BlocConsumer<AuthCubit, AuthState>(
+      listenWhen: (prev, curr) =>
+          curr.status == AuthStatus.failure && curr.fieldErrors.isEmpty,
+      listener: (context, state) => AppToaster.showError(
+        state.networkError
+            ? context.l10n.errorNetwork
+            : (state.errorMessage ?? context.l10n.authFailed),
+      ),
       builder: (context, state) {
         final isRegister = state.mode == AuthMode.register;
         final canSubmit = !isRegister || _acceptedTerms;
@@ -235,11 +242,6 @@ class _AuthViewState extends State<_AuthView> {
                             child: Text(l10n.authForgotPassword),
                           ),
                         ),
-                      if (state.status == AuthStatus.failure &&
-                          state.fieldErrors.isEmpty) ...[
-                        const SizedBox(height: AppSpacing.md),
-                        AuthFormError(state.errorMessage ?? l10n.authFailed),
-                      ],
                     ],
                   ),
                 ),

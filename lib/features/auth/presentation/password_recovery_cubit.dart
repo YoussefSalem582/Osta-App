@@ -12,6 +12,7 @@ class PasswordRecoveryState extends Equatable {
     this.status = RecoveryStatus.idle,
     this.errorMessage,
     this.fieldErrors = const {},
+    this.networkError = false,
   });
 
   final RecoveryStatus status;
@@ -20,10 +21,13 @@ class PasswordRecoveryState extends Equatable {
   /// Server 422 field → messages, surfaced inline under the matching field.
   final Map<String, List<String>> fieldErrors;
 
+  /// The failure was a transport/connection error (no reply from the server).
+  final bool networkError;
+
   bool get isSubmitting => status == RecoveryStatus.submitting;
 
   @override
-  List<Object?> get props => [status, errorMessage, fieldErrors];
+  List<Object?> get props => [status, errorMessage, fieldErrors, networkError];
 }
 
 /// Drives both password-recovery steps: request a reset link, then set a new
@@ -65,6 +69,13 @@ class PasswordRecoveryCubit extends Cubit<PasswordRecoveryState> {
           status: RecoveryStatus.failure,
           errorMessage: error.message,
           fieldErrors: error.fieldErrors,
+        ),
+      );
+    } on NetworkException {
+      emit(
+        const PasswordRecoveryState(
+          status: RecoveryStatus.failure,
+          networkError: true,
         ),
       );
     } on ApiException catch (error) {

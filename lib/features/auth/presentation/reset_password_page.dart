@@ -10,11 +10,11 @@ import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/auth/presentation/auth_validators.dart';
 import 'package:osta/features/auth/presentation/password_recovery_cubit.dart';
-import 'package:osta/features/auth/presentation/widgets/auth_form_error.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
+import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/brand_scaffold.dart';
 
 /// Step 2 of password recovery: set a new password using the emailed reset
@@ -75,7 +75,14 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return BlocBuilder<PasswordRecoveryCubit, PasswordRecoveryState>(
+    return BlocConsumer<PasswordRecoveryCubit, PasswordRecoveryState>(
+      listenWhen: (prev, curr) =>
+          curr.status == RecoveryStatus.failure && curr.fieldErrors.isEmpty,
+      listener: (context, state) => AppToaster.showError(
+        state.networkError
+            ? context.l10n.errorNetwork
+            : (state.errorMessage ?? context.l10n.authFailed),
+      ),
       builder: (context, state) {
         final done = state.status == RecoveryStatus.resetSuccess;
         return BrandScaffold(
@@ -141,11 +148,6 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
               validator: (v) =>
                   AuthValidators.confirm(context, v, _password.text),
             ),
-            if (state.status == RecoveryStatus.failure &&
-                state.fieldErrors.isEmpty) ...[
-              const SizedBox(height: AppSpacing.md),
-              AuthFormError(state.errorMessage ?? l10n.authFailed),
-            ],
           ],
         ),
       ),
