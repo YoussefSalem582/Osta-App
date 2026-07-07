@@ -4,6 +4,14 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-07 — Role selection screen widgets & RTL alignment
+
+Implemented the role selection screen widgets (`RoleCard`, `ComingSoonBadge`, `InfoBanner`) in `lib/features/role/presentation/widgets/`, enhanced `AppCard` with optional styling properties, fixed `AppColors.gray`, and aligned headers to `start` for RTL support.
+
+> ‏تم تنفيذ ودجات شاشة اختيار الدور (`RoleCard`, `ComingSoonBadge`, `InfoBanner`) في `lib/features/role/presentation/widgets/`، وتطوير `AppCard` بدعم الحدود والألوان، وإصلاح `AppColors.gray`، وضبط محاذاة العناوين إلى `start` لدعم الـ RTL.
+
+Touched: `lib/features/role/presentation/widgets/{role_card,coming_soon,info_banner}.dart`, `lib/features/role/presentation/role_selection_page.dart`, `lib/shared/ui/app_card.dart`, `lib/core/theme/app_colors.dart`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
 ## 2026-07-05 — Branch-naming rule tightened (no tool-generated names)
 
 All docs and AI-agent configs now require **hand-written, descriptive, lowercase kebab-case** branch names (`<type>/<issue>-<slug>`, e.g. `feat/44-booking-funnel`, `fix/auth-401-loop`) and forbid auto-generated/tool-default names (random suffixes, `claude/...`, `cursor/...`, `codex/...`) — rename with `git branch -m <type>/<issue>-<slug>` before opening a PR.

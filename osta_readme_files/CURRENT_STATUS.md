@@ -2,7 +2,7 @@
 
 > [INDEX](INDEX.md) > Current Status
 >
-> **Last Updated:** Jul 5, 2026 — **[`OSTA_plan.md`](../OSTA_plan.md) + [`OSTA_TODO.md`](../OSTA_TODO.md) added**: the master AI-agent execution plan for delivering the 31 open epics (11 owner mandates, offline-first + talker + skeletonizer + release/tag amendments, milestone-by-milestone build order) and its trackable zero-to-production checklist (per-phase release tags through the Phase-9 launch gate). Also vendored the official Dart/Flutter agent skills (14 curated, 7 excluded) into [`.claude/skills/`](../.claude/skills/README.md). Earlier the same day: documentation set created, then amended to match the deferral refactor ([`../docs/ROADMAP.md`](../docs/ROADMAP.md)) — `AGENTS.md` + `CLAUDE.md` shim at the root, and this `osta_readme_files/` tree (INDEX, guides, feature docs mirroring the GitHub epics, ADRs, reference docs, delivery plan). Detail: [`DOCUMENTATION_UPDATE_SUMMARY.md`](DOCUMENTATION_UPDATE_SUMMARY.md).
+> **Last Updated:** Jul 7, 2026 — **Role selection screen widgets & RTL alignment added**: implemented `RoleCard`, `ComingSoonBadge`, and `InfoBanner` in `lib/features/role/presentation/widgets/`, enhanced `AppCard` with optional styling properties, fixed `AppColors.gray` syntax, and aligned headers to start for RTL support. Earlier: Jul 5, 2026 — **[`OSTA_plan.md`](../OSTA_plan.md) + [`OSTA_TODO.md`](../OSTA_TODO.md) added**: the master AI-agent execution plan for delivering the 31 open epics (11 owner mandates, offline-first + talker + skeletonizer + release/tag amendments, milestone-by-milestone build order) and its trackable zero-to-production checklist (per-phase release tags through the Phase-9 launch gate). Also vendored the official Dart/Flutter agent skills (14 curated, 7 excluded) into [`.claude/skills/`](../.claude/skills/README.md). Earlier the same day: documentation set created, then amended to match the deferral refactor ([`../docs/ROADMAP.md`](../docs/ROADMAP.md)) — `AGENTS.md` + `CLAUDE.md` shim at the root, and this `osta_readme_files/` tree (INDEX, guides, feature docs mirroring the GitHub epics, ADRs, reference docs, delivery plan). Detail: [`DOCUMENTATION_UPDATE_SUMMARY.md`](DOCUMENTATION_UPDATE_SUMMARY.md).
 > **Version:** `1.0.0+1` — not released; no store presence yet.
 > **Flutter:** SDK constraint `^3.12.1` (Dart); CI pins Flutter 3.44.1.
 > **Status:** 🚧 **M0 foundation complete** ([#28](https://github.com/YoussefSalem582/Osta-App/issues/28) ✅ scaffolding+CI, [#29](https://github.com/YoussefSalem582/Osta-App/issues/29) ✅ design system, [#31](https://github.com/YoussefSalem582/Osta-App/issues/31) ✅ networking) | 🔄 [#30](https://github.com/YoussefSalem582/Osta-App/issues/30) localization & RTL open | 📋 All feature epics open — see [DELIVERY_PLAN.md](reference/DELIVERY_PLAN.md)
@@ -58,7 +58,7 @@ The table below summarizes the codebase footprint today.
 
 | Metric | Count | Status |
 |--------|-------|--------|
-| Hand-written Dart files | 37 | ✅ |
+| Hand-written Dart files | 40 | ✅ |
 | Screens/pages | 2 (SplashPage, RoleSelectionPage) | 🚧 |
 | Blocs/Cubits | 1 (ThemeModeController) | 🚧 |
 | Repositories / use cases | 0 | 📋 stubs await features |
@@ -85,7 +85,8 @@ The map below groups the built modules by layer. No codegen is involved — only
 | `core/router` | GoRouter: `/splash`, `/role` |
 | `core/error` | `sealed class Failure implements Exception` (`NetworkFailure`/`ServerFailure`/`UnknownFailure`); repositories throw, callers `try`/`catch` |
 | `shared/ui` | AppButton, AppTopBar, AppBottomNavBar, AppCard, AppTextField, AppBottomSheet, Empty/Error/LoadingState |
-| `features/` | splash + role implemented; auth (token model only), business/*, customer/*, shop, notifications = stub folders |
+| `features/` | splash + role implemented (cards & coming soon badges built); auth (token model only), business/*, customer/*, shop, notifications = stub folders |
+
 
 ---
 

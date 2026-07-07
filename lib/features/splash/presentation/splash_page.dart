@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:osta/core/constants/app_images.dart';
-import 'package:osta/features/role/presentation/role_selection_page.dart';
+import 'package:osta/features/role/presentation/page/role_selection_page.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 /// First screen shown on launch; hands off to the first-run role selection.

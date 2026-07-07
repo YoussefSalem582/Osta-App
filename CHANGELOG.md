@@ -5,7 +5,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the pro
 
 ## [Unreleased]
 
-### Changed
+### Added
+
+- **Role selection screen widgets & RTL alignment** (2026-07-07) — implemented `RoleCard` (with active green border and disabled state with `ComingSoonBadge`), `ComingSoonBadge` / `ComingSoon`, and `InfoBanner` in `lib/features/role/presentation/widgets/`. Enhanced `AppCard` (`lib/shared/ui/app_card.dart`) with optional `border`, `color`, and `elevation` properties. Fixed syntax error in `AppColors` (`gray` token) and aligned role selection page headers to `start` for correct RTL rendering.
+
 
 - **Branch-naming rule tightened across all docs and AI-agent configs** (2026-07-05) — branch names must be hand-written, descriptive, lowercase kebab-case (`<type>/<issue>-<slug>`, e.g. `feat/44-booking-funnel`, `fix/auth-401-loop`); auto-generated/tool-default names (random suffixes, `claude/...`, `cursor/...`, `codex/...`) are forbidden and must be renamed (`git branch -m`) before opening a PR. Updated: `AGENTS.md` (naming table + Git & PRs), `CONTRIBUTING.md`, `README.md`, `ARCHITECTURE.md`, `OSTA_plan.md` (§2 NEVER list + §13.1), `OSTA_TODO.md` (per-epic ritual), `osta_readme_files/guides/03_how_to_add_new_feature.md`, `osta_readme_files/CURRENT_STATUS.md`, `.cursor/rules/git-commits.mdc`, `.claude/commands/add-feature.md` + `new-screen.md`, and the `add-feature` skills in `.agents/` and `.cursor/`.
 

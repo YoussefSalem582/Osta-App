@@ -14,6 +14,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.onSuccess,
     required this.warning,
     required this.onWarning,
+    required this.gray,
   });
 
   /// Brand seed — Osta green.
@@ -29,6 +30,7 @@ class AppColors extends ThemeExtension<AppColors> {
     onSuccess: Colors.white,
     warning: Color(0xFF92400E),
     onWarning: Colors.white,
+    gray: Color(0xFFB9C2BF),
   );
 
   static const dark = AppColors(
@@ -38,6 +40,7 @@ class AppColors extends ThemeExtension<AppColors> {
     onSuccess: Color(0xFF052E16),
     warning: Color(0xFFFBBF24),
     onWarning: Color(0xFF451A03),
+    gray: Color(0xFF64748B),
   );
 
   final Color accent;
@@ -46,6 +49,7 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color onSuccess;
   final Color warning;
   final Color onWarning;
+  final Color gray;
 
   @override
   AppColors copyWith({
@@ -55,6 +59,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? onSuccess,
     Color? warning,
     Color? onWarning,
+    Color? gray,
   }) => AppColors(
     accent: accent ?? this.accent,
     onAccent: onAccent ?? this.onAccent,
@@ -62,6 +67,7 @@ class AppColors extends ThemeExtension<AppColors> {
     onSuccess: onSuccess ?? this.onSuccess,
     warning: warning ?? this.warning,
     onWarning: onWarning ?? this.onWarning,
+    gray: gray ?? this.gray,
   );
 
   @override
@@ -74,6 +80,7 @@ class AppColors extends ThemeExtension<AppColors> {
       onSuccess: Color.lerp(onSuccess, other.onSuccess, t)!,
       warning: Color.lerp(warning, other.warning, t)!,
       onWarning: Color.lerp(onWarning, other.onWarning, t)!,
+      gray: Color.lerp(gray, other.gray, t)!,
     );
   }
 }
