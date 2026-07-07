@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:osta/app.dart';
 import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/di/injection.dart';
+import 'package:osta/shared/ui/app_bottom_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/network/fakes.dart';
@@ -71,7 +72,7 @@ void main() {
     );
 
     // Lands in the shell (bottom nav) — no language or chooser in sight.
-    expect(find.byType(NavigationBar), findsOneWidget);
+    expect(find.byType(AppBottomNavBar), findsOneWidget);
     expect(find.text('Choose your language'), findsNothing);
     expect(find.text('Choose how you want to continue'), findsNothing);
   });

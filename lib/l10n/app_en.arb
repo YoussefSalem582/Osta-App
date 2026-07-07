@@ -150,6 +150,8 @@
   "navHome": "Home",
   "navBookings": "Bookings",
   "navProfile": "Profile",
+  "navStore": "Store",
+  "navMore": "More",
   "shellWelcome": "You're all set.",
   "comingSoonBody": "This experience isn't ready yet.",
   "validationRequired": "Required",

@@ -14,10 +14,20 @@ enum _ShellAction { switchRole, signOut }
 /// overflow menu with "switch role" (clears the active role, keeps the token →
 /// back to the chooser) and "sign out".
 class RoleShell extends StatefulWidget {
-  const RoleShell({required this.title, required this.tabs, super.key});
+  const RoleShell({
+    required this.title,
+    required this.tabs,
+    this.centerIcon,
+    this.onCenterTap,
+    super.key,
+  });
 
   final String title;
   final List<AppBottomNavItem> tabs;
+
+  /// Optional raised center action for the bottom bar (e.g. a map button).
+  final IconData? centerIcon;
+  final VoidCallback? onCenterTap;
 
   @override
   State<RoleShell> createState() => _RoleShellState();
@@ -58,6 +68,8 @@ class _RoleShellState extends State<RoleShell> {
         items: widget.tabs,
         currentIndex: _index,
         onChanged: (i) => setState(() => _index = i),
+        centerIcon: widget.centerIcon,
+        onCenterTap: widget.onCenterTap,
       ),
     );
   }
