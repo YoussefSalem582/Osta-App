@@ -39,7 +39,9 @@ abstract final class AppTheme {
       appBarTheme: AppBarTheme(
         centerTitle: true,
         elevation: AppElevation.none,
-        backgroundColor: brightness == Brightness.light ? const Color(0xFFF4F6F5) : null,
+        backgroundColor: brightness == Brightness.light
+            ? const Color(0xFFF4F6F5)
+            : null,
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(

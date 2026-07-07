@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:osta/core/locale/locale_controller.dart';
+import 'package:osta/core/router/app_routes.dart';
+import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/core/theme/theme_mode_controller.dart';
-import 'package:osta/features/customer/garage/presentation/my_garage_screen.dart';
-import 'package:osta/features/customer/profile/presentation/widgets/profile_Item.dart';
+import 'package:osta/features/customer/profile/presentation/widgets/profile_item.dart';
 import 'package:osta/features/customer/profile/presentation/widgets/segmented_toggle.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
@@ -15,8 +15,6 @@ import 'package:osta/shared/ui/app_top_bar.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
-  static const path = '/profile';
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -24,10 +22,11 @@ class ProfileScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     final themeController = context.read<ThemeModeController>();
-    final localeController = context.read<LocaleController>();
+    final sessionController = context.read<SessionController>();
 
     final isDark = context.watch<ThemeModeController>().state == ThemeMode.dark;
-    final isArabic = context.watch<LocaleController>().isArabic;
+    final isArabic =
+        context.watch<SessionController>().state.locale?.languageCode == 'ar';
 
     const userName = 'أحمد فؤاد';
     const userHandle = '@ahmedfo · OSTA-7F3K9';
@@ -148,7 +147,7 @@ class ProfileScreen extends StatelessWidget {
                 icon: Icons.directions_car_rounded,
                 color: Colors.orange,
               ),
-              onTap: () => context.go(MyGarageScreen.path),
+              onTap: () => context.go(AppRoutes.garage),
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -193,9 +192,9 @@ class ProfileScreen extends StatelessWidget {
                   SegmentedToggle(
                     options: [l10n.arabic, l10n.english],
                     selected: isArabic ? l10n.arabic : l10n.english,
-                    onSelect: (val) {
+                    onSelect: (val) async {
                       final toArabic = val == l10n.arabic;
-                      localeController.setLocale(
+                      await sessionController.chooseLanguage(
                         Locale(toArabic ? 'ar' : 'en'),
                       );
                     },
@@ -229,9 +228,9 @@ class ProfileScreen extends StatelessWidget {
                   SegmentedToggle(
                     options: [l10n.light, l10n.dark],
                     selected: isDark ? l10n.dark : l10n.light,
-                    onSelect: (val) {
+                    onSelect: (val) async {
                       final toDark = val == l10n.dark;
-                      themeController.setMode(
+                      await themeController.setMode(
                         toDark ? ThemeMode.dark : ThemeMode.light,
                       );
                     },

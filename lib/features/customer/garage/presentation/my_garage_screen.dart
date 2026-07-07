@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/customer/garage/data/model.dart';
-import 'package:osta/features/customer/garage/presentation/add_car_screen.dart';
 import 'package:osta/features/customer/garage/presentation/widgets/vehicle_card.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
@@ -11,7 +11,6 @@ import 'package:osta/shared/ui/app_top_bar.dart';
 class MyGarageScreen extends StatefulWidget {
   const MyGarageScreen({super.key});
 
-  static const path = '/garage';
 
   @override
   State<MyGarageScreen> createState() => _MyGarageScreenState();
@@ -84,13 +83,13 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
               horizontal: AppSpacing.md,
             ),
             child: AddVehicleButton(
-              onPressed: () => context.go(AddCarScreen.path),
+              onPressed: () => context.go(AppRoutes.addCar),
             ),
           ),
         ],
       ),
       body: vehicles.isEmpty
-          ? EmptyGarageView(onAddVehicle: () => context.go(AddCarScreen.path))
+          ? EmptyGarageView(onAddVehicle: () => context.go(AppRoutes.addCar))
           : ListView.separated(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.md,

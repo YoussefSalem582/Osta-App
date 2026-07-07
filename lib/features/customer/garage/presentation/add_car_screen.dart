@@ -8,8 +8,6 @@ import 'package:osta/shared/ui/app_top_bar.dart';
 class AddCarScreen extends StatefulWidget {
   const AddCarScreen({super.key});
 
-  static const path = '/add-car';
-
   @override
   State<AddCarScreen> createState() => _AddCarScreenState();
 }

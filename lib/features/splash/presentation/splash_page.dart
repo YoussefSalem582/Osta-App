@@ -1,16 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:osta/core/constants/app_images.dart';
-import 'package:osta/features/customer/profile/presentation/profile_screen.dart';
+import 'package:osta/core/router/app_routes.dart';
+import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
-/// First screen shown on launch; hands off to the first-run role selection.
+/// First screen on launch. Reads persisted `{token, activeRole, locale}` via
+/// [SessionController.bootstrap]; the router's redirect then lands the user in
+/// the right place (language → chooser → auth → shell, or straight to a shell).
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
-
-  static const path = '/splash';
 
   @override
   State<SplashPage> createState() => _SplashPageState();
@@ -26,7 +28,9 @@ class _SplashPageState extends State<SplashPage> {
   Future<void> _bootstrap() async {
     await Future<void>.delayed(const Duration(seconds: 2));
     if (!mounted) return;
-    context.go(ProfileScreen.path);
+    context.go(AppRoutes.profile);
+
+    unawaited(context.read<SessionController>().bootstrap());
   }
 
   @override

@@ -13,14 +13,14 @@
 
 - [ ] Read the epic + its feature doc + [`OSTA_plan.md`](OSTA_plan.md) §2–§13; verify backend readiness
       ([guide 09](osta_readme_files/guides/09_api_endpoints.md))
-- [ ] Branch `feat/<issue>-<slug>` off up-to-date `main` — hand-written kebab-case name, never a
+- [ ] Branch `feat/<issue>-<slug>` off up-to-date `develop` — hand-written kebab-case name, never a
       tool-generated one like `claude/...` (rename with `git branch -m` first)
 - [ ] Build layer by layer with small conventional commits: `domain → data → presentation → tests → docs`
 - [ ] Meet the Definition of Done ([`OSTA_plan.md` §16](OSTA_plan.md)): light+dark · RTL+LTR · responsive ·
       state quartet (skeleton/empty/error/offline) · offline policy · animations · talker · tokens only ·
       goldens · dartdoc
 - [ ] Update the mandatory four docs (CHANGELOG, DOCUMENTATION_UPDATE_SUMMARY, CURRENT_STATUS, feature doc)
-- [ ] Bilingual PR to `main` linking the epic (`Closes #NN`) → CI green → review → merge
+- [ ] Bilingual PR to `develop` linking the epic (`Closes #NN`) → CI green → review → merge (a completed milestone ships to `main` via a `develop → main` release PR + tag)
 
 ---
 

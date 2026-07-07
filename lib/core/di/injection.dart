@@ -7,9 +7,14 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/auth_events.dart';
 import 'package:osta/core/network/dio_client.dart';
 import 'package:osta/core/network/social_token_exchange.dart';
-import 'package:osta/core/locale/locale_controller.dart';
+
 import 'package:osta/core/router/app_router.dart';
+import 'package:osta/core/session/session_controller.dart';
+import 'package:osta/core/session/session_store.dart';
 import 'package:osta/core/theme/theme_mode_controller.dart';
+import 'package:osta/features/auth/data/auth_repository_impl.dart';
+import 'package:osta/features/auth/domain/auth_repository.dart';
+import 'package:osta/features/auth/presentation/auth_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Global service locator.
@@ -21,11 +26,10 @@ final GetIt getIt = GetIt.instance;
 /// lazy singleton resolving its collaborators via [getIt].
 Future<void> configureDependencies() async {
   // Async singleton resolved up front (SharedPreferences needs getInstance()).
-  getIt.registerSingleton<SharedPreferences>(
-    await SharedPreferences.getInstance(),
-  );
-
   getIt
+    ..registerSingleton<SharedPreferences>(
+      await SharedPreferences.getInstance(),
+    )
     ..registerLazySingleton<AppConfig>(AppConfig.new)
     ..registerLazySingleton<FlutterSecureStorage>(
       () => const FlutterSecureStorage(),
@@ -38,9 +42,7 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<ThemeModeController>(
       () => ThemeModeController(getIt()),
     )
-    ..registerLazySingleton<LocaleController>(
-      () => LocaleController(getIt()),
-    )
+
     ..registerLazySingleton<Dio>(
       () => buildAppDio(getIt(), getIt(), getIt()),
     )
@@ -48,5 +50,17 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<SocialTokenExchange>(
       () => SocialTokenExchange(getIt(), getIt()),
     )
-    ..registerLazySingleton<AppRouter>(AppRouter.new);
+    // First-run flow & 4-role split: the session is the routing source of
+    // truth; the router refreshes off it, so both resolve the same singleton.
+    ..registerLazySingleton<SessionStore>(
+      () => SessionStore(getIt(), getIt()),
+    )
+    ..registerLazySingleton<SessionController>(
+      () => SessionController(getIt(), getIt()),
+    )
+    ..registerLazySingleton<AuthRepository>(
+      () => AuthRepositoryImpl(getIt(), getIt()),
+    )
+    ..registerFactory<AuthCubit>(() => AuthCubit(getIt(), getIt()))
+    ..registerLazySingleton<AppRouter>(() => AppRouter(getIt()));
 }

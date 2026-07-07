@@ -13,7 +13,7 @@ The osta stack is deliberately plain: errors are a sealed `Failure` **thrown** a
 
 - Filling in a stub feature folder (`lib/features/customer|business|shop|notifications|auth/*`) or creating a new one.
 - The user asks to build a screen/flow backed by an API following osta conventions.
-- **First** read the matching GitHub epic + its feature doc in [`osta_readme_files/features/`](../../../osta_readme_files/features/README.md) — most features are stubs specified by open epics; do not invent scope. Branch `feat/<issue>-<slug>` off `main`.
+- **First** read the matching GitHub epic + its feature doc in [`osta_readme_files/features/`](../../../osta_readme_files/features/README.md) — most features are stubs specified by open epics; do not invent scope. Branch `feat/<issue>-<slug>` off `develop`.
 
 ## Instructions
 
@@ -88,4 +88,4 @@ Use `<name>` for the feature (snake_case folder), `<Name>` for the PascalCase ty
 - [ ] Route added in `app_router.dart`; strings in **both** ARB files; `flutter gen-l10n` run.
 - [ ] `dart format .`, `flutter analyze` (clean), `flutter test` (green). No `build_runner`.
 - [ ] Docs updated: `CHANGELOG.md`, `osta_readme_files/DOCUMENTATION_UPDATE_SUMMARY.md`, `osta_readme_files/CURRENT_STATUS.md` (and the feature doc).
-- [ ] Branch `feat/<issue>-<slug>` (hand-written kebab-case — never a tool-generated name like `cursor/...` or `claude/...`; rename with `git branch -m` first), PR base `main`, bilingual (AR+EN) description, conventional commits, no AI co-author trailer.
+- [ ] Branch `feat/<issue>-<slug>` (hand-written kebab-case — never a tool-generated name like `cursor/...` or `claude/...`; rename with `git branch -m` first), PR base `develop` (`main` is release-only, reached via a `develop → main` release PR + tag), bilingual (AR+EN) description, conventional commits, no AI co-author trailer.

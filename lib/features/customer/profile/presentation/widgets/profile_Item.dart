@@ -21,6 +21,9 @@ class ProfileListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final leading = this.leading;
+    final subtitle = this.subtitle;
+    final trailing = this.trailing;
 
     return InkWell(
       onTap: onTap,
@@ -32,7 +35,7 @@ class ProfileListItem extends StatelessWidget {
         ),
         child: Row(
           children: [
-            if (leading != null) leading!,
+            ?leading,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +48,7 @@ class ProfileListItem extends StatelessWidget {
                   ),
                   if (subtitle != null)
                     Text(
-                      subtitle!,
+                      subtitle,
                       style: textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurface.withValues(alpha: 0.55),
                       ),
@@ -53,7 +56,7 @@ class ProfileListItem extends StatelessWidget {
                 ],
               ),
             ),
-            if (trailing != null) trailing!,
+            ?trailing,
             const SizedBox(width: AppSpacing.sm),
             Icon(
               Directionality.of(context) == TextDirection.rtl

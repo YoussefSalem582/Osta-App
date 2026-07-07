@@ -10,8 +10,6 @@ import 'package:osta/shared/ui/app_top_bar.dart';
 class RealTimeBookingScreen extends StatelessWidget {
   const RealTimeBookingScreen({super.key});
 
-  static const path = '/booking/status';
-
   static const bookingCode = 'OSTA-B2046';
   static const mechanicName = 'الميكانيكي: محمود';
   static const centerName = 'مركز النصر · بنها — ٣٠م';
