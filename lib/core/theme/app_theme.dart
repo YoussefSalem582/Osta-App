@@ -12,6 +12,11 @@ abstract final class AppTheme {
 
   static ThemeData dark() => _build(Brightness.dark, AppColors.dark);
 
+  static OutlineInputBorder _inputBorder(BorderSide side) => OutlineInputBorder(
+    borderRadius: BorderRadius.circular(AppRadii.md),
+    borderSide: side,
+  );
+
   static ThemeData _build(Brightness brightness, AppColors tokens) {
     final scheme =
         ColorScheme.fromSeed(
@@ -64,13 +69,38 @@ abstract final class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: brightness == Brightness.light ? Colors.white : null,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadii.md),
-          borderSide: BorderSide.none,
-        ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.md,
+        ),
+        // Resting/enabled: flat filled, no border. Focus: a 2px brand ring.
+        // Error: an error-coloured ring — clear state feedback per M3 guidance.
+        border: _inputBorder(BorderSide.none),
+        enabledBorder: _inputBorder(BorderSide.none),
+        focusedBorder: _inputBorder(
+          BorderSide(color: scheme.primary, width: 2),
+        ),
+        errorBorder: _inputBorder(BorderSide(color: scheme.error, width: 1.5)),
+        focusedErrorBorder: _inputBorder(
+          BorderSide(color: scheme.error, width: 2),
+        ),
+        // Placeholder / resting label muted so it reads as a hint, not as
+        // typed text; the floating label turns brand-coloured on focus.
+        hintStyle: TextStyle(
+          color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
+        ),
+        labelStyle: TextStyle(color: scheme.onSurfaceVariant),
+        floatingLabelStyle: TextStyle(color: scheme.primary),
+        // Leading/trailing icons tint to the brand colour while focused.
+        prefixIconColor: WidgetStateColor.resolveWith(
+          (states) => states.contains(WidgetState.focused)
+              ? scheme.primary
+              : scheme.onSurfaceVariant,
+        ),
+        suffixIconColor: WidgetStateColor.resolveWith(
+          (states) => states.contains(WidgetState.focused)
+              ? scheme.primary
+              : scheme.onSurfaceVariant,
         ),
       ),
       cardTheme: CardThemeData(

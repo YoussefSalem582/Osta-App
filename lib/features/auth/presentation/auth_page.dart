@@ -113,106 +113,135 @@ class _AuthViewState extends State<_AuthView> {
           onBack: () => context.go(AppRoutes.authChoose),
           children: [
             AppCard(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (isRegister) ...[
+              child: AutofillGroup(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (isRegister) ...[
+                        AppTextField(
+                          label: l10n.authFirstName,
+                          controller: _firstName,
+                          prefixIcon: Icons.person_outline,
+                          textCapitalization: TextCapitalization.words,
+                          textInputAction: TextInputAction.next,
+                          autofillHints: const [AutofillHints.givenName],
+                          validator: (v) =>
+                              AuthValidators.requiredField(context, v),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        AppTextField(
+                          label: l10n.authLastName,
+                          controller: _lastName,
+                          prefixIcon: Icons.person_outline,
+                          textCapitalization: TextCapitalization.words,
+                          textInputAction: TextInputAction.next,
+                          autofillHints: const [AutofillHints.familyName],
+                          validator: (v) =>
+                              AuthValidators.requiredField(context, v),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        AppTextField(
+                          label: l10n.authUsername,
+                          controller: _username,
+                          prefixIcon: Icons.alternate_email,
+                          textInputAction: TextInputAction.next,
+                          autofillHints: const [AutofillHints.newUsername],
+                          errorText: state.fieldErrors['username']?.first,
+                          validator: (v) =>
+                              AuthValidators.requiredField(context, v),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                      ],
                       AppTextField(
-                        label: l10n.authFirstName,
-                        controller: _firstName,
+                        label: l10n.authEmail,
+                        controller: _email,
+                        prefixIcon: Icons.mail_outline,
+                        keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
-                        validator: (v) =>
-                            AuthValidators.requiredField(context, v),
+                        autofillHints: const [AutofillHints.email],
+                        errorText: state.fieldErrors['email']?.first,
+                        validator: (v) => AuthValidators.email(context, v),
                       ),
+                      if (isRegister) ...[
+                        const SizedBox(height: AppSpacing.md),
+                        AppTextField(
+                          label: l10n.authPhone,
+                          controller: _phone,
+                          prefix: const _DialPrefix(),
+                          keyboardType: TextInputType.phone,
+                          textInputAction: TextInputAction.next,
+                          autofillHints: const [
+                            AutofillHints.telephoneNumberNational,
+                          ],
+                          errorText: state.fieldErrors['phone']?.first,
+                          validator: (v) =>
+                              AuthValidators.egyptPhone(context, v),
+                        ),
+                      ],
                       const SizedBox(height: AppSpacing.md),
                       AppTextField(
-                        label: l10n.authLastName,
-                        controller: _lastName,
-                        textInputAction: TextInputAction.next,
-                        validator: (v) =>
-                            AuthValidators.requiredField(context, v),
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      AppTextField(
-                        label: l10n.authUsername,
-                        controller: _username,
-                        textInputAction: TextInputAction.next,
-                        errorText: state.fieldErrors['username']?.first,
-                        validator: (v) =>
-                            AuthValidators.requiredField(context, v),
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                    ],
-                    AppTextField(
-                      label: l10n.authEmail,
-                      controller: _email,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      errorText: state.fieldErrors['email']?.first,
-                      validator: (v) => AuthValidators.email(context, v),
-                    ),
-                    if (isRegister) ...[
-                      const SizedBox(height: AppSpacing.md),
-                      AppTextField(
-                        label: l10n.authPhone,
-                        controller: _phone,
-                        prefixText: '+20 ',
-                        keyboardType: TextInputType.phone,
-                        textInputAction: TextInputAction.next,
-                        errorText: state.fieldErrors['phone']?.first,
-                        validator: (v) => AuthValidators.egyptPhone(context, v),
-                      ),
-                    ],
-                    const SizedBox(height: AppSpacing.md),
-                    AppTextField(
-                      label: l10n.authPassword,
-                      controller: _password,
-                      obscureText: true,
-                      obscureToggle: true,
-                      errorText: state.fieldErrors['password']?.first,
-                      validator: (v) => AuthValidators.password(
-                        context,
-                        v,
-                        enforceStrength: isRegister,
-                      ),
-                    ),
-                    if (isRegister) ...[
-                      const SizedBox(height: AppSpacing.md),
-                      AppTextField(
-                        label: l10n.authConfirmPassword,
-                        controller: _confirm,
+                        label: l10n.authPassword,
+                        controller: _password,
+                        prefixIcon: Icons.lock_outline,
                         obscureText: true,
                         obscureToggle: true,
-                        validator: (v) =>
-                            AuthValidators.confirm(context, v, _password.text),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      CheckboxListTile(
-                        value: _acceptedTerms,
-                        onChanged: (v) =>
-                            setState(() => _acceptedTerms = v ?? false),
-                        contentPadding: EdgeInsets.zero,
-                        controlAffinity: ListTileControlAffinity.leading,
-                        title: Text(l10n.authAcceptTerms),
-                      ),
-                    ],
-                    if (!isRegister)
-                      Align(
-                        alignment: AlignmentDirectional.centerEnd,
-                        child: TextButton(
-                          onPressed: () =>
-                              unawaited(context.push(AppRoutes.forgotPassword)),
-                          child: Text(l10n.authForgotPassword),
+                        autofillHints: [
+                          if (isRegister)
+                            AutofillHints.newPassword
+                          else
+                            AutofillHints.password,
+                        ],
+                        errorText: state.fieldErrors['password']?.first,
+                        validator: (v) => AuthValidators.password(
+                          context,
+                          v,
+                          enforceStrength: isRegister,
                         ),
                       ),
-                    if (state.status == AuthStatus.failure &&
-                        state.fieldErrors.isEmpty) ...[
-                      const SizedBox(height: AppSpacing.md),
-                      AuthFormError(state.errorMessage ?? l10n.authFailed),
+                      if (isRegister) ...[
+                        const SizedBox(height: AppSpacing.md),
+                        AppTextField(
+                          label: l10n.authConfirmPassword,
+                          controller: _confirm,
+                          prefixIcon: Icons.lock_outline,
+                          obscureText: true,
+                          obscureToggle: true,
+                          autofillHints: const [AutofillHints.newPassword],
+                          validator: (v) => AuthValidators.confirm(
+                            context,
+                            v,
+                            _password.text,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        CheckboxListTile(
+                          value: _acceptedTerms,
+                          onChanged: (v) =>
+                              setState(() => _acceptedTerms = v ?? false),
+                          contentPadding: EdgeInsets.zero,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          title: Text(l10n.authAcceptTerms),
+                        ),
+                      ],
+                      if (!isRegister)
+                        Align(
+                          alignment: AlignmentDirectional.centerEnd,
+                          child: TextButton(
+                            onPressed: () => unawaited(
+                              context.push(AppRoutes.forgotPassword),
+                            ),
+                            child: Text(l10n.authForgotPassword),
+                          ),
+                        ),
+                      if (state.status == AuthStatus.failure &&
+                          state.fieldErrors.isEmpty) ...[
+                        const SizedBox(height: AppSpacing.md),
+                        AuthFormError(state.errorMessage ?? l10n.authFailed),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -233,6 +262,37 @@ class _AuthViewState extends State<_AuthView> {
           ],
         );
       },
+    );
+  }
+}
+
+/// Always-visible `+20` dial-code prefix for the Egyptian phone field, with a
+/// divider separating it from the input.
+class _DialPrefix extends StatelessWidget {
+  const _DialPrefix();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(
+        AppSpacing.md,
+        0,
+        AppSpacing.sm,
+        0,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('+20', style: theme.textTheme.bodyLarge),
+          const SizedBox(width: AppSpacing.sm),
+          Container(
+            width: 1,
+            height: 24,
+            color: theme.colorScheme.outlineVariant,
+          ),
+        ],
+      ),
     );
   }
 }

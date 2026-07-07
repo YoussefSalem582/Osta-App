@@ -104,7 +104,9 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
             AppTextField(
               label: l10n.authEmail,
               controller: _email,
+              prefixIcon: Icons.mail_outline,
               keyboardType: TextInputType.emailAddress,
+              autofillHints: const [AutofillHints.email],
               errorText: state.fieldErrors['email']?.first,
               validator: (v) => AuthValidators.email(context, v),
             ),
@@ -112,6 +114,8 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
             AppTextField(
               label: l10n.authResetCode,
               controller: _token,
+              prefixIcon: Icons.confirmation_number_outlined,
+              autofillHints: const [AutofillHints.oneTimeCode],
               errorText: state.fieldErrors['token']?.first,
               validator: (v) => AuthValidators.requiredField(context, v),
             ),
@@ -119,8 +123,10 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
             AppTextField(
               label: l10n.authNewPassword,
               controller: _password,
+              prefixIcon: Icons.lock_outline,
               obscureText: true,
               obscureToggle: true,
+              autofillHints: const [AutofillHints.newPassword],
               errorText: state.fieldErrors['password']?.first,
               validator: (v) => AuthValidators.password(context, v),
             ),
@@ -128,8 +134,10 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
             AppTextField(
               label: l10n.authConfirmPassword,
               controller: _confirm,
+              prefixIcon: Icons.lock_outline,
               obscureText: true,
               obscureToggle: true,
+              autofillHints: const [AutofillHints.newPassword],
               validator: (v) =>
                   AuthValidators.confirm(context, v, _password.text),
             ),

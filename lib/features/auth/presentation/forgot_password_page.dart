@@ -93,7 +93,9 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
             AppTextField(
               label: l10n.authEmail,
               controller: _email,
+              prefixIcon: Icons.mail_outline,
               keyboardType: TextInputType.emailAddress,
+              autofillHints: const [AutofillHints.email],
               errorText: state.fieldErrors['email']?.first,
               validator: (v) => AuthValidators.email(context, v),
             ),

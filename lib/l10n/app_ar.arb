@@ -117,6 +117,8 @@
   "authRegisterTitle": "إنشاء حساب",
   "authEmail": "البريد الإلكتروني",
   "authPassword": "كلمة المرور",
+  "showPassword": "إظهار كلمة المرور",
+  "hidePassword": "إخفاء كلمة المرور",
   "authFirstName": "الاسم الأول",
   "authLastName": "اسم العائلة",
   "authUsername": "اسم المستخدم",

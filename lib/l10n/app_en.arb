@@ -116,6 +116,8 @@
   "authRegisterTitle": "Create account",
   "authEmail": "Email",
   "authPassword": "Password",
+  "showPassword": "Show password",
+  "hidePassword": "Hide password",
   "authFirstName": "First name",
   "authLastName": "Last name",
   "authUsername": "Username",
