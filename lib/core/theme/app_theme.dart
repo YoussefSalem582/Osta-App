@@ -32,11 +32,14 @@ abstract final class AppTheme {
     );
 
     return base.copyWith(
+      scaffoldBackgroundColor:
+          brightness == Brightness.light ? const Color(0xFFF4F6F5) : null,
       textTheme: AppTypography.textTheme(base.textTheme),
       extensions: [tokens],
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         centerTitle: true,
         elevation: AppElevation.none,
+        backgroundColor: brightness == Brightness.light ? const Color(0xFFF4F6F5) : null,
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
@@ -57,6 +60,7 @@ abstract final class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
+        fillColor: brightness == Brightness.light ? Colors.white : null,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadii.md),
           borderSide: BorderSide.none,
@@ -67,6 +71,7 @@ abstract final class AppTheme {
         ),
       ),
       cardTheme: CardThemeData(
+        color: brightness == Brightness.light ? Colors.white : null,
         elevation: AppElevation.low,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadii.lg),

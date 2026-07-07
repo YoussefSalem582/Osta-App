@@ -7,6 +7,7 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/auth_events.dart';
 import 'package:osta/core/network/dio_client.dart';
 import 'package:osta/core/network/social_token_exchange.dart';
+import 'package:osta/core/locale/locale_controller.dart';
 import 'package:osta/core/router/app_router.dart';
 import 'package:osta/core/theme/theme_mode_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,6 +37,9 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<TokenStorage>(() => TokenStorage(getIt()))
     ..registerLazySingleton<ThemeModeController>(
       () => ThemeModeController(getIt()),
+    )
+    ..registerLazySingleton<LocaleController>(
+      () => LocaleController(getIt()),
     )
     ..registerLazySingleton<Dio>(
       () => buildAppDio(getIt(), getIt(), getIt()),

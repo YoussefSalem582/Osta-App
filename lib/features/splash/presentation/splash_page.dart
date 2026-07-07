@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:osta/core/constants/app_images.dart';
-import 'package:osta/features/role/presentation/role_selection_page.dart';
+import 'package:osta/features/customer/profile/presentation/profile_screen.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 /// First screen shown on launch; hands off to the first-run role selection.
@@ -26,7 +26,7 @@ class _SplashPageState extends State<SplashPage> {
   Future<void> _bootstrap() async {
     await Future<void>.delayed(const Duration(seconds: 2));
     if (!mounted) return;
-    context.go(RoleSelectionPage.path);
+    context.go(ProfileScreen.path);
   }
 
   @override
