@@ -1,15 +1,21 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:osta/core/constants/app_images.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/features/onboarding/page/onboarding_page.dart';
 
+import 'package:osta/core/router/app_routes.dart';
+import 'package:osta/core/session/session_controller.dart';
+import 'package:osta/shared/extensions/context_ext.dart';
+
+/// First screen on launch. Reads persisted `{token, activeRole, locale}` via
+/// [SessionController.bootstrap]; the router's redirect then lands the user in
+/// the right place (language → chooser → auth → shell, or straight to a shell).
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
-
-  static const path = '/splash';
 
   @override
   State<SplashPage> createState() => _SplashPageState();

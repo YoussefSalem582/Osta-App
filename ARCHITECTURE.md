@@ -78,7 +78,7 @@ Every HTTP call goes through `ApiClient` (`core/network/api_client.dart`), which
 6. Add the route in `core/router/app_router.dart`.
 7. Add ARB strings (en + ar) and run `flutter gen-l10n`.
 8. Tests: repository + BLoC (with `http_mock_adapter` / fakes), key widgets/goldens.
-9. Ship on `feat/<issue>-<slug>` (hand-written name — never a tool-generated one like `claude/...`), PR base `main`, bilingual description.
+9. Ship on `feat/<issue>-<slug>` branched off `develop` (hand-written name — never a tool-generated one like `claude/...`), **PR base `develop`**, bilingual description. A finished version/milestone reaches `main` via a `develop → main` release PR (then tag `v0.<n>.0`, `v1.0.0` = MVP).
 
 Full step-by-step: [`osta_readme_files/guides/03_how_to_add_new_feature.md`](osta_readme_files/guides/03_how_to_add_new_feature.md).
 
