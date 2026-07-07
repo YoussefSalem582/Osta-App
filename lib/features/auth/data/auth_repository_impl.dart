@@ -31,6 +31,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<AppRole> register({
     required String firstName,
     required String lastName,
+    required String username,
     required String email,
     required String password,
     required AppRole accountType,
@@ -38,12 +39,57 @@ class AuthRepositoryImpl implements AuthRepository {
   }) => _authenticate('/auth/register', {
     'first_name': firstName,
     'last_name': lastName,
+    'username': username,
     'email': email,
     'password': password,
     'password_confirmation': password,
     'account_type': accountType.wireName,
     if (phone != null && phone.isNotEmpty) 'phone': phone,
   });
+
+  @override
+  Future<void> logout() async {
+    try {
+      await _api.post<Object?>(
+        '/auth/logout',
+        body: const <String, dynamic>{},
+        parse: (data) => data,
+      );
+    } on ApiException {
+      // The token may already be invalid server-side; a local clear is enough.
+    } finally {
+      await _tokens.clear();
+    }
+  }
+
+  @override
+  Future<void> forgotPassword({required String email}) async {
+    await _api.post<Object?>(
+      '/forgot-password',
+      authenticated: false,
+      body: {'email': email},
+      parse: (data) => data,
+    );
+  }
+
+  @override
+  Future<void> resetPassword({
+    required String email,
+    required String token,
+    required String password,
+  }) async {
+    await _api.post<Object?>(
+      '/reset-password',
+      authenticated: false,
+      body: {
+        'email': email,
+        'token': token,
+        'password': password,
+        'password_confirmation': password,
+      },
+      parse: (data) => data,
+    );
+  }
 
   Future<AppRole> _authenticate(String path, Map<String, dynamic> body) async {
     final result = await _api.post<_AuthData>(

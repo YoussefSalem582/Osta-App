@@ -4,6 +4,13 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-06 — M1 auth email/password surface + password recovery ([#35](https://github.com/YoussefSalem582/Osta-App/issues/35))
+
+Extended the shared auth surface toward the M1 email+password epic (no OTP): register now collects a unique username and a required Egyptian **+20** phone (masked, normalized to E.164), confirms the password, and gates submit behind a Terms/Privacy checkbox; login gains a password visibility toggle and a "forgot password?" link. Added a two-step recovery flow — `ForgotPasswordPage` (`POST /forgot-password`) → `ResetPasswordPage` (`POST /reset-password`) — on a new `PasswordRecoveryCubit` and `/auth/forgot-password` + `/auth/reset-password` routes (whitelisted in `resolveRedirect`). `AuthRepository` gained `logout` (best-effort revoke + always-clear, wired through `SessionController.signOut`), `forgotPassword`, and `resetPassword`; server 422s now surface inline per field via `AuthState.fieldErrors`. Endpoints follow the canonical catalogue.
+
+> ‏تم توسيع واجهة المصادقة نحو ملحمة M1 بالبريد وكلمة المرور (بدون OTP): يجمع التسجيل الآن اسم مستخدم فريدًا ورقم هاتف مصري **+20** إلزاميًا (بقناع، ويُطبَّع إلى E.164) ويؤكّد كلمة المرور ويشترط قبول الشروط والخصوصية؛ ويحصل الدخول على زر إظهار كلمة المرور ورابط «نسيت كلمة المرور؟». وأُضيف تدفّق استعادة من خطوتين — `ForgotPasswordPage` ← `ResetPasswordPage` — على `PasswordRecoveryCubit` جديد ومسارَي `/auth/forgot-password` و`/auth/reset-password`. واكتسب `AuthRepository` الدوال `logout` (إبطال أفضل جهد مع مسح دائم، موصولة بـ `SessionController.signOut`) و`forgotPassword` و`resetPassword`؛ وتظهر أخطاء 422 الآن مضمّنة لكل حقل.
+
+Touched (code + docs): `lib/features/auth/**` (auth page, `auth_cubit`, `auth_validators`, `password_recovery_cubit`, forgot/reset pages, repository), `lib/core/{router,session,di,auth}`, `lib/shared/ui/app_text_field.dart`, `lib/l10n/app_{en,ar}.arb`, matching tests, `CHANGELOG.md`, `CURRENT_STATUS.md`.
 ## 2026-07-07 — Debug-only login prefill for the QA/App Review test account
 
 `AuthPage` now prefills the email/password fields with the test account (`test@osta.com` / `osta123123`) under `kDebugMode` only — release builds compile the block out. Speeds local sign-in and gives App Review a one-tap login; the account must still exist backend-side (`/auth/login`). Code + docs change.

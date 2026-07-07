@@ -62,6 +62,7 @@ void main() {
     final role = await _repo(adapter, storage).register(
       firstName: 'Youssef',
       lastName: 'Salem',
+      username: 'youssef',
       email: 'y@osta.dev',
       password: 'Passw0rd',
       accountType: AppRole.business,
@@ -71,6 +72,7 @@ void main() {
     expect(role, AppRole.business);
     final body = adapter.bodies.single! as Map<String, dynamic>;
     expect(body['account_type'], 'business');
+    expect(body['username'], 'youssef');
     expect(body['password'], 'Passw0rd');
     expect(body['password_confirmation'], 'Passw0rd');
     expect(body['phone'], '01000000000');
@@ -85,6 +87,7 @@ void main() {
     await _repo(adapter, FakeTokenStorage()).register(
       firstName: 'A',
       lastName: 'B',
+      username: 'ab',
       email: 'a@b.com',
       password: 'Passw0rd',
       accountType: AppRole.customer,
@@ -110,4 +113,73 @@ void main() {
       expect(role, AppRole.business);
     },
   );
+
+  test('logout revokes server-side and clears tokens', () async {
+    final adapter = ScriptedAdapter([
+      (_) => jsonResponse(200, {'success': true, 'data': null}),
+    ]);
+    final storage = FakeTokenStorage()
+      ..access = 'a'
+      ..refresh = 'r';
+
+    await _repo(adapter, storage).logout();
+
+    final request = adapter.requests.single;
+    expect(request.path, contains('/auth/logout'));
+    expect(request.extra['no-auth'], isNull); // authenticated request
+    expect(storage.access, isNull);
+    expect(storage.refresh, isNull);
+  });
+
+  test('logout still clears tokens when the server rejects', () async {
+    final adapter = ScriptedAdapter([
+      (_) => jsonResponse(500, {
+        'success': false,
+        'error': {'code': 'SERVER_ERROR', 'message': 'boom'},
+      }),
+    ]);
+    final storage = FakeTokenStorage()
+      ..access = 'a'
+      ..refresh = 'r';
+
+    await _repo(adapter, storage).logout(); // does not throw
+
+    expect(storage.access, isNull);
+    expect(storage.refresh, isNull);
+  });
+
+  test('forgotPassword posts the email unauthenticated', () async {
+    final adapter = ScriptedAdapter([
+      (_) => jsonResponse(200, {'success': true, 'data': null}),
+    ]);
+
+    await _repo(adapter, FakeTokenStorage()).forgotPassword(email: 'a@b.com');
+
+    final request = adapter.requests.single;
+    expect(request.path, contains('/forgot-password'));
+    expect(request.extra['no-auth'], isTrue);
+    expect(adapter.bodies.single, {'email': 'a@b.com'});
+  });
+
+  test('resetPassword posts token + password_confirmation', () async {
+    final adapter = ScriptedAdapter([
+      (_) => jsonResponse(200, {'success': true, 'data': null}),
+    ]);
+
+    await _repo(adapter, FakeTokenStorage()).resetPassword(
+      email: 'a@b.com',
+      token: 'tok',
+      password: 'Passw0rd',
+    );
+
+    final request = adapter.requests.single;
+    expect(request.path, contains('/reset-password'));
+    expect(request.extra['no-auth'], isTrue);
+    expect(adapter.bodies.single, {
+      'email': 'a@b.com',
+      'token': 'tok',
+      'password': 'Passw0rd',
+      'password_confirmation': 'Passw0rd',
+    });
+  });
 }

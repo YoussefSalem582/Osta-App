@@ -6,6 +6,7 @@ import 'package:osta/core/network/auth_events.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:osta/core/session/session_state.dart';
 import 'package:osta/core/session/session_store.dart';
+import 'package:osta/features/auth/domain/auth_repository.dart';
 
 /// Single source of truth for first-run routing. The splash calls [bootstrap];
 /// the language screen, role chooser and auth flow mutate it; the router
@@ -15,13 +16,14 @@ import 'package:osta/core/session/session_store.dart';
 ///
 /// Registered by hand in `configureDependencies()` — no injectable codegen.
 class SessionController extends Cubit<SessionState> {
-  SessionController(this._store, this._authEvents)
+  SessionController(this._store, this._authEvents, this._authRepository)
     : super(const SessionState()) {
     _expiredSub = _authEvents.onSessionExpired.listen((_) => _onExpired());
   }
 
   final SessionStore _store;
   final AuthEvents _authEvents;
+  final AuthRepository _authRepository;
   late final StreamSubscription<void> _expiredSub;
 
   /// Reads persisted `{token, activeRole, locale}` and flips `bootstrapped` so
@@ -85,8 +87,10 @@ class SessionController extends Cubit<SessionState> {
     emit(state.clearingRole(hasToken: state.hasToken));
   }
 
-  /// Full sign-out: drops the token and the active role.
+  /// Full sign-out: revokes the token server-side (best-effort) then drops the
+  /// token and the active role locally.
   Future<void> signOut() async {
+    await _authRepository.logout();
     await _store.clearSession();
     emit(state.clearingRole(hasToken: false));
   }

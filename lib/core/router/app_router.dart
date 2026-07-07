@@ -10,6 +10,8 @@ import 'package:osta/core/router/go_router_refresh_stream.dart';
 import 'package:osta/core/router/session_redirect.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/features/auth/presentation/auth_page.dart';
+import 'package:osta/features/auth/presentation/forgot_password_page.dart';
+import 'package:osta/features/auth/presentation/reset_password_page.dart';
 import 'package:osta/features/business/shell/presentation/business_shell_page.dart';
 import 'package:osta/features/customer/booking/presentation/real_time_booking_screen.dart';
 import 'package:osta/features/customer/garage/presentation/add_car_screen.dart';
@@ -60,6 +62,17 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.auth,
         builder: (context, state) => const AuthPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.forgotPassword,
+        builder: (context, state) => const ForgotPasswordPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.resetPassword,
+        builder: (context, state) => ResetPasswordPage(
+          email: state.uri.queryParameters['email'],
+          token: state.uri.queryParameters['token'],
+        ),
       ),
       GoRoute(
         path: AppRoutes.customerShell,

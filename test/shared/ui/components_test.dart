@@ -109,6 +109,38 @@ void main() {
     expect(find.byType(TextButton), findsOneWidget);
   });
 
+  testWidgets('password field toggles obscure via the eye button', (
+    tester,
+  ) async {
+    await pumpThemed(
+      tester,
+      const AppTextField(
+        label: 'Password',
+        obscureText: true,
+        obscureToggle: true,
+      ),
+      brightness: Brightness.light,
+      locale: 'en',
+    );
+
+    // Starts hidden.
+    expect(find.byIcon(Icons.visibility_off), findsOneWidget);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).obscureText,
+      isTrue,
+    );
+
+    await tester.tap(find.byType(IconButton));
+    await tester.pump();
+
+    // Now revealed.
+    expect(find.byIcon(Icons.visibility), findsOneWidget);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).obscureText,
+      isFalse,
+    );
+  });
+
   testWidgets('ErrorState retry fires callback with localized label', (
     tester,
   ) async {

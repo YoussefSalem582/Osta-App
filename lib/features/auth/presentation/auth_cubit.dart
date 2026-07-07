@@ -14,16 +14,20 @@ class AuthState extends Equatable {
     this.mode = AuthMode.login,
     this.status = AuthStatus.idle,
     this.errorMessage,
+    this.fieldErrors = const {},
   });
 
   final AuthMode mode;
   final AuthStatus status;
   final String? errorMessage;
 
+  /// Server 422 field → messages, surfaced inline under the matching field.
+  final Map<String, List<String>> fieldErrors;
+
   bool get isSubmitting => status == AuthStatus.submitting;
 
   @override
-  List<Object?> get props => [mode, status, errorMessage];
+  List<Object?> get props => [mode, status, errorMessage, fieldErrors];
 }
 
 /// Drives the auth screen. Sends `account_type = activeRole` on every request
@@ -59,6 +63,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> register({
     required String firstName,
     required String lastName,
+    required String username,
     required String email,
     required String password,
     String? phone,
@@ -69,6 +74,7 @@ class AuthCubit extends Cubit<AuthState> {
       () => _repo.register(
         firstName: firstName,
         lastName: lastName,
+        username: username,
         email: email,
         password: password,
         phone: phone,
@@ -85,6 +91,15 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       final role = await action();
       await _session.onAuthenticated(role, requested: requested);
+    } on ValidationException catch (error) {
+      emit(
+        AuthState(
+          mode: state.mode,
+          status: AuthStatus.failure,
+          errorMessage: error.message,
+          fieldErrors: error.fieldErrors,
+        ),
+      );
     } on ApiException catch (error) {
       emit(
         AuthState(
