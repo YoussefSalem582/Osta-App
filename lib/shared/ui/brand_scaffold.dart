@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 
-/// Branded scaffold shared by every auth screen: a collapsing brand-green
-/// [SliverAppBar] whose hero band holds the white logo (back button pinned over
-/// it), then a bold centered title, an optional subtitle, and the screen body
-/// on the normal surface. The header shrinks as the body scrolls and gains a
-/// subtle shadow once content passes under it.
+/// Branded scaffold for the pre-auth / auth flow (language, role, auth-choose,
+/// login/register, password recovery): a collapsing brand-green [SliverAppBar]
+/// whose hero band holds the white logo (back button pinned over it, if any),
+/// then a bold centered title, an optional subtitle, and the screen body on the
+/// normal surface. The logo shrinks but stays visible as the body scrolls, and
+/// the bar gains a subtle shadow once content passes under it.
 ///
 /// The logo assets are white, so they read on [AppColors.brandGreen] (the same
 /// green + white pairing the splash uses) but not on the light scaffold — hence
 /// the coloured band.
-class AuthScaffold extends StatelessWidget {
-  const AuthScaffold({
+class BrandScaffold extends StatelessWidget {
+  const BrandScaffold({
     required this.logo,
     required this.title,
     required this.children,
@@ -22,17 +23,17 @@ class AuthScaffold extends StatelessWidget {
     super.key,
   });
 
-  /// Auth logo sizes — the two supported heights live here, not as magic
-  /// numbers at the call sites. [logoHeight] is the *expanded* size; the band's
-  /// height is toolbar + this, so lowering it is what shortens the header.
-  static const double heroLogoHeight = 200; // full lockup on the chooser
+  /// Logo sizes — the two supported heights live here, not as magic numbers at
+  /// the call sites. [logoHeight] is the *expanded* size; the band's height is
+  /// toolbar + this, so lowering it is what shortens the header.
+  static const double heroLogoHeight = 200; // full lockup on landing screens
   static const double markLogoHeight = 180; // wordmark on the inner screens
 
   /// Logo size once the bar is fully collapsed (stays visible next to the back
   /// button after scrolling).
-  static const double collapsedLogoHeight = 36;
+  static const double collapsedLogoHeight = 80;
 
-  /// Asset path (e.g. `AppImages.fullLogo` on the chooser, `AppImages.logo`
+  /// Asset path (e.g. `AppImages.fullLogo` on landing screens, `AppImages.logo`
   /// on the inner screens).
   final String logo;
   final String title;
@@ -43,7 +44,8 @@ class AuthScaffold extends StatelessWidget {
   final List<Widget> children;
 
   /// Back handler. `null` falls back to the framework's implicit back arrow
-  /// (correct for pushed routes like forgot/reset).
+  /// (correct for pushed routes; landing screens reached via redirect show
+  /// nothing, as there is no route to pop).
   final VoidCallback? onBack;
 
   @override

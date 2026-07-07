@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:osta/core/constants/app_images.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
+import 'package:osta/shared/ui/brand_scaffold.dart';
 
 /// First-run role split. `customer` + `business` are tappable and route into
 /// their shell (via auth); `mechanic` + `tow` render disabled ("coming soon").
@@ -15,50 +17,36 @@ class RoleChooserPage extends StatelessWidget {
     final l10n = context.l10n;
     final session = context.read<SessionController>();
     final current = session.state.activeRole;
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.appTitle)),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                l10n.chooseRole,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              _RoleCard(
-                icon: Icons.person_outline,
-                label: l10n.roleCustomer,
-                selected: current == AppRole.customer,
-                onTap: () => session.chooseRole(AppRole.customer),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              _RoleCard(
-                icon: Icons.storefront_outlined,
-                label: l10n.roleBusiness,
-                selected: current == AppRole.business,
-                onTap: () => session.chooseRole(AppRole.business),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              _RoleCard(
-                icon: Icons.build_outlined,
-                label: l10n.roleMechanic,
-                comingSoonLabel: l10n.comingSoon,
-              ),
-              const SizedBox(height: AppSpacing.md),
-              _RoleCard(
-                icon: Icons.local_shipping_outlined,
-                label: l10n.roleTow,
-                comingSoonLabel: l10n.comingSoon,
-              ),
-            ],
-          ),
+    return BrandScaffold(
+      logo: AppImages.fullLogo,
+      title: l10n.chooseRole,
+      children: [
+        _RoleCard(
+          icon: Icons.person_outline,
+          label: l10n.roleCustomer,
+          selected: current == AppRole.customer,
+          onTap: () => session.chooseRole(AppRole.customer),
         ),
-      ),
+        const SizedBox(height: AppSpacing.md),
+        _RoleCard(
+          icon: Icons.storefront_outlined,
+          label: l10n.roleBusiness,
+          selected: current == AppRole.business,
+          onTap: () => session.chooseRole(AppRole.business),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        _RoleCard(
+          icon: Icons.build_outlined,
+          label: l10n.roleMechanic,
+          comingSoonLabel: l10n.comingSoon,
+        ),
+        const SizedBox(height: AppSpacing.md),
+        _RoleCard(
+          icon: Icons.local_shipping_outlined,
+          label: l10n.roleTow,
+          comingSoonLabel: l10n.comingSoon,
+        ),
+      ],
     );
   }
 }

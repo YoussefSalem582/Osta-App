@@ -11,11 +11,11 @@ import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/auth/presentation/auth_validators.dart';
 import 'package:osta/features/auth/presentation/password_recovery_cubit.dart';
 import 'package:osta/features/auth/presentation/widgets/auth_form_error.dart';
-import 'package:osta/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
+import 'package:osta/shared/ui/brand_scaffold.dart';
 
 /// Step 1 of password recovery: collect the email and ask the broker to send a
 /// reset link. On success, offers a shortcut to the reset screen.
@@ -66,9 +66,9 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
     return BlocBuilder<PasswordRecoveryCubit, PasswordRecoveryState>(
       builder: (context, state) {
         final sent = state.status == RecoveryStatus.emailSent;
-        return AuthScaffold(
+        return BrandScaffold(
           logo: AppImages.logo,
-          logoHeight: AuthScaffold.markLogoHeight,
+          logoHeight: BrandScaffold.markLogoHeight,
           title: l10n.authForgotTitle,
           subtitle: sent ? null : l10n.authForgotSubtitle,
           children: sent

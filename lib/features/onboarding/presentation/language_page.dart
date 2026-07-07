@@ -4,6 +4,7 @@ import 'package:osta/core/constants/app_images.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
+import 'package:osta/shared/ui/brand_scaffold.dart';
 
 /// Language pick (Arabic / English). Shown every logged-out launch —
 /// [SessionController] persists the choice and the redirect guard advances to
@@ -15,50 +16,25 @@ class LanguagePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final theme = Theme.of(context);
     final session = context.read<SessionController>();
     final current = session.state.locale?.languageCode;
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Image.asset(AppImages.fullLogo, height: 96),
-              const SizedBox(height: AppSpacing.xl),
-              Text(
-                l10n.languageTitle,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                l10n.languageSubtitle,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              _LanguageCard(
-                label: l10n.languageArabic,
-                selected: current == 'ar',
-                onTap: () => session.chooseLanguage(const Locale('ar')),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              _LanguageCard(
-                label: l10n.languageEnglish,
-                selected: current == 'en',
-                onTap: () => session.chooseLanguage(const Locale('en')),
-              ),
-            ],
-          ),
+    return BrandScaffold(
+      logo: AppImages.fullLogo,
+      title: l10n.languageTitle,
+      subtitle: l10n.languageSubtitle,
+      children: [
+        _LanguageCard(
+          label: l10n.languageArabic,
+          selected: current == 'ar',
+          onTap: () => session.chooseLanguage(const Locale('ar')),
         ),
-      ),
+        const SizedBox(height: AppSpacing.md),
+        _LanguageCard(
+          label: l10n.languageEnglish,
+          selected: current == 'en',
+          onTap: () => session.chooseLanguage(const Locale('en')),
+        ),
+      ],
     );
   }
 }

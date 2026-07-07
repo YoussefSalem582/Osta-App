@@ -11,11 +11,11 @@ import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/auth/presentation/auth_cubit.dart';
 import 'package:osta/features/auth/presentation/auth_validators.dart';
 import 'package:osta/features/auth/presentation/widgets/auth_form_error.dart';
-import 'package:osta/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
+import 'package:osta/shared/ui/brand_scaffold.dart';
 
 /// Auth entry for the chosen role. Login and register both send
 /// `account_type = activeRole`; success hands the authoritative role to the
@@ -105,9 +105,9 @@ class _AuthViewState extends State<_AuthView> {
       builder: (context, state) {
         final isRegister = state.mode == AuthMode.register;
         final canSubmit = !isRegister || _acceptedTerms;
-        return AuthScaffold(
+        return BrandScaffold(
           logo: AppImages.logo,
-          logoHeight: AuthScaffold.markLogoHeight,
+          logoHeight: BrandScaffold.markLogoHeight,
           title: isRegister ? l10n.authRegisterTitle : l10n.authSignInTitle,
           // Back to the login/register chooser (both live in the auth surface).
           onBack: () => context.go(AppRoutes.authChoose),

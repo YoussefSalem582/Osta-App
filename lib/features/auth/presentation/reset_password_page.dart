@@ -11,11 +11,11 @@ import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/auth/presentation/auth_validators.dart';
 import 'package:osta/features/auth/presentation/password_recovery_cubit.dart';
 import 'package:osta/features/auth/presentation/widgets/auth_form_error.dart';
-import 'package:osta/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
+import 'package:osta/shared/ui/brand_scaffold.dart';
 
 /// Step 2 of password recovery: set a new password using the emailed reset
 /// code. [email] and [token] are prefilled when the screen is reached from a
@@ -78,9 +78,9 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
     return BlocBuilder<PasswordRecoveryCubit, PasswordRecoveryState>(
       builder: (context, state) {
         final done = state.status == RecoveryStatus.resetSuccess;
-        return AuthScaffold(
+        return BrandScaffold(
           logo: AppImages.logo,
-          logoHeight: AuthScaffold.markLogoHeight,
+          logoHeight: BrandScaffold.markLogoHeight,
           title: l10n.authResetTitle,
           children: done
               ? _doneBody(context, l10n)

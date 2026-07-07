@@ -5,9 +5,9 @@ import 'package:osta/core/constants/app_images.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
+import 'package:osta/shared/ui/brand_scaffold.dart';
 
 /// Unauthenticated landing after the role chooser. Routes into the shared auth
 /// form pre-set to login or register via `?mode=`; social sign-in is a stub
@@ -19,7 +19,7 @@ class AuthChoosePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final session = context.read<SessionController>();
-    return AuthScaffold(
+    return BrandScaffold(
       logo: AppImages.fullLogo,
       title: l10n.authChooseTitle,
       subtitle: l10n.authChooseSubtitle,
