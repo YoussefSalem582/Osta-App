@@ -19,12 +19,18 @@ enum _ShellAction { switchRole, signOut }
 class RoleShell extends StatefulWidget {
   const RoleShell({
     required this.tabs,
+    this.pages,
     this.centerIcon,
     this.onCenterTap,
     super.key,
   });
 
   final List<AppBottomNavItem> tabs;
+
+  /// Optional list of pages to display for each tab. When provided, the
+  /// matching page is shown instead of the generic [EmptyState] placeholder.
+  /// Must have the same length as [tabs] when provided.
+  final List<Widget>? pages;
 
   /// Optional raised center action for the bottom bar (e.g. a map button).
   final IconData? centerIcon;
@@ -64,6 +70,18 @@ class _RoleShellState extends State<RoleShell> {
           ),
         ],
       ),
+// <<<<<<< HEAD
+//       body: widget.pages != null
+//           ? IndexedStack(
+//               index: _index,
+//               children: widget.pages!,
+//             )
+//           : EmptyState(
+//               icon: tab.icon,
+//               title: tab.label,
+//               message: l10n.shellWelcome,
+//             ),
+// =======
       body:
           tab.body ??
           EmptyState(
@@ -71,6 +89,7 @@ class _RoleShellState extends State<RoleShell> {
             title: tab.label,
             message: l10n.shellWelcome,
           ),
+// >>>>>>> 05dd7eefce8d3884570b01b7e0b4d8e0d864abad
       bottomNavigationBar: AppBottomNavBar(
         items: widget.tabs,
         currentIndex: _index,

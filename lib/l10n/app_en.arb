@@ -49,7 +49,7 @@
   "km": "km",
   "setAsPrimary": "Set as primary",
   "primary": "Primary",
-  "addYourFirstCar": "Add your first car",
+  "addYourFirstCar": "Add your car",
   "requiredStep": "A required step, cannot be skipped",
   "carDetailsPrompt": "We need your car details to recommend the nearest\nand most suitable service center",
   "brand": "Brand",
@@ -67,7 +67,7 @@
   "plateNumber": "Plate Number",
   "plateNumberHint": "A B 1 2 3",
   "enterPlateNumber": "Enter plate number",
-  "saveAndProceed": "Save and proceed to main",
+  "saveAndProceed": "Save",
 
   "bookingStatus": "Booking Status",
   "bookingId": "Booking ID",
@@ -151,7 +151,7 @@
   "customerHomeTitle": "Home",
   "businessHomeTitle": "Dashboard",
   "navHome": "Home",
-  "navBookings": "Bookings",
+  "navBookings": "My Bookings",
   "navProfile": "Profile",
   "navStore": "Store",
   "navMore": "More",
@@ -166,5 +166,21 @@
   "passwordStrengthMedium": "Medium",
   "passwordStrengthStrong": "Strong",
   "authUsernameAvailable": "Username available",
-  "authUsernameTaken": "Username already taken"
+  "authUsernameTaken": "Username already taken",
+  "bookingUpcoming": "Upcoming",
+  "bookingUpcomingCount": "Upcoming ({count})",
+  "@bookingUpcomingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookingPast": "Past",
+  "bookingPastSection": "Past",
+  "bookingEmpty": "No bookings found",
+  "statusPending": "In Progress",
+  "statusConfirmed": "Confirmed",
+  "statusCompleted": "Completed",
+  "statusCancelled": "Cancelled"
 }

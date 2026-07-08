@@ -90,6 +90,7 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
         ],
       ),
       body: vehicles.isEmpty
+
           ? EmptyGarageView(
               onAddVehicle: () => unawaited(context.push(AppRoutes.addCar)),
             )
