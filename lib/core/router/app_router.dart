@@ -11,6 +11,9 @@ import 'package:osta/features/auth/login/presentation/login_page.dart';
 import 'package:osta/features/auth/password_recovery/presentation/forgot_password_page.dart';
 import 'package:osta/features/auth/password_recovery/presentation/reset_password_page.dart';
 import 'package:osta/features/auth/register/presentation/register_page.dart';
+import 'package:osta/features/business/onboarding/presentation/pages/business_catalog_page.dart';
+import 'package:osta/features/business/onboarding/presentation/pages/business_identity_page.dart';
+import 'package:osta/features/business/onboarding/presentation/pages/provider_onboarding_page.dart';
 import 'package:osta/features/business/shell/presentation/business_shell_page.dart';
 import 'package:osta/features/customer/booking/presentation/real_time_booking_screen.dart';
 import 'package:osta/features/customer/garage/presentation/add_car_screen.dart';
@@ -49,6 +52,25 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.onboarding,
         builder: (context, state) => const OnboardingPage(),
+      ),
+
+      // Business (provider) onboarding flow.
+      GoRoute(
+        path: ProviderOnboardingPage.path,
+        builder: (context, state) => ProviderOnboardingPage(
+          onNext: () => context.push(BusinessIdentityPage.path),
+          onSkip: () => context.push(BusinessCatalogPage.path),
+        ),
+      ),
+      GoRoute(
+        path: BusinessIdentityPage.path,
+        builder: (context, state) => BusinessIdentityPage(
+          onContinue: () => context.push(BusinessCatalogPage.path),
+        ),
+      ),
+      GoRoute(
+        path: BusinessCatalogPage.path,
+        builder: (context, state) => const BusinessCatalogPage(),
       ),
 
       GoRoute(

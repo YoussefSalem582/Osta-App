@@ -2,6 +2,7 @@
 
 > [INDEX](INDEX.md) > Current Status
 >
+> **Last Updated:** Jul 7, 2026 — **Business onboarding screens, widgets & routing added**: implemented `ProviderOnboardingPage`, `BusinessIdentityPage`, `BusinessCatalogPage`, 8 reusable widgets in `lib/features/business/onboarding/presentation/`, aligned `BusinessIdentityPage` 100% with exact user mockup, and registered declarative GoRouter routes in `AppRouter`. Earlier: Jul 7, 2026 — **Role selection screen widgets & RTL alignment added**: implemented `RoleCard`, `ComingSoonBadge`, and `InfoBanner` in `lib/features/role/presentation/widgets/`, enhanced `AppCard` with optional styling properties, fixed `AppColors.gray` syntax, and aligned headers to start for RTL support. Detail: [`DOCUMENTATION_UPDATE_SUMMARY.md`](DOCUMENTATION_UPDATE_SUMMARY.md).
 > **Last Updated:** Jul 8, 2026 — **register avatar upload wired**: the register profile-photo control is now live — tapping opens the system gallery picker (`image_picker`; PHPicker/Android Photo Picker → no permission string or native config), previews the image in the ring, and on submit uploads it to **`POST /api/v1/me/avatar`** (multipart `avatar`, jpeg `maxWidth:1024`/`quality:85`, under the 5 MB server cap) via new `AuthRepository.uploadAvatar(filePath:)` (Dio `FormData`, no `ApiClient` change). Runs after register stores the token, before `onAuthenticated` navigates, **best-effort** (a failed photo never blocks registration). `RegisterSubmitted` gained `photoPath`; added `image_picker: ^1.1.2`; 2 new bloc tests + 4 fakes updated. Analyze clean, 123 tests pass. Detail: [`DOCUMENTATION_UPDATE_SUMMARY.md`](DOCUMENTATION_UPDATE_SUMMARY.md).
 > **Last Updated:** Jul 8, 2026 — **register screen redesign**: `RegisterPage` reworked to the new design — a tappable **profile-photo placeholder** (dashed brand ring + person glyph + camera badge, prompt `authAddPhoto`) atop the card, **first/last name side by side** in a `Row` (RTL → first name on the right), the primary CTA relabelled `authCreateAccount` ("إنشاء الحساب"), and an **`OrDivider` + the auth-choose "Continue with Google/Apple" social buttons** below it (reused for consistency). Photo upload + social sign-in are stubs (tap → `comingSoon` toast); no `image_picker`/social deps added. The auth-choose `_OrDivider` was extracted to a shared `lib/shared/ui/or_divider.dart`. New strings `authCreateAccount`, `authAddPhoto`, `authOr` (EN + AR). Analyze clean, 120 tests pass. Detail: [`DOCUMENTATION_UPDATE_SUMMARY.md`](DOCUMENTATION_UPDATE_SUMMARY.md).
 > **Last Updated:** Jul 8, 2026 — **auth → sub-features + BLoC + enhanced validation**: `lib/features/auth/` restructured from flat `data/domain/presentation` (2 `Cubit`s + combined `AuthPage`) into sub-features (`shared/`, `login/`, `register/`, `password_recovery/`, `choose/`) with `bloc/`-backed pages, onto the mandated **BLoC** pattern (`AGENTS.md` §118). Login/register are now separate `LoginPage`/`RegisterPage` on `/auth` + `/auth/register` (`AppRoutes.auth`→`login`, `register` added; guard + router updated), backed by `LoginBloc`/`RegisterBloc`; `PasswordRecoveryBloc` drives recovery. Validation strengthened: real email regex, register/reset passwords need ≥8 chars + letter + digit (login stays lax → server 422), live inline `autovalidate`, a **password-strength meter**, and a **live username-availability marker** (✓/✗, debounced) via new `GET /auth/check-username` (`isUsernameAvailable`; silent-degrades to submit-time 422). New strings (`passwordStrength*`, `authUsername{Available,Taken}`), EN + AR; cubit tests → bloc tests. Analyze clean, 120 tests pass. Paired backend endpoint in `osta_backend`. Detail: [`DOCUMENTATION_UPDATE_SUMMARY.md`](DOCUMENTATION_UPDATE_SUMMARY.md).
@@ -69,13 +70,13 @@ The table below summarizes the codebase footprint today.
 
 | Metric | Count | Status |
 |--------|-------|--------|
-| Hand-written Dart files | 37 | ✅ |
-| Screens/pages | 2 (SplashPage, RoleSelectionPage) | 🚧 |
+| Hand-written Dart files | 51 | ✅ |
+| Screens/pages | 5 (SplashPage, RoleSelectionPage, ProviderOnboardingPage, BusinessIdentityPage, BusinessCatalogPage) | 🚧 |
 | Blocs/Cubits | 1 (ThemeModeController) | 🚧 |
 | Repositories / use cases | 0 | 📋 stubs await features |
 | Shared UI components | 8 | ✅ |
 | Formatters | 2 (EgpFormatter, NumberFormatter) | ✅ |
-| Locales | 2 (ar default, en) — ~6 keys | 🚧 grows with features |
+| Locales | 2 (ar default, en) — ~70 keys | 🚧 grows with features |
 | Test files / cases | 11 / ~32 | ✅ green |
 | Open app epics | 31 (+2 trackers) | 📋 |
 
@@ -96,7 +97,8 @@ The map below groups the built modules by layer. No codegen is involved — only
 | `core/router` | GoRouter: `/splash`, `/role` |
 | `core/error` | `sealed class Failure implements Exception` (`NetworkFailure`/`ServerFailure`/`UnknownFailure`); repositories throw, callers `try`/`catch` |
 | `shared/ui` | AppButton, AppTopBar, AppBottomNavBar, AppCard, AppTextField, AppBottomSheet, Empty/Error/LoadingState |
-| `features/` | splash + role + auth (email/password login+register, password recovery, secure-storage tokens) implemented; business/*, customer/*, shop, notifications = stub folders |
+| `features/` | splash + role + auth (email/password login+register, password recovery, secure-storage tokens) + business onboarding screens (cards, badges & wizard screens) implemented; customer/*, shop, notifications = stub folders |
+
 
 ---
 
@@ -114,7 +116,7 @@ Full mirror with owners and backend state: [DELIVERY_PLAN.md](reference/DELIVERY
 | M3 Booking + business bookings + team | #44, #45, #55, #62 | 📋 open, backend ready |
 | M3.5 Payments (Paymob) | #46 | ⛔ blocked — backend #47/#48/#49 open |
 | M4 Realtime + business dashboard | #47, #54 | 📋 open, backend ready |
-| M5 Garage + business catalog | #50, #56 | 📋 open, backend ready |
+| M5 Garage + business catalog | #50, #56 | 🔄 business onboarding & catalog screens ✅ · backend ready |
 | M7 Notifications + FCM | #52 | 📋 open, backend ready |
 | Home / Shop | #51, #48, #57 (+#49 P2) | 📋 open, backend ready |
 | Phase 2 | #58, #59, #60 | ⛔ backend blocked |
