@@ -198,11 +198,11 @@ WHY: The matrix was collapsed to one job; the platform-build jobs are deferred t
 ## Git & PRs / Git والطلبات
 
 ### Wrong branch / attribution
-DON'T: branch off `design-assets`; add AI co-author trailers.
-DO: `feat/<issue>-<slug>` off `main`; plain commit messages.
-WHY: `main` is the integration base; commits reflect the developer identity.
+DON'T: branch off `design-assets` or `main`; add AI co-author trailers.
+DO: `feat/<issue>-<slug>` off `develop`; PR base `develop`; plain commit messages.
+WHY: `develop` is the integration base (`main` is release-only, reached via a `develop → main` release PR); commits reflect the developer identity.
 
-> ‏`main` هو قاعدة الدمج؛ والـ commits بتعكس هوية المطوّر.
+> ‏`develop` هو قاعدة الدمج (و`main` للإصدار فقط عبر طلب دمج `develop → main`)؛ والـ commits بتعكس هوية المطوّر.
 
 ### English-only PR description
 DON'T: describe the PR in English only.

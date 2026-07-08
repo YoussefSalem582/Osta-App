@@ -175,15 +175,22 @@ Plus `EgpFormatter` / `NumberFormatter` (`shared/formatters/`) and `context.l10n
 | Classes | `PascalCase`; shared widgets prefixed `App*` |
 | Variables/functions | `camelCase` |
 | Private members | `_prefixed` |
-| Branches | `<type>/<issue>-<slug>` off `main`, hand-written kebab-case (e.g. `feat/44-booking-funnel`, `fix/auth-401-loop`) — never tool-generated names like `claude/...` |
+| Branches | `<type>/<issue>-<slug>` off `develop`, hand-written kebab-case (e.g. `feat/44-booking-funnel`, `fix/auth-401-loop`) — never tool-generated names like `claude/...` |
 
 ## Git & PRs / الالتزامات والطلبات
 
-- Branch off `main` as `feat/<issue>-<slug>` (or `fix/`, `refactor/`, `test/`, `docs/`, `chore/` + `<scope>`); PR base is `main`.
+**Branching model — `develop` integrates, `main` releases:**
+
+- **`develop`** is the default integration branch: all day-to-day work branches off it and merges back into it. **`main`** is the release branch — protected, always releasable, and updated **only** by a release PR from `develop`.
+- Branch off **`develop`** as `feat/<issue>-<slug>` (or `fix/`, `refactor/`, `test/`, `docs/`, `chore/` + `<scope>`); **PR base is `develop`**. Merge into `develop` once CI is green and the PR is reviewed.
+- **Release / version:** when a milestone or version is complete on `develop`, open a `develop → main` PR; on merge, tag the release on `main` (`v0.<n>.0` per milestone, `v1.0.0` = MVP). **Never** PR a feature branch straight to `main`.
+- **Hotfix (exception):** an urgent production fix may branch off `main` as `fix/<issue>-<slug>` and PR back to `main`, then be merged into `develop` so the fix isn't lost.
 - Branch names are **hand-written, descriptive, lowercase kebab-case** (e.g. `feat/35-auth-email-password`, `fix/auth-401-loop`, `chore/talker-logging`). **Never** keep an auto-generated/tool-default branch name (random suffixes, `claude/...`, `cursor/...`, `codex/...`) — rename it before opening the PR: `git branch -m <type>/<issue>-<slug>`.
 - PR descriptions are **bilingual (Arabic + English)**.
 - Plain commit messages (conventional-commit style: `feat(ui): …`). No AI/agent attribution trailers.
 - Never commit generated l10n (`lib/core/l10n/`).
+
+> ‏نموذج الفروع — **`develop`** فرع التكامل الافتراضي: كل العمل اليومي يتفرّع منه ويُدمج فيه، و**`main`** فرع الإصدار المحميّ الذي لا يُحدَّث إلا بطلب دمج من `develop`. تفرَّع من `develop` بصيغة `<type>/<issue>-<slug>` وقاعدة الـ PR هي `develop`؛ وعند اكتمال نسخة أو مرحلة افتح طلب دمج `develop → main` ثم ضع وسم الإصدار على `main` (`v0.<n>.0` لكل مرحلة، و`v1.0.0` عند اكتمال الـ MVP). لا تفتح PR لفرع ميزة مباشرةً على `main`. وللإصلاح العاجل فقط: تفرّع من `main` وأعِد الدمج إليه ثم إلى `develop`.
 
 ## Mandatory Documentation (after every change) / التوثيق الإلزامي
 
