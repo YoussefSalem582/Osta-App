@@ -78,8 +78,9 @@ A red step fails the PR. (Platform build jobs — APK / iOS — are deferred; se
 
 ## Branch & PR conventions / أعراف الفروع والـ PR
 
-- Branch off `main`: `feat/<issue>-<slug>` (e.g. `feat/28-app-scaffolding-ci`) — hand-written kebab-case names only; **never** tool-generated names like `claude/...` (rename with `git branch -m` first).
-- PR **base is `main`**; keep CI green.
+- **`develop`** integrates all work; **`main`** is the protected release branch (updated only by a `develop → main` release PR).
+- Branch off `develop`: `feat/<issue>-<slug>` (e.g. `feat/28-app-scaffolding-ci`) — hand-written kebab-case names only; **never** tool-generated names like `claude/...` (rename with `git branch -m` first).
+- PR **base is `develop`**; keep CI green. A finished version/milestone ships to `main` via a `develop → main` release PR (tag `v0.<n>.0`, `v1.0.0` = MVP).
 - PR description in **Arabic + English**; reference the issue (`Closes #<n>`).
 
-> ‏افرِّع من `main` بالنمط `feat/<issue>-<slug>` (مثل `feat/28-app-scaffolding-ci`) — أسماء الفروع تُكتب يدويًا فقط، ويُمنع الإبقاء على الأسماء المولَّدة من الأدوات مثل `claude/...` (أعد التسمية بـ `git branch -m` أولًا). قاعدة الـ PR هي `main`، وحافظ على الـ CI باللون الأخضر. واكتب وصف الـ PR **بالعربية والإنجليزية**، مع الإشارة إلى الـ issue (`Closes #<n>`).
+> ‏**`develop`** فرع التكامل لكل العمل، و**`main`** فرع الإصدار المحميّ (لا يُحدَّث إلا بطلب دمج `develop → main`). افرِّع من `develop` بالنمط `feat/<issue>-<slug>` (مثل `feat/28-app-scaffolding-ci`) — أسماء الفروع تُكتب يدويًا فقط، ويُمنع الإبقاء على الأسماء المولَّدة من الأدوات مثل `claude/...` (أعد التسمية بـ `git branch -m` أولًا). قاعدة الـ PR هي `develop`، وحافظ على الـ CI باللون الأخضر؛ وتصل النسخة المكتملة إلى `main` عبر طلب دمج `develop → main` (بوسم `v0.<n>.0`، و`v1.0.0` للـ MVP). واكتب وصف الـ PR **بالعربية والإنجليزية**، مع الإشارة إلى الـ issue (`Closes #<n>`).
