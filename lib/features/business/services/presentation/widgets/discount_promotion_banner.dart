@@ -18,8 +18,7 @@ class DiscountPromotionBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final appColors = theme.extension<AppColors>();
-    final limeColor = appColors?.brandLime ?? const Color(0xFFB2D235);
+    const limeColor = AppColors.brandLime;
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
