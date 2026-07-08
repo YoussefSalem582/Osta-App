@@ -1,16 +1,20 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:osta/core/network/api_exception.dart';
 import 'package:osta/core/network/auth_events.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/session/session_store.dart';
-import 'package:osta/features/auth/domain/auth_repository.dart';
-import 'package:osta/features/auth/presentation/auth_cubit.dart';
+import 'package:osta/features/auth/login/presentation/bloc/login_bloc.dart';
+import 'package:osta/features/auth/shared/domain/auth_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../core/network/fakes.dart';
+import '../../../core/network/fakes.dart';
 
-/// Records whether the network login path was hit.
+/// Records whether the network login path was hit; throws [error] when set.
 class _RecordingRepo implements AuthRepository {
+  _RecordingRepo({this.error});
+
+  final Exception? error;
   bool loginCalled = false;
 
   @override
@@ -20,8 +24,12 @@ class _RecordingRepo implements AuthRepository {
     required AppRole accountType,
   }) async {
     loginCalled = true;
+    if (error != null) throw error!;
     return accountType;
   }
+
+  @override
+  Future<bool> isUsernameAvailable(String username) async => true;
 
   @override
   Future<AppRole> register({
@@ -66,12 +74,13 @@ void main() {
     () async {
       final repo = _RecordingRepo();
       final session = await _session();
-      final cubit = AuthCubit(repo, session);
-
-      await cubit.login(
-        email: AuthCubit.debugEmail,
-        password: AuthCubit.debugPassword,
+      LoginBloc(repo, session).add(
+        const LoginSubmitted(
+          email: LoginBloc.debugEmail,
+          password: LoginBloc.debugPassword,
+        ),
       );
+      await pumpEventQueue();
 
       // Bypassed /auth/login entirely...
       expect(repo.loginCalled, isFalse);
@@ -82,11 +91,35 @@ void main() {
 
   test('non-test credentials go through the repository', () async {
     final repo = _RecordingRepo();
-    final session = await _session();
-    final cubit = AuthCubit(repo, session);
-
-    await cubit.login(email: 'real@user.com', password: 'whatever');
+    LoginBloc(repo, await _session()).add(
+      const LoginSubmitted(email: 'real@user.com', password: 'whatever'),
+    );
+    await pumpEventQueue();
 
     expect(repo.loginCalled, isTrue);
+  });
+
+  test('a validation error surfaces inline field errors', () async {
+    final repo = _RecordingRepo(
+      error: const ValidationException('bad', {
+        'email': ['taken'],
+      }),
+    );
+    final bloc = LoginBloc(repo, await _session())
+      ..add(const LoginSubmitted(email: 'a@b.com', password: 'x'));
+    await pumpEventQueue();
+
+    expect(bloc.state.status, LoginStatus.failure);
+    expect(bloc.state.fieldErrors['email'], ['taken']);
+  });
+
+  test('a network error sets the networkError flag', () async {
+    final repo = _RecordingRepo(error: const NetworkException());
+    final bloc = LoginBloc(repo, await _session())
+      ..add(const LoginSubmitted(email: 'a@b.com', password: 'x'));
+    await pumpEventQueue();
+
+    expect(bloc.state.status, LoginStatus.failure);
+    expect(bloc.state.networkError, isTrue);
   });
 }

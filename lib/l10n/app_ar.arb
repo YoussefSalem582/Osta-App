@@ -157,7 +157,12 @@
   "comingSoonBody": "هذه التجربة ليست جاهزة بعد.",
   "validationRequired": "مطلوب",
   "validationEmail": "أدخل بريدًا إلكترونيًا صحيحًا",
-  "validationPassword": "٨ أحرف على الأقل",
+  "validationPassword": "٨ أحرف على الأقل تتضمن حرفًا ورقمًا",
   "validationPasswordMatch": "كلمتا المرور غير متطابقتين",
-  "validationPhone": "أدخل رقم هاتف مصري صحيح"
+  "validationPhone": "أدخل رقم هاتف مصري صحيح",
+  "passwordStrengthWeak": "ضعيفة",
+  "passwordStrengthMedium": "متوسطة",
+  "passwordStrengthStrong": "قوية",
+  "authUsernameAvailable": "اسم المستخدم متاح",
+  "authUsernameTaken": "اسم المستخدم مستخدم بالفعل"
 }

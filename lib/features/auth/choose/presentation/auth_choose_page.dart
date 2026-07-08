@@ -29,13 +29,13 @@ class AuthChoosePage extends StatelessWidget {
       children: [
         AppButton(
           label: l10n.authSignInTitle,
-          onPressed: () => context.go('${AppRoutes.auth}?mode=login'),
+          onPressed: () => context.go(AppRoutes.login),
         ),
         const SizedBox(height: AppSpacing.md),
         AppButton(
           label: l10n.authRegisterTitle,
           variant: AppButtonVariant.secondary,
-          onPressed: () => context.go('${AppRoutes.auth}?mode=register'),
+          onPressed: () => context.go(AppRoutes.register),
         ),
         const SizedBox(height: AppSpacing.lg),
         _OrDivider(label: l10n.authChooseOr),

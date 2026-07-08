@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -8,8 +6,9 @@ import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/auth/presentation/auth_validators.dart';
-import 'package:osta/features/auth/presentation/password_recovery_cubit.dart';
+import 'package:osta/features/auth/password_recovery/presentation/bloc/password_recovery_bloc.dart';
+import 'package:osta/features/auth/shared/presentation/validators/auth_validators.dart';
+import 'package:osta/features/auth/shared/presentation/widgets/password_strength_meter.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_card.dart';
@@ -28,8 +27,8 @@ class ResetPasswordPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PasswordRecoveryCubit>(
-      create: (_) => getIt<PasswordRecoveryCubit>(),
+    return BlocProvider<PasswordRecoveryBloc>(
+      create: (_) => getIt<PasswordRecoveryBloc>(),
       child: _ResetPasswordView(email: email, token: token),
     );
   }
@@ -63,8 +62,8 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
 
   void _submit() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-    unawaited(
-      context.read<PasswordRecoveryCubit>().resetPassword(
+    context.read<PasswordRecoveryBloc>().add(
+      PasswordResetSubmitted(
         email: _email.text.trim(),
         token: _token.text.trim(),
         password: _password.text,
@@ -75,7 +74,7 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return BlocConsumer<PasswordRecoveryCubit, PasswordRecoveryState>(
+    return BlocConsumer<PasswordRecoveryBloc, PasswordRecoveryState>(
       listenWhen: (prev, curr) =>
           curr.status == RecoveryStatus.failure && curr.fieldErrors.isEmpty,
       listener: (context, state) => AppToaster.showError(
@@ -135,8 +134,10 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
               obscureToggle: true,
               autofillHints: const [AutofillHints.newPassword],
               errorText: state.fieldErrors['password']?.first,
+              onChanged: (_) => setState(() {}), // refresh strength meter
               validator: (v) => AuthValidators.password(context, v),
             ),
+            PasswordStrengthMeter(password: _password.text),
             const SizedBox(height: AppSpacing.md),
             AppTextField(
               label: l10n.authConfirmPassword,
@@ -175,7 +176,7 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
     const SizedBox(height: AppSpacing.lg),
     AppButton(
       label: l10n.authBackToLogin,
-      onPressed: () => context.go(AppRoutes.auth),
+      onPressed: () => context.go(AppRoutes.login),
     ),
   ];
 }

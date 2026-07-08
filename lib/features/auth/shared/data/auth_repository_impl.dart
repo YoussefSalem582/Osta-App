@@ -3,7 +3,7 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_exception.dart';
 import 'package:osta/core/network/token_pair.dart';
 import 'package:osta/core/session/app_role.dart';
-import 'package:osta/features/auth/domain/auth_repository.dart';
+import 'package:osta/features/auth/shared/domain/auth_repository.dart';
 
 /// Talks to `/auth/*`, stores the Sanctum token pair on success, and reads the
 /// authoritative role from the embedded `user.type` — the same value
@@ -15,6 +15,18 @@ class AuthRepositoryImpl implements AuthRepository {
 
   final ApiClient _api;
   final TokenStorage _tokens;
+
+  @override
+  Future<bool> isUsernameAvailable(String username) async {
+    final result = await _api.get<bool>(
+      '/auth/check-username',
+      authenticated: false,
+      query: {'username': username},
+      parse: (data) =>
+          data is Map<String, dynamic> && data['available'] == true,
+    );
+    return result.data;
+  }
 
   @override
   Future<AppRole> login({

@@ -6,7 +6,7 @@ import 'package:osta/core/network/auth_events.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:osta/core/session/session_state.dart';
 import 'package:osta/core/session/session_store.dart';
-import 'package:osta/features/auth/domain/auth_repository.dart';
+import 'package:osta/features/auth/shared/domain/auth_repository.dart';
 
 /// Single source of truth for first-run routing. The splash calls [bootstrap];
 /// the language screen, role chooser and auth flow mutate it; the router

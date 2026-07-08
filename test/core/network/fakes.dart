@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/session/app_role.dart';
-import 'package:osta/features/auth/domain/auth_repository.dart';
+import 'package:osta/features/auth/shared/domain/auth_repository.dart';
 
 /// In-memory [TokenStorage] — no platform channels in tests.
 class FakeTokenStorage extends TokenStorage {
@@ -40,6 +40,9 @@ class FakeTokenStorage extends TokenStorage {
 /// the requested account type as the authoritative role.
 class FakeAuthRepository implements AuthRepository {
   int logoutCalls = 0;
+
+  @override
+  Future<bool> isUsernameAvailable(String username) async => true;
 
   @override
   Future<void> logout() async => logoutCalls++;

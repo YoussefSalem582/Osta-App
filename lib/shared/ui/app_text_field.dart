@@ -28,6 +28,7 @@ class AppTextField extends StatefulWidget {
     this.textCapitalization = TextCapitalization.none,
     this.prefixIcon,
     this.prefix,
+    this.suffixIcon,
     this.autofillHints,
     this.validator,
     this.onChanged,
@@ -54,6 +55,10 @@ class AppTextField extends StatefulWidget {
   /// Always-visible custom leading widget (e.g. a `+20` dial prefix). Takes
   /// precedence over [prefixIcon].
   final Widget? prefix;
+
+  /// Trailing widget (e.g. a username-availability ✓/✗ marker). Ignored on a
+  /// password field with [obscureToggle], where the slot holds the eye button.
+  final Widget? suffixIcon;
 
   /// OS autofill / password-manager hints (e.g. `[AutofillHints.email]`).
   final Iterable<String>? autofillHints;
@@ -107,7 +112,7 @@ class _AppTextFieldState extends State<AppTextField> {
                       : Icons.visibility_outlined,
                 ),
               )
-            : null,
+            : widget.suffixIcon,
       ),
     );
   }

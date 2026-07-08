@@ -55,7 +55,8 @@ String? resolveRedirect({
   if (!session.hasToken) {
     const authSurface = {
       AppRoutes.authChoose,
-      AppRoutes.auth,
+      AppRoutes.login,
+      AppRoutes.register,
       AppRoutes.forgotPassword,
       AppRoutes.resetPassword,
     };

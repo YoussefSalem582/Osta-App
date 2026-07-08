@@ -132,9 +132,13 @@ void main() {
         resolveRedirect(session: _enrolled, location: AppRoutes.role),
         AppRoutes.authChoose,
       );
-      // The auth form itself is part of the same surface: stay put.
+      // The login and register forms are part of the same surface: stay put.
       expect(
-        resolveRedirect(session: _enrolled, location: AppRoutes.auth),
+        resolveRedirect(session: _enrolled, location: AppRoutes.login),
+        isNull,
+      );
+      expect(
+        resolveRedirect(session: _enrolled, location: AppRoutes.register),
         isNull,
       );
     });
@@ -168,7 +172,7 @@ void main() {
         test('${role.name} -> $shell', () {
           final state = _enrolled.copyWith(activeRole: role, hasToken: true);
           expect(
-            resolveRedirect(session: state, location: AppRoutes.auth),
+            resolveRedirect(session: state, location: AppRoutes.login),
             shell,
           );
           // Already on the right shell: stay put.

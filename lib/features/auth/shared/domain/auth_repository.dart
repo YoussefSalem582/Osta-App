@@ -4,6 +4,11 @@ import 'package:osta/core/session/app_role.dart';
 /// `account_type = accountType.wireName` and return the server's authoritative
 /// role (`me.type`) so the caller can self-heal a wrong-shell choice.
 abstract interface class AuthRepository {
+  /// `GET /auth/check-username`. Returns whether [username] is free to claim
+  /// (globally unique, soft-delete-aware). Backs the register form's live
+  /// availability marker.
+  Future<bool> isUsernameAvailable(String username);
+
   /// `POST /auth/login`. Persists the returned token pair and returns
   /// `me.type`.
   Future<AppRole> login({

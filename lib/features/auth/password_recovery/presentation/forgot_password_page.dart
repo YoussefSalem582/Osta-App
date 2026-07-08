@@ -8,8 +8,8 @@ import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/auth/presentation/auth_validators.dart';
-import 'package:osta/features/auth/presentation/password_recovery_cubit.dart';
+import 'package:osta/features/auth/password_recovery/presentation/bloc/password_recovery_bloc.dart';
+import 'package:osta/features/auth/shared/presentation/validators/auth_validators.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_card.dart';
@@ -24,8 +24,8 @@ class ForgotPasswordPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PasswordRecoveryCubit>(
-      create: (_) => getIt<PasswordRecoveryCubit>(),
+    return BlocProvider<PasswordRecoveryBloc>(
+      create: (_) => getIt<PasswordRecoveryBloc>(),
       child: const _ForgotPasswordView(),
     );
   }
@@ -50,8 +50,8 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
 
   void _submit() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-    unawaited(
-      context.read<PasswordRecoveryCubit>().sendResetLink(_email.text.trim()),
+    context.read<PasswordRecoveryBloc>().add(
+      ResetLinkRequested(_email.text.trim()),
     );
   }
 
@@ -63,7 +63,7 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return BlocConsumer<PasswordRecoveryCubit, PasswordRecoveryState>(
+    return BlocConsumer<PasswordRecoveryBloc, PasswordRecoveryState>(
       listenWhen: (prev, curr) =>
           curr.status == RecoveryStatus.failure && curr.fieldErrors.isEmpty,
       listener: (context, state) => AppToaster.showError(
@@ -136,7 +136,7 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
     AppButton(
       label: l10n.authBackToLogin,
       variant: AppButtonVariant.text,
-      onPressed: () => context.go(AppRoutes.auth),
+      onPressed: () => context.go(AppRoutes.login),
     ),
   ];
 }

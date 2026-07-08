@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/session/app_role.dart';
-import 'package:osta/features/auth/data/auth_repository_impl.dart';
+import 'package:osta/features/auth/shared/data/auth_repository_impl.dart';
 
 import '../../core/network/fakes.dart';
 
@@ -77,6 +77,41 @@ void main() {
     expect(body['password_confirmation'], 'Passw0rd');
     expect(body['phone'], '01000000000');
     expect(storage.access, 'access-business');
+  });
+
+  test('isUsernameAvailable reads data.available unauthenticated', () async {
+    final adapter = ScriptedAdapter([
+      (_) => jsonResponse(200, {
+        'success': true,
+        'data': {'available': true},
+      }),
+    ]);
+
+    final free = await _repo(
+      adapter,
+      FakeTokenStorage(),
+    ).isUsernameAvailable('free_name');
+
+    expect(free, isTrue);
+    final request = adapter.requests.single;
+    expect(request.path, contains('/auth/check-username'));
+    expect(request.extra['no-auth'], isTrue);
+  });
+
+  test('isUsernameAvailable is false for a taken name', () async {
+    final adapter = ScriptedAdapter([
+      (_) => jsonResponse(200, {
+        'success': true,
+        'data': {'available': false},
+      }),
+    ]);
+
+    final taken = await _repo(
+      adapter,
+      FakeTokenStorage(),
+    ).isUsernameAvailable('taken');
+
+    expect(taken, isFalse);
   });
 
   test('register omits an empty phone', () async {

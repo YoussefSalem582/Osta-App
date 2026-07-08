@@ -156,7 +156,12 @@
   "comingSoonBody": "This experience isn't ready yet.",
   "validationRequired": "Required",
   "validationEmail": "Enter a valid email",
-  "validationPassword": "At least 8 characters",
+  "validationPassword": "At least 8 characters with a letter and a number",
   "validationPasswordMatch": "Passwords don't match",
-  "validationPhone": "Enter a valid Egyptian mobile number"
+  "validationPhone": "Enter a valid Egyptian mobile number",
+  "passwordStrengthWeak": "Weak",
+  "passwordStrengthMedium": "Medium",
+  "passwordStrengthStrong": "Strong",
+  "authUsernameAvailable": "Username available",
+  "authUsernameTaken": "Username already taken"
 }
