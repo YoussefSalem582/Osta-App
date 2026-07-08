@@ -4,6 +4,16 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-08 — Business Services & Shop screens with direct `AppBottomNavBar` & `ServiceToggleCard` consolidation
+
+Implemented the two exact screens from user mockups (`BusinessServicesPage` with `ServicesFilterToggle`, shared `ServiceToggleCard`, and `DiscountPromotionBanner` under `lib/features/business/services/presentation/`; and `BusinessShopPage` with `ShopProductCard` under `lib/features/shop/presentation/`). Removed the entire `lib/features/shell/` folder (`ProviderShell`) since it is no longer needed, and instead directly attached the shared `AppBottomNavBar` (`AppBottomNavItem`) and center docked `FloatingActionButton` onto the `Scaffold` of both `BusinessServicesPage` (`/business-services`) and `BusinessShopPage` (`/business-shop`). Consolidated `ServiceToggleCard` across both `BusinessCatalogPage` (`onboarding`) and `BusinessServicesPage` (`services`) to eliminate widget/code duplication, replacing hardcoded hex switch colors with dynamic design tokens (`theme.colorScheme.primary` and `outlineVariant`). Registered `/business-services` and `/business-shop` in `AppRouter` and added exact localized strings (`shellNavCalendar` + navigation/services keys) across `app_ar.arb` and `app_en.arb`.
+
+> ‏تم تنفيذ الشاشتين المطابقتين لتصاميم المستخدم (`BusinessServicesPage` مع مكونات التبديل وعروض الخصم تحت `lib/features/business/services/presentation/`؛ و`BusinessShopPage` مع بطاقة المنتج وحالة التفعيل تحت `lib/features/shop/presentation/`). وتم مسح مجلد `lib/features/shell/` بالكامل وحذف الصفحة الحاضنة `ProviderShell` لعدم الحاجة إليها وإرفاق شريط التنقل السفلي المشترك `AppBottomNavBar` (`AppBottomNavItem`) وزر التقويم العائم مباشرة في شاشتي الكتالوج والأسعار والمتجر. وتم توحيد مكوّن بطاقة الخدمة `ServiceToggleCard` ليعمل كمكوّن مشترك بين شاشة تأهيل الكتالوج وشاشة الكتالوج والأسعار لتجنب تكرار الكود مع استبدال الألوان الثابتة برموز ألوان التصميم الديناميكية. وتم تسجيل مساري الشاشتين في موجه التطبيق وإضافة جميع مفاتيح الترجمة في ملفي العربية والإنجليزية.
+
+Touched: `lib/features/business/services/presentation/**`, `lib/features/business/onboarding/presentation/widgets/service_toggle_card.dart`, `lib/features/shop/presentation/**`, `lib/shared/ui/app_bottom_nav_bar.dart`, `lib/core/router/app_router.dart`, `lib/l10n/app_{en,ar}.arb`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
+## 2026-07-07 — Business onboarding screens, widgets & routing implemented
+
 ## 2026-07-09 — Point BASE_URL at the live backend (osta.technology92.com)
 
 The backend is now deployed at **`https://osta.technology92.com`** — admin panel at `/admin`, REST API under `/api/v1`. Verified live: `GET https://osta.technology92.com/api/v1/auth/check-username?username=test` → `{"success":true,"data":{"available":true}}` (the standard `{success,data}` envelope; the app's `Prefix = /api/v1` and error-code contract hold). The previous default host `api.osta.dev` was a placeholder that does not resolve (DNS `fetch failed`).

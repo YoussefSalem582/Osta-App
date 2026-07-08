@@ -14,6 +14,7 @@ import 'package:osta/features/auth/register/presentation/register_page.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_catalog_page.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_identity_page.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/provider_onboarding_page.dart';
+import 'package:osta/features/business/services/presentation/pages/business_services_page.dart';
 import 'package:osta/features/business/shell/presentation/business_shell_page.dart';
 import 'package:osta/features/customer/booking/presentation/real_time_booking_screen.dart';
 import 'package:osta/features/customer/garage/presentation/add_car_screen.dart';
@@ -24,6 +25,7 @@ import 'package:osta/features/onboarding/page/onboarding_page.dart';
 import 'package:osta/features/onboarding/presentation/language_page.dart';
 import 'package:osta/features/role/presentation/coming_soon_page.dart';
 import 'package:osta/features/role/presentation/role_chooser_page.dart';
+import 'package:osta/features/shop/presentation/pages/business_shop_page.dart';
 import 'package:osta/features/splash/presentation/splash_page.dart';
 
 /// Declarative app router. Boots at the splash and defers all navigation to a
@@ -54,7 +56,7 @@ class AppRouter {
         builder: (context, state) => const OnboardingPage(),
       ),
 
-      // Business (provider) onboarding flow.
+      // Business (provider) onboarding + catalog/services/shop flow.
       GoRoute(
         path: ProviderOnboardingPage.path,
         builder: (context, state) => ProviderOnboardingPage(
@@ -70,7 +72,17 @@ class AppRouter {
       ),
       GoRoute(
         path: BusinessCatalogPage.path,
-        builder: (context, state) => const BusinessCatalogPage(),
+        builder: (context, state) => BusinessCatalogPage(
+          onActivate: () => context.go(BusinessServicesPage.path),
+        ),
+      ),
+      GoRoute(
+        path: BusinessServicesPage.path,
+        builder: (context, state) => const BusinessServicesPage(),
+      ),
+      GoRoute(
+        path: BusinessShopPage.path,
+        builder: (context, state) => const BusinessShopPage(),
       ),
 
       GoRoute(

@@ -91,15 +91,15 @@ class ServiceToggleCard extends StatelessWidget {
                 // لون الخلفية
                 trackColor: WidgetStateProperty.resolveWith((states) {
                   if (states.contains(WidgetState.selected)) {
-                    return const Color(0xFF1F7A45); 
+                    return theme.colorScheme.primary;
                   }
-                  return const Color(0xFFD9D9D9);
+                  return theme.colorScheme.outlineVariant;
                 }),
 
                 // لون البوردر
                 trackOutlineColor: WidgetStateProperty.resolveWith((states) {
                   if (states.contains(WidgetState.selected)) {
-                    return const Color(0xFF1F7A45);
+                    return theme.colorScheme.primary;
                   }
                   return Colors.transparent;
                 }),
