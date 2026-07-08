@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:osta/core/constants/app_images.dart';
-import 'package:osta/features/onboarding/widget/social_button.dart';
-import 'package:osta/features/role/presentation/role_selection_page.dart';
+import 'package:osta/features/home/presentation/widgets/home_bottom_nav.dart';
+import 'package:osta/features/onboarding/presentation/widgets/social_button.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -39,8 +39,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -68,14 +70,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         const SizedBox(height: 30),
                         Text(
                           page.title,
-                          style: const TextStyle(
-                            fontSize: 28,
+                          style: theme.textTheme.headlineMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 20),
 
-                        // الصفحة الثانية
                         if (index == 1)
                           Column(
                             children: [
@@ -84,14 +84,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
                                 height: 55,
                                 child: OutlinedButton(
                                   onPressed: () {
-                                    // TODO: Arabic
+                                    // TODO(adel): Select Arabic language.
                                   },
-                                  child: const Text(
+                                  child: Text(
                                     'العربية',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.black,
-                                    ),
+                                    style: theme.textTheme.titleMedium,
                                   ),
                                 ),
                               ),
@@ -101,47 +98,41 @@ class _OnboardingPageState extends State<OnboardingPage> {
                                 height: 55,
                                 child: OutlinedButton(
                                   onPressed: () {
-                                    // TODO: English
+                                    // TODO(adel): Select English language.
                                   },
-                                  child: const Text(
+                                  child: Text(
                                     'English',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.black,
-                                    ),
+                                    style: theme.textTheme.titleMedium,
                                   ),
                                 ),
                               ),
                             ],
                           )
-                        // الصفحة الثالثة
                         else if (index == 2)
                           Column(
                             children: [
-                              socialButton(
+                              const SocialButton(
                                 icon: Icons.g_mobiledata,
                                 text: 'المتابعة باستخدام Google',
                               ),
                               const SizedBox(height: 12),
-                              socialButton(
+                              const SocialButton(
                                 icon: Icons.apple,
                                 text: 'المتابعة باستخدام Apple',
                               ),
                               const SizedBox(height: 12),
-                              socialButton(
+                              const SocialButton(
                                 icon: Icons.email_outlined,
                                 text: 'المتابعة باستخدام Email',
                               ),
                             ],
                           )
-                        // الصفحة الأولى
                         else
                           Text(
                             page.description,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 17,
-                              color: Colors.grey,
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
                             ),
                           ),
                       ],
@@ -154,8 +145,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
             SmoothPageIndicator(
               controller: controller,
               count: pages.length,
-              effect: const WormEffect(
-                activeDotColor: Color(0xff0B5D3B),
+              effect: WormEffect(
+                activeDotColor: theme.colorScheme.primary,
                 dotHeight: 10,
                 dotWidth: 10,
               ),
@@ -177,11 +168,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 height: 55,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff0B5D3B),
+                    backgroundColor: theme.colorScheme.primary,
                   ),
                   onPressed: () async {
                     if (currentPage == pages.length - 1) {
-                      context.go(RoleSelectionPage.path);
+                      context.go(HomeBottomNav.path);
                     } else {
                       await controller.nextPage(
                         duration: const Duration(milliseconds: 300),
@@ -191,9 +182,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   },
                   child: Text(
                     currentPage == pages.length - 1 ? 'ابدأ' : 'التالي',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.onPrimary,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),

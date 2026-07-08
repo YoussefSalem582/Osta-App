@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:osta/core/constants/app_images.dart';
 import 'package:osta/core/theme/app_colors.dart';
-import 'package:osta/features/onboarding/page/onboarding_page.dart';
+import 'package:osta/features/onboarding/presentation/pages/onboarding_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -23,7 +23,7 @@ final class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> _bootstrap() async {
-    await Future<void>.delayed(const Duration(seconds: 4));
+   await Future<void>.delayed(const Duration(seconds: 1));
 
     if (!mounted) return;
 
@@ -32,6 +32,8 @@ final class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       backgroundColor: AppColors.brandGreen,
       body: Center(
@@ -43,11 +45,10 @@ final class _SplashPageState extends State<SplashPage> {
               height: 200,
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'صلح عربيتك في دقائق',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                color: theme.colorScheme.onPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),

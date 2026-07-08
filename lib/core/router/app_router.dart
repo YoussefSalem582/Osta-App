@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
-import 'package:osta/features/onboarding/page/onboarding_page.dart';
+import 'package:osta/features/home/presentation/widgets/home_bottom_nav.dart';
+import 'package:osta/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:osta/features/role/presentation/role_selection_page.dart';
 import 'package:osta/features/splash/presentation/splash_page.dart';
 
@@ -22,6 +23,11 @@ class AppRouter {
       GoRoute(
         path: RoleSelectionPage.path,
         builder: (context, state) => const RoleSelectionPage(),
+      ),
+
+      GoRoute(
+        path: HomeBottomNav.path,
+        builder: (context, state) => const HomeBottomNav(),
       ),
 
       // Dev-facing component gallery (not linked from product UI).

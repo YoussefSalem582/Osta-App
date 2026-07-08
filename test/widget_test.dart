@@ -16,9 +16,9 @@ void main() {
     // Splash is shown first (brand logo).
     expect(find.byType(Image), findsOneWidget);
 
-    // After the splash delay, first-run role selection appears.
-    await tester.pump(const Duration(seconds: 2));
+    // After the splash delay, onboarding appears.
+    await tester.pump(const Duration(seconds: 4));
     await tester.pumpAndSettle();
-    expect(find.byType(FilledButton), findsOneWidget);
+    expect(find.byType(ElevatedButton), findsOneWidget);
   });
 }
