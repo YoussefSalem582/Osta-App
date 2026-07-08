@@ -27,6 +27,7 @@ class RegisterSubmitted extends RegisterEvent {
     required this.email,
     required this.password,
     this.phone,
+    this.photoPath,
   });
 
   final String firstName;
@@ -36,6 +37,10 @@ class RegisterSubmitted extends RegisterEvent {
   final String password;
   final String? phone;
 
+  /// Local path of the avatar the user picked, uploaded after the account is
+  /// created. `null` when no photo was chosen.
+  final String? photoPath;
+
   @override
   List<Object?> get props => [
     firstName,
@@ -44,5 +49,6 @@ class RegisterSubmitted extends RegisterEvent {
     email,
     password,
     phone,
+    photoPath,
   ];
 }

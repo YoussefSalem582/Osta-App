@@ -32,6 +32,9 @@ class _RecordingRepo implements AuthRepository {
   Future<bool> isUsernameAvailable(String username) async => true;
 
   @override
+  Future<void> uploadAvatar({required String filePath}) async {}
+
+  @override
   Future<AppRole> register({
     required String firstName,
     required String lastName,

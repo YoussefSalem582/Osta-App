@@ -83,6 +83,18 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         phone: event.phone,
         accountType: role,
       );
+      // Register already stored the token, so this authenticated upload works.
+      // Must run before onAuthenticated — that hands off to the router, which
+      // tears this page (and bloc) down. Best-effort: the account exists either
+      // way, so a failed photo shouldn't strand the user; they can set it later
+      // from their profile.
+      if (event.photoPath != null) {
+        try {
+          await _repo.uploadAvatar(filePath: event.photoPath!);
+        } on Exception {
+          // Swallow — non-fatal to registration.
+        }
+      }
       await _session.onAuthenticated(resolved, requested: role);
     } on Exception catch (error) {
       final failure = mapAuthFailure(error);

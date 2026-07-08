@@ -10,6 +10,20 @@ import 'package:osta/shared/ui/app_top_bar.dart';
 class RealTimeBookingScreen extends StatelessWidget {
   const RealTimeBookingScreen({super.key});
 
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppTopBar(
+      centerTitle: false,
+      title: context.l10n.bookingStatus,
+      subtitle: BookingView.bookingCode,
+    ),
+    body: const BookingView(),
+  );
+}
+
+class BookingView extends StatelessWidget {
+  const BookingView({super.key});
+
   static const bookingCode = 'OSTA-B2046';
   static const mechanicName = 'الميكانيكي: محمود';
   static const centerName = 'مركز النصر · بنها — ٣٠م';
@@ -21,54 +35,47 @@ class RealTimeBookingScreen extends StatelessWidget {
     final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
 
-    return Scaffold(
-      appBar: AppTopBar(
-        centerTitle: false,
-        title: l10n.bookingStatus,
-        subtitle: bookingCode,
+    return ListView(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.lg,
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.lg,
+      children: [
+        StatusCard(
+          mechanicName: mechanicName,
+          centerName: centerName,
+          statusLabel: l10n.workingOnYourCar,
         ),
-        children: [
-          StatusCard(
-            mechanicName: mechanicName,
-            centerName: centerName,
-            statusLabel: l10n.workingOnYourCar,
+
+        const SizedBox(height: AppSpacing.lg),
+
+        Text(
+          l10n.bookingTimeline,
+          style: textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
           ),
+        ),
 
-          const SizedBox(height: AppSpacing.lg),
+        const SizedBox(height: AppSpacing.md),
 
-          Text(
-            l10n.bookingTimeline,
-            style: textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
+        const AppCard(
+          child: BookingTimeline(activeStep: activeStep),
+        ),
 
-          const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
 
-          const AppCard(
-            child: BookingTimeline(activeStep: activeStep),
-          ),
+        LiveUpdatesBanner(
+          notice: l10n.liveUpdatesNotice(liveChannel),
+        ),
 
-          const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.lg),
 
-          LiveUpdatesBanner(
-            notice: l10n.liveUpdatesNotice(liveChannel),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          AppButton(
-            label: l10n.contactCenter,
-            icon: Icons.phone_outlined,
-            onPressed: () {},
-          ),
-        ],
-      ),
+        AppButton(
+          label: l10n.contactCenter,
+          icon: Icons.phone_outlined,
+          onPressed: () {},
+        ),
+      ],
     );
   }
 }

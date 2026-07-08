@@ -15,12 +15,22 @@ class AppBottomNavItem {
     required this.label,
     this.selectedIcon,
     this.badgeCount = 0,
+    this.onTap,
+    this.body,
   });
 
   final IconData icon;
   final IconData? selectedIcon;
   final String label;
   final int badgeCount;
+
+  /// When set, tapping the tab runs this instead of selecting it — for tabs
+  /// that navigate to a pushed screen rather than swap the shell body.
+  final VoidCallback? onTap;
+
+  /// When set, selecting the tab shows this as the shell body (bottom nav
+  /// stays) instead of the default placeholder.
+  final Widget? body;
 }
 
 /// Brand bottom navigation — a rounded, elevated bar with icon + label tabs and

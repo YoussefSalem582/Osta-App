@@ -2,7 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:osta/core/constants/app_images.dart';
 import 'package:osta/core/session/session_controller.dart';
+import 'package:osta/core/theme/app_colors.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_bottom_nav_bar.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
@@ -15,15 +18,19 @@ enum _ShellAction { switchRole, signOut }
 /// back to the chooser) and "sign out".
 class RoleShell extends StatefulWidget {
   const RoleShell({
-    required this.title,
     required this.tabs,
+    this.pages,
     this.centerIcon,
     this.onCenterTap,
     super.key,
   });
 
-  final String title;
   final List<AppBottomNavItem> tabs;
+
+  /// Optional list of pages to display for each tab. When provided, the
+  /// matching page is shown instead of the generic [EmptyState] placeholder.
+  /// Must have the same length as [tabs] when provided.
+  final List<Widget>? pages;
 
   /// Optional raised center action for the bottom bar (e.g. a map button).
   final IconData? centerIcon;
@@ -42,7 +49,11 @@ class _RoleShellState extends State<RoleShell> {
     final tab = widget.tabs[_index];
     return Scaffold(
       appBar: AppTopBar(
-        title: widget.title,
+        title: tab.label,
+        leading: Padding(
+          padding: const EdgeInsets.all(AppSpacing.sm),
+          child: Image.asset(AppImages.logo, color: AppColors.brandGreen),
+        ),
         actions: [
           PopupMenuButton<_ShellAction>(
             onSelected: (action) => _onAction(context, action),
@@ -59,15 +70,37 @@ class _RoleShellState extends State<RoleShell> {
           ),
         ],
       ),
-      body: EmptyState(
-        icon: tab.icon,
-        title: tab.label,
-        message: l10n.shellWelcome,
-      ),
+// <<<<<<< HEAD
+//       body: widget.pages != null
+//           ? IndexedStack(
+//               index: _index,
+//               children: widget.pages!,
+//             )
+//           : EmptyState(
+//               icon: tab.icon,
+//               title: tab.label,
+//               message: l10n.shellWelcome,
+//             ),
+// =======
+      body:
+          tab.body ??
+          EmptyState(
+            icon: tab.icon,
+            title: tab.label,
+            message: l10n.shellWelcome,
+          ),
+// >>>>>>> 05dd7eefce8d3884570b01b7e0b4d8e0d864abad
       bottomNavigationBar: AppBottomNavBar(
         items: widget.tabs,
         currentIndex: _index,
-        onChanged: (i) => setState(() => _index = i),
+        onChanged: (i) {
+          final onTap = widget.tabs[i].onTap;
+          if (onTap != null) {
+            onTap();
+          } else {
+            setState(() => _index = i);
+          }
+        },
         centerIcon: widget.centerIcon,
         onCenterTap: widget.onCenterTap,
       ),

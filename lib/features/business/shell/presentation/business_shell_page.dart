@@ -11,7 +11,6 @@ class BusinessShellPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return RoleShell(
-      title: l10n.businessHomeTitle,
       tabs: [
         AppBottomNavItem(icon: Icons.dashboard_outlined, label: l10n.navHome),
         AppBottomNavItem(
