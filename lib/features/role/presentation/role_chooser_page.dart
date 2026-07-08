@@ -1,0 +1,101 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:osta/core/session/app_role.dart';
+import 'package:osta/core/session/session_controller.dart';
+import 'package:osta/core/theme/app_tokens.dart';
+import 'package:osta/shared/extensions/context_ext.dart';
+
+/// First-run role split. `customer` + `business` are tappable and route into
+/// their shell (via auth); `mechanic` + `tow` render disabled ("coming soon").
+class RoleChooserPage extends StatelessWidget {
+  const RoleChooserPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final session = context.read<SessionController>();
+    return Scaffold(
+      appBar: AppBar(title: Text(l10n.appTitle)),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                l10n.chooseRole,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              _RoleCard(
+                icon: Icons.person_outline,
+                label: l10n.roleCustomer,
+                onTap: () => session.chooseRole(AppRole.customer),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              _RoleCard(
+                icon: Icons.storefront_outlined,
+                label: l10n.roleBusiness,
+                onTap: () => session.chooseRole(AppRole.business),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              _RoleCard(
+                icon: Icons.build_outlined,
+                label: l10n.roleMechanic,
+                comingSoonLabel: l10n.comingSoon,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              _RoleCard(
+                icon: Icons.local_shipping_outlined,
+                label: l10n.roleTow,
+                comingSoonLabel: l10n.comingSoon,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// One role option. Tappable when [onTap] is set; otherwise dimmed with a
+/// "coming soon" chip and no tap target.
+class _RoleCard extends StatelessWidget {
+  const _RoleCard({
+    required this.icon,
+    required this.label,
+    this.onTap,
+    this.comingSoonLabel,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+  final String? comingSoonLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final disabled = onTap == null;
+    return Opacity(
+      opacity: disabled ? 0.5 : 1,
+      child: Card(
+        child: ListTile(
+          enabled: !disabled,
+          onTap: onTap,
+          leading: Icon(icon),
+          title: Text(label),
+          trailing: comingSoonLabel == null
+              ? const Icon(Icons.chevron_right)
+              : Chip(
+                  label: Text(comingSoonLabel!),
+                  labelStyle: theme.textTheme.labelSmall,
+                  visualDensity: VisualDensity.compact,
+                ),
+        ),
+      ),
+    );
+  }
+}

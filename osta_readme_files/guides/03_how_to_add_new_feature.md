@@ -16,9 +16,9 @@ Advanced tooling (freezed, injectable, fpdart, build flavors) was **deferred, no
 
 1. **Read the epic.** Find the matching GitHub issue and its feature doc in [../features/](../features/README.md). Don't invent scope — the epic defines screens, endpoints, and test expectations.
 2. **Check the endpoint is ready.** [09_api_endpoints.md](09_api_endpoints.md) + [11_backend_feature_connectivity.md](11_backend_feature_connectivity.md) tell you if the backend route exists (most do) or is blocked.
-3. **Branch:** `feat/<issue>-<slug>` off `main` — hand-written kebab-case, never a tool-generated name like `claude/...` (rename with `git branch -m` if a tool created one).
+3. **Branch:** `feat/<issue>-<slug>` off `develop` — hand-written kebab-case, never a tool-generated name like `claude/...` (rename with `git branch -m` if a tool created one). `develop` is the integration branch; `main` is release-only.
 
-> ‏قبل ما تبدأ: اقرأ الـ epic ولاقي issue بتاعتها ومستند الميزة في ../features/ — ما تخترعش نطاق، الـ epic هي اللي بتحدد الشاشات والـ endpoints وتوقعات الاختبار. اتأكد إن الـ endpoint جاهز من 09_api_endpoints.md و 11_backend_feature_connectivity.md. بعدين اعمل فرع `feat/<issue>-<slug>` من `main` — اسم الفرع بيتكتب يدوي ووصفي، وممنوع تسيب اسم مولّد من أداة زي `claude/...` (غيّره بـ `git branch -m` الأول).
+> ‏قبل ما تبدأ: اقرأ الـ epic ولاقي issue بتاعتها ومستند الميزة في ../features/ — ما تخترعش نطاق، الـ epic هي اللي بتحدد الشاشات والـ endpoints وتوقعات الاختبار. اتأكد إن الـ endpoint جاهز من 09_api_endpoints.md و 11_backend_feature_connectivity.md. بعدين اعمل فرع `feat/<issue>-<slug>` من `develop` (فرع التكامل، و`main` للإصدار بس) — اسم الفرع بيتكتب يدوي ووصفي، وممنوع تسيب اسم مولّد من أداة زي `claude/...` (غيّره بـ `git branch -m` الأول).
 
 ---
 
@@ -202,9 +202,9 @@ Add every user-facing string to **both** `lib/l10n/app_en.arb` (template) and `l
 
 ## 8. Ship / التسليم
 
-Run `flutter analyze` (clean), `flutter test` (green), and `dart format .`. There is **no `build_runner` step**; only `flutter gen-l10n` generates code (and it runs automatically on `flutter run`/`build`). Then update docs ([../../CHANGELOG.md](../../CHANGELOG.md), [../DOCUMENTATION_UPDATE_SUMMARY.md](../DOCUMENTATION_UPDATE_SUMMARY.md), [../CURRENT_STATUS.md](../CURRENT_STATUS.md), the feature doc). PR base `main`, description in **Arabic + English**.
+Run `flutter analyze` (clean), `flutter test` (green), and `dart format .`. There is **no `build_runner` step**; only `flutter gen-l10n` generates code (and it runs automatically on `flutter run`/`build`). Then update docs ([../../CHANGELOG.md](../../CHANGELOG.md), [../DOCUMENTATION_UPDATE_SUMMARY.md](../DOCUMENTATION_UPDATE_SUMMARY.md), [../CURRENT_STATUS.md](../CURRENT_STATUS.md), the feature doc). PR base `develop` (a finished version/milestone reaches `main` via a `develop → main` release PR + tag), description in **Arabic + English**.
 
-> ‏شغّل `flutter analyze` (نضيف) و`flutter test` (أخضر) و`dart format .`. مفيش خطوة `build_runner`؛ الـ `flutter gen-l10n` بس هو اللي بيولّد كود (وبيشتغل تلقائيًا مع `flutter run`/`build`). بعدين حدّث المستندات، واعمل PR على `main` بوصف بالعربي والإنجليزي.
+> ‏شغّل `flutter analyze` (نضيف) و`flutter test` (أخضر) و`dart format .`. مفيش خطوة `build_runner`؛ الـ `flutter gen-l10n` بس هو اللي بيولّد كود (وبيشتغل تلقائيًا مع `flutter run`/`build`). بعدين حدّث المستندات، واعمل PR على `develop` (والنسخة المكتملة بتوصل `main` عبر PR دمج `develop → main` مع وسم إصدار) بوصف بالعربي والإنجليزي.
 
 To run the app locally, pass a single `BASE_URL` dart-define (no `--flavor`, no `FLAVOR`):
 

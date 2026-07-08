@@ -144,7 +144,7 @@ The conventions below keep files, classes, and branches predictable across the r
 
 - **Files**: `snake_case.dart`, named after the main class (`theme_mode_controller.dart` → `ThemeModeController`).
 - **Shared widgets**: `App*` prefix — `AppButton`, `AppTopBar`, `AppBottomNavBar`, `AppCard`, `AppTextField`, `AppBottomSheet` (renamed from `Osta*` in commit 638c88a). Theme/token classes follow the same prefix: `AppColors`, `AppTheme`, `AppTypography`, `AppSpacing`, `AppRadii`, `AppElevation`, `AppImages`, `AppConfig`.
-- **Branches**: `feat/<issue>-<slug>` off `main`; PR base `main`, description Arabic + English.
+- **Branches**: `feat/<issue>-<slug>` off `develop`; PR base `develop` (`main` is release-only, via a `develop → main` release PR), description Arabic + English.
 - **Lints**: `very_good_analysis` — CI fails on format or analyze violations.
 
 ## Related docs / مستندات ذات صلة
