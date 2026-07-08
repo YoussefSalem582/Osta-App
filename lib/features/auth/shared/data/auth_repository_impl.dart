@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_exception.dart';
@@ -58,6 +59,16 @@ class AuthRepositoryImpl implements AuthRepository {
     'account_type': accountType.wireName,
     if (phone != null && phone.isNotEmpty) 'phone': phone,
   });
+
+  @override
+  Future<void> uploadAvatar({required String filePath}) async {
+    final form = FormData.fromMap({
+      'avatar': await MultipartFile.fromFile(filePath),
+    });
+    // Content-type is left to Dio; Laravel's `image`/`mimes` rules sniff the
+    // file's bytes, not the multipart header.
+    await _api.post<Object?>('/me/avatar', body: form, parse: (data) => data);
+  }
 
   @override
   Future<void> logout() async {

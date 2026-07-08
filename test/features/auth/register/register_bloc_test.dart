@@ -13,12 +13,19 @@ import '../../../core/network/fakes.dart';
 /// Controls the username check ([available] / [usernameError]) and register
 /// ([registerError]) outcomes.
 class _StubRepo implements AuthRepository {
-  _StubRepo({this.available = true, this.usernameError, this.registerError});
+  _StubRepo({
+    this.available = true,
+    this.usernameError,
+    this.registerError,
+    this.avatarError,
+  });
 
   final bool available;
   final Exception? usernameError;
   final Exception? registerError;
+  final Exception? avatarError;
   bool registerCalled = false;
+  String? uploadedAvatarPath;
 
   @override
   Future<bool> isUsernameAvailable(String username) async {
@@ -57,6 +64,12 @@ class _StubRepo implements AuthRepository {
     required String token,
     required String password,
   }) async {}
+
+  @override
+  Future<void> uploadAvatar({required String filePath}) async {
+    if (avatarError != null) throw avatarError!;
+    uploadedAvatarPath = filePath;
+  }
 
   @override
   Future<void> logout() async {}
@@ -117,6 +130,43 @@ void main() {
     await pumpEventQueue();
 
     expect(repo.registerCalled, isTrue);
+    expect(session.state.hasToken, isTrue);
+  });
+
+  test('RegisterSubmitted uploads the picked avatar after register', () async {
+    final repo = _StubRepo();
+    final session = await _session();
+    RegisterBloc(repo, session).add(
+      const RegisterSubmitted(
+        firstName: 'A',
+        lastName: 'B',
+        username: 'ab',
+        email: 'a@b.com',
+        password: 'Passw0rd',
+        photoPath: '/tmp/avatar.jpg',
+      ),
+    );
+    await pumpEventQueue();
+
+    expect(repo.uploadedAvatarPath, '/tmp/avatar.jpg');
+    expect(session.state.hasToken, isTrue);
+  });
+
+  test('a failed avatar upload still completes registration', () async {
+    final repo = _StubRepo(avatarError: const NetworkException());
+    final session = await _session();
+    RegisterBloc(repo, session).add(
+      const RegisterSubmitted(
+        firstName: 'A',
+        lastName: 'B',
+        username: 'ab',
+        email: 'a@b.com',
+        password: 'Passw0rd',
+        photoPath: '/tmp/avatar.jpg',
+      ),
+    );
+    await pumpEventQueue();
+
     expect(session.state.hasToken, isTrue);
   });
 

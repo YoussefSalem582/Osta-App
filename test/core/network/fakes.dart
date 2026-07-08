@@ -45,6 +45,9 @@ class FakeAuthRepository implements AuthRepository {
   Future<bool> isUsernameAvailable(String username) async => true;
 
   @override
+  Future<void> uploadAvatar({required String filePath}) async {}
+
+  @override
   Future<void> logout() async => logoutCalls++;
 
   @override

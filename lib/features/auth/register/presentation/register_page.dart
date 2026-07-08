@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:osta/core/constants/app_images.dart';
 import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
@@ -56,6 +58,7 @@ class _RegisterViewState extends State<_RegisterView> {
   final _confirm = TextEditingController();
   bool _acceptedTerms = false;
   Timer? _usernameDebounce;
+  XFile? _photo;
 
   /// Shortest username worth a round-trip (also the server min).
   static const _minUsername = 3;
@@ -84,12 +87,22 @@ class _RegisterViewState extends State<_RegisterView> {
     });
   }
 
-  /// Photo upload and social sign-in are not wired yet — same stub the
-  /// auth-choose screen shows.
+  /// Social sign-in is not wired yet — same stub the auth-choose screen shows.
   void _comingSoon() {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(context.l10n.comingSoon)));
+  }
+
+  /// Pick an avatar from the gallery. Uses the system photo picker (PHPicker on
+  /// iOS / Photo Picker on Android), so no gallery permission prompt is needed.
+  Future<void> _pickPhoto() async {
+    final picked = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1024,
+      imageQuality: 85,
+    );
+    if (picked != null && mounted) setState(() => _photo = picked);
   }
 
   void _submit() {
@@ -102,6 +115,7 @@ class _RegisterViewState extends State<_RegisterView> {
         email: _email.text.trim(),
         password: _password.text,
         phone: AuthValidators.normalizeEgyptPhone(_phone.text),
+        photoPath: _photo?.path,
       ),
     );
   }
@@ -208,7 +222,10 @@ class _RegisterViewState extends State<_RegisterView> {
     AppLocalizations l10n,
     RegisterState state,
   ) => [
-    _PhotoPicker(onTap: _comingSoon),
+    _PhotoPicker(
+      imagePath: _photo?.path,
+      onTap: () => unawaited(_pickPhoto()),
+    ),
     const SizedBox(height: AppSpacing.lg),
     Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,9 +327,12 @@ class _RegisterViewState extends State<_RegisterView> {
 /// ring with a person glyph and a camera badge, plus a prompt below. Tapping
 /// runs [onTap] — currently the "coming soon" stub.
 class _PhotoPicker extends StatelessWidget {
-  const _PhotoPicker({required this.onTap});
+  const _PhotoPicker({required this.onTap, this.imagePath});
 
   final VoidCallback onTap;
+
+  /// Local file path of the chosen photo; `null` shows the empty prompt state.
+  final String? imagePath;
 
   static const double _ring = 120;
   static const double _badge = 40;
@@ -321,6 +341,7 @@ class _PhotoPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     const green = AppColors.brandGreen;
+    final path = imagePath;
     return Column(
       children: [
         GestureDetector(
@@ -330,17 +351,27 @@ class _PhotoPicker extends StatelessWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: green.withValues(alpha: 0.06),
+                if (path == null) ...[
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: green.withValues(alpha: 0.06),
+                    ),
                   ),
-                ),
-                const CustomPaint(
-                  size: Size.square(_ring),
-                  painter: _DashedRingPainter(green),
-                ),
-                const Icon(Icons.person_outline, size: 48, color: green),
+                  const CustomPaint(
+                    size: Size.square(_ring),
+                    painter: _DashedRingPainter(green),
+                  ),
+                  const Icon(Icons.person_outline, size: 48, color: green),
+                ] else
+                  ClipOval(
+                    child: Image.file(
+                      File(path),
+                      width: _ring,
+                      height: _ring,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(

@@ -29,6 +29,11 @@ abstract interface class AuthRepository {
     String? phone,
   });
 
+  /// `POST /me/avatar`. Uploads the image at [filePath] (jpeg/png) as the
+  /// authenticated user's avatar. Requires a stored token — call after
+  /// [register]/[login].
+  Future<void> uploadAvatar({required String filePath});
+
   /// `POST /auth/logout`. Best-effort server-side token revocation; always
   /// clears the locally stored token pair, even when the request fails.
   Future<void> logout();
