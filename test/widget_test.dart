@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:osta/app.dart';
 import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/di/injection.dart';
+import 'package:osta/shared/ui/app_bottom_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/network/fakes.dart';
@@ -23,21 +24,41 @@ Future<void> _pumpApp(
   addTearDown(getIt.reset);
 
   await tester.pumpWidget(const OstaApp());
+  // Splash holds for a 2s branding beat, then bootstraps; advance past it so
+  // the redirect guard drives the flow.
+  await tester.pump(const Duration(seconds: 2));
   await tester.pumpAndSettle();
 }
 
 void main() {
-  testWidgets('first run: splash → language → role chooser', (tester) async {
+  testWidgets('first run: language → role → onboarding → auth-choose', (
+    tester,
+  ) async {
     await _pumpApp(tester);
 
-    // Language screen is shown on a true first run.
+    // Language screen is shown first while logged out.
     expect(find.text('Choose your language'), findsOneWidget);
 
-    // Picking a language advances to the role chooser (never back to language).
+    // Picking a language advances to the role chooser.
     await tester.tap(find.text('English'));
     await tester.pumpAndSettle();
-
     expect(find.text('Choose how you want to continue'), findsOneWidget);
+
+    // Picking a role advances to the logged-out onboarding intro.
+    await tester.tap(find.text("I'm a customer"));
+    await tester.pumpAndSettle();
+    expect(find.text('Car maintenance in minutes'), findsOneWidget);
+
+    // Tap through the intro; the last slide acknowledges and the guard
+    // advances to the auth-choose landing.
+    await tester.tap(find.text('Next'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Next'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Get started'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Welcome to OSTA'), findsOneWidget);
     expect(find.text('Choose your language'), findsNothing);
   });
 
@@ -51,7 +72,7 @@ void main() {
     );
 
     // Lands in the shell (bottom nav) — no language or chooser in sight.
-    expect(find.byType(NavigationBar), findsOneWidget);
+    expect(find.byType(AppBottomNavBar), findsOneWidget);
     expect(find.text('Choose your language'), findsNothing);
     expect(find.text('Choose how you want to continue'), findsNothing);
   });

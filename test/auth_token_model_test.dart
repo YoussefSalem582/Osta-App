@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:osta/features/auth/data/models/auth_token_model.dart';
+import 'package:osta/features/auth/shared/data/models/auth_token_model.dart';
 
 void main() {
   test('AuthTokenModel round-trips through JSON', () {

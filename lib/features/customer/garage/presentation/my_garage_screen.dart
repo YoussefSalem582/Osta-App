@@ -11,7 +11,6 @@ import 'package:osta/shared/ui/app_top_bar.dart';
 class MyGarageScreen extends StatefulWidget {
   const MyGarageScreen({super.key});
 
-
   @override
   State<MyGarageScreen> createState() => _MyGarageScreenState();
 }

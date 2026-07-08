@@ -14,7 +14,7 @@ String shellFor(AppRole role) => switch (role) {
 /// Pure first-run/role-split routing. Returns the location to redirect to, or
 /// `null` to stay put. Order encodes the flow:
 ///
-/// splash → language → role chooser → auth (`account_type`) → shell.
+/// splash → language → role chooser → onboarding → auth-choose → auth → shell.
 /// A valid `{token, activeRole}` skips straight to the shell; no route is
 /// reachable without auth (no guest path).
 String? resolveRedirect({
@@ -26,27 +26,41 @@ String? resolveRedirect({
     return location == AppRoutes.splash ? null : AppRoutes.splash;
   }
 
-  // First run: choose a language, once.
-  if (!session.isLanguageSelected) {
+  // Language pick: shown every launch while logged out until picked this
+  // session. In-memory (the persisted locale is the default); a held token
+  // skips it.
+  if (!session.hasToken && !session.languageAcknowledged) {
     return location == AppRoutes.language ? null : AppRoutes.language;
   }
 
   final role = session.activeRole;
 
-  // No role yet (fresh, or just after "switch role"): the chooser.
-  if (role == null) {
+  // Role chooser: shown every launch while logged out until picked this session
+  // (in-memory ack; the persisted role is the default), and always forced when
+  // no role is set (fresh, or just after "switch role").
+  if ((!session.hasToken && !session.roleAcknowledged) || role == null) {
     return location == AppRoutes.role ? null : AppRoutes.role;
   }
 
-  // Role chosen but no token: authenticate (sends `account_type = activeRole`).
-  // The password-recovery screens hang off the same unauthenticated surface.
+  // Logged-out intro: shown every launch until acknowledged this session. The
+  // flag is in-memory, so a not-logged-in user re-enters onboarding each cold
+  // start; once tapped through it stays set and the steps below are reachable.
+  if (!session.hasToken && !session.onboardingAcknowledged) {
+    return location == AppRoutes.onboarding ? null : AppRoutes.onboarding;
+  }
+
+  // Role chosen but no token: pick login/register on the auth-choose landing,
+  // then the auth form (sends `account_type = activeRole`). The
+  // password-recovery screens hang off the same unauthenticated surface.
   if (!session.hasToken) {
     const authSurface = {
-      AppRoutes.auth,
+      AppRoutes.authChoose,
+      AppRoutes.login,
+      AppRoutes.register,
       AppRoutes.forgotPassword,
       AppRoutes.resetPassword,
     };
-    return authSurface.contains(location) ? null : AppRoutes.auth;
+    return authSurface.contains(location) ? null : AppRoutes.authChoose;
   }
 
   // Authenticated with a role: land in — and stay pinned to — its shell.

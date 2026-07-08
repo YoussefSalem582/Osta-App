@@ -8,14 +8,13 @@ import 'package:osta/core/session/session_state.dart';
 import 'package:osta/core/theme/app_theme.dart';
 import 'package:osta/core/theme/theme_mode_controller.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
+import 'package:osta/shared/ui/app_toaster.dart';
 
 /// Root widget. Wires the themes (light + dark, user-persisted mode), the
 /// [SessionController] (locale + first-run routing) and the [AppRouter], and
 /// surfaces the wrong-shell auto-correction toast at the app level.
 class OstaApp extends StatelessWidget {
   const OstaApp({super.key});
-
-  static final _messengerKey = GlobalKey<ScaffoldMessengerState>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +35,7 @@ class OstaApp extends StatelessWidget {
               darkTheme: AppTheme.dark(),
               themeMode: themeMode,
               locale: session.locale,
-              scaffoldMessengerKey: _messengerKey,
+              scaffoldMessengerKey: AppToaster.messengerKey,
               routerConfig: getIt<AppRouter>().router,
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,

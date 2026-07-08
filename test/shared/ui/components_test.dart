@@ -124,7 +124,7 @@ void main() {
     );
 
     // Starts hidden.
-    expect(find.byIcon(Icons.visibility_off), findsOneWidget);
+    expect(find.byIcon(Icons.visibility_off_outlined), findsOneWidget);
     expect(
       tester.widget<TextField>(find.byType(TextField)).obscureText,
       isTrue,
@@ -134,7 +134,7 @@ void main() {
     await tester.pump();
 
     // Now revealed.
-    expect(find.byIcon(Icons.visibility), findsOneWidget);
+    expect(find.byIcon(Icons.visibility_outlined), findsOneWidget);
     expect(
       tester.widget<TextField>(find.byType(TextField)).obscureText,
       isFalse,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
-import 'package:osta/features/auth/presentation/auth_validators.dart';
+import 'package:osta/features/auth/shared/presentation/validators/auth_validators.dart';
 
 /// Pumps a minimal localized tree and hands back a live [BuildContext] so the
 /// context-based validators can resolve their `l10n` error strings.
@@ -34,10 +34,24 @@ void main() {
       expect(AuthValidators.email(context, 'a@b.com'), isNull);
     });
 
-    testWidgets('password enforces strength only when asked', (tester) async {
+    testWidgets('password enforces length + letter + digit when asked', (
+      tester,
+    ) async {
       final context = await _context(tester);
-      expect(AuthValidators.password(context, 'short'), isNotNull);
-      expect(AuthValidators.password(context, 'longenough'), isNull);
+      expect(AuthValidators.password(context, 'short'), isNotNull); // too short
+      expect(
+        AuthValidators.password(context, 'lettersonly'),
+        isNotNull, // no digit
+      );
+      expect(
+        AuthValidators.password(context, '12345678'),
+        isNotNull, // no letter
+      );
+      expect(
+        AuthValidators.password(context, 'passw0rd'),
+        isNull,
+      ); // meets gate
+      // Login skips the strength gate — any non-empty value passes.
       expect(
         AuthValidators.password(context, 'short', enforceStrength: false),
         isNull,
@@ -72,5 +86,18 @@ void main() {
     expect(AuthValidators.normalizeEgyptPhone('1012345678'), '+201012345678');
     expect(AuthValidators.normalizeEgyptPhone('01012345678'), '+201012345678');
     expect(AuthValidators.normalizeEgyptPhone('101 234 5678'), '+201012345678');
+  });
+
+  test('strength scores by length and character variety', () {
+    // Below the gate (short, or missing a letter/digit) → weak.
+    expect(AuthValidators.strength('short'), PasswordStrength.weak);
+    expect(AuthValidators.strength('password'), PasswordStrength.weak);
+    // Meets the gate but no extra variety/length → medium.
+    expect(AuthValidators.strength('passw0rd'), PasswordStrength.medium);
+    // Long + symbol + mixed case → strong.
+    expect(
+      AuthValidators.strength('Passw0rd!verylong'),
+      PasswordStrength.strong,
+    );
   });
 }

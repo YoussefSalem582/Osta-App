@@ -6,7 +6,7 @@ import 'package:osta/core/network/auth_events.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:osta/core/session/session_state.dart';
 import 'package:osta/core/session/session_store.dart';
-import 'package:osta/features/auth/domain/auth_repository.dart';
+import 'package:osta/features/auth/shared/domain/auth_repository.dart';
 
 /// Single source of truth for first-run routing. The splash calls [bootstrap];
 /// the language screen, role chooser and auth flow mutate it; the router
@@ -41,17 +41,37 @@ class SessionController extends Cubit<SessionState> {
     );
   }
 
-  /// First-run language pick (persisted, one time only).
+  /// Language pick. Persists the locale (so the app opens in it) and marks the
+  /// in-memory `languageAcknowledged` flag so the guard advances — the screen
+  /// still re-shows on the next logged-out cold start.
   Future<void> chooseLanguage(Locale locale) async {
     await _store.writeLocale(locale.languageCode);
-    emit(state.copyWith(locale: locale));
+    emit(state.copyWith(locale: locale, languageAcknowledged: true));
   }
 
-  /// Records the chooser pick. With a live token the router lands the shell
-  /// directly; otherwise it routes to auth, which sends this as `account_type`.
+  /// Records that the logged-out user finished onboarding this session, so the
+  /// redirect guard lets them proceed to auth-choose. In-memory only — the next
+  /// cold launch resets it and onboarding reappears.
+  void acknowledgeOnboarding() {
+    if (state.onboardingAcknowledged) return;
+    emit(state.copyWith(onboardingAcknowledged: true));
+  }
+
+  /// Sends the user back to onboarding (the auth-choose back button): clears
+  /// the in-memory ack so the guard re-routes to the intro. Role + language
+  /// stay, so it lands on onboarding, not the role/language screens.
+  void resetOnboarding() {
+    if (!state.onboardingAcknowledged) return;
+    emit(state.copyWith(onboardingAcknowledged: false));
+  }
+
+  /// Records the chooser pick. Persists the role (the default next time) and
+  /// marks the in-memory `roleAcknowledged` flag so the guard advances — the
+  /// chooser still re-shows on the next logged-out cold start. With a live
+  /// token the router lands the shell; otherwise auth sends `account_type`.
   Future<void> chooseRole(AppRole role) async {
     await _store.writeActiveRole(role);
-    emit(state.copyWith(activeRole: role));
+    emit(state.copyWith(activeRole: role, roleAcknowledged: true));
   }
 
   /// Called after a successful register/login. [authoritativeRole] is
