@@ -191,5 +191,24 @@ void main() {
         AppRoutes.customerShell,
       );
     });
+
+    test('authenticated in-app screens are reachable (not pinned)', () {
+      final state = _enrolled.copyWith(
+        activeRole: AppRole.customer,
+        hasToken: true,
+      );
+      for (final location in [
+        AppRoutes.profile,
+        AppRoutes.garage,
+        AppRoutes.addCar,
+        AppRoutes.bookingStatus,
+      ]) {
+        expect(
+          resolveRedirect(session: state, location: location),
+          isNull,
+          reason: '$location should be reachable while authenticated',
+        );
+      }
+    });
   });
 }
