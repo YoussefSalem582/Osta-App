@@ -5,6 +5,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the pro
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-07-08
+
+First tagged pre-release cut of `develop` → `main`. Early-stage (M0 foundation complete; most feature epics still open). Everything below is the accumulated `develop` work to date.
+
 ### Fixed
 
 - **Connect the built customer screens to navigation** (2026-07-08) — the four implemented post-auth screens (`ProfileScreen`, `MyGarageScreen`, `AddCarScreen`, `RealTimeBookingScreen`) were registered as routes but **unreachable**: `resolveRedirect` pinned any authenticated user to *exactly* their shell, so `context.go('/profile')` (and the profile→garage→add-car chain) bounced straight back to `/customer`, and no bottom-nav tab linked to them. Fixed by (1) relaxing the authed guard in `lib/core/router/session_redirect.dart` to an allow-list — the active shell **plus** `profile`/`garage`/`add-car`/`booking-status` — while still pinning the *other* role's shell back (cross-shell test stays green); (2) giving `AppBottomNavItem` two optional hooks honoured by `RoleShell` — `body` (select the tab → show that widget as the shell body, **keeping the bottom nav**) and `onTap` (tap → push a full-screen route instead); (3) extracting a scaffold-less **`ProfileView`** from `ProfileScreen` so the customer **More** tab renders it inline with the nav bar intact, and wiring the **Bookings** tab → push booking-status; and (4) switching the profile→garage and garage→add-car links from `context.go` to `context.push` so the shared `AppTopBar` shows its auto back button. `ProfileScreen` stays as the deep-linkable full-screen `/profile` route. Added a redirect test asserting the four in-app screens are reachable while authenticated. No new strings/deps/routes; `flutter analyze` clean, all 123 tests pass. **Out of scope** (empty stub dirs, per open epics): customer `home`/`map`/`wallet`, business `dashboard`/`bookings`/`services`/`team`/`wallet`, `notifications`, `shop`, and the business Profile tab (no business profile screen yet).

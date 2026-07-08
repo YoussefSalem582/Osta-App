@@ -15,6 +15,8 @@ Touched: `lib/features/business/services/presentation/**`, `lib/features/busines
 ## 2026-07-07 — Business onboarding screens, widgets & routing implemented
 
 
+## 2026-07-07 — Business onboarding screens, widgets & routing implemented
+
 Implemented the three business onboarding screens (`ProviderOnboardingPage`, `BusinessIdentityPage`, `BusinessCatalogPage`) and their reusable widgets in `lib/features/business/onboarding/presentation/`. Aligned `BusinessIdentityPage` 100% with exact user mockup (exact Arabic strings/numerals, separated phone field and `+20 🇪🇬` box, bottom-left camera icon in `LogoUploadBox`, bottom-right map CTA in `LocationPickerCard`, and placing map card above dropdowns). Registered static paths and wizard navigation routes (`/provider-onboarding` → `/business-identity` → `/business-catalog`) in `AppRouter`.
 
 > ‏تم تنفيذ شاشات تأهيل النشاط التجاري الثلاث ومكوناتها القابلة لإعادة الاستخدام في `lib/features/business/onboarding/presentation/`. وتمت مطابقة شاشة الهوية `BusinessIdentityPage` بنسبة 100% مع تصميم المستخدم (النصوص والأرقام العربية، فصل حقل الهاتف عن مربع كود الدولة `+20 🇪🇬`، ضبط مواقع الأيقونات والأزرار في الخريطة ومربع الشعار، وترتيب الخريطة قبل القوائم المنسدلة). وتم ربط مسارات التنقل في موجه التطبيق `AppRouter`.
