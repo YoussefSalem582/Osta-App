@@ -703,7 +703,7 @@ Backend quick reference:
 
 **Approved commands** (no approval prompt needed): `flutter pub get` · `flutter gen-l10n` · `flutter analyze` ·
 `flutter test` · `dart format .` — there is **no `build_runner`** in this project.
-Run the app: `flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1`.
+Run the app: `flutter run --dart-define=BASE_URL=https://osta.technology92.com/api/v1`.
 
 **Where to look:** doc index [`osta_readme_files/INDEX.md`](osta_readme_files/INDEX.md) · pitfalls
 [`COMMON_PITFALLS.md`](osta_readme_files/reference/COMMON_PITFALLS.md) · incident recipes

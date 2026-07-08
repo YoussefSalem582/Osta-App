@@ -16,12 +16,12 @@ Runtime config is passed at build time and surfaced through `AppConfig` (`lib/co
 
 | Value | Source | Accessor |
 |---|---|---|
-| Base URL | `--dart-define=BASE_URL=...` (default `https://api.osta.dev/api/v1`) | `AppConfig.baseUrl` |
+| Base URL | `--dart-define=BASE_URL=...` (default `https://osta.technology92.com/api/v1`) | `AppConfig.baseUrl` |
 
 Run:
 
 ```bash
-flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1
+flutter run --dart-define=BASE_URL=https://osta.technology92.com/api/v1
 ```
 
 CI passes the same dart-define (`.github/workflows/ci.yml`). Never read `Platform.environment` directly; never hardcode a URL.

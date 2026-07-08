@@ -5,6 +5,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the pro
 
 ## [Unreleased]
 
+### Changed
+
+- **Point `BASE_URL` at the live backend** (2026-07-09) — the deployed backend now lives at **`https://osta.technology92.com`** (admin at `/admin`, API under `/api/v1`, verified live: `GET /api/v1/auth/check-username` returns the `{success,data}` envelope). Replaced the dead placeholder host `api.osta.dev` with `osta.technology92.com` everywhere — the `AppConfig.baseUrl` compile default (`lib/core/config/app_config.dart`), and every run-command / doc reference across the repo (README, CLAUDE/AGENTS scope rules, and the `osta_readme_files/` guides). `flutter run` now hits a working backend out of the box; `--dart-define=BASE_URL=…` still overrides per environment. `flutter analyze` clean.
+
+  > ‏**توجيه `BASE_URL` إلى الـ backend الحيّ** (2026-07-09) — أصبح الـ backend المنشور على **`https://osta.technology92.com`** (لوحة الإدارة على `/admin`، الـ API تحت `/api/v1`، مُتحقَّق منه: `GET /api/v1/auth/check-username` يُعيد مغلّف `{success,data}`). استُبدل المضيف النائب الميت `api.osta.dev` بـ `osta.technology92.com` في كل مكان — الافتراضي المُصرَّف في `AppConfig.baseUrl` وكل أوامر التشغيل ومراجع التوثيق. الآن `flutter run` يصل إلى backend فعلي مباشرةً، ويظلّ `--dart-define=BASE_URL=…` يتجاوزه لكل بيئة. التحليل نظيف.
+
 ## [0.2.0] - 2026-07-08
 
 First tagged pre-release cut of `develop` → `main`. Early-stage (M0 foundation complete; most feature epics still open). Everything below is the accumulated `develop` work to date.

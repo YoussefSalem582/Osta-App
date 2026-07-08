@@ -157,7 +157,7 @@ There is a single `BASE_URL` dart-define read by `AppConfig`. No `AppFlavor`, no
 
 ### Passing a FLAVOR / --flavor
 DON'T: `flutter run --flavor dev --dart-define=FLAVOR=dev`.
-DO: `flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1`.
+DO: `flutter run --dart-define=BASE_URL=https://osta.technology92.com/api/v1`.
 WHY: There is no `AppFlavor` enum and no flavor config; only `BASE_URL` is read.
 
 > ‏مفيش enum اسمه `AppFlavor` ولا إعداد flavor؛ الـ `BASE_URL` بس هو اللي بيتقرأ.
