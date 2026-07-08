@@ -1,6 +1,10 @@
 import 'package:go_router/go_router.dart';
+import 'package:osta/features/home/presentation/widgets/home_bottom_nav.dart';
+import 'package:osta/features/onboarding/presentation/pages/onboarding_page.dart';
 
-/// Declarative app router.
+import 'package:osta/features/splash/presentation/splash_page.dart';
+
+
 
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/router/go_router_refresh_stream.dart';
@@ -21,10 +25,11 @@ import 'package:osta/features/customer/garage/presentation/add_car_screen.dart';
 import 'package:osta/features/customer/garage/presentation/my_garage_screen.dart';
 import 'package:osta/features/customer/profile/presentation/profile_screen.dart';
 import 'package:osta/features/customer/shell/presentation/customer_shell_page.dart';
-import 'package:osta/features/onboarding/page/onboarding_page.dart';
+
 import 'package:osta/features/onboarding/presentation/language_page.dart';
 import 'package:osta/features/role/presentation/coming_soon_page.dart';
 import 'package:osta/features/role/presentation/role_chooser_page.dart';
+
 import 'package:osta/features/shop/presentation/pages/business_shop_page.dart';
 import 'package:osta/features/splash/presentation/splash_page.dart';
 
@@ -143,6 +148,11 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.profile,
         builder: (context, state) => const ProfileScreen(),
+      ),
+
+      GoRoute(
+        path: HomeBottomNav.path,
+        builder: (context, state) => const HomeBottomNav(),
       ),
 
       // Dev-facing component gallery (not linked from product UI).

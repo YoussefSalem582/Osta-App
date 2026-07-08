@@ -34,6 +34,8 @@ final class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       backgroundColor: AppColors.brandGreen,
       body: Center(
@@ -45,11 +47,10 @@ final class _SplashPageState extends State<SplashPage> {
               height: 200,
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'صلح عربيتك في دقائق',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                color: theme.colorScheme.onPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
