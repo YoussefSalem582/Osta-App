@@ -25,6 +25,7 @@
   "continueWithGoogle": "Continue with Google",
   "continueWithApple": "Continue with Apple",
   "socialComingSoon": "Social sign-in is coming soon",
+  "authOr": "Or",
 
   "myGarage": "My Garage",
   "garageSubtitle": "Your cars and their maintenance",
@@ -114,6 +115,8 @@
   "comingSoon": "Coming soon",
   "authSignInTitle": "Sign in",
   "authRegisterTitle": "Create account",
+  "authCreateAccount": "Create account",
+  "authAddPhoto": "Add your photo",
   "authEmail": "Email",
   "authPassword": "Password",
   "showPassword": "Show password",

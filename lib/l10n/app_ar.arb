@@ -25,6 +25,7 @@
   "continueWithGoogle": "المتابعة باستخدام Google",
   "continueWithApple": "المتابعة باستخدام Apple",
   "socialComingSoon": "تسجيل الدخول عبر مواقع التواصل قريبًا",
+  "authOr": "أو",
 
   "myGarage": "جراجي",
   "garageSubtitle": "عربياتك وصيانتها",
@@ -115,6 +116,8 @@
   "comingSoon": "قريبًا",
   "authSignInTitle": "تسجيل الدخول",
   "authRegisterTitle": "إنشاء حساب",
+  "authCreateAccount": "إنشاء الحساب",
+  "authAddPhoto": "أضف صورتك الشخصية",
   "authEmail": "البريد الإلكتروني",
   "authPassword": "كلمة المرور",
   "showPassword": "إظهار كلمة المرور",

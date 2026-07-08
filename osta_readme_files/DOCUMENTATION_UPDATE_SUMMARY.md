@@ -4,6 +4,16 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-08 — Register screen redesign (profile photo + side-by-side names + social row)
+
+Reworked `RegisterPage` (`lib/features/auth/register/presentation/register_page.dart`) to the new design: a tappable **profile-photo placeholder** (`_PhotoPicker` — a dashed brand ring drawn by a small `_DashedRingPainter` `CustomPainter`, a person glyph, a camera badge, and the `authAddPhoto` prompt) at the top of the form card; **first and last name side by side** in a `Row` of `Expanded` fields (RTL puts the first name on the right, matching the design); the primary CTA relabelled from `authSubmit` to `authCreateAccount` ("إنشاء الحساب"); and an **`OrDivider` (`authOr`) + the auth-choose "Continue with Google/Apple" social buttons** below it — the same stacked secondary `AppButton`s (`continueWithGoogle`/`continueWithApple`, `Icons.g_mobiledata`/`Icons.apple`) the auth-choose screen already uses, reused here for a consistent look. Photo upload and social sign-in are stubs — tapping either shows the existing `comingSoon` toast — so **no `image_picker` or social-auth dependency was added**. The auth-choose page's private `_OrDivider` was extracted to a shared **`lib/shared/ui/or_divider.dart`** and reused in both places.
+
+> ‏أُعيد تصميم صفحة التسجيل: عنصر نائب لصورة الملف الشخصي (حلقة منقّطة + أيقونة شخص + شارة كاميرا) أعلى البطاقة، والاسم الأول/الأخير جنبًا إلى جنب في صف (RTL يضع الاسم الأول يمينًا)، وزر أساسي بعنوان `authCreateAccount` («إنشاء الحساب»)، وفاصل `OrDivider` مع صفّ زرّي Apple/Google. رفع الصورة وتسجيل الدخول الاجتماعي عنصران مؤقتان (إشعار «قريبًا») بلا أي اعتمادية جديدة؛ واستُخرج `_OrDivider` إلى ملف مشترك.
+
+New l10n keys (EN + AR): `authCreateAccount`, `authAddPhoto`, `authOr`, `socialApple`, `socialGoogle`. `flutter analyze` clean (no new issues); 120 tests pass.
+
+Touched: `lib/features/auth/register/presentation/register_page.dart`, `lib/features/auth/choose/presentation/auth_choose_page.dart`, `lib/shared/ui/or_divider.dart` (new), `lib/l10n/app_{en,ar}.arb`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
 ## 2026-07-08 — Auth feature → sub-features + BLoC + enhanced validation + live username check
 
 Restructured `lib/features/auth/` from a flat `data/domain/presentation` (two `Cubit`s + one combined `AuthPage`) into sub-features: `shared/` (`domain/`, `data/`, `presentation/{validators,widgets}` + `auth_failure.dart`), `login/`, `register/`, `password_recovery/`, `choose/` — each presentation split into `bloc/` + page, putting the auth flow on the mandated **BLoC** pattern (`AGENTS.md` §118). The in-page login/register toggle became separate **`LoginPage`/`RegisterPage`** on their own routes — `AppRoutes.auth` (`/auth`) was renamed `AppRoutes.login` (value unchanged) and `AppRoutes.register` (`/auth/register`) added; the redirect guard's `authSurface` and `app_router` updated to match. `LoginBloc`/`RegisterBloc`/`PasswordRecoveryBloc` replace `AuthCubit`/`PasswordRecoveryCubit` in DI (factories).

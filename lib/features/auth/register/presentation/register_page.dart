@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,6 +20,7 @@ import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
 import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/brand_scaffold.dart';
+import 'package:osta/shared/ui/or_divider.dart';
 
 /// Register entry for the chosen role. Sends `account_type = activeRole`;
 /// success hands the authoritative role to the session and the router leaves
@@ -80,6 +82,14 @@ class _RegisterViewState extends State<_RegisterView> {
       if (!mounted) return;
       context.read<RegisterBloc>().add(UsernameChanged(name));
     });
+  }
+
+  /// Photo upload and social sign-in are not wired yet — same stub the
+  /// auth-choose screen shows.
+  void _comingSoon() {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(context.l10n.comingSoon)));
   }
 
   void _submit() {
@@ -159,9 +169,25 @@ class _RegisterViewState extends State<_RegisterView> {
             ),
             const SizedBox(height: AppSpacing.lg),
             AppButton(
-              label: l10n.authSubmit,
+              label: l10n.authCreateAccount,
               loading: state.isSubmitting,
               onPressed: _acceptedTerms ? _submit : null,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            OrDivider(label: l10n.authOr),
+            const SizedBox(height: AppSpacing.md),
+            AppButton(
+              label: l10n.continueWithGoogle,
+              variant: AppButtonVariant.secondary,
+              icon: Icons.g_mobiledata,
+              onPressed: state.isSubmitting ? null : _comingSoon,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            AppButton(
+              label: l10n.continueWithApple,
+              variant: AppButtonVariant.secondary,
+              icon: Icons.apple,
+              onPressed: state.isSubmitting ? null : _comingSoon,
             ),
             const SizedBox(height: AppSpacing.sm),
             AppButton(
@@ -182,24 +208,35 @@ class _RegisterViewState extends State<_RegisterView> {
     AppLocalizations l10n,
     RegisterState state,
   ) => [
-    AppTextField(
-      label: l10n.authFirstName,
-      controller: _firstName,
-      prefixIcon: Icons.person_outline,
-      textCapitalization: TextCapitalization.words,
-      textInputAction: TextInputAction.next,
-      autofillHints: const [AutofillHints.givenName],
-      validator: (v) => AuthValidators.requiredField(context, v),
-    ),
-    const SizedBox(height: AppSpacing.md),
-    AppTextField(
-      label: l10n.authLastName,
-      controller: _lastName,
-      prefixIcon: Icons.person_outline,
-      textCapitalization: TextCapitalization.words,
-      textInputAction: TextInputAction.next,
-      autofillHints: const [AutofillHints.familyName],
-      validator: (v) => AuthValidators.requiredField(context, v),
+    _PhotoPicker(onTap: _comingSoon),
+    const SizedBox(height: AppSpacing.lg),
+    Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: AppTextField(
+            label: l10n.authFirstName,
+            controller: _firstName,
+            prefixIcon: Icons.person_outline,
+            textCapitalization: TextCapitalization.words,
+            textInputAction: TextInputAction.next,
+            autofillHints: const [AutofillHints.givenName],
+            validator: (v) => AuthValidators.requiredField(context, v),
+          ),
+        ),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: AppTextField(
+            label: l10n.authLastName,
+            controller: _lastName,
+            prefixIcon: Icons.person_outline,
+            textCapitalization: TextCapitalization.words,
+            textInputAction: TextInputAction.next,
+            autofillHints: const [AutofillHints.familyName],
+            validator: (v) => AuthValidators.requiredField(context, v),
+          ),
+        ),
+      ],
     ),
     const SizedBox(height: AppSpacing.md),
     AppTextField(
@@ -267,4 +304,103 @@ class _RegisterViewState extends State<_RegisterView> {
       title: Text(l10n.authAcceptTerms),
     ),
   ];
+}
+
+/// Avatar placeholder for the (not-yet-wired) profile photo: a dashed brand
+/// ring with a person glyph and a camera badge, plus a prompt below. Tapping
+/// runs [onTap] — currently the "coming soon" stub.
+class _PhotoPicker extends StatelessWidget {
+  const _PhotoPicker({required this.onTap});
+
+  final VoidCallback onTap;
+
+  static const double _ring = 120;
+  static const double _badge = 40;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    const green = AppColors.brandGreen;
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: SizedBox.square(
+            dimension: _ring,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: green.withValues(alpha: 0.06),
+                  ),
+                ),
+                const CustomPaint(
+                  size: Size.square(_ring),
+                  painter: _DashedRingPainter(green),
+                ),
+                const Icon(Icons.person_outline, size: 48, color: green),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    width: _badge,
+                    height: _badge,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: green,
+                    ),
+                    child: const Icon(
+                      Icons.photo_camera_outlined,
+                      size: 20,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Text(
+          l10n.authAddPhoto,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            color: green,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Draws the dashed circle for [_PhotoPicker] — no `dotted_border` dependency
+/// for one ring.
+class _DashedRingPainter extends CustomPainter {
+  const _DashedRingPainter(this.color);
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final radius = size.width / 2;
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
+    const dashes = 34;
+    const sweep = 2 * math.pi / dashes;
+    final rect = Rect.fromCircle(
+      center: Offset(radius, radius),
+      radius: radius - 1, // keep the 2px stroke inside the bounds
+    );
+    for (var i = 0; i < dashes; i++) {
+      canvas.drawArc(rect, i * sweep, sweep * 0.55, false, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DashedRingPainter oldDelegate) =>
+      oldDelegate.color != color;
 }
