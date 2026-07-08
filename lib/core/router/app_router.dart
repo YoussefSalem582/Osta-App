@@ -2,7 +2,9 @@ import 'package:go_router/go_router.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_catalog_page.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_identity_page.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/provider_onboarding_page.dart';
+import 'package:osta/features/business/services/presentation/pages/business_services_page.dart';
 import 'package:osta/features/role/presentation/page/role_selection_page.dart';
+import 'package:osta/features/shop/presentation/pages/business_shop_page.dart';
 import 'package:osta/features/splash/presentation/splash_page.dart';
 
 /// Declarative app router. Boots at splash, then the first-run role selection.
@@ -31,10 +33,22 @@ class AppRouter {
           onContinue: () => context.push(BusinessCatalogPage.path),
         ),
       ),
+      //////////////////////////////////////////////////////////////////////////////
       GoRoute(
         path: BusinessCatalogPage.path,
-        builder: (context, state) => const BusinessCatalogPage(),
+        builder: (context, state) => BusinessCatalogPage(
+          onActivate: () => context.go(BusinessServicesPage.path),
+        ),
+      ),
+      GoRoute(
+        path: BusinessServicesPage.path,
+        builder: (context, state) => const BusinessServicesPage(),
+      ),
+      GoRoute(
+        path: BusinessShopPage.path,
+        builder: (context, state) => const BusinessShopPage(),
       ),
     ],
   );
 }
+
