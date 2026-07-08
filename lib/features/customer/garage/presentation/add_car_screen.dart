@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
@@ -32,7 +34,9 @@ class _AddCarScreenState extends State<AddCarScreen> {
   }
 
   void _onSave() {
-    if (_formKey.currentState?.validate() ?? false) {}
+    if (_formKey.currentState?.validate() ?? false) {
+      context.pop();
+    }
   }
 
   @override
@@ -45,7 +49,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
       appBar: AppTopBar(
         centerTitle: false,
         title: l10n.addYourFirstCar,
-        subtitle: l10n.requiredStep,
+        //subtitle: l10n.requiredStep,
       ),
       body: Form(
         key: _formKey,

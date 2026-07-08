@@ -63,7 +63,24 @@ String? resolveRedirect({
     return authSurface.contains(location) ? null : AppRoutes.authChoose;
   }
 
-  // Authenticated with a role: land in — and stay pinned to — its shell.
+  // Authenticated with a role. Prevent accessing the logged-out surface.
   final shell = shellFor(role);
-  return location == shell ? null : shell;
+  const loggedOutSurface = {
+    AppRoutes.splash,
+    AppRoutes.language,
+    AppRoutes.role,
+    AppRoutes.onboarding,
+    AppRoutes.authChoose,
+    AppRoutes.login,
+    AppRoutes.register,
+    AppRoutes.forgotPassword,
+    AppRoutes.resetPassword,
+  };
+
+  if (loggedOutSurface.contains(location)) {
+    return shell;
+  }
+
+  // Allow navigation to any authenticated route (shell, garage, etc.)
+  return null;
 }

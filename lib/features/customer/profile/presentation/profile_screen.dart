@@ -147,7 +147,7 @@ class ProfileScreen extends StatelessWidget {
                 icon: Icons.directions_car_rounded,
                 color: Colors.orange,
               ),
-              onTap: () => context.go(AppRoutes.garage),
+              onTap: () => context.push(AppRoutes.garage),
             ),
           ),
           const SizedBox(height: AppSpacing.sm),

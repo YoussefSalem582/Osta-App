@@ -48,7 +48,7 @@
   "km": "كم",
   "setAsPrimary": "تعيين كأساسية",
   "primary": "أساسية",
-  "addYourFirstCar": "أضف عربيتك الأولى",
+  "addYourFirstCar": "أضف عربيتك",
   "requiredStep": "خطوة لازمة، لا يمكن تخطيها",
   "carDetailsPrompt": "محتاجين بيانات عربيتك عشان نرشحلك أقرب\nوأنسب مركز صيانة",
   "brand": "الماركة",
@@ -66,7 +66,7 @@
   "plateNumber": "رقم اللوحة",
   "plateNumberHint": "ص أ ٢ ٤ ٧",
   "enterPlateNumber": "أدخل رقم اللوحة",
-  "saveAndProceed": "حفظ ومتابعة للرئيسية",
+  "saveAndProceed": "حفظ",
 
   "bookingStatus": "حالة الحجز",
   "bookingId": "رقم الحجز",
@@ -149,7 +149,7 @@
   "customerHomeTitle": "الرئيسية",
   "businessHomeTitle": "لوحة التحكم",
   "navHome": "الرئيسية",
-  "navBookings": "الحجوزات",
+  "navBookings": "حجوزاتى",
   "navProfile": "الملف الشخصي",
   "navStore": "المتجر",
   "navMore": "المزيد",
@@ -164,5 +164,21 @@
   "passwordStrengthMedium": "متوسطة",
   "passwordStrengthStrong": "قوية",
   "authUsernameAvailable": "اسم المستخدم متاح",
-  "authUsernameTaken": "اسم المستخدم مستخدم بالفعل"
+  "authUsernameTaken": "اسم المستخدم مستخدم بالفعل",
+  "bookingUpcoming": "القادمة",
+  "bookingUpcomingCount": "القادمة ({count})",
+  "@bookingUpcomingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookingPast": "السابقة",
+  "bookingPastSection": "سابقة",
+  "bookingEmpty": "لا توجد حجوزات",
+  "statusPending": "قيد التنفيذ",
+  "statusConfirmed": "مؤكد",
+  "statusCompleted": "مكتمل",
+  "statusCancelled": "ملغي"
 }

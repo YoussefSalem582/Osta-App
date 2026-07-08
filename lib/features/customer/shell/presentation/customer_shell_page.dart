@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:osta/features/customer/booking/presentation/my_bookings_screen.dart';
+import 'package:osta/features/customer/profile/presentation/profile_screen.dart';
 import 'package:osta/features/shell/presentation/role_shell.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_bottom_nav_bar.dart';
 import 'package:osta/shared/ui/app_toaster.dart';
+import 'package:osta/shared/ui/status_states.dart';
 
 /// Consumer (customer) shell — the landing surface for the `customer` role.
 class CustomerShellPage extends StatelessWidget {
@@ -27,6 +30,24 @@ class CustomerShellPage extends StatelessWidget {
           label: l10n.navStore,
         ),
         AppBottomNavItem(icon: Icons.more_horiz, label: l10n.navMore),
+      ],
+      pages: [
+        // Index 0 — Home (placeholder until the Home screen is built)
+        EmptyState(
+          icon: Icons.home_outlined,
+          title: l10n.navHome,
+          message: l10n.shellWelcome,
+        ),
+        // Index 1 — Bookings
+        const MyBookingsScreen(),
+        // Index 2 — Store (placeholder)
+        EmptyState(
+          icon: Icons.shopping_bag_outlined,
+          title: l10n.navStore,
+          message: l10n.shellWelcome,
+        ),
+        // Index 3 — More → Profile Screen
+        const ProfileScreen(),
       ],
     );
   }
