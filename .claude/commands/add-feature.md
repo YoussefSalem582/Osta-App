@@ -6,7 +6,7 @@ The osta stack is deliberately plain Dart: errors are a sealed `Failure` **throw
 
 ## Before you scaffold
 
-Read the matching GitHub epic + its feature doc in [`osta_readme_files/features/`](../../osta_readme_files/features/README.md) — most features are stubs specified by open epics; do not invent scope. Branch `feat/<issue>-<slug>` off `main`. Use `<name>` for the snake_case folder, `<Name>` for the PascalCase type prefix.
+Read the matching GitHub epic + its feature doc in [`osta_readme_files/features/`](../../osta_readme_files/features/README.md) — most features are stubs specified by open epics; do not invent scope. Branch `feat/<issue>-<slug>` off `develop`. Use `<name>` for the snake_case folder, `<Name>` for the PascalCase type prefix.
 
 ## The 13 steps
 
@@ -28,4 +28,4 @@ Read the matching GitHub epic + its feature doc in [`osta_readme_files/features/
 
 - Run `dart format .`, `flutter analyze` (clean), `flutter test` (green). No `build_runner`.
 - Update docs: `CHANGELOG.md`, `osta_readme_files/DOCUMENTATION_UPDATE_SUMMARY.md`, `osta_readme_files/CURRENT_STATUS.md` (and the feature doc).
-- Branch `feat/<issue>-<slug>` (hand-written kebab-case — never a tool-generated name like `claude/...`; rename with `git branch -m` first), PR base `main`, bilingual (AR+EN) description, conventional commits, no AI co-author trailer.
+- Branch `feat/<issue>-<slug>` (hand-written kebab-case — never a tool-generated name like `claude/...`; rename with `git branch -m` first), PR base `develop` (`main` is release-only, reached via a `develop → main` release PR + tag), bilingual (AR+EN) description, conventional commits, no AI co-author trailer.

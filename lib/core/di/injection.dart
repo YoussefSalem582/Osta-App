@@ -7,8 +7,16 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/auth_events.dart';
 import 'package:osta/core/network/dio_client.dart';
 import 'package:osta/core/network/social_token_exchange.dart';
+
 import 'package:osta/core/router/app_router.dart';
+import 'package:osta/core/session/session_controller.dart';
+import 'package:osta/core/session/session_store.dart';
 import 'package:osta/core/theme/theme_mode_controller.dart';
+import 'package:osta/features/auth/login/presentation/bloc/login_bloc.dart';
+import 'package:osta/features/auth/password_recovery/presentation/bloc/password_recovery_bloc.dart';
+import 'package:osta/features/auth/register/presentation/bloc/register_bloc.dart';
+import 'package:osta/features/auth/shared/data/auth_repository_impl.dart';
+import 'package:osta/features/auth/shared/domain/auth_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Global service locator.
@@ -20,11 +28,10 @@ final GetIt getIt = GetIt.instance;
 /// lazy singleton resolving its collaborators via [getIt].
 Future<void> configureDependencies() async {
   // Async singleton resolved up front (SharedPreferences needs getInstance()).
-  getIt.registerSingleton<SharedPreferences>(
-    await SharedPreferences.getInstance(),
-  );
-
   getIt
+    ..registerSingleton<SharedPreferences>(
+      await SharedPreferences.getInstance(),
+    )
     ..registerLazySingleton<AppConfig>(AppConfig.new)
     ..registerLazySingleton<FlutterSecureStorage>(
       () => const FlutterSecureStorage(),
@@ -44,5 +51,21 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<SocialTokenExchange>(
       () => SocialTokenExchange(getIt(), getIt()),
     )
-    ..registerLazySingleton<AppRouter>(AppRouter.new);
+    // First-run flow & 4-role split: the session is the routing source of
+    // truth; the router refreshes off it, so both resolve the same singleton.
+    ..registerLazySingleton<SessionStore>(
+      () => SessionStore(getIt(), getIt()),
+    )
+    ..registerLazySingleton<AuthRepository>(
+      () => AuthRepositoryImpl(getIt(), getIt()),
+    )
+    ..registerLazySingleton<SessionController>(
+      () => SessionController(getIt(), getIt(), getIt()),
+    )
+    ..registerFactory<LoginBloc>(() => LoginBloc(getIt(), getIt()))
+    ..registerFactory<RegisterBloc>(() => RegisterBloc(getIt(), getIt()))
+    ..registerFactory<PasswordRecoveryBloc>(
+      () => PasswordRecoveryBloc(getIt()),
+    )
+    ..registerLazySingleton<AppRouter>(() => AppRouter(getIt()));
 }

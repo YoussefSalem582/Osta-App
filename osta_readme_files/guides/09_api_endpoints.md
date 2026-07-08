@@ -49,6 +49,7 @@ Login, refresh, and social exchange are the only endpoints the app calls today; 
 | Method | Path | Purpose | Backend | App status |
 |---|---|---|---|---|
 | POST | `/auth/register` | Register (`account_type`, optional multipart `avatar`) | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37)/[#40](https://github.com/YoussefSalem582/osta_backend/issues/40) | Planned |
+| GET | `/auth/check-username?username=` | Live username availability → `{available: bool}` (public) | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37)/[#40](https://github.com/YoussefSalem582/osta_backend/issues/40) | **Connected** (`isUsernameAvailable`) |
 | POST | `/auth/login` | Email+password login (`account_type`; bad creds → **422**) | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37)/[#40](https://github.com/YoussefSalem582/osta_backend/issues/40) | **Connected** |
 | POST | `/auth/refresh` | Exchange refresh → new token pair | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37) | **Connected** (interceptor) |
 | POST | `/auth/logout` | Revoke current token | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37) | Planned |
