@@ -14,8 +14,6 @@ import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
-/// Full-screen profile route (deep-linkable): the shared [ProfileView] under a
-/// brand top bar with an auto back button.
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -27,8 +25,6 @@ class ProfileScreen extends StatelessWidget {
   );
 }
 
-/// Profile content without a scaffold, so it can be a pushed route
-/// ([ProfileScreen]) or a bottom-nav tab body inside a shell (nav bar stays).
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
 
@@ -222,59 +218,6 @@ class ProfileView extends StatelessWidget {
               horizontal: AppSpacing.md,
               vertical: AppSpacing.sm,
             ),
-// <<<<<<< HEAD
-//           ),
-//           const SizedBox(height: AppSpacing.sm),
-
-//           _ProfileCard(
-//             child: ProfileListItem(
-//               title: l10n.myCars,
-//               subtitle: l10n.myCarsSubtitle,
-//               leading: const ProfileItemIcon(
-//                 icon: Icons.directions_car_rounded,
-//                 color: Colors.orange,
-//               ),
-//               onTap: () => context.push(AppRoutes.garage),
-//             ),
-//           ),
-//           const SizedBox(height: AppSpacing.sm),
-
-//           _ProfileCard(
-//             child: ProfileListItem(
-//               title: l10n.myStore,
-//               subtitle: l10n.myStoreSubtitle,
-//               leading: const ProfileItemIcon(
-//                 icon: Icons.storefront_outlined,
-//                 color: Colors.purple,
-//               ),
-//               onTap: () {},
-//             ),
-//           ),
-
-//           const SizedBox(height: AppSpacing.lg),
-
-//           _SectionLabel(title: l10n.settings),
-//           const SizedBox(height: AppSpacing.sm),
-
-//           _ProfileCard(
-//             child: Padding(
-//               padding: const EdgeInsets.symmetric(
-//                 horizontal: AppSpacing.md,
-//                 vertical: AppSpacing.sm,
-//               ),
-//               child: Row(
-//                 children: [
-//                   const ProfileItemIcon(
-//                     icon: Icons.language_rounded,
-//                     color: AppColors.brandGreen,
-//                   ),
-//                   Expanded(
-//                     child: Text(
-//                       l10n.language,
-//                       style: textTheme.bodyLarge?.copyWith(
-//                         fontWeight: FontWeight.w600,
-//                       ),
-// =======
             child: Row(
               children: [
                 const ProfileItemIcon(
@@ -286,7 +229,6 @@ class ProfileView extends StatelessWidget {
                     l10n.appearance,
                     style: textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w600,
-// >>>>>>> 05dd7eefce8d3884570b01b7e0b4d8e0d864abad
                     ),
                   ),
                 ),

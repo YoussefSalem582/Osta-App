@@ -7,8 +7,6 @@ import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
-/// Full-screen booking-status route (deep-linkable): [BookingView] under a
-/// brand top bar carrying the booking code.
 class RealTimeBookingScreen extends StatelessWidget {
   const RealTimeBookingScreen({super.key});
 
@@ -23,9 +21,6 @@ class RealTimeBookingScreen extends StatelessWidget {
   );
 }
 
-/// Booking-status content without a scaffold, so it can be a pushed route
-/// ([RealTimeBookingScreen]) or a bottom-nav tab body inside a shell (nav bar
-/// stays).
 class BookingView extends StatelessWidget {
   const BookingView({super.key});
 
