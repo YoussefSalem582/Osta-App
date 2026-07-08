@@ -18,7 +18,8 @@ abstract final class AppTheme {
   );
 
   static ThemeData _build(Brightness brightness, AppColors tokens) {
-    final scheme =
+    final isLight = brightness == Brightness.light;
+    final seeded =
         ColorScheme.fromSeed(
           seedColor: AppColors.brandGreen,
           brightness: brightness,
@@ -26,6 +27,23 @@ abstract final class AppTheme {
           secondary: tokens.accent,
           onSecondary: tokens.onAccent,
         );
+    // Light mode: pin the real brand green and a tuned surface hierarchy so the
+    // UI reads as Osta green, not fromSeed's muted olive. Dark keeps the seed.
+    final scheme = isLight
+        ? seeded.copyWith(
+            primary: AppColors.brandGreen,
+            onPrimary: Colors.white,
+            primaryContainer: AppColors.lightPrimaryContainer,
+            onPrimaryContainer: AppColors.onLightPrimaryContainer,
+            surface: AppColors.lightSurface,
+            onSurface: AppColors.lightOnSurface,
+            surfaceContainerLowest: AppColors.lightSurface,
+            surfaceContainerLow: AppColors.lightBackground,
+            surfaceContainer: AppColors.lightSurfaceAlt,
+            surfaceContainerHigh: AppColors.lightSurfaceAlt,
+            outlineVariant: AppColors.lightOutline,
+          )
+        : seeded;
     final base = ThemeData(colorScheme: scheme);
 
     final buttonShape = RoundedRectangleBorder(
@@ -37,17 +55,14 @@ abstract final class AppTheme {
     );
 
     return base.copyWith(
-      scaffoldBackgroundColor: brightness == Brightness.light
-          ? const Color(0xFFF4F6F5)
-          : null,
+      scaffoldBackgroundColor: isLight ? AppColors.lightBackground : null,
       textTheme: AppTypography.textTheme(base.textTheme),
       extensions: [tokens],
       appBarTheme: AppBarTheme(
         centerTitle: true,
         elevation: AppElevation.none,
-        backgroundColor: brightness == Brightness.light
-            ? const Color(0xFFF4F6F5)
-            : null,
+        backgroundColor: isLight ? AppColors.lightBackground : null,
+        surfaceTintColor: Colors.transparent,
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
@@ -68,15 +83,19 @@ abstract final class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: brightness == Brightness.light ? Colors.white : null,
+        // A tinted fill (not white) so the field reads as a distinct box on
+        // white cards — white-on-white made fields invisible.
+        fillColor: isLight ? AppColors.lightSurfaceAlt : null,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.md,
         ),
-        // Resting/enabled: flat filled, no border. Focus: a 2px brand ring.
-        // Error: an error-coloured ring — clear state feedback per M3 guidance.
+        // Resting: tinted fill + hairline border so the field is defined on any
+        // background. Focus: a 2px brand ring. Error: an error-coloured ring.
         border: _inputBorder(BorderSide.none),
-        enabledBorder: _inputBorder(BorderSide.none),
+        enabledBorder: isLight
+            ? _inputBorder(const BorderSide(color: AppColors.lightOutline))
+            : _inputBorder(BorderSide.none),
         focusedBorder: _inputBorder(
           BorderSide(color: scheme.primary, width: 2),
         ),
@@ -104,7 +123,8 @@ abstract final class AppTheme {
         ),
       ),
       cardTheme: CardThemeData(
-        color: brightness == Brightness.light ? Colors.white : null,
+        color: isLight ? AppColors.lightSurface : null,
+        surfaceTintColor: Colors.transparent,
         elevation: AppElevation.low,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadii.lg),
