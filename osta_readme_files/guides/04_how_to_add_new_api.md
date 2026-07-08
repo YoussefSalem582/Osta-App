@@ -54,9 +54,9 @@ The flow is deliberately plain Dart: no codegen, no annotations, no `build_runne
 
 ### 1. (First API PR) create a path-constants file / (أول PR للـ API) اعمل ملف ثوابت المسارات
 
-There is **no `api_endpoints.dart` yet** — the first feature PR that calls the backend should add `lib/core/network/api_endpoints.dart` with `static const` paths (and parameterised helpers for `{id}` routes), so nobody hardcodes URL strings. Base URL comes from `AppConfig.baseUrl` (`--dart-define BASE_URL`, default `https://api.osta.dev/api/v1`).
+There is **no `api_endpoints.dart` yet** — the first feature PR that calls the backend should add `lib/core/network/api_endpoints.dart` with `static const` paths (and parameterised helpers for `{id}` routes), so nobody hardcodes URL strings. Base URL comes from `AppConfig.baseUrl` (`--dart-define BASE_URL`, default `https://osta.technology92.com/api/v1`).
 
-> ‏لسه **مفيش `api_endpoints.dart`** — أول PR لميزة بتنادي الـ backend المفروض يضيف `lib/core/network/api_endpoints.dart` بمسارات `static const` (ودوال مساعِدة للمسارات اللي فيها `{id}`)، عشان محدش يكتب روابط بإيده. الـ base URL بييجي من `AppConfig.baseUrl` (`--dart-define BASE_URL`، الافتراضي `https://api.osta.dev/api/v1`).
+> ‏لسه **مفيش `api_endpoints.dart`** — أول PR لميزة بتنادي الـ backend المفروض يضيف `lib/core/network/api_endpoints.dart` بمسارات `static const` (ودوال مساعِدة للمسارات اللي فيها `{id}`)، عشان محدش يكتب روابط بإيده. الـ base URL بييجي من `AppConfig.baseUrl` (`--dart-define BASE_URL`، الافتراضي `https://osta.technology92.com/api/v1`).
 
 ```dart
 class ApiEndpoints {

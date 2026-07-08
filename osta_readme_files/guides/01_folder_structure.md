@@ -21,7 +21,7 @@ lib/
 │   ├── auth/
 │   │   └── token_storage.dart          # flutter_secure_storage wrapper (access_token / refresh_token)
 │   ├── config/
-│   │   └── app_config.dart             # BASE_URL from --dart-define (default https://api.osta.dev/api/v1)
+│   │   └── app_config.dart             # BASE_URL from --dart-define (default https://osta.technology92.com/api/v1)
 │   ├── constants/
 │   │   └── app_images.dart             # AppImages.logo / fullLogo / mascot (assets/images/)
 │   ├── di/

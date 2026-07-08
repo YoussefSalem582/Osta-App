@@ -14,6 +14,13 @@ Touched: `lib/features/business/services/presentation/**`, `lib/features/busines
 
 ## 2026-07-07 — Business onboarding screens, widgets & routing implemented
 
+## 2026-07-09 — Point BASE_URL at the live backend (osta.technology92.com)
+
+The backend is now deployed at **`https://osta.technology92.com`** — admin panel at `/admin`, REST API under `/api/v1`. Verified live: `GET https://osta.technology92.com/api/v1/auth/check-username?username=test` → `{"success":true,"data":{"available":true}}` (the standard `{success,data}` envelope; the app's `Prefix = /api/v1` and error-code contract hold). The previous default host `api.osta.dev` was a placeholder that does not resolve (DNS `fetch failed`).
+
+Replaced `api.osta.dev` → `osta.technology92.com` across the whole repo: the functional change is `AppConfig.baseUrl`'s compile default (`lib/core/config/app_config.dart`, `defaultValue: 'https://osta.technology92.com/api/v1'`), so `flutter run` with no `--dart-define` now reaches a working backend; `--dart-define=BASE_URL=…` still overrides per environment. All doc/run-command references were updated for consistency — `README.md`, `ARCHITECTURE.md`, `OSTA_plan.md`, `OSTA_TODO.md`, `CLAUDE.md`, `.agents/rules/project-scope.md`, and the `osta_readme_files/guides/` set (01, 02, 03, 04, 06, 08, 09) + `reference/{ONBOARDING,COMMON_PITFALLS}.md`. `flutter analyze` clean.
+
+> ‏أصبح الـ backend منشورًا على **`https://osta.technology92.com`** (الإدارة `/admin`، الـ API `/api/v1`). مُتحقَّق: `GET /api/v1/auth/check-username` يُعيد `{"success":true,"data":{"available":true}}`. كان المضيف السابق `api.osta.dev` نائبًا لا يُحلَّل (DNS يفشل). استُبدل `api.osta.dev` بـ `osta.technology92.com` في كامل المستودع؛ التغيير الوظيفي هو الافتراضي المُصرَّف في `AppConfig.baseUrl`، فيصل `flutter run` الآن إلى backend فعلي دون `--dart-define`. حُدِّثت كل مراجع التوثيق وأوامر التشغيل. التحليل نظيف.
 
 ## 2026-07-07 — Business onboarding screens, widgets & routing implemented
 
@@ -30,6 +37,7 @@ Implemented the role selection screen widgets (`RoleCard`, `ComingSoonBadge`, `I
 > ‏تم تنفيذ ودجات شاشة اختيار الدور (`RoleCard`, `ComingSoonBadge`, `InfoBanner`) في `lib/features/role/presentation/widgets/`، وتطوير `AppCard` بدعم الحدود والألوان، وإصلاح `AppColors.gray`، وضبط محاذاة العناوين إلى `start` لدعم الـ RTL.
 
 Touched: `lib/features/role/presentation/widgets/{role_card,coming_soon,info_banner}.dart`, `lib/features/role/presentation/role_selection_page.dart`, `lib/shared/ui/app_card.dart`, `lib/core/theme/app_colors.dart`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
 ## 2026-07-08 — Register avatar upload (image_picker → POST /me/avatar)
 
 Wired the register screen's profile-photo control end to end (it was a "coming soon" stub). Tapping the ring now opens the **system gallery picker** via `image_picker` (`ImagePicker().pickImage(source: gallery, maxWidth: 1024, imageQuality: 85)`) — the picker uses **PHPicker on iOS / the Android Photo Picker**, which run out-of-process, so **no `NSPhotoLibraryUsageDescription` / runtime permission / native manifest change is required**. The chosen file previews inside the dashed ring (`ClipOval(Image.file(...))`), and its path rides along on `RegisterSubmitted.photoPath`.
