@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:osta/features/customer/booking/presentation/my_bookings_screen.dart';
 // <<<<<<< HEAD
 // import 'package:osta/features/customer/booking/presentation/my_bookings_screen.dart';
 // =======
@@ -47,7 +48,7 @@ class CustomerShellPage extends StatelessWidget {
           message: l10n.shellWelcome,
         ),
         // Index 1 — Bookings
-        const BookingView(),
+        const MyBookingsScreen(),
         // Index 2 — Store (placeholder)
         EmptyState(
           icon: Icons.shopping_bag_outlined,
