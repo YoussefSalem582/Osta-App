@@ -5,7 +5,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the pro
 
 ## [Unreleased]
 
-## [0.1.0] - 2026-07-08
+## [0.2.0] - 2026-07-08
 
 First tagged pre-release cut of `develop` → `main`. Early-stage (M0 foundation complete; most feature epics still open). Everything below is the accumulated `develop` work to date.
 
