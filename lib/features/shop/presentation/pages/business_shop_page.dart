@@ -153,7 +153,7 @@ class BusinessShopPage extends StatelessWidget {
             label: l10n.shellNavMore,
           ),
         ],
-        currentIndex: 3, // المتجر
+        currentIndex: 3, 
         onChanged: (index) {
           if (index == 1) {
             context.go(BusinessServicesPage.path);
