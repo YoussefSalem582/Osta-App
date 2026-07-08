@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:osta/core/router/app_routes.dart';
@@ -82,13 +84,16 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
               horizontal: AppSpacing.md,
             ),
             child: AddVehicleButton(
-              onPressed: () => context.push(AppRoutes.addCar),
+              onPressed: () => unawaited(context.push(AppRoutes.addCar)),
             ),
           ),
         ],
       ),
       body: vehicles.isEmpty
-          ? EmptyGarageView(onAddVehicle: () => context.push(AppRoutes.addCar))
+
+          ? EmptyGarageView(
+              onAddVehicle: () => unawaited(context.push(AppRoutes.addCar)),
+            )
           : ListView.separated(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.md,

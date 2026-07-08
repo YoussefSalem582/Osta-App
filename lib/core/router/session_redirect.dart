@@ -63,24 +63,43 @@ String? resolveRedirect({
     return authSurface.contains(location) ? null : AppRoutes.authChoose;
   }
 
-  // Authenticated with a role. Prevent accessing the logged-out surface.
-  final shell = shellFor(role);
-  const loggedOutSurface = {
-    AppRoutes.splash,
-    AppRoutes.language,
-    AppRoutes.role,
-    AppRoutes.onboarding,
-    AppRoutes.authChoose,
-    AppRoutes.login,
-    AppRoutes.register,
-    AppRoutes.forgotPassword,
-    AppRoutes.resetPassword,
+// <<<<<<< HEAD
+//   // Authenticated with a role. Prevent accessing the logged-out surface.
+//   final shell = shellFor(role);
+//   const loggedOutSurface = {
+//     AppRoutes.splash,
+//     AppRoutes.language,
+//     AppRoutes.role,
+//     AppRoutes.onboarding,
+//     AppRoutes.authChoose,
+//     AppRoutes.login,
+//     AppRoutes.register,
+//     AppRoutes.forgotPassword,
+//     AppRoutes.resetPassword,
+//   };
+
+//   if (loggedOutSurface.contains(location)) {
+//     return shell;
+//   }
+
+//   // Allow navigation to any authenticated route (shell, garage, etc.)
+//   return null;
+// =======
+  // Authenticated with a role: land in its shell, and allow the in-app screens
+  // that hang off it (pushed over the shell, so they keep a back button).
+  // Everything else — notably the other role's shell — bounces back to the
+  // active shell.
+  // ponytail: flat allow-list, not per-role. A business user could reach a
+  // customer screen by typed URL, but no nav entry leads there; scope per role
+  // if that ever matters.
+  const inAppScreens = {
+    AppRoutes.profile,
+    AppRoutes.garage,
+    AppRoutes.addCar,
+    AppRoutes.bookingStatus,
   };
-
-  if (loggedOutSurface.contains(location)) {
-    return shell;
-  }
-
-  // Allow navigation to any authenticated route (shell, garage, etc.)
-  return null;
+  final shell = shellFor(role);
+  if (location == shell || inAppScreens.contains(location)) return null;
+  return shell;
+// >>>>>>> 05dd7eefce8d3884570b01b7e0b4d8e0d864abad
 }

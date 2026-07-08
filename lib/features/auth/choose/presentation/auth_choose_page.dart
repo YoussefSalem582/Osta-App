@@ -8,6 +8,7 @@ import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/brand_scaffold.dart';
+import 'package:osta/shared/ui/or_divider.dart';
 
 /// Unauthenticated landing after the role chooser. Routes into the shared auth
 /// form pre-set to login or register via `?mode=`; social sign-in is a stub
@@ -38,7 +39,7 @@ class AuthChoosePage extends StatelessWidget {
           onPressed: () => context.go(AppRoutes.register),
         ),
         const SizedBox(height: AppSpacing.lg),
-        _OrDivider(label: l10n.authChooseOr),
+        OrDivider(label: l10n.authChooseOr),
         const SizedBox(height: AppSpacing.md),
         AppButton(
           label: l10n.continueWithGoogle,
@@ -61,32 +62,5 @@ class AuthChoosePage extends StatelessWidget {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(message)));
-  }
-}
-
-/// "— or continue with —" separator.
-class _OrDivider extends StatelessWidget {
-  const _OrDivider({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Row(
-      children: [
-        const Expanded(child: Divider()),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: Text(
-            label,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ),
-        const Expanded(child: Divider()),
-      ],
-    );
   }
 }
