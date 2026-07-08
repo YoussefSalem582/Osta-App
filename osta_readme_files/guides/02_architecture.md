@@ -182,7 +182,7 @@ class AppConfig {
   AppConfig()
       : baseUrl = const String.fromEnvironment(
           'BASE_URL',
-          defaultValue: 'https://api.osta.dev/api/v1',
+          defaultValue: 'https://osta.technology92.com/api/v1',
         );
   final String baseUrl;
 }
@@ -193,7 +193,7 @@ Run the app with a single dart-define — no flavor, no `build_runner`:
 > ‏شغّل التطبيق بـ dart-define واحد — بلا نكهة وبلا `build_runner`:
 
 ```bash
-flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1
+flutter run --dart-define=BASE_URL=https://osta.technology92.com/api/v1
 ```
 
 The only generated code is localization (`flutter gen-l10n`, which also runs automatically on `flutter run`/`flutter build`). The git-ignored generated output is now just `lib/core/l10n/` — there are no `*.g.dart`, `*.freezed.dart`, or `*.config.dart` files anymore.

@@ -8,7 +8,7 @@ class AppConfig {
   AppConfig()
     : baseUrl = const String.fromEnvironment(
         'BASE_URL',
-        defaultValue: 'https://api.osta.dev/api/v1',
+        defaultValue: 'https://osta.technology92.com/api/v1',
       );
 
   final String baseUrl;

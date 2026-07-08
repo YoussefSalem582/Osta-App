@@ -5,6 +5,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the pro
 
 ## [Unreleased]
 
+### Changed
+
+- **Point `BASE_URL` at the live backend** (2026-07-09) — the deployed backend now lives at **`https://osta.technology92.com`** (admin at `/admin`, API under `/api/v1`, verified live: `GET /api/v1/auth/check-username` returns the `{success,data}` envelope). Replaced the dead placeholder host `api.osta.dev` with `osta.technology92.com` everywhere — the `AppConfig.baseUrl` compile default (`lib/core/config/app_config.dart`), and every run-command / doc reference across the repo (README, CLAUDE/AGENTS scope rules, and the `osta_readme_files/` guides). `flutter run` now hits a working backend out of the box; `--dart-define=BASE_URL=…` still overrides per environment. `flutter analyze` clean.
+
+  > ‏**توجيه `BASE_URL` إلى الـ backend الحيّ** (2026-07-09) — أصبح الـ backend المنشور على **`https://osta.technology92.com`** (لوحة الإدارة على `/admin`، الـ API تحت `/api/v1`، مُتحقَّق منه: `GET /api/v1/auth/check-username` يُعيد مغلّف `{success,data}`). استُبدل المضيف النائب الميت `api.osta.dev` بـ `osta.technology92.com` في كل مكان — الافتراضي المُصرَّف في `AppConfig.baseUrl` وكل أوامر التشغيل ومراجع التوثيق. الآن `flutter run` يصل إلى backend فعلي مباشرةً، ويظلّ `--dart-define=BASE_URL=…` يتجاوزه لكل بيئة. التحليل نظيف.
+
+## [0.2.0] - 2026-07-08
+
+First tagged pre-release cut of `develop` → `main`. Early-stage (M0 foundation complete; most feature epics still open). Everything below is the accumulated `develop` work to date.
+
 ### Fixed
 
 - **Connect the built customer screens to navigation** (2026-07-08) — the four implemented post-auth screens (`ProfileScreen`, `MyGarageScreen`, `AddCarScreen`, `RealTimeBookingScreen`) were registered as routes but **unreachable**: `resolveRedirect` pinned any authenticated user to *exactly* their shell, so `context.go('/profile')` (and the profile→garage→add-car chain) bounced straight back to `/customer`, and no bottom-nav tab linked to them. Fixed by (1) relaxing the authed guard in `lib/core/router/session_redirect.dart` to an allow-list — the active shell **plus** `profile`/`garage`/`add-car`/`booking-status` — while still pinning the *other* role's shell back (cross-shell test stays green); (2) giving `AppBottomNavItem` two optional hooks honoured by `RoleShell` — `body` (select the tab → show that widget as the shell body, **keeping the bottom nav**) and `onTap` (tap → push a full-screen route instead); (3) extracting a scaffold-less **`ProfileView`** from `ProfileScreen` so the customer **More** tab renders it inline with the nav bar intact, and wiring the **Bookings** tab → push booking-status; and (4) switching the profile→garage and garage→add-car links from `context.go` to `context.push` so the shared `AppTopBar` shows its auto back button. `ProfileScreen` stays as the deep-linkable full-screen `/profile` route. Added a redirect test asserting the four in-app screens are reachable while authenticated. No new strings/deps/routes; `flutter analyze` clean, all 123 tests pass. **Out of scope** (empty stub dirs, per open epics): customer `home`/`map`/`wallet`, business `dashboard`/`bookings`/`services`/`team`/`wallet`, `notifications`, `shop`, and the business Profile tab (no business profile screen yet).

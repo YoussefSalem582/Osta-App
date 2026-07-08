@@ -211,7 +211,7 @@ To run the app locally, pass a single `BASE_URL` dart-define (no `--flavor`, no 
 > ‏عشان تشغّل التطبيق محليًا، مرّر `BASE_URL` واحد كـ dart-define (من غير `--flavor` ولا `FLAVOR`).
 
 ```bash
-flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1
+flutter run --dart-define=BASE_URL=https://osta.technology92.com/api/v1
 ```
 
 ---

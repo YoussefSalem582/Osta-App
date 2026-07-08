@@ -55,7 +55,7 @@ Every HTTP call goes through `ApiClient` (`core/network/api_client.dart`), which
 
 ## Configuration / الإعدادات
 
-`AppConfig` (`core/config/app_config.dart`) holds a single `baseUrl` from the `BASE_URL` dart-define (default `https://api.osta.dev/api/v1`). No `.env`, **no build flavors** (multi-flavor deferred — [`docs/ROADMAP.md`](docs/ROADMAP.md) Phase 4).
+`AppConfig` (`core/config/app_config.dart`) holds a single `baseUrl` from the `BASE_URL` dart-define (default `https://osta.technology92.com/api/v1`). No `.env`, **no build flavors** (multi-flavor deferred — [`docs/ROADMAP.md`](docs/ROADMAP.md) Phase 4).
 
 ## Routing / التوجيه
 

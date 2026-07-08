@@ -81,7 +81,7 @@ There is no component gallery route — it was removed with the rest of the defe
 > ‏مفيش راوت لمعرض المكوّنات (component gallery) — اتشال مع باقي أدوات التطوير المؤجَّلة (راجع [`docs/ROADMAP.md`](../../docs/ROADMAP.md)). علشان تشوف تأثير أي تغيير في الرموز بعينك، شغّل التطبيق وروح للشاشة اللي يهمّك تشوفها:
 
 ```bash
-flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1
+flutter run --dart-define=BASE_URL=https://osta.technology92.com/api/v1
 ```
 
 Toggle light/dark via `ThemeModeController` (or the platform brightness) and switch the app to Arabic to check RTL. For a repeatable check, add a golden test — see [10_testing.md](10_testing.md).
