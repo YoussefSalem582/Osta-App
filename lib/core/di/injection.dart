@@ -12,9 +12,11 @@ import 'package:osta/core/router/app_router.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/session/session_store.dart';
 import 'package:osta/core/theme/theme_mode_controller.dart';
-import 'package:osta/features/auth/data/auth_repository_impl.dart';
-import 'package:osta/features/auth/domain/auth_repository.dart';
-import 'package:osta/features/auth/presentation/auth_cubit.dart';
+import 'package:osta/features/auth/login/presentation/bloc/login_bloc.dart';
+import 'package:osta/features/auth/password_recovery/presentation/bloc/password_recovery_bloc.dart';
+import 'package:osta/features/auth/register/presentation/bloc/register_bloc.dart';
+import 'package:osta/features/auth/shared/data/auth_repository_impl.dart';
+import 'package:osta/features/auth/shared/domain/auth_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Global service locator.
@@ -42,7 +44,6 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<ThemeModeController>(
       () => ThemeModeController(getIt()),
     )
-
     ..registerLazySingleton<Dio>(
       () => buildAppDio(getIt(), getIt(), getIt()),
     )
@@ -55,12 +56,16 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<SessionStore>(
       () => SessionStore(getIt(), getIt()),
     )
-    ..registerLazySingleton<SessionController>(
-      () => SessionController(getIt(), getIt()),
-    )
     ..registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(getIt(), getIt()),
     )
-    ..registerFactory<AuthCubit>(() => AuthCubit(getIt(), getIt()))
+    ..registerLazySingleton<SessionController>(
+      () => SessionController(getIt(), getIt(), getIt()),
+    )
+    ..registerFactory<LoginBloc>(() => LoginBloc(getIt(), getIt()))
+    ..registerFactory<RegisterBloc>(() => RegisterBloc(getIt(), getIt()))
+    ..registerFactory<PasswordRecoveryBloc>(
+      () => PasswordRecoveryBloc(getIt()),
+    )
     ..registerLazySingleton<AppRouter>(() => AppRouter(getIt()));
 }

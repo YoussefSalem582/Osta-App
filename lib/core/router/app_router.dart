@@ -1,26 +1,31 @@
 import 'package:go_router/go_router.dart';
 import 'package:osta/features/home/presentation/widgets/home_bottom_nav.dart';
 import 'package:osta/features/onboarding/presentation/pages/onboarding_page.dart';
-import 'package:osta/features/role/presentation/role_selection_page.dart';
+
 import 'package:osta/features/splash/presentation/splash_page.dart';
 
-/// Declarative app router.
+
 
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/router/go_router_refresh_stream.dart';
 import 'package:osta/core/router/session_redirect.dart';
 import 'package:osta/core/session/session_controller.dart';
-import 'package:osta/features/auth/presentation/auth_page.dart';
+import 'package:osta/features/auth/choose/presentation/auth_choose_page.dart';
+import 'package:osta/features/auth/login/presentation/login_page.dart';
+import 'package:osta/features/auth/password_recovery/presentation/forgot_password_page.dart';
+import 'package:osta/features/auth/password_recovery/presentation/reset_password_page.dart';
+import 'package:osta/features/auth/register/presentation/register_page.dart';
 import 'package:osta/features/business/shell/presentation/business_shell_page.dart';
 import 'package:osta/features/customer/booking/presentation/real_time_booking_screen.dart';
 import 'package:osta/features/customer/garage/presentation/add_car_screen.dart';
 import 'package:osta/features/customer/garage/presentation/my_garage_screen.dart';
 import 'package:osta/features/customer/profile/presentation/profile_screen.dart';
 import 'package:osta/features/customer/shell/presentation/customer_shell_page.dart';
+
 import 'package:osta/features/onboarding/presentation/language_page.dart';
 import 'package:osta/features/role/presentation/coming_soon_page.dart';
 import 'package:osta/features/role/presentation/role_chooser_page.dart';
-import 'package:osta/features/splash/presentation/splash_page.dart';
+
 
 /// Declarative app router. Boots at the splash and defers all navigation to a
 /// single [resolveRedirect] guard keyed on the [SessionController] state, so
@@ -46,7 +51,7 @@ class AppRouter {
       ),
 
       GoRoute(
-        path: OnboardingPage.path,
+        path: AppRoutes.onboarding,
         builder: (context, state) => const OnboardingPage(),
       ),
 
@@ -59,8 +64,27 @@ class AppRouter {
         builder: (context, state) => const RoleChooserPage(),
       ),
       GoRoute(
-        path: AppRoutes.auth,
-        builder: (context, state) => const AuthPage(),
+        path: AppRoutes.authChoose,
+        builder: (context, state) => const AuthChoosePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.login,
+        builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.register,
+        builder: (context, state) => const RegisterPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.forgotPassword,
+        builder: (context, state) => const ForgotPasswordPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.resetPassword,
+        builder: (context, state) => ResetPasswordPage(
+          email: state.uri.queryParameters['email'],
+          token: state.uri.queryParameters['token'],
+        ),
       ),
       GoRoute(
         path: AppRoutes.customerShell,

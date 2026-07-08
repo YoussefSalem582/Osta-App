@@ -3,7 +3,7 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_exception.dart';
 import 'package:osta/core/network/token_pair.dart';
 import 'package:osta/core/session/app_role.dart';
-import 'package:osta/features/auth/domain/auth_repository.dart';
+import 'package:osta/features/auth/shared/domain/auth_repository.dart';
 
 /// Talks to `/auth/*`, stores the Sanctum token pair on success, and reads the
 /// authoritative role from the embedded `user.type` — the same value
@@ -15,6 +15,18 @@ class AuthRepositoryImpl implements AuthRepository {
 
   final ApiClient _api;
   final TokenStorage _tokens;
+
+  @override
+  Future<bool> isUsernameAvailable(String username) async {
+    final result = await _api.get<bool>(
+      '/auth/check-username',
+      authenticated: false,
+      query: {'username': username},
+      parse: (data) =>
+          data is Map<String, dynamic> && data['available'] == true,
+    );
+    return result.data;
+  }
 
   @override
   Future<AppRole> login({
@@ -31,6 +43,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<AppRole> register({
     required String firstName,
     required String lastName,
+    required String username,
     required String email,
     required String password,
     required AppRole accountType,
@@ -38,12 +51,57 @@ class AuthRepositoryImpl implements AuthRepository {
   }) => _authenticate('/auth/register', {
     'first_name': firstName,
     'last_name': lastName,
+    'username': username,
     'email': email,
     'password': password,
     'password_confirmation': password,
     'account_type': accountType.wireName,
     if (phone != null && phone.isNotEmpty) 'phone': phone,
   });
+
+  @override
+  Future<void> logout() async {
+    try {
+      await _api.post<Object?>(
+        '/auth/logout',
+        body: const <String, dynamic>{},
+        parse: (data) => data,
+      );
+    } on ApiException {
+      // The token may already be invalid server-side; a local clear is enough.
+    } finally {
+      await _tokens.clear();
+    }
+  }
+
+  @override
+  Future<void> forgotPassword({required String email}) async {
+    await _api.post<Object?>(
+      '/forgot-password',
+      authenticated: false,
+      body: {'email': email},
+      parse: (data) => data,
+    );
+  }
+
+  @override
+  Future<void> resetPassword({
+    required String email,
+    required String token,
+    required String password,
+  }) async {
+    await _api.post<Object?>(
+      '/reset-password',
+      authenticated: false,
+      body: {
+        'email': email,
+        'token': token,
+        'password': password,
+        'password_confirmation': password,
+      },
+      parse: (data) => data,
+    );
+  }
 
   Future<AppRole> _authenticate(String path, Map<String, dynamic> body) async {
     final result = await _api.post<_AuthData>(

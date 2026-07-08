@@ -59,7 +59,7 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(find.text('Title'), findsOneWidget);
-      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(AppBottomNavBar), findsOneWidget);
     });
   }
 
@@ -84,8 +84,31 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(selected, 1);
-    final bar = tester.widget<NavigationBar>(find.byType(NavigationBar));
-    expect(bar.selectedIndex, 1);
+  });
+
+  testWidgets('center action fires its callback without changing the tab', (
+    tester,
+  ) async {
+    var selected = 0;
+    var centerTaps = 0;
+    await pump(
+      tester,
+      Scaffold(
+        bottomNavigationBar: AppBottomNavBar(
+          items: _items,
+          currentIndex: selected,
+          onChanged: (i) => selected = i,
+          centerIcon: Icons.location_on_outlined,
+          onCenterTap: () => centerTaps++,
+        ),
+      ),
+    );
+
+    await tester.tap(find.byIcon(Icons.location_on_outlined));
+    await tester.pumpAndSettle();
+
+    expect(centerTaps, 1);
+    expect(selected, 0); // the raised action is not a tab
   });
 
   testWidgets('badge shows count only when > 0', (tester) async {

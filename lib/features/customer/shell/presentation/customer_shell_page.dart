@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:osta/features/shell/presentation/role_shell.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_bottom_nav_bar.dart';
+import 'package:osta/shared/ui/app_toaster.dart';
 
 /// Consumer (customer) shell — the landing surface for the `customer` role.
 class CustomerShellPage extends StatelessWidget {
@@ -12,13 +13,20 @@ class CustomerShellPage extends StatelessWidget {
     final l10n = context.l10n;
     return RoleShell(
       title: l10n.customerHomeTitle,
+      // Raised center action: find nearby service centers on the map.
+      centerIcon: Icons.location_on_outlined,
+      onCenterTap: () => AppToaster.showMessage(l10n.comingSoonBody),
       tabs: [
         AppBottomNavItem(icon: Icons.home_outlined, label: l10n.navHome),
         AppBottomNavItem(
           icon: Icons.calendar_month_outlined,
           label: l10n.navBookings,
         ),
-        AppBottomNavItem(icon: Icons.person_outline, label: l10n.navProfile),
+        AppBottomNavItem(
+          icon: Icons.shopping_bag_outlined,
+          label: l10n.navStore,
+        ),
+        AppBottomNavItem(icon: Icons.more_horiz, label: l10n.navMore),
       ],
     );
   }

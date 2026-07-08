@@ -1,15 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:osta/core/constants/app_images.dart';
-import 'package:osta/core/theme/app_colors.dart';
-import 'package:osta/features/onboarding/presentation/pages/onboarding_page.dart';
-
-import 'package:osta/core/router/app_routes.dart';
+import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/session/session_controller.dart';
-import 'package:osta/shared/extensions/context_ext.dart';
+import 'package:osta/core/theme/app_colors.dart';
 
 /// First screen on launch. Reads persisted `{token, activeRole, locale}` via
 /// [SessionController.bootstrap]; the router's redirect then lands the user in
@@ -29,11 +24,12 @@ final class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> _bootstrap() async {
-   await Future<void>.delayed(const Duration(seconds: 1));
-
-    if (!mounted) return;
-
-    context.go(OnboardingPage.path);
+    // Branding hold, then read persisted {token, activeRole, locale}. The
+    // router's redirect (keyed on SessionController state via the refresh
+    // listenable) reacts to the emitted state and leaves the splash on its
+    // own — no manual navigation.
+    await Future<void>.delayed(const Duration(seconds: 2));
+    await getIt<SessionController>().bootstrap();
   }
 
   @override
