@@ -27,7 +27,7 @@ Canonical conventions live in [`../../AGENTS.md`](../../AGENTS.md) — read it f
 
 **No `build_runner`.** l10n is the only generated code; there is no `freezed`/`json_serializable`/`injectable` codegen step — do not add or run one.
 
-Run the app: `flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1` (single `BASE_URL`, no `--flavor`).
+Run the app: `flutter run --dart-define=BASE_URL=https://osta.technology92.com/api/v1` (single `BASE_URL`, no `--flavor`).
 
 ## Needs explicit permission — ask first
 

@@ -4,6 +4,40 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-08 — Business Services & Shop screens with direct `AppBottomNavBar` & `ServiceToggleCard` consolidation
+
+Implemented the two exact screens from user mockups (`BusinessServicesPage` with `ServicesFilterToggle`, shared `ServiceToggleCard`, and `DiscountPromotionBanner` under `lib/features/business/services/presentation/`; and `BusinessShopPage` with `ShopProductCard` under `lib/features/shop/presentation/`). Removed the entire `lib/features/shell/` folder (`ProviderShell`) since it is no longer needed, and instead directly attached the shared `AppBottomNavBar` (`AppBottomNavItem`) and center docked `FloatingActionButton` onto the `Scaffold` of both `BusinessServicesPage` (`/business-services`) and `BusinessShopPage` (`/business-shop`). Consolidated `ServiceToggleCard` across both `BusinessCatalogPage` (`onboarding`) and `BusinessServicesPage` (`services`) to eliminate widget/code duplication, replacing hardcoded hex switch colors with dynamic design tokens (`theme.colorScheme.primary` and `outlineVariant`). Registered `/business-services` and `/business-shop` in `AppRouter` and added exact localized strings (`shellNavCalendar` + navigation/services keys) across `app_ar.arb` and `app_en.arb`.
+
+> ‏تم تنفيذ الشاشتين المطابقتين لتصاميم المستخدم (`BusinessServicesPage` مع مكونات التبديل وعروض الخصم تحت `lib/features/business/services/presentation/`؛ و`BusinessShopPage` مع بطاقة المنتج وحالة التفعيل تحت `lib/features/shop/presentation/`). وتم مسح مجلد `lib/features/shell/` بالكامل وحذف الصفحة الحاضنة `ProviderShell` لعدم الحاجة إليها وإرفاق شريط التنقل السفلي المشترك `AppBottomNavBar` (`AppBottomNavItem`) وزر التقويم العائم مباشرة في شاشتي الكتالوج والأسعار والمتجر. وتم توحيد مكوّن بطاقة الخدمة `ServiceToggleCard` ليعمل كمكوّن مشترك بين شاشة تأهيل الكتالوج وشاشة الكتالوج والأسعار لتجنب تكرار الكود مع استبدال الألوان الثابتة برموز ألوان التصميم الديناميكية. وتم تسجيل مساري الشاشتين في موجه التطبيق وإضافة جميع مفاتيح الترجمة في ملفي العربية والإنجليزية.
+
+Touched: `lib/features/business/services/presentation/**`, `lib/features/business/onboarding/presentation/widgets/service_toggle_card.dart`, `lib/features/shop/presentation/**`, `lib/shared/ui/app_bottom_nav_bar.dart`, `lib/core/router/app_router.dart`, `lib/l10n/app_{en,ar}.arb`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
+## 2026-07-07 — Business onboarding screens, widgets & routing implemented
+
+## 2026-07-09 — Point BASE_URL at the live backend (osta.technology92.com)
+
+The backend is now deployed at **`https://osta.technology92.com`** — admin panel at `/admin`, REST API under `/api/v1`. Verified live: `GET https://osta.technology92.com/api/v1/auth/check-username?username=test` → `{"success":true,"data":{"available":true}}` (the standard `{success,data}` envelope; the app's `Prefix = /api/v1` and error-code contract hold). The previous default host `api.osta.dev` was a placeholder that does not resolve (DNS `fetch failed`).
+
+Replaced `api.osta.dev` → `osta.technology92.com` across the whole repo: the functional change is `AppConfig.baseUrl`'s compile default (`lib/core/config/app_config.dart`, `defaultValue: 'https://osta.technology92.com/api/v1'`), so `flutter run` with no `--dart-define` now reaches a working backend; `--dart-define=BASE_URL=…` still overrides per environment. All doc/run-command references were updated for consistency — `README.md`, `ARCHITECTURE.md`, `OSTA_plan.md`, `OSTA_TODO.md`, `CLAUDE.md`, `.agents/rules/project-scope.md`, and the `osta_readme_files/guides/` set (01, 02, 03, 04, 06, 08, 09) + `reference/{ONBOARDING,COMMON_PITFALLS}.md`. `flutter analyze` clean.
+
+> ‏أصبح الـ backend منشورًا على **`https://osta.technology92.com`** (الإدارة `/admin`، الـ API `/api/v1`). مُتحقَّق: `GET /api/v1/auth/check-username` يُعيد `{"success":true,"data":{"available":true}}`. كان المضيف السابق `api.osta.dev` نائبًا لا يُحلَّل (DNS يفشل). استُبدل `api.osta.dev` بـ `osta.technology92.com` في كامل المستودع؛ التغيير الوظيفي هو الافتراضي المُصرَّف في `AppConfig.baseUrl`، فيصل `flutter run` الآن إلى backend فعلي دون `--dart-define`. حُدِّثت كل مراجع التوثيق وأوامر التشغيل. التحليل نظيف.
+
+## 2026-07-07 — Business onboarding screens, widgets & routing implemented
+
+Implemented the three business onboarding screens (`ProviderOnboardingPage`, `BusinessIdentityPage`, `BusinessCatalogPage`) and their reusable widgets in `lib/features/business/onboarding/presentation/`. Aligned `BusinessIdentityPage` 100% with exact user mockup (exact Arabic strings/numerals, separated phone field and `+20 🇪🇬` box, bottom-left camera icon in `LogoUploadBox`, bottom-right map CTA in `LocationPickerCard`, and placing map card above dropdowns). Registered static paths and wizard navigation routes (`/provider-onboarding` → `/business-identity` → `/business-catalog`) in `AppRouter`.
+
+> ‏تم تنفيذ شاشات تأهيل النشاط التجاري الثلاث ومكوناتها القابلة لإعادة الاستخدام في `lib/features/business/onboarding/presentation/`. وتمت مطابقة شاشة الهوية `BusinessIdentityPage` بنسبة 100% مع تصميم المستخدم (النصوص والأرقام العربية، فصل حقل الهاتف عن مربع كود الدولة `+20 🇪🇬`، ضبط مواقع الأيقونات والأزرار في الخريطة ومربع الشعار، وترتيب الخريطة قبل القوائم المنسدلة). وتم ربط مسارات التنقل في موجه التطبيق `AppRouter`.
+
+Touched: `lib/features/business/onboarding/presentation/**`, `lib/core/router/app_router.dart`, `lib/l10n/app_{en,ar}.arb`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
+## 2026-07-07 — Role selection screen widgets & RTL alignment
+
+Implemented the role selection screen widgets (`RoleCard`, `ComingSoonBadge`, `InfoBanner`) in `lib/features/role/presentation/widgets/`, enhanced `AppCard` with optional styling properties, fixed `AppColors.gray`, and aligned headers to `start` for RTL support.
+
+> ‏تم تنفيذ ودجات شاشة اختيار الدور (`RoleCard`, `ComingSoonBadge`, `InfoBanner`) في `lib/features/role/presentation/widgets/`، وتطوير `AppCard` بدعم الحدود والألوان، وإصلاح `AppColors.gray`، وضبط محاذاة العناوين إلى `start` لدعم الـ RTL.
+
+Touched: `lib/features/role/presentation/widgets/{role_card,coming_soon,info_banner}.dart`, `lib/features/role/presentation/role_selection_page.dart`, `lib/shared/ui/app_card.dart`, `lib/core/theme/app_colors.dart`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
 ## 2026-07-08 — Register avatar upload (image_picker → POST /me/avatar)
 
 Wired the register screen's profile-photo control end to end (it was a "coming soon" stub). Tapping the ring now opens the **system gallery picker** via `image_picker` (`ImagePicker().pickImage(source: gallery, maxWidth: 1024, imageQuality: 85)`) — the picker uses **PHPicker on iOS / the Android Photo Picker**, which run out-of-process, so **no `NSPhotoLibraryUsageDescription` / runtime permission / native manifest change is required**. The chosen file previews inside the dashed ring (`ClipOval(Image.file(...))`), and its path rides along on `RegisterSubmitted.photoPath`.
