@@ -22,6 +22,7 @@ class AppColors extends ThemeExtension<AppColors> {
 
   /// Brand accent — Osta lime.
   static const brandLime = Color(0xFFB2D235);
+  static const greyLime = Color(0xFFa3afa7);
 
   // --- Light neutrals & brand tints ---------------------------------------
   // `ColorScheme.fromSeed` renders the light neutrals flat and the primary a
