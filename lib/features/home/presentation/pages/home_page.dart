@@ -5,10 +5,10 @@ import 'package:osta/features/home/presentation/widgets/home_header.dart';
 import 'package:osta/features/home/presentation/widgets/nearby_centers_section.dart';
 import 'package:osta/features/home/presentation/widgets/shop_section.dart';
 
+/// Customer Home tab content: header, active booking, quick book, nearby
+/// centers, and the shop strip. Rendered as index 0 of the customer shell.
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
-
-  static const path = '/home';
 
   @override
   Widget build(BuildContext context) {
