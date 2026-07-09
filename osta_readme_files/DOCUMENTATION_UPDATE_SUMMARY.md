@@ -4,6 +4,32 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-10 — README rebuilt around the brand assets
+
+The root `README.md` shipped no imagery at all, and three of its statements no longer matched the code.
+
+**Brand assets.** Added a centered header (the `app_icon.png` tile over the title, with the mascot beneath) and a **Brand assets** section documenting all five files in `assets/images/`:
+
+| Asset | `AppImages` | Used by |
+| --- | --- | --- |
+| `app_icon.png` | — | Launcher icon (`flutter_launcher_icons`) |
+| `app_icon_foreground.png` | — | Android adaptive foreground + Android 12 splash |
+| `logo.png` | `logo` | Native + in-app splash, `BrandScaffold` band on the inner auth screens, `RoleShell` top bar (tinted brand green) |
+| `full_logo.png` | `fullLogo` | Landing screens — language pick, auth-choose, first onboarding slide |
+| `osta.png` | `mascot` | Second onboarding slide |
+
+The "Used by" column was read out of `lib/` (grep for `AppImages.`), not assumed — an earlier draft claimed the mascot backed the empty states, which it does not.
+
+**Asset choice matters on GitHub.** `logo.png` and `full_logo.png` are RGBA **white on transparent** (verified from the PNG colour-type byte), so they render on the brand green and on dark surfaces but vanish on white — including GitHub's light theme. The header therefore uses `app_icon.png`, the one opaque asset (white wordmark on `#0E7A3B`), which reads in both themes. The section says so explicitly, and points at `RoleShell`'s `Image.asset(..., color: AppColors.brandGreen)` as the tinting escape hatch.
+
+**Corrections.** (1) `BASE_URL` **defaults to the live backend** (`AppConfig`'s `defaultValue`), but the README described it as defaulting to "the dev API" and put a `--dart-define` in the quick-start — telling newcomers to pass a flag they don't need; the quick-start is now a bare `flutter run`. (2) The first-run flow is `splash → language → role → onboarding → auth-choose → auth → role shell` (read off `resolveRedirect`), not "a splash screen, then the first-run role selection". (3) The `lib/` tree omitted `core/session/`, `core/constants/`, and the `home/`, `language/`, `onboarding/` and `shell/` features.
+
+Also added a Documentation table (pointing at `AGENTS.md`, the relocated `osta_readme_files/docs/ARCHITECTURE.md`, `INDEX.md`, `DELIVERY_PLAN.md`, `docs/ROADMAP.md`, `CONTRIBUTING.md`) and Flutter/Dart/lints/l10n badges. A resolver over every `.md` reports zero broken relative links, and all six `<img>` paths exist.
+
+> ‏لم يكن في `README.md` أي صورة، وثلاثٌ من عباراته لم تعد تطابق الكود. أُضيف رأسٌ موسوم وقسم **أصول العلامة** يوثّق ملفّات `assets/images/` الخمسة وثوابتها في `AppImages` واستخدامها الفعلي — وقد قُرئ عمود الاستخدام من `lib/` لا افتراضًا (ادّعت مسوّدة سابقة أنّ التميمة تُستخدَم في الحالات الفارغة، وهذا غير صحيح). و`logo.png` و`full_logo.png` أبيضان على خلفية شفافة (تُحُقّق من بايت نوع اللون في PNG)، فيختفيان على الأبيض وعلى سمة GitHub الفاتحة؛ لذلك يستخدم الرأس `app_icon.png` المعتم وحده. **التصحيحات:** `BASE_URL` قيمته الافتراضية الخادم الحيّ (لا "واجهة dev")، فصار البدء `flutter run` مجرّدًا؛ ومسار أول تشغيل هو `splash ← اللغة ← الدور ← onboarding ← اختيار المصادقة ← المصادقة ← الواجهة`؛ وشجرة `lib/` أغفلت `core/session/` و`core/constants/` ومزايا `home/` و`language/` و`onboarding/` و`shell/`. وأُضيف جدول توثيق وشارات. كل الروابط ومسارات الصور تعمل.
+
+Touched: `README.md`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
 ## 2026-07-09 — Customer shell: one app bar per tab (Screen + View split)
 
 A folder reorg (`presentation/` → `presentation/pages/`) reverted the earlier scaffold-strip: `MyBookingsScreen` and `ProfileScreen` were full pages again — `Scaffold` + `AppTopBar` — while `CustomerShellPage` still used them as tab **bodies** inside its own `Scaffold`. Result: the **Bookings** and **More** tabs each rendered a **second app bar**. The reorg also left two files declaring `MyBookingsScreen` (`presentation/` and `presentation/pages/`), which is an ambiguous-import compile error.
