@@ -42,10 +42,10 @@ void main() {
     // Picking a language advances to the role chooser.
     await tester.tap(find.text('English'));
     await tester.pumpAndSettle();
-    expect(find.text('Choose how you want to continue'), findsOneWidget);
+    expect(find.text('Who are you?'), findsOneWidget);
 
     // Picking a role advances to the logged-out onboarding intro.
-    await tester.tap(find.text("I'm a customer"));
+    await tester.tap(find.text('Customer'));
     await tester.pumpAndSettle();
     expect(find.text('Car maintenance in minutes'), findsOneWidget);
 
@@ -74,6 +74,25 @@ void main() {
     // Lands in the shell (bottom nav) — no language or chooser in sight.
     expect(find.byType(AppBottomNavBar), findsOneWidget);
     expect(find.text('Choose your language'), findsNothing);
-    expect(find.text('Choose how you want to continue'), findsNothing);
+    expect(find.text('Who are you?'), findsNothing);
+  });
+
+  testWidgets('customer shell tabs render their bodies under one app bar', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      prefs: {'session_locale': 'en', 'session_active_role': 'customer'},
+      token: 'valid-token',
+    );
+
+    // Each tab swaps the shell body; the shell keeps exactly one app bar and
+    // one bottom nav (the bodies are scaffold-less views, not full screens).
+    for (final tab in ['My Bookings', 'More', 'Home']) {
+      await tester.tap(find.text(tab).last);
+      await tester.pumpAndSettle();
+      expect(find.byType(AppBottomNavBar), findsOneWidget);
+      expect(find.byType(AppBar), findsOneWidget, reason: '$tab: one app bar');
+    }
   });
 }

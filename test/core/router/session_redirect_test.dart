@@ -170,7 +170,11 @@ void main() {
         final role = entry.key;
         final shell = entry.value;
         test('${role.name} -> $shell', () {
-          final state = _enrolled.copyWith(activeRole: role, hasToken: true);
+          var state = _enrolled.copyWith(activeRole: role, hasToken: true);
+          // Business only reaches its shell after the onboarding wizard.
+          if (role == AppRole.business) {
+            state = state.copyWith(businessOnboarded: true);
+          }
           expect(
             resolveRedirect(session: state, location: AppRoutes.login),
             shell,
@@ -179,6 +183,45 @@ void main() {
           expect(resolveRedirect(session: state, location: shell), isNull);
         });
       }
+    });
+
+    group('authenticated business runs the onboarding wizard first', () {
+      final fresh = _enrolled.copyWith(
+        activeRole: AppRole.business,
+        hasToken: true,
+      );
+
+      test('is forced into the wizard before the shell', () {
+        expect(
+          resolveRedirect(session: fresh, location: AppRoutes.businessShell),
+          AppRoutes.providerOnboarding,
+        );
+      });
+
+      test('the three wizard screens are reachable', () {
+        for (final location in [
+          AppRoutes.providerOnboarding,
+          AppRoutes.businessIdentity,
+          AppRoutes.businessCatalog,
+        ]) {
+          expect(resolveRedirect(session: fresh, location: location), isNull);
+        }
+      });
+
+      test('once completed, lands in the shell and leaves the wizard', () {
+        final done = fresh.copyWith(businessOnboarded: true);
+        expect(
+          resolveRedirect(session: done, location: AppRoutes.businessShell),
+          isNull,
+        );
+        expect(
+          resolveRedirect(
+            session: done,
+            location: AppRoutes.providerOnboarding,
+          ),
+          AppRoutes.businessShell,
+        );
+      });
     });
 
     test('cross-shell navigation is pinned back to the active shell', () {
