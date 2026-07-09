@@ -22,16 +22,20 @@ Related but tracked separately: runtime language switching and the `Accept-Langu
 ## Screens / Mockups / الشاشات والتصاميم
 
 ### Splash / شاشة البداية
+
 ![Splash](https://raw.githubusercontent.com/YoussefSalem582/Osta-App/design-assets/mockups/01-splash.png)
 
 ### Onboarding carousel / شرائح التعريف
+
 ![Onboarding](https://raw.githubusercontent.com/YoussefSalem582/Osta-App/design-assets/mockups/05-onboarding-nearest-center.png)
 
 ### First-run flow & session-refresh routing (from epic #32) / تدفّق التشغيل الأول وتوجيه تجديد الجلسة
+
 ![First-run flow 1](https://raw.githubusercontent.com/YoussefSalem582/Osta-App/design-assets/mockups/40-first-run-flow-and-role-routing-1.png)
 ![First-run flow 2](https://raw.githubusercontent.com/YoussefSalem582/Osta-App/design-assets/mockups/41-first-run-flow-and-role-routing-2.png)
 
 ### Language selection / اختيار اللغة
+
 No dedicated mockup in epic #37; the localization epic's mockup covers language UI:
 
 > ‏لا يوجد تصميم مخصّص في المهمة رقم ٣٧؛ تصميم مهمة التعريب يغطي واجهة اللغة:

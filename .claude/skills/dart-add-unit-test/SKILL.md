@@ -8,6 +8,7 @@ metadata:
 # Testing Dart and Flutter Applications
 
 ## Contents
+
 - [Structuring Test Files](#structuring-test-files)
 - [Writing Tests](#writing-tests)
 - [Executing Tests](#executing-tests)
@@ -15,35 +16,39 @@ metadata:
 - [Examples](#examples)
 
 ## Structuring Test Files
+
 Organize test files to mirror the `lib` directory structure to maintain predictability.
 
-* Place all test code within the `test` directory at the root of the package.
-* Append `_test.dart` to the end of all test file names (e.g., `lib/src/utils.dart` should be tested in `test/src/utils_test.dart`).
-* If writing integration tests, place them in an `integration_test` directory at the root of the package.
+- Place all test code within the `test` directory at the root of the package.
+- Append `_test.dart` to the end of all test file names (e.g., `lib/src/utils.dart` should be tested in `test/src/utils_test.dart`).
+- If writing integration tests, place them in an `integration_test` directory at the root of the package.
 
 ## Writing Tests
+
 Utilize `package:test` as the standard testing library for Dart applications.
 
-* Import `package:test/test.dart` (or `package:flutter_test/flutter_test.dart` for Flutter).
-* Group related tests using the `group()` function to provide shared context.
-* Define individual test cases using the `test()` function.
-* Validate outcomes using the `expect()` function alongside matchers (e.g., `equals()`, `isTrue`, `throwsA()`).
-* Write asynchronous tests using standard `async`/`await` syntax. The test runner automatically waits for the `Future` to complete.
-* Manage test setup and teardown using `setUp()` and `tearDown()` callbacks.
-* If testing code that relies on dependency injection, use `package:mockito` alongside `package:test` to generate mock objects, configure fixed scenarios, and verify interactions.
+- Import `package:test/test.dart` (or `package:flutter_test/flutter_test.dart` for Flutter).
+- Group related tests using the `group()` function to provide shared context.
+- Define individual test cases using the `test()` function.
+- Validate outcomes using the `expect()` function alongside matchers (e.g., `equals()`, `isTrue`, `throwsA()`).
+- Write asynchronous tests using standard `async`/`await` syntax. The test runner automatically waits for the `Future` to complete.
+- Manage test setup and teardown using `setUp()` and `tearDown()` callbacks.
+- If testing code that relies on dependency injection, use `package:mockito` alongside `package:test` to generate mock objects, configure fixed scenarios, and verify interactions.
 
 ## Executing Tests
+
 Select the appropriate test runner based on the project type and test location.
 
-* If working on a pure Dart project, execute tests using the `dart test` command.
-* If working on a Flutter project, execute tests using the `flutter test` command.
-* If running integration tests, explicitly specify the directory path, as the default runner ignores it: `dart test integration_test` or `flutter test integration_test`.
+- If working on a pure Dart project, execute tests using the `dart test` command.
+- If working on a Flutter project, execute tests using the `flutter test` command.
+- If running integration tests, explicitly specify the directory path, as the default runner ignores it: `dart test integration_test` or `flutter test integration_test`.
 
 ## Test Implementation Workflow
 
 Follow this sequential workflow when implementing new test suites. Copy the checklist to track your progress.
 
 ### Task Progress
+
 - [ ] 1. Create the test file in the `test/` directory, ensuring the `_test.dart` suffix.
 - [ ] 2. Import `package:test/test.dart` and the target library.
 - [ ] 3. Define a `main()` function.
@@ -55,6 +60,7 @@ Follow this sequential workflow when implementing new test suites. Copy the chec
 ## Examples
 
 ### Standard Unit Test Suite
+
 Demonstrates grouping, setup, synchronous, and asynchronous testing.
 
 ```dart
@@ -83,6 +89,7 @@ void main() {
 ```
 
 ### Mocking with Mockito
+
 Demonstrates configuring a mock object for dependency injection testing.
 
 ```dart

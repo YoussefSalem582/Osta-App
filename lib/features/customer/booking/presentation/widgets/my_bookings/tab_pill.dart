@@ -6,7 +6,7 @@ class TabPill extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onTap,
-    super.key
+    super.key,
   });
 
   final String label;

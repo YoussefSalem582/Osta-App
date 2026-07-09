@@ -20,7 +20,8 @@ The osta stack is deliberately plain: errors are a sealed `Failure` **thrown** a
 Use `<name>` for the feature (snake_case folder), `<Name>` for the PascalCase type prefix.
 
 1. **Folder tree.** Create:
-   ```
+
+   ```text
    lib/features/<name>/
      data/{datasources,models,repositories}/
      domain/{entities,repositories,usecases}/
@@ -32,6 +33,7 @@ Use `<name>` for the feature (snake_case folder), `<Name>` for the PascalCase ty
 3. **Repository contract** — `domain/repositories/<name>_repository.dart`. `abstract class <Name>Repository` whose methods **return the entity directly and throw a `Failure` on error** (`lib/core/error/failure.dart`: `NetworkFailure`/`ServerFailure`/`UnknownFailure`). NO `Either`, NO `Result<T>`.
 
 4. **Use cases** — `domain/usecases/<verb>_<name>.dart`. One class per action; constructor takes the repo, `call()` delegates:
+
    ```dart
    class Get<Name>s {
      Get<Name>s(this._repo);
@@ -45,6 +47,7 @@ Use `<name>` for the feature (snake_case folder), `<Name>` for the PascalCase ty
 6. **Remote datasource** — `data/datasources/<name>_remote_datasource.dart`. Call `ApiClient` (`get/post/put/delete<T>(path, parse: ..., query:/body: ...)` → `ApiResult<T>`); never touch `Dio` directly. Add each path as a `static const` to `lib/core/network/api_endpoints.dart` — **create that file if it does not exist yet** (plain `abstract final class ApiEndpoints { static const ... }`). See [`04_how_to_add_new_api.md`](../../../osta_readme_files/guides/04_how_to_add_new_api.md).
 
 7. **Repository impl** — `data/repositories/<name>_repository_impl.dart`. Implements the contract; wrap datasource calls in `try`/`catch` and convert the typed `ApiException` to a `Failure` via `e.toFailure()`, then map models to entities:
+
    ```dart
    @override
    Future<List<<Name>>> get<Name>s() async {
@@ -66,12 +69,14 @@ Use `<name>` for the feature (snake_case folder), `<Name>` for the PascalCase ty
 11. **Pages & widgets** — `presentation/pages/`, `presentation/widgets/`. Reuse `lib/shared/ui/` (`AppButton`, `AppCard`, `AppTextField`, `AppTopBar`, `EmptyState`/`ErrorState`/`LoadingState`, …). Use design tokens only: `AppSpacing`/`AppRadii`, `context.appColors`, `Theme.of(context).textTheme.*` — never raw colors/spacing and no `AppTextStyles` class. RTL-safe (`EdgeInsetsDirectional`/`start`/`end`). The page exposes `static const path`.
 
 12. **Manual DI** — in `configureDependencies()` (`lib/core/di/injection.dart`), add hand-written lines: `registerLazySingleton` for datasource, repository, and each use case; `registerFactory` for the bloc:
+
     ```dart
     getIt
       ..registerLazySingleton<<Name>RemoteDataSource>(() => <Name>RemoteDataSource(getIt()))
       ..registerLazySingleton<<Name>Repository>(() => <Name>RepositoryImpl(getIt()))
       ..registerFactory<<Name>Bloc>(() => <Name>Bloc(Get<Name>s(getIt())));
     ```
+
     NO annotations, NO `injection.config.dart`.
 
 13. **Route + l10n.** Add the route in `lib/core/router/app_router.dart` using the page's `static const path`. Add every user-facing string to **both** `lib/l10n/app_en.arb` (template) and `lib/l10n/app_ar.arb`, then run `flutter gen-l10n`; access via `context.l10n.<key>`. Never edit generated l10n in `lib/core/l10n/`. See [`05_how_to_add_new_language.md`](../../../osta_readme_files/guides/05_how_to_add_new_language.md).

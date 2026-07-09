@@ -67,7 +67,7 @@ Never bypass design tokens (`AppSpacing`/`AppRadii`/`context.appColors`), never 
 
 ## Example graph / مثال للرسم البياني
 
-```
+```text
 *   Merge feat/29-design-system-theming into main (#65)
 |\
 | * feat(ui): shared components, EGP/number formatters, and component gallery
