@@ -12,7 +12,7 @@
 ## The per-epic ritual (repeat for EVERY epic below — not restated each time)
 
 - [ ] Read the epic + its feature doc + [`OSTA_plan.md`](OSTA_plan.md) §2–§13; verify backend readiness
-      ([guide 09](osta_readme_files/guides/09_api_endpoints.md))
+      ([guide 09](../guides/09_api_endpoints.md))
 - [ ] Branch `feat/<issue>-<slug>` off up-to-date `develop` — hand-written kebab-case name, never a
       tool-generated one like `claude/...` (rename with `git branch -m` first)
 - [ ] Build layer by layer with small conventional commits: `domain → data → presentation → tests → docs`
@@ -36,7 +36,7 @@
       [#31](https://github.com/YoussefSalem582/Osta-App/issues/31) (PR #64)
 - [x] First-run & role-split canonical model (`activeRole`, shared-download-then-split) —
       [#32](https://github.com/YoussefSalem582/Osta-App/issues/32)
-- [x] Plain-Dart refactor: codegen/fpdart/flavors deferred ([`docs/ROADMAP.md`](docs/ROADMAP.md), PR #69)
+- [x] Plain-Dart refactor: codegen/fpdart/flavors deferred ([`docs/ROADMAP.md`](../../docs/ROADMAP.md), PR #69)
 - [x] Documentation set: `AGENTS.md`, shims, guides, 22 feature docs, 8 ADRs, delivery plan
 - [x] Splash + role-selection screens; ~32 foundation tests green
 - [x] [`OSTA_plan.md`](OSTA_plan.md) — master AI-agent build instructions (this list's companion)
@@ -220,9 +220,9 @@
 ### 9.4 Release engineering
 
 - [ ] CI release workflow: tag `v*` → build signed AAB + iOS archive (release mode, prod `BASE_URL`) → upload
-      artifacts (extends the single-job CI; see [`docs/ROADMAP.md`](docs/ROADMAP.md) Phase 4)
+      artifacts (extends the single-job CI; see [`docs/ROADMAP.md`](../../docs/ROADMAP.md) Phase 4)
 - [ ] Crash/error reporting decision + wiring (talker is device-local only): Sentry (no extra Firebase surface)
-      vs Crashlytics — record as an ADR in [`osta_readme_files/decisions/`](osta_readme_files/decisions/README.md)
+      vs Crashlytics — record as an ADR in [`osta_readme_files/decisions/`](../decisions/README.md)
 - [ ] Store-listing assets pipeline: screenshot set regenerated per release (light/dark × ar/en)
 - [ ] Versioning check: `pubspec.yaml` `X.Y.Z+B` matches tag; build number monotonic across both stores
 
@@ -269,7 +269,7 @@
       tile; skills + map-drawn service area; provider shell behind capability flags
 - [ ] ⛔ **Tow-truck flow** [#60](https://github.com/YoussefSalem582/Osta-App/issues/60) — roadside jobs queue;
       live GPS over `tracking.{jobId}`; customer live-tracking map
-- [ ] Revisit deferred tooling per [`docs/ROADMAP.md`](docs/ROADMAP.md) (json_serializable → freezed →
+- [ ] Revisit deferred tooling per [`docs/ROADMAP.md`](../../docs/ROADMAP.md) (json_serializable → freezed →
       injectable → flavors/CI matrix → fpdart) — one phase at a time, only when the team agrees
 - [ ] Sync `AGENTS.md` with the four `OSTA_plan.md` amendments (talker, skeletonizer, offline-first,
       releases/tags) — small `docs/` branch
@@ -282,5 +282,5 @@
   dependencies are merged (e.g. #34 needs #33; #39 needs #35; #55's assign picker needs #62).
 - ⛔ items never block the train — skip and revisit; releases cut whatever is merged and green.
 - `main` stays releasable after every merge; every phase ends with its 🏷️ tag.
-- When anything here conflicts with [`OSTA_plan.md`](OSTA_plan.md) or [`AGENTS.md`](AGENTS.md), those win
+- When anything here conflicts with [`OSTA_plan.md`](OSTA_plan.md) or [`AGENTS.md`](../../AGENTS.md), those win
   (precedence: [`OSTA_plan.md` §3](OSTA_plan.md)).
