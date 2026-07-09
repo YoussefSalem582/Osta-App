@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/booking_timeline.dart';
+import 'package:osta/features/customer/booking/presentation/widgets/live_booking/booking_timeline.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
-class RealTimeBookingScreen extends StatelessWidget {
-  const RealTimeBookingScreen({super.key});
+class LiveBookingScreen extends StatelessWidget {
+  const LiveBookingScreen({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
