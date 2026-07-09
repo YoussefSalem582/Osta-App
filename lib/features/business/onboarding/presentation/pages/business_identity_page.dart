@@ -50,8 +50,8 @@ class BusinessIdentityPage extends StatelessWidget {
                     const SizedBox(height: AppSpacing.lg),
                     //--------------------------{شعار المركز}-------------------------------//
                     LogoUploadBox(onTap: onLogoTap),
-                    //--------------------------------{}-------------------------------//
 
+                    //--------------------------------{}-------------------------------//
                     const SizedBox(height: AppSpacing.lg),
                     AppTextField(
                       label: l10n.businessOnboardingTradeNameLabel,
@@ -63,7 +63,7 @@ class BusinessIdentityPage extends StatelessWidget {
                       hint: l10n.businessOnboardingLegalNameHint,
                     ),
                     const SizedBox(height: AppSpacing.md),
-                    //--------------------------{رقم تليفون المركز}-------------------------------
+                    // ---- رقم تليفون المركز ----
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
@@ -109,7 +109,7 @@ class BusinessIdentityPage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    //--------------------------{مكان المركز}-------------------------------
+                    // ---- مكان المركز ----
                     const SizedBox(height: AppSpacing.lg),
                     LocationPickerCard(onTap: onLocationTap),
                     const SizedBox(height: AppSpacing.lg),

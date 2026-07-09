@@ -1,8 +1,8 @@
 # Architecture / المعمارية
 
-OSTA follows **Clean Architecture + BLoC**, one module per feature, with a hard dependency rule: **no layer imports from a layer above it.** The codebase is deliberately **plain Dart — no codegen** (models, DI, and errors are hand-written); advanced tooling is deferred, see [`docs/ROADMAP.md`](docs/ROADMAP.md).
+OSTA follows **Clean Architecture + BLoC**, one module per feature, with a hard dependency rule: **no layer imports from a layer above it.** The codebase is deliberately **plain Dart — no codegen** (models, DI, and errors are hand-written); advanced tooling is deferred, see [`docs/ROADMAP.md`](../../docs/ROADMAP.md).
 
-> ‏يتبع OSTA نمط **Clean Architecture + BLoC**، وحدة لكل ميزة، بقاعدة اعتماد صارمة: **لا طبقة تستورد من طبقة أعلى منها.** الشيفرة **Dart بسيطة بلا توليد كود** (النماذج والحقن والأخطاء مكتوبة يدويًا)؛ والأدوات المتقدّمة مؤجّلة — راجع [`docs/ROADMAP.md`](docs/ROADMAP.md).
+> ‏يتبع OSTA نمط **Clean Architecture + BLoC**، وحدة لكل ميزة، بقاعدة اعتماد صارمة: **لا طبقة تستورد من طبقة أعلى منها.** الشيفرة **Dart بسيطة بلا توليد كود** (النماذج والحقن والأخطاء مكتوبة يدويًا)؛ والأدوات المتقدّمة مؤجّلة — راجع [`docs/ROADMAP.md`](../../docs/ROADMAP.md).
 
 ## Layers / الطبقات
 
@@ -37,7 +37,7 @@ UI (Page)
   ← UI renders: Loading → LoadingState, Loaded → content, Error → ErrorState
 ```
 
-Errors are **thrown, not returned**. There is no `Either`/`Result<T>`/`.fold()` (fpdart deferred — [`docs/ROADMAP.md`](docs/ROADMAP.md) Phase 5). The network layer throws typed `ApiException`s (`core/network/api_exception.dart`); repositories catch those and throw a matching **sealed `Failure`** (`core/error/failure.dart`: `NetworkFailure`, `ServerFailure`, `UnknownFailure`); the bloc uses plain `try`/`catch` and emits an error state carrying `failure.message`.
+Errors are **thrown, not returned**. There is no `Either`/`Result<T>`/`.fold()` (fpdart deferred — [`docs/ROADMAP.md`](../../docs/ROADMAP.md) Phase 5). The network layer throws typed `ApiException`s (`core/network/api_exception.dart`); repositories catch those and throw a matching **sealed `Failure`** (`core/error/failure.dart`: `NetworkFailure`, `ServerFailure`, `UnknownFailure`); the bloc uses plain `try`/`catch` and emits an error state carrying `failure.message`.
 
 > ‏الأخطاء **تُرمى ولا تُرجَّع**. لا يوجد `Either`/`Result<T>`/`.fold()` (الـ fpdart مؤجّل). الطبقة الشبكية ترمي `ApiException` بأنواعها، والمستودع يلتقطها ويرمي `Failure` مغلقًا مناسبًا، والـ bloc يلتقطه بـ `try`/`catch` ويُصدر حالة خطأ تحمل `failure.message`.
 
@@ -55,7 +55,7 @@ Every HTTP call goes through `ApiClient` (`core/network/api_client.dart`), which
 
 ## Configuration / الإعدادات
 
-`AppConfig` (`core/config/app_config.dart`) holds a single `baseUrl` from the `BASE_URL` dart-define (default `https://api.osta.dev/api/v1`). No `.env`, **no build flavors** (multi-flavor deferred — [`docs/ROADMAP.md`](docs/ROADMAP.md) Phase 4).
+`AppConfig` (`core/config/app_config.dart`) holds a single `baseUrl` from the `BASE_URL` dart-define (default `https://osta.technology92.com/api/v1`). No `.env`, **no build flavors** (multi-flavor deferred — [`docs/ROADMAP.md`](../../docs/ROADMAP.md) Phase 4).
 
 ## Routing / التوجيه
 
@@ -80,15 +80,15 @@ Every HTTP call goes through `ApiClient` (`core/network/api_client.dart`), which
 8. Tests: repository + BLoC (with `http_mock_adapter` / fakes), key widgets/goldens.
 9. Ship on `feat/<issue>-<slug>` branched off `develop` (hand-written name — never a tool-generated one like `claude/...`), **PR base `develop`**, bilingual description. A finished version/milestone reaches `main` via a `develop → main` release PR (then tag `v0.<n>.0`, `v1.0.0` = MVP).
 
-Full step-by-step: [`osta_readme_files/guides/03_how_to_add_new_feature.md`](osta_readme_files/guides/03_how_to_add_new_feature.md).
+Full step-by-step: [`osta_readme_files/guides/03_how_to_add_new_feature.md`](../guides/03_how_to_add_new_feature.md).
 
 ## Reference module / الوحدة المرجعية
 
-Once it lands, **auth** ([app #35](https://github.com/YoussefSalem582/Osta-App/issues/35)) is the canonical example of the layering — until then follow the guide above. Today the only implemented feature pages are `splash` and `role`; the rest of `lib/features/` is stub folders specified by open GitHub epics (see [`osta_readme_files/reference/DELIVERY_PLAN.md`](osta_readme_files/reference/DELIVERY_PLAN.md)).
+Once it lands, **auth** ([app #35](https://github.com/YoussefSalem582/Osta-App/issues/35)) is the canonical example of the layering — until then follow the guide above. Today the only implemented feature pages are `splash` and `role`; the rest of `lib/features/` is stub folders specified by open GitHub epics (see [`osta_readme_files/reference/DELIVERY_PLAN.md`](../reference/DELIVERY_PLAN.md)).
 
 ## See also / انظر أيضًا
 
-- Canonical conventions: [`AGENTS.md`](AGENTS.md)
-- Deferred tooling & phased plan: [`docs/ROADMAP.md`](docs/ROADMAP.md)
-- Full architecture guide with diagrams: [`osta_readme_files/guides/02_architecture.md`](osta_readme_files/guides/02_architecture.md)
-- Decision records: [`osta_readme_files/decisions/`](osta_readme_files/decisions/README.md)
+- Canonical conventions: [`AGENTS.md`](../../AGENTS.md)
+- Deferred tooling & phased plan: [`docs/ROADMAP.md`](../../docs/ROADMAP.md)
+- Full architecture guide with diagrams: [`osta_readme_files/guides/02_architecture.md`](../guides/02_architecture.md)
+- Decision records: [`osta_readme_files/decisions/`](../decisions/README.md)

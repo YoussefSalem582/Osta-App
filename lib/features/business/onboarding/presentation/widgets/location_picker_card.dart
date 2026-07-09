@@ -21,7 +21,9 @@ class LocationPickerCard extends StatelessWidget {
       child: Container(
         height: 180,
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
+          color: theme.colorScheme.surfaceContainerHighest.withValues(
+            alpha: 0.6,
+          ),
           borderRadius: BorderRadius.circular(AppRadii.lg),
         ),
         clipBehavior: Clip.antiAlias,
@@ -30,7 +32,9 @@ class LocationPickerCard extends StatelessWidget {
             Positioned.fill(
               child: CustomPaint(
                 painter: _GridPainter(
-                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.15),
+                  color: theme.colorScheme.onSurfaceVariant.withValues(
+                    alpha: 0.15,
+                  ),
                 ),
               ),
             ),

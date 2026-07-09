@@ -30,7 +30,7 @@ flutter analyze
 flutter test
 
 # 4. Run the app
-flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1
+flutter run --dart-define=BASE_URL=https://osta.technology92.com/api/v1
 ```
 
 There is a single `BASE_URL` dart-define — no `--flavor`, no `FLAVOR`. Multi-flavor builds are deferred (see [`../../docs/ROADMAP.md`](../../docs/ROADMAP.md), Phase 4).

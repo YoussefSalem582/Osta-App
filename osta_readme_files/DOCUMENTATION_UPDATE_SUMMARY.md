@@ -4,6 +4,141 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-10 — README rebuilt around the brand assets
+
+The root `README.md` shipped no imagery at all, and three of its statements no longer matched the code.
+
+**Brand assets.** Added a centered header (the `app_icon.png` tile over the title, with the mascot beneath) and a **Brand assets** section documenting all five files in `assets/images/`:
+
+| Asset | `AppImages` | Used by |
+| --- | --- | --- |
+| `app_icon.png` | — | Launcher icon (`flutter_launcher_icons`) |
+| `app_icon_foreground.png` | — | Android adaptive foreground + Android 12 splash |
+| `logo.png` | `logo` | Native + in-app splash, `BrandScaffold` band on the inner auth screens, `RoleShell` top bar (tinted brand green) |
+| `full_logo.png` | `fullLogo` | Landing screens — language pick, auth-choose, first onboarding slide |
+| `osta.png` | `mascot` | Second onboarding slide |
+
+The "Used by" column was read out of `lib/` (grep for `AppImages.`), not assumed — an earlier draft claimed the mascot backed the empty states, which it does not.
+
+**Asset choice matters on GitHub.** `logo.png` and `full_logo.png` are RGBA **white on transparent** (verified from the PNG colour-type byte), so they render on the brand green and on dark surfaces but vanish on white — including GitHub's light theme. The header therefore uses `app_icon.png`, the one opaque asset (white wordmark on `#0E7A3B`), which reads in both themes. The section says so explicitly, and points at `RoleShell`'s `Image.asset(..., color: AppColors.brandGreen)` as the tinting escape hatch.
+
+**Corrections.** (1) `BASE_URL` **defaults to the live backend** (`AppConfig`'s `defaultValue`), but the README described it as defaulting to "the dev API" and put a `--dart-define` in the quick-start — telling newcomers to pass a flag they don't need; the quick-start is now a bare `flutter run`. (2) The first-run flow is `splash → language → role → onboarding → auth-choose → auth → role shell` (read off `resolveRedirect`), not "a splash screen, then the first-run role selection". (3) The `lib/` tree omitted `core/session/`, `core/constants/`, and the `home/`, `language/`, `onboarding/` and `shell/` features.
+
+Also added a Documentation table (pointing at `AGENTS.md`, the relocated `osta_readme_files/docs/ARCHITECTURE.md`, `INDEX.md`, `DELIVERY_PLAN.md`, `docs/ROADMAP.md`, `CONTRIBUTING.md`) and Flutter/Dart/lints/l10n badges. A resolver over every `.md` reports zero broken relative links, and all six `<img>` paths exist.
+
+> ‏لم يكن في `README.md` أي صورة، وثلاثٌ من عباراته لم تعد تطابق الكود. أُضيف رأسٌ موسوم وقسم **أصول العلامة** يوثّق ملفّات `assets/images/` الخمسة وثوابتها في `AppImages` واستخدامها الفعلي — وقد قُرئ عمود الاستخدام من `lib/` لا افتراضًا (ادّعت مسوّدة سابقة أنّ التميمة تُستخدَم في الحالات الفارغة، وهذا غير صحيح). و`logo.png` و`full_logo.png` أبيضان على خلفية شفافة (تُحُقّق من بايت نوع اللون في PNG)، فيختفيان على الأبيض وعلى سمة GitHub الفاتحة؛ لذلك يستخدم الرأس `app_icon.png` المعتم وحده. **التصحيحات:** `BASE_URL` قيمته الافتراضية الخادم الحيّ (لا "واجهة dev")، فصار البدء `flutter run` مجرّدًا؛ ومسار أول تشغيل هو `splash ← اللغة ← الدور ← onboarding ← اختيار المصادقة ← المصادقة ← الواجهة`؛ وشجرة `lib/` أغفلت `core/session/` و`core/constants/` ومزايا `home/` و`language/` و`onboarding/` و`shell/`. وأُضيف جدول توثيق وشارات. كل الروابط ومسارات الصور تعمل.
+
+Touched: `README.md`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
+## 2026-07-09 — Customer shell: one app bar per tab (Screen + View split)
+
+A folder reorg (`presentation/` → `presentation/pages/`) reverted the earlier scaffold-strip: `MyBookingsScreen` and `ProfileScreen` were full pages again — `Scaffold` + `AppTopBar` — while `CustomerShellPage` still used them as tab **bodies** inside its own `Scaffold`. Result: the **Bookings** and **More** tabs each rendered a **second app bar**. The reorg also left two files declaring `MyBookingsScreen` (`presentation/` and `presentation/pages/`), which is an ambiguous-import compile error.
+
+Deleted the stale `presentation/my_bookings_screen.dart` — the root cause, not an import-prefix problem; it was already broken (it imported a since-deleted `presentation/widgets/booking_item.dart`), so nothing referenced it that still compiled.
+
+Split the two screens along the pattern the booking feature already established (`LiveBookingScreen` wraps `BookingView`):
+
+| Routed screen | Scaffold-less view | Used by |
+| --- | --- | --- |
+| `MyBookingsScreen` (`/my-bookings`) | `MyBookingsView` | shell **Bookings** tab |
+| `ProfileScreen` (`/profile`) | `ProfileView` | shell **More** tab |
+
+The `Screen` is a thin `StatelessWidget` — `Scaffold` + `AppTopBar` + the `View` as its body — so the standalone route keeps its app bar and back button. The `View` holds the content only; `MyBookingsView` carries the `StatefulWidget`/`selectedTab` state that used to live on the screen. The shell embeds the views, so it keeps exactly one `AppBar` and one `AppBottomNavBar`.
+
+Added a regression test in `test/widget_test.dart` — *"customer shell tabs render their bodies under one app bar"* — which taps through **Bookings → More → Home** asserting one `AppBar` + one `AppBottomNavBar` per tab. Verified it isn't vacuous: swapping `ProfileView` back to `ProfileScreen` fails it with `Found 2 widgets with type "AppBar"`. `flutter analyze` clean; all 127 tests pass.
+
+> ‏أعادت إعادةُ تنظيم المجلّدات (`presentation/` ← `presentation/pages/`) غلافَي `Scaffold` و`AppTopBar` إلى `MyBookingsScreen` و`ProfileScreen`، بينما ظلّت `CustomerShellPage` تستعملهما كأجسام تبويب داخل `Scaffold` الخاص بها — فظهر **شريط تطبيق ثانٍ** في تبويبَي الحجوزات والمزيد. كما خلّفت ملفّين يعرّفان `MyBookingsScreen`، وهو خطأ استيراد ملتبس. حُذفت النسخة القديمة في `presentation/` (السبب الجذري؛ كانت معطوبة أصلًا إذ تستورد ودجت محذوفة) بدل استخدام `as prefix`. فُصلت الشاشتان على نمط `LiveBookingScreen`/`BookingView` القائم: تحتفظ الشاشة الموجَّهة بـ`Scaffold` و`AppTopBar` وتضع الـ`View` جسمًا لها، بينما تحمل `MyBookingsView`/`ProfileView` (بلا Scaffold) المحتوى وحده — وهما ما تُضمّنه الواجهة، فيبقى شريط واحد وشريط تنقّل واحد. انتقلت حالة `selectedTab` إلى `MyBookingsView`. أُضيف اختبار انحدار يتنقّل بين التبويبات ويتحقّق من ذلك (وتأكّدنا أنّه غير فارغ: إرجاع `ProfileScreen` مكانه يُسقطه). التحليل نظيف و127 اختبارًا تنجح.
+
+Touched: `lib/features/customer/booking/presentation/pages/my_bookings_screen.dart`, `lib/features/customer/profile/presentation/pages/profile_screen.dart`, `lib/features/customer/shell/presentation/customer_shell_page.dart`, `test/widget_test.dart`, deleted `lib/features/customer/booking/presentation/my_bookings_screen.dart`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
+## 2026-07-09 — Booking flow: Bookings tab shows the list, tapping a booking opens the detail page
+
+The customer **Bookings** tab was wired to `BookingView` — the scaffold-less body of the live-status **detail** screen (`LiveBookingScreen`, `/booking-status`) — so it dropped the user straight into a single booking's status, and the built list (upcoming/past tabs, status badges, per-card tap) was orphaned.
+
+Restored the intended flow: the Bookings tab now renders the bookings list, and each booking card `push`es `AppRoutes.bookingStatus` (`/booking-status` → `LiveBookingScreen`, which wraps `BookingView` with an `AppTopBar` showing the booking code) — so it's **list → detail** with a back button. `BookingView` remains the detail page's body. No route or guard changes (`/booking-status` was already registered and allow-listed). `flutter analyze` clean; all 127 tests pass.
+
+> ‏كان تبويب **الحجوزات** موصولًا بـ`BookingView` — جسم شاشة **تفاصيل** الحالة الحيّة (`LiveBookingScreen`, `/booking-status`) — فيُنزل المستخدم مباشرةً في حالة حجز واحد، وتبقى شاشة القائمة معزولة. أُعيد التدفّق المقصود: يعرض التبويب الآن القائمة، وكل بطاقة تفتح `/booking-status` عبر `push` (قائمة ← تفاصيل مع زر رجوع). لا تغييرات في المسارات أو الحارس. التحليل نظيف و127 اختبارًا تنجح.
+
+Touched: `lib/features/customer/booking/presentation/pages/my_bookings_screen.dart`, `lib/features/customer/shell/presentation/customer_shell_page.dart`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
+## 2026-07-09 — Business shell embeds the business screens as its tabs (one shared nav, black center FAB)
+
+The `business` landing reuses the customer shell's **UI** — the shared `RoleShell` (rounded bar + raised center action) — with a **black** center action (vs the customer's brand green), and its tabs render the **business's own** screens inline.
+
+Made the FAB colour configurable: added an optional `centerColor` to `AppBottomNavBar` (threaded to the private `_CenterFab`, which previously hardcoded `AppColors.brandGreen`) and to `RoleShell`, both defaulting to `AppColors.brandGreen` so the customer shell is unchanged. `BusinessShellPage` passes `Colors.black`.
+
+`BusinessShellPage`'s tabs are provider-domain — **Dashboard · Catalog · Store · More**. **Catalog** and **Store** show `BusinessServicesPage` and `BusinessShopPage` as tab **bodies** (the `AppBottomNavItem.body` slot), so there is one shared bottom nav instead of a per-screen one. To make them embeddable, both pages were **stripped of their own `Scaffold`, the black calendar `FloatingActionButton`, and the 5-tab `AppBottomNavBar`** (the duplicate provider nav in the screenshot) — they're now scaffold-less content widgets (`Column` of header + scroll/grid) with no `static const path`. Dashboard and More are placeholders (`EmptyState`, via the shell default) until built.
+
+Because the provider pages are no longer navigated to, the standalone `/business-services` + `/business-shop` `GoRoute`s and the `AppRoutes.{businessServices,businessShop}` constants were removed, along with their guard allow-list entries and the redirect-test reachability assertion. `shellFor(business)` and the onboarding-wizard **Activate** still land at `/business`.
+
+`flutter analyze` clean; all 126 tests pass.
+
+> ‏يستخدم هبوط `business` **واجهة** العميل نفسها (`RoleShell`) بزرٍّ مركزي **أسود**، وتعرض تبويباته شاشات **النشاط نفسه** ضمنيًا. جُعل لون الزرّ قابلًا للضبط عبر `centerColor` في `AppBottomNavBar` و`RoleShell` (افتراضه الأخضر). التبويبات: **لوحة · كتالوج · متجر · المزيد**؛ يعرض **الكتالوج** و**المتجر** صفحتي `BusinessServicesPage` و`BusinessShopPage` كأجسام تبويب عبر `AppBottomNavItem.body` — شريط تنقّل واحد مشترك بدل واحد لكل شاشة. لذلك جُرِّدت الصفحتان من `Scaffold` وزرّ التقويم الأسود وشريط التنقّل الخماسي (الشريط المكرّر في الصورة) وأصبحتا ودجتي محتوى بلا Scaffold ولا `path`. حُذفت مسارات `/business-services` و`/business-shop` وثوابتها ومدخلات الحارس. التحليل نظيف و126 اختبارًا تنجح.
+
+Touched: `lib/shared/ui/app_bottom_nav_bar.dart`, `lib/features/shell/presentation/role_shell.dart`, `lib/features/business/shell/presentation/business_shell_page.dart`, `lib/features/business/services/presentation/pages/business_services_page.dart` (scaffold-less), `lib/features/shop/presentation/pages/business_shop_page.dart` (scaffold-less), `lib/core/router/app_routes.dart`, `lib/core/router/session_redirect.dart`, `lib/core/router/app_router.dart`, `test/core/router/session_redirect_test.dart`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
+## 2026-07-09 — Customer + business shells render real screens instead of placeholders
+
+Testing the app surfaced that the authenticated shells showed generic `EmptyState` placeholders where real screens should be.
+
+**Root cause (customer Home):** a bad merge in `RoleShell` (`lib/features/shell/presentation/role_shell.dart`) left commented-out `<<<<<<<`/`=======`/`>>>>>>>` markers and **deleted the `pages`/`IndexedStack` render path**, leaving only `body: tab.body ?? EmptyState`. So `CustomerShellPage`'s `pages: [HomePage(), …]` list was silently ignored and the Home tab rendered a placeholder. Fixed by removing the dead `pages` field from `RoleShell` and putting `HomePage` on the Home tab's `body` (scaffold-less — the correct embed mechanism, alongside the existing `BookingView`/`ProfileView` bodies), then deleting the stale `pages` list and its now-unused imports (`my_bookings_screen`, `status_states`).
+
+**Layout bug:** rendering `HomePage` for the first time exposed a `RenderFlex overflowed by 11 pixels` in the merged `CenterCard` (`home/presentation/widgets/center_card.dart`) — the distance/rating `Row` in a 146px card. Wrapped the distance `Text` in `Expanded` + `TextOverflow.ellipsis`.
+
+**Business shell:** the `business` role landed in `BusinessShellPage` — a `RoleShell` with three empty tabs (dashboard/bookings/profile, no bodies → all placeholders). The real provider UI already existed as `BusinessServicesPage` (a full 5-tab shell: Dashboard·Catalog·Calendar·Store·More + FAB) and its peer `BusinessShopPage`, both routed but **unreachable** (the guard bounced authenticated business to `/business`). Retired `BusinessShellPage`: `shellFor(business)` and the onboarding-wizard **Activate** now target `/business-services`, and `/business-shop` (reached from the Store tab) is allowed in the guard. Added `AppRoutes.{businessServices,businessShop}`, removed `AppRoutes.businessShell` and the `BusinessShellPage` file/route. Updated the redirect tests (`businessShell` → `businessServices`, plus a store-reachability assertion).
+
+> ‏كشف تشغيل التطبيق أنّ الواجهات المُصادَقة تعرض عناصر `EmptyState` نائبة بدل الشاشات الحقيقية. **السبب (Home العميل):** دمج خاطئ في `RoleShell` حذف مسار `pages`/`IndexedStack` فتُجوهلت قائمة `pages` في `CustomerShellPage`؛ أُصلح بنقل `HomePage` إلى `body` وحذف حقل `pages` الميت والاستيرادات غير المستخدمة. **خطأ تخطيط:** تجاوز `RenderFlex` بمقدار 11px في `CenterCard` — لُفّ نصّ المسافة بـ`Expanded` مع ellipsis. **واجهة النشاط:** كان دور `business` يهبط في `BusinessShellPage` الفارغة بينما واجهة المزوّد الحقيقية `BusinessServicesPage` (خمسة تبويبات) و`BusinessShopPage` غير قابلتين للوصول؛ وُجّه `shellFor(business)` وزرّ التفعيل إلى `/business-services` وسُمح بـ`/business-shop`، وحُذفت `BusinessShellPage`. حُدّثت اختبارات إعادة التوجيه. التحليل نظيف و126 اختبارًا تنجح.
+
+Touched: `lib/features/shell/presentation/role_shell.dart`, `lib/features/customer/shell/presentation/customer_shell_page.dart`, `lib/features/home/presentation/widgets/center_card.dart`, `lib/core/router/app_routes.dart`, `lib/core/router/session_redirect.dart`, `lib/core/router/app_router.dart`, `lib/features/business/shell/presentation/business_shell_page.dart` (deleted), `test/core/router/session_redirect_test.dart`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
+## 2026-07-09 — Integrate the merged Home screen (PR #85) and clean up its merge fallout
+
+Pulling PR #85 (customer Home feature, `lib/features/home/`) into `develop` left three defects: (1) `app_router.dart` gained a **duplicate `splash_page` import** plus a scrambled import block (from the merge); (2) `HomeBottomNav` was route-registered at `/home` but `resolveRedirect` never allows `/home` for any state, so the entire Home feature was **unreachable**; and (3) `lib/features/home/widgets/home_bottom_nav.dart` was a byte-for-byte **dead duplicate** of `lib/features/home/presentation/widgets/home_bottom_nav.dart` (a folder-reorg leftover — the CHANGELOG's "Home/onboarding reorganized to Clean Architecture" move didn't delete the old copy).
+
+Rather than make the redundant `HomeBottomNav` reachable, integrated the actual deliverable: the built `HomePage` (a self-contained scroll of `HomeHeader` + `ActiveBookingCard` + `BookServiceCard` + `NearbyCentersSection` + `ShopSection`) now renders as index 0 of `CustomerShellPage`, replacing the `EmptyState` "until the Home screen is built" placeholder — so it appears inside the existing branded, localized customer shell. Deleted the `/home` route and **both** `HomeBottomNav` files (it re-implemented a lower-quality shell: hardcoded Arabic nav labels and three `'data'` placeholder tabs, duplicating what `CustomerShellPage` already does with `l10n`), removed the now-dead `HomePage.path` constant, and cleaned commented-out `<<<<<<<`/`=======`/`>>>>>>>` merge-conflict markers left in `customer_shell_page.dart`. `flutter analyze` clean; all 126 tests pass (the relaunch widget test now pumps the shell with `HomePage` at index 0, exercising the new widgets end-to-end).
+
+Not touched: the unused `SocialButton` widget (`lib/features/onboarding/presentation/widgets/social_button.dart`, also added by #85) — dead but harmless; left in place.
+
+> ‏خلّف دمج PR #85 (ميزة Home للعميل) ثلاثة عيوب: استيراد `splash_page` مكرّر وكتلة استيراد مشوّشة في `app_router.dart`؛ و`HomeBottomNav` مُسجَّل على `/home` بينما الحارس لا يسمح به أبدًا فكانت الميزة **غير قابلة للوصول**؛ وملف `home/widgets/home_bottom_nav.dart` نسخة ميتة مطابقة تمامًا للنسخة في `presentation/widgets/`. بدل جعل `HomeBottomNav` الزائد قابلًا للوصول، دُمج المُنتَج الفعلي: `HomePage` المبني يظهر الآن كالفهرس 0 في `CustomerShellPage` بدل العنصر النائب، داخل واجهة العميل المُنمَّطة والمُترجَمة. حُذف مسار `/home` وكلا ملفّي `HomeBottomNav` (نسخة أسوأ: نصوص عربية ثابتة وتبويبات `'data'`) و`HomePage.path` الميت، ونُظّفت علامات تعارض الدمج المُعلَّقة في `customer_shell_page.dart`. التحليل نظيف و126 اختبارًا تنجح. لم يُمَسّ: ودجت `SocialButton` غير المستخدَم — تُرك كما هو.
+
+Touched: `lib/core/router/app_router.dart`, `lib/features/customer/shell/presentation/customer_shell_page.dart`, `lib/features/home/presentation/pages/home_page.dart`, `lib/features/home/presentation/widgets/home_bottom_nav.dart` (deleted), `lib/features/home/widgets/home_bottom_nav.dart` (deleted), `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
+## 2026-07-09 — Show the business onboarding wizard after a business registration
+
+The business onboarding wizard (`ProviderOnboardingPage` → `BusinessIdentityPage` → `BusinessCatalogPage`, under `lib/features/business/onboarding/`) existed and was route-registered, and its internal step-to-step navigation was wired — but nothing routed *into* it: after registering with `account_type = business`, `SessionController.onAuthenticated` set `activeRole = business` + `hasToken`, and `resolveRedirect` sent the user straight to the `/business` shell, so the wizard was dead. Now an authenticated `business` user is gated through it first.
+
+Added `SessionState.businessOnboarded` (in-memory, never persisted — reset on every `bootstrap`/`clearingRole`, exactly like `onboardingAcknowledged`/`languageAcknowledged`/`roleAcknowledged`) and `SessionController.completeBusinessOnboarding()`. New guard branch in `session_redirect.dart`: `role == business && !businessOnboarded` forces the wizard set (`/provider-onboarding` → `/business-identity` → `/business-catalog`) until done, then falls through to the normal shell logic. `BusinessCatalogPage`'s **Activate** callback (in `app_router.dart`) now calls `completeBusinessOnboarding()` and `context.go('/business')`; once the flag flips the guard permits the shell. Because the flag is in-memory, the wizard re-runs each launch until the business user finishes it that session (per the chosen behavior). The customer flow is untouched.
+
+> ‏كان مُرشد تأهيل النشاط التجاري (`ProviderOnboardingPage` → `BusinessIdentityPage` → `BusinessCatalogPage`) مُسجَّلًا بالمسارات وتنقّله الداخلي موصولًا، لكن لا شيء يقود إليه: بعد التسجيل كـ`business` كان `resolveRedirect` يُنزل المستخدم مباشرةً في واجهة `/business`، فيبقى المُرشد ميتًا. الآن يُجبَر مستخدم `business` المُصادَق على المرور به أولًا. أُضيف عَلَم `SessionState.businessOnboarded` (في الذاكرة، غير مُخزَّن، يُصفَّر كل إقلاع) و`completeBusinessOnboarding()`، وفرعٌ في الحارس يُلزم مجموعة المُرشد حتى الإكمال ثم يُكمل لمنطق الواجهة. زرّ **التفعيل** في الكتالوج يقلب العَلَم ويذهب إلى `/business`. لأنّ العَلَم في الذاكرة، يُعاد المُرشد كل إقلاع حتى يُنهيه في الجلسة. مسار العميل بلا تغيير.
+
+Touched: `lib/core/session/session_state.dart`, `lib/core/session/session_controller.dart`, `lib/core/router/app_routes.dart`, `lib/core/router/session_redirect.dart`, `lib/core/router/app_router.dart`, `test/core/router/session_redirect_test.dart`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
+## 2026-07-09 — Route the built role-selection screen; clear all analyzer lints
+
+The polished `RoleSelectionPage` (`lib/features/role/presentation/page/`) — 4 `RoleCard`s + `InfoBanner` — existed but was never registered and its role cards had empty `onTap: () {}` stubs, so it was dead UI. Wired the two live cards to `SessionController.chooseRole` (`customer`/`business`) — the redirect guard drives navigation, so no explicit push — repointed the `/role` route from `RoleChooserPage` to `RoleSelectionPage`, and deleted the now-superseded `RoleChooserPage`. `test/widget_test.dart` updated to the new role strings (`Who are you?` / `Customer`). Separately cleared the remaining 18 `flutter analyze` lints: removed a dead `flutter/material` import in the widget test, renamed `profile_Item.dart` → `profile_item.dart` (`file_names`), sorted both `pubspec.yaml` dependency blocks alphabetically, wrapped over-long doc/decorative comments, dropped a redundant `AppCard` padding argument, fixed an `unnecessary_underscores` and a missing EOL newline, and ran `dart format`. `flutter analyze` clean; all 123 tests pass.
+
+> ‏كانت `RoleSelectionPage` (أربع `RoleCard` مع `InfoBanner`) مبنيّةً لكن غير موصولة بمسار وبطاقاتها تحمل `onTap: () {}` فارغة. وُصلت البطاقتان الفاعلتان بـ `SessionController.chooseRole`، ووُجّه مسار `/role` إليها بدل `RoleChooserPage` التي حُذفت، وحُدّث `test/widget_test.dart`. كما أُزيلت الـ18 تحذيرًا المتبقّية من `flutter analyze` (استيراد ميت، إعادة تسمية `profile_Item.dart`، ترتيب حزم `pubspec.yaml`، لفّ تعليقات طويلة، حذف padding زائد، `dart format`). التحليل نظيف و123 اختبارًا تنجح.
+
+Touched: `lib/features/role/presentation/page/role_selection_page.dart`, `lib/core/router/app_router.dart`, `lib/features/role/presentation/role_chooser_page.dart` (deleted), `lib/features/customer/profile/presentation/widgets/profile_item.dart` (renamed), `lib/features/business/**`, `lib/features/role/presentation/widgets/role_card.dart`, `lib/features/customer/booking/presentation/my_bookings_screen.dart`, `test/widget_test.dart`, `pubspec.yaml`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
+## 2026-07-08 — Business Services & Shop screens with direct `AppBottomNavBar` & `ServiceToggleCard` consolidation
+
+Implemented the two exact screens from user mockups (`BusinessServicesPage` with `ServicesFilterToggle`, shared `ServiceToggleCard`, and `DiscountPromotionBanner` under `lib/features/business/services/presentation/`; and `BusinessShopPage` with `ShopProductCard` under `lib/features/shop/presentation/`). Removed the entire `lib/features/shell/` folder (`ProviderShell`) since it is no longer needed, and instead directly attached the shared `AppBottomNavBar` (`AppBottomNavItem`) and center docked `FloatingActionButton` onto the `Scaffold` of both `BusinessServicesPage` (`/business-services`) and `BusinessShopPage` (`/business-shop`). Consolidated `ServiceToggleCard` across both `BusinessCatalogPage` (`onboarding`) and `BusinessServicesPage` (`services`) to eliminate widget/code duplication, replacing hardcoded hex switch colors with dynamic design tokens (`theme.colorScheme.primary` and `outlineVariant`). Registered `/business-services` and `/business-shop` in `AppRouter` and added exact localized strings (`shellNavCalendar` + navigation/services keys) across `app_ar.arb` and `app_en.arb`.
+
+> ‏تم تنفيذ الشاشتين المطابقتين لتصاميم المستخدم (`BusinessServicesPage` مع مكونات التبديل وعروض الخصم تحت `lib/features/business/services/presentation/`؛ و`BusinessShopPage` مع بطاقة المنتج وحالة التفعيل تحت `lib/features/shop/presentation/`). وتم مسح مجلد `lib/features/shell/` بالكامل وحذف الصفحة الحاضنة `ProviderShell` لعدم الحاجة إليها وإرفاق شريط التنقل السفلي المشترك `AppBottomNavBar` (`AppBottomNavItem`) وزر التقويم العائم مباشرة في شاشتي الكتالوج والأسعار والمتجر. وتم توحيد مكوّن بطاقة الخدمة `ServiceToggleCard` ليعمل كمكوّن مشترك بين شاشة تأهيل الكتالوج وشاشة الكتالوج والأسعار لتجنب تكرار الكود مع استبدال الألوان الثابتة برموز ألوان التصميم الديناميكية. وتم تسجيل مساري الشاشتين في موجه التطبيق وإضافة جميع مفاتيح الترجمة في ملفي العربية والإنجليزية.
+
+Touched: `lib/features/business/services/presentation/**`, `lib/features/business/onboarding/presentation/widgets/service_toggle_card.dart`, `lib/features/shop/presentation/**`, `lib/shared/ui/app_bottom_nav_bar.dart`, `lib/core/router/app_router.dart`, `lib/l10n/app_{en,ar}.arb`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
+## 2026-07-07 — Business onboarding screens, widgets & routing implemented
+
+## 2026-07-09 — Point BASE_URL at the live backend (osta.technology92.com)
+
+The backend is now deployed at **`https://osta.technology92.com`** — admin panel at `/admin`, REST API under `/api/v1`. Verified live: `GET https://osta.technology92.com/api/v1/auth/check-username?username=test` → `{"success":true,"data":{"available":true}}` (the standard `{success,data}` envelope; the app's `Prefix = /api/v1` and error-code contract hold). The previous default host `api.osta.dev` was a placeholder that does not resolve (DNS `fetch failed`).
+
+Replaced `api.osta.dev` → `osta.technology92.com` across the whole repo: the functional change is `AppConfig.baseUrl`'s compile default (`lib/core/config/app_config.dart`, `defaultValue: 'https://osta.technology92.com/api/v1'`), so `flutter run` with no `--dart-define` now reaches a working backend; `--dart-define=BASE_URL=…` still overrides per environment. All doc/run-command references were updated for consistency — `README.md`, `ARCHITECTURE.md`, `OSTA_plan.md`, `OSTA_TODO.md`, `CLAUDE.md`, `.agents/rules/project-scope.md`, and the `osta_readme_files/guides/` set (01, 02, 03, 04, 06, 08, 09) + `reference/{ONBOARDING,COMMON_PITFALLS}.md`. `flutter analyze` clean.
+
+> ‏أصبح الـ backend منشورًا على **`https://osta.technology92.com`** (الإدارة `/admin`، الـ API `/api/v1`). مُتحقَّق: `GET /api/v1/auth/check-username` يُعيد `{"success":true,"data":{"available":true}}`. كان المضيف السابق `api.osta.dev` نائبًا لا يُحلَّل (DNS يفشل). استُبدل `api.osta.dev` بـ `osta.technology92.com` في كامل المستودع؛ التغيير الوظيفي هو الافتراضي المُصرَّف في `AppConfig.baseUrl`، فيصل `flutter run` الآن إلى backend فعلي دون `--dart-define`. حُدِّثت كل مراجع التوثيق وأوامر التشغيل. التحليل نظيف.
+
 ## 2026-07-07 — Business onboarding screens, widgets & routing implemented
 
 Implemented the three business onboarding screens (`ProviderOnboardingPage`, `BusinessIdentityPage`, `BusinessCatalogPage`) and their reusable widgets in `lib/features/business/onboarding/presentation/`. Aligned `BusinessIdentityPage` 100% with exact user mockup (exact Arabic strings/numerals, separated phone field and `+20 🇪🇬` box, bottom-left camera icon in `LogoUploadBox`, bottom-right map CTA in `LocationPickerCard`, and placing map card above dropdowns). Registered static paths and wizard navigation routes (`/provider-onboarding` → `/business-identity` → `/business-catalog`) in `AppRouter`.
@@ -19,6 +154,7 @@ Implemented the role selection screen widgets (`RoleCard`, `ComingSoonBadge`, `I
 > ‏تم تنفيذ ودجات شاشة اختيار الدور (`RoleCard`, `ComingSoonBadge`, `InfoBanner`) في `lib/features/role/presentation/widgets/`، وتطوير `AppCard` بدعم الحدود والألوان، وإصلاح `AppColors.gray`، وضبط محاذاة العناوين إلى `start` لدعم الـ RTL.
 
 Touched: `lib/features/role/presentation/widgets/{role_card,coming_soon,info_banner}.dart`, `lib/features/role/presentation/role_selection_page.dart`, `lib/shared/ui/app_card.dart`, `lib/core/theme/app_colors.dart`, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
 ## 2026-07-08 — Register avatar upload (image_picker → POST /me/avatar)
 
 Wired the register screen's profile-photo control end to end (it was a "coming soon" stub). Tapping the ring now opens the **system gallery picker** via `image_picker` (`ImagePicker().pickImage(source: gallery, maxWidth: 1024, imageQuality: 85)`) — the picker uses **PHPicker on iOS / the Android Photo Picker**, which run out-of-process, so **no `NSPhotoLibraryUsageDescription` / runtime permission / native manifest change is required**. The chosen file previews inside the dashed ring (`ClipOval(Image.file(...))`), and its path rides along on `RegisterSubmitted.photoPath`.
@@ -154,17 +290,17 @@ Touched: `AGENTS.md`, `CONTRIBUTING.md`, `README.md`, `ARCHITECTURE.md`, `OSTA_p
 
 ## 2026-07-05 — `OSTA_TODO.md` zero-to-production checklist
 
-Added [`../OSTA_TODO.md`](../OSTA_TODO.md) — the trackable checkbox roadmap companion to [`../OSTA_plan.md`](../OSTA_plan.md) (the plan is the rulebook; the TODO is the what/when).
+Added [`../OSTA_TODO.md`](docs/OSTA_TODO.md) — the trackable checkbox roadmap companion to [`../OSTA_plan.md`](docs/OSTA_plan.md) (the plan is the rulebook; the TODO is the what/when).
 
-> ‏أُضيف [`../OSTA_TODO.md`](../OSTA_TODO.md) — قائمة مهام قابلة للتتبّع بمربّعات اختيار، مرافقة لـ [`../OSTA_plan.md`](../OSTA_plan.md) (الخطة هي كتاب القواعد، وقائمة المهام هي ماذا ومتى).
+> ‏أُضيف [`../OSTA_TODO.md`](docs/OSTA_TODO.md) — قائمة مهام قابلة للتتبّع بمربّعات اختيار، مرافقة لـ [`../OSTA_plan.md`](docs/OSTA_plan.md) (الخطة هي كتاب القواعد، وقائمة المهام هي ماذا ومتى).
 
 Phases: 0 foundation (✅ pre-checked) → 1 M0 wrap (l10n #30 + talker/offline/motion chores) → 2–8 the feature milestones with per-epic owners/branches/key ACs and a 🏷️ release tag per phase → **9 production readiness & launch** (platform config, production credentials for Maps/Firebase/social/Paymob/Reverb, signing + store listings with data-safety/privacy labels, release CI, crash-reporting ADR, hardening drills — offline/realtime/push/payments/perf/a11y/security/l10n — beta tracks, staged `v1.0.0` rollout) → 10 post-launch/Phase 2. Cross-linked from `OSTA_plan.md` §0/§14, `INDEX.md`, and `CURRENT_STATUS.md`. Docs-only change.
 
 ## 2026-07-05 — `OSTA_plan.md` master build instructions for AI agents
 
-Added [`../OSTA_plan.md`](../OSTA_plan.md) — a root-level, English, system-prompt-style plan that AI agents follow to deliver the 31 open epics on top of the existing M0 foundation.
+Added [`../OSTA_plan.md`](docs/OSTA_plan.md) — a root-level, English, system-prompt-style plan that AI agents follow to deliver the 31 open epics on top of the existing M0 foundation.
 
-> ‏أُضيف [`../OSTA_plan.md`](../OSTA_plan.md) — خطة بأسلوب موجّهات النظام (بالإنجليزية) في جذر المستودع يتبعها وكلاء الذكاء الاصطناعي لتسليم الملاحم المفتوحة الـ 31 فوق أساس M0 الحالي.
+> ‏أُضيف [`../OSTA_plan.md`](docs/OSTA_plan.md) — خطة بأسلوب موجّهات النظام (بالإنجليزية) في جذر المستودع يتبعها وكلاء الذكاء الاصطناعي لتسليم الملاحم المفتوحة الـ 31 فوق أساس M0 الحالي.
 
 Contents: the 11 owner mandates (Clean Architecture + BLoC, dark/light, responsive, ar/en RTL, animations/transitions, reusable widgets + centralized colors/fonts/images/icons/text, `talker`, `skeletonizer`, document everything, offline-first, clean git graph with releases/tags); **four explicit amendments to the canon** — `talker_*` replaces `pretty_dio_logger`, `skeletonizer` for all loading states (overrides epic `shimmer` mentions), a new offline-first spec (`lib/core/offline/`: `sqflite` JSON-document cache + pending-operations queue + `SyncEngine` + `connectivity_plus`, with a per-feature cached/queued/online-only policy table), and a SemVer release/tag convention (`v0.<n>.0` per milestone, `v1.0.0` = MVP, annotated tags on `main`); source-of-truth precedence with a warning that the epics' stale codegen/Riverpod package stanza is superseded ([PR #69](https://github.com/YoussefSalem582/Osta-App/pull/69)); and the milestone-by-milestone execution plan (M0 finish → M1…M5 → Shop/Home/Notifications → M6/Phase 2) with per-epic branch names, key ACs, endpoints, offline policies, and a global/per-epic/never package policy. Docs-only change — no code affected; a follow-up to sync `AGENTS.md` with the four amendments is noted in the plan's appendix.
 

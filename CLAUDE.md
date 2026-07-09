@@ -20,7 +20,7 @@
 - **Flutter**: SDK on PATH; CI pins Flutter 3.44.1.
 - **No codegen**: the project uses **no `build_runner`** — models are plain `Equatable`, DI is manual `get_it`, errors are a `sealed Failure` (see [`docs/ROADMAP.md`](docs/ROADMAP.md) for the deferred codegen plan). Only l10n is generated, and `flutter gen-l10n` runs automatically on `flutter run`/`build`.
 - **Approved commands** (no prompt needed): `flutter pub get`, `flutter gen-l10n`, `flutter analyze`, `flutter test`, `dart format .`
-- **Run the app**: `flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1` (single `BASE_URL`; no `--flavor`).
+- **Run the app**: `flutter run --dart-define=BASE_URL=https://osta.technology92.com/api/v1` (single `BASE_URL`; no `--flavor`).
 
 ## Tool-use rules / قواعد استخدام الأدوات
 

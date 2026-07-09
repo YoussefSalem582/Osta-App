@@ -2,7 +2,7 @@ name: docs
 
 # Docs hygiene on every PR/push that touches a markdown file. Catches markdown
 # lint regressions and broken intra-repo / external links across the doc set
-# (AGENTS.md, CONTRIBUTING.md, ARCHITECTURE.md, docs/, osta_readme_files/, and
+# (AGENTS.md, CONTRIBUTING.md, docs/, osta_readme_files/ (incl. docs/), and
 # the per-tool shims in .agents/.codex/.cursor/.github).
 
 on:

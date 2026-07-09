@@ -1,7 +1,7 @@
 # OSTA_plan.md — Master Build Instructions for AI Agents
 
 > **You are an AI coding agent continuing an existing Flutter repository — NOT building an app from scratch.**
-> This document, together with [`AGENTS.md`](AGENTS.md), is your standing instruction set for delivering the
+> This document, together with [`AGENTS.md`](../../AGENTS.md), is your standing instruction set for delivering the
 > remaining OSTA epics (tracker [#61](https://github.com/YoussefSalem582/Osta-App/issues/61)).
 > The M0 foundation is already built, tested, and merged. Your job is to ship the feature surface on top of it —
 > milestone by milestone, epic by epic — while keeping `main` releasable at every merge.
@@ -14,11 +14,11 @@ Read in this order before writing any code:
 
 | # | Read | Why |
 |---|------|-----|
-| 1 | [`AGENTS.md`](AGENTS.md) | Canonical project conventions (architecture, tokens, API, DI, l10n, security, git) |
+| 1 | [`AGENTS.md`](../../AGENTS.md) | Canonical project conventions (architecture, tokens, API, DI, l10n, security, git) |
 | 2 | **This document** | The build mission, the 11 non-negotiable mandates, the 4 amendments, and the execution order |
 | 3 | The GitHub epic you are building | Scope, screens, flows, acceptance criteria, endpoints |
-| 4 | Its feature doc in [`osta_readme_files/features/`](osta_readme_files/features/README.md) | Repo-side spec, mockups, endpoint tables, corrections to the epic |
-| 5 | [`osta_readme_files/reference/DELIVERY_PLAN.md`](osta_readme_files/reference/DELIVERY_PLAN.md) | Milestones, owners, backend mirror, build order |
+| 4 | Its feature doc in [`osta_readme_files/features/`](../features/README.md) | Repo-side spec, mockups, endpoint tables, corrections to the epic |
+| 5 | [`osta_readme_files/reference/DELIVERY_PLAN.md`](../reference/DELIVERY_PLAN.md) | Milestones, owners, backend mirror, build order |
 
 **This document AMENDS the repo canon in exactly four areas** (they implement the owner's standing mandates and
 supersede anything older, including `AGENTS.md`, on these four points only):
@@ -82,7 +82,7 @@ These 11 mandates come directly from the project owner. Every PR is checked agai
 And the hard **NEVER** list (violations block merge):
 
 - **NEVER** add codegen: `freezed`, `json_serializable`, `injectable`, `build_runner`, `retrofit` — deferred by
-  [`docs/ROADMAP.md`](docs/ROADMAP.md); models are hand-written `Equatable`, DI is manual `get_it`.
+  [`docs/ROADMAP.md`](../../docs/ROADMAP.md); models are hand-written `Equatable`, DI is manual `get_it`.
 - **NEVER** add `fpdart` / `Either` / `Result<T>` / `.fold()` — errors are a `sealed Failure` thrown and caught
   with plain `try`/`catch`.
 - **NEVER** use Riverpod or Provider for state — BLoC/Cubit only (some epic bodies mention Riverpod; ignore it, §3).
@@ -106,10 +106,10 @@ Precedence when sources disagree (highest wins):
 
 | Rank | Source | Governs |
 |------|--------|---------|
-| 1 | Live backend contract — [`osta_readme_files/guides/09_api_endpoints.md`](osta_readme_files/guides/09_api_endpoints.md) + [osta_backend](https://github.com/YoussefSalem582/osta_backend/issues) | Endpoint paths, payload shapes, status codes |
-| 2 | [`AGENTS.md`](AGENTS.md) + [`docs/ROADMAP.md`](docs/ROADMAP.md) + ADRs | Architecture, tooling, conventions |
+| 1 | Live backend contract — [`osta_readme_files/guides/09_api_endpoints.md`](../guides/09_api_endpoints.md) + [osta_backend](https://github.com/YoussefSalem582/osta_backend/issues) | Endpoint paths, payload shapes, status codes |
+| 2 | [`AGENTS.md`](../../AGENTS.md) + [`docs/ROADMAP.md`](../../docs/ROADMAP.md) + ADRs | Architecture, tooling, conventions |
 | 3 | **This document** | The 4 amendments (§0) + execution order + cross-cutting UX/offline rules |
-| 4 | Feature docs ([`osta_readme_files/features/`](osta_readme_files/features/README.md)) | Feature scope details, corrections to epics |
+| 4 | Feature docs ([`osta_readme_files/features/`](../features/README.md)) | Feature scope details, corrections to epics |
 | 5 | GitHub epic bodies (#30–#62) | Acceptance criteria, screens, flows, edge cases |
 
 > ⚠️ **The epics contain a stale package boilerplate — ignore it.**
@@ -125,8 +125,8 @@ Precedence when sources disagree (highest wins):
 > [#47](https://github.com/YoussefSalem582/Osta-App/issues/47),
 > [#51](https://github.com/YoussefSalem582/Osta-App/issues/51),
 > [#62](https://github.com/YoussefSalem582/Osta-App/issues/62). The truth is the endpoint catalogue
-> ([guide 09](osta_readme_files/guides/09_api_endpoints.md)) and
-> [guide 11](osta_readme_files/guides/11_backend_feature_connectivity.md) — check them first; if an endpoint is
+> ([guide 09](../guides/09_api_endpoints.md)) and
+> [guide 11](../guides/11_backend_feature_connectivity.md) — check them first; if an endpoint is
 > not live, build against the documented contract behind the UI but do not merge the wiring until it ships.
 
 ---
@@ -469,14 +469,14 @@ Per epic, the minimum bar (CI runs `format · analyze · test` on every PR; all 
 
 - **Dartdoc `///`** on every public class, method, and non-obvious member you add.
 - After **every meaningful change**, update the mandatory four (per `AGENTS.md`):
-  1. [`CHANGELOG.md`](CHANGELOG.md) — entry under `## [Unreleased]`;
-  2. [`osta_readme_files/DOCUMENTATION_UPDATE_SUMMARY.md`](osta_readme_files/DOCUMENTATION_UPDATE_SUMMARY.md) — dated entry at the top;
-  3. [`osta_readme_files/CURRENT_STATUS.md`](osta_readme_files/CURRENT_STATUS.md) — status + metrics;
+  1. [`CHANGELOG.md`](../../CHANGELOG.md) — entry under `## [Unreleased]`;
+  2. [`osta_readme_files/DOCUMENTATION_UPDATE_SUMMARY.md`](../DOCUMENTATION_UPDATE_SUMMARY.md) — dated entry at the top;
+  3. [`osta_readme_files/CURRENT_STATUS.md`](../CURRENT_STATUS.md) — status + metrics;
   4. The relevant feature doc in `osta_readme_files/features/`.
 - Repo docs are bilingual EN/AR — when you touch them, keep both languages in sync (identifiers, tables, and
   endpoints stay English).
 - Any architectural decision this plan doesn't already cover gets a new ADR in
-  [`osta_readme_files/decisions/`](osta_readme_files/decisions/README.md).
+  [`osta_readme_files/decisions/`](../decisions/README.md).
 
 ---
 
@@ -538,7 +538,7 @@ Small feature branches merged one at a time into `develop`; `main` advances only
 ## §14 Milestone execution plan (M0 → M7 + Phase 2)
 
 Execution order follows tracker [#61](https://github.com/YoussefSalem582/Osta-App/issues/61) and
-[`DELIVERY_PLAN.md`](osta_readme_files/reference/DELIVERY_PLAN.md); tick progress in
+[`DELIVERY_PLAN.md`](../reference/DELIVERY_PLAN.md); tick progress in
 [`OSTA_TODO.md`](OSTA_TODO.md). For each epic: read the issue + its feature
 doc, honor §2–§13, and treat the 3–5 ACs below as headlines — **the epic body remains the full AC source**.
 Mockups live on the [`design-assets`](https://github.com/YoussefSalem582/Osta-App/tree/design-assets) branch.
@@ -703,12 +703,12 @@ Backend quick reference:
 
 **Approved commands** (no approval prompt needed): `flutter pub get` · `flutter gen-l10n` · `flutter analyze` ·
 `flutter test` · `dart format .` — there is **no `build_runner`** in this project.
-Run the app: `flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1`.
+Run the app: `flutter run --dart-define=BASE_URL=https://osta.technology92.com/api/v1`.
 
-**Where to look:** doc index [`osta_readme_files/INDEX.md`](osta_readme_files/INDEX.md) · pitfalls
-[`COMMON_PITFALLS.md`](osta_readme_files/reference/COMMON_PITFALLS.md) · incident recipes
-[`TROUBLESHOOTING.md`](osta_readme_files/reference/TROUBLESHOOTING.md) · terms
-[`GLOSSARY.md`](osta_readme_files/reference/GLOSSARY.md) · design mockups: `design-assets` branch
+**Where to look:** doc index [`osta_readme_files/INDEX.md`](../INDEX.md) · pitfalls
+[`COMMON_PITFALLS.md`](../reference/COMMON_PITFALLS.md) · incident recipes
+[`TROUBLESHOOTING.md`](../reference/TROUBLESHOOTING.md) · terms
+[`GLOSSARY.md`](../reference/GLOSSARY.md) · design mockups: `design-assets` branch
 (`mockups/*.png`, embedded in each epic).
 
 **Precedence in one line:** backend contract → `AGENTS.md`/ROADMAP/ADRs → **this plan** (4 amendments +

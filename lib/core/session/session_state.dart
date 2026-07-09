@@ -15,6 +15,7 @@ class SessionState extends Equatable {
     this.onboardingAcknowledged = false,
     this.languageAcknowledged = false,
     this.roleAcknowledged = false,
+    this.businessOnboarded = false,
   });
 
   /// `false` until the splash finishes reading persisted `{token, activeRole}`.
@@ -51,6 +52,12 @@ class SessionState extends Equatable {
   /// [activeRole] is null, e.g. after "switch role").
   final bool roleAcknowledged;
 
+  /// Whether an authenticated `business` user has finished the onboarding
+  /// wizard this session. In-memory only (never persisted): a fresh
+  /// [SessionState] each launch resets it to `false`, so a business user
+  /// re-runs the wizard every launch until they complete it (see the guard).
+  final bool businessOnboarded;
+
   bool get isLanguageSelected => locale != null;
 
   SessionState copyWith({
@@ -62,6 +69,7 @@ class SessionState extends Equatable {
     bool? onboardingAcknowledged,
     bool? languageAcknowledged,
     bool? roleAcknowledged,
+    bool? businessOnboarded,
   }) => SessionState(
     bootstrapped: bootstrapped ?? this.bootstrapped,
     locale: locale ?? this.locale,
@@ -72,6 +80,7 @@ class SessionState extends Equatable {
         onboardingAcknowledged ?? this.onboardingAcknowledged,
     languageAcknowledged: languageAcknowledged ?? this.languageAcknowledged,
     roleAcknowledged: roleAcknowledged ?? this.roleAcknowledged,
+    businessOnboarded: businessOnboarded ?? this.businessOnboarded,
   );
 
   /// Copy that can null out [activeRole] — `copyWith` can't express "set to
@@ -97,5 +106,6 @@ class SessionState extends Equatable {
     onboardingAcknowledged,
     languageAcknowledged,
     roleAcknowledged,
+    businessOnboarded,
   ];
 }
