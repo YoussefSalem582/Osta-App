@@ -70,11 +70,25 @@ String? resolveRedirect({
   // ponytail: flat allow-list, not per-role. A business user could reach a
   // customer screen by typed URL, but no nav entry leads there; scope per role
   // if that ever matters.
+  // A freshly-authenticated business user runs the onboarding wizard
+  // (provider-onboarding → identity → catalog) before reaching its shell.
+  // Gated by the in-memory `businessOnboarded` flag, so — like the logged-out
+  // gates — it re-shows every launch until finished this session.
+  if (role == AppRole.business && !session.businessOnboarded) {
+    const wizard = {
+      AppRoutes.providerOnboarding,
+      AppRoutes.businessIdentity,
+      AppRoutes.businessCatalog,
+    };
+    return wizard.contains(location) ? null : AppRoutes.providerOnboarding;
+  }
+
   const inAppScreens = {
     AppRoutes.profile,
     AppRoutes.garage,
     AppRoutes.addCar,
     AppRoutes.bookingStatus,
+    AppRoutes.home,
   };
   final shell = shellFor(role);
   if (location == shell || inAppScreens.contains(location)) return null;

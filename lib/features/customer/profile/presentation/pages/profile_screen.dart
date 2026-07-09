@@ -15,8 +15,22 @@ import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
+/// Full-screen profile route (`/profile`) — an app bar over [ProfileView].
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    appBar: AppTopBar(centerTitle: false, title: context.l10n.profile),
+    body: const ProfileView(),
+  );
+}
+
+/// Scaffold-less profile content — the customer shell's "More" tab body.
+/// The shell owns the app bar and bottom nav.
+class ProfileView extends StatelessWidget {
+  const ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +50,7 @@ class ProfileScreen extends StatelessWidget {
 
     final firstChar = userName.isNotEmpty ? userName.characters.first : '؟';
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppTopBar(centerTitle: false, title: context.l10n.profile),
-      body: ListView(
+    return ListView(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
@@ -273,7 +284,6 @@ class ProfileScreen extends StatelessWidget {
 
         const SizedBox(height: AppSpacing.xl),
       ],
-    )
     );
   }
 }

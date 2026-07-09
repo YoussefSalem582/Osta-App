@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:osta/core/session/app_role.dart';
+import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/role/presentation/widgets/info_banner.dart';
 import 'package:osta/features/role/presentation/widgets/role_card.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
+/// First-run role split. `customer` + `business` are tappable and route into
+/// their shell (via auth); `mechanic` + `tow` render disabled ("coming soon").
+/// Tapping calls [SessionController.chooseRole]; the router redirect handles
+/// navigation, so no explicit push here.
 class RoleSelectionPage extends StatelessWidget {
   const RoleSelectionPage({super.key});
 
@@ -13,6 +20,7 @@ class RoleSelectionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
+    final session = context.read<SessionController>();
 
     return Scaffold(
       body: SafeArea(
@@ -54,14 +62,14 @@ class RoleSelectionPage extends StatelessWidget {
                     title: l10n.roleSelectionCustomerTitle,
                     subtitle: l10n.roleSelectionCustomerSubtitle,
                     icon: Icons.directions_car_rounded,
-                    onTap: () {},
+                    onTap: () => session.chooseRole(AppRole.customer),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   RoleCard(
                     title: l10n.roleSelectionBusinessTitle,
                     subtitle: l10n.roleSelectionBusinessSubtitle,
                     icon: Icons.storefront_rounded,
-                    onTap: () {},
+                    onTap: () => session.chooseRole(AppRole.business),
                   ),
                   //--------------------------------{Not Active Role Card}--------------------------------------//
                   const SizedBox(height: AppSpacing.md),
