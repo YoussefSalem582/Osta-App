@@ -42,11 +42,14 @@ jobs:
           # Mail links are skipped by default, so there is no --exclude-mail:
           # current lychee rejects that flag outright and the job dies before
           # checking a single link.
+          # osta_backend is a private repo — its issue links resolve for the
+          # team but 404 for an unauthenticated runner, so they can't be checked.
           args: >-
             --no-progress
             --max-redirects 5
             --accept '200..=299, 429'
             --exclude '^file:'
             --exclude 'http(s)?://localhost'
+            --exclude 'github\.com/YoussefSalem582/osta_backend'
             './**/*.md'
           fail: true
