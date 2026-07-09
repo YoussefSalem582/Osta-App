@@ -94,6 +94,14 @@ class SessionController extends Cubit<SessionState> {
     );
   }
 
+  /// Marks the business onboarding wizard finished for this session, so the
+  /// guard stops forcing it and lets the user into the business shell.
+  /// In-memory (never persisted) — the wizard re-runs on the next launch.
+  void completeBusinessOnboarding() {
+    if (state.businessOnboarded) return;
+    emit(state.copyWith(businessOnboarded: true));
+  }
+
   /// Clears the one-shot correction flag once the toast has been shown.
   void acknowledgeCorrection() {
     if (state.correctedRole == null) return;
