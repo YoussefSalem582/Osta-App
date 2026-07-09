@@ -1,5 +1,3 @@
-// Booking domain model & status enum — shared across booking screens.
-
 enum BookingStatus { pending, confirmed, completed, cancelled }
 
 class BookingItem {

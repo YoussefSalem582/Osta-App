@@ -8,6 +8,7 @@ import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/core/theme/theme_mode_controller.dart';
+import 'package:osta/features/customer/profile/presentation/widgets/profile_card.dart';
 import 'package:osta/features/customer/profile/presentation/widgets/profile_item.dart';
 import 'package:osta/features/customer/profile/presentation/widgets/segmented_toggle.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
@@ -16,17 +17,6 @@ import 'package:osta/shared/ui/app_top_bar.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-    appBar: AppTopBar(centerTitle: false, title: context.l10n.profile),
-    body: const ProfileView(),
-  );
-}
-
-class ProfileView extends StatelessWidget {
-  const ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +36,10 @@ class ProfileView extends StatelessWidget {
 
     final firstChar = userName.isNotEmpty ? userName.characters.first : '؟';
 
-    return ListView(
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppTopBar(centerTitle: false, title: context.l10n.profile),
+      body: ListView(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
@@ -130,10 +123,19 @@ class ProfileView extends StatelessWidget {
 
         const SizedBox(height: AppSpacing.lg),
 
-        _SectionLabel(title: l10n.account),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+          child: Text(
+            l10n.account,
+            style: textTheme.labelLarge?.copyWith(
+              color: colorScheme.onSurface.withValues(alpha: 0.5),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
         const SizedBox(height: AppSpacing.sm),
 
-        _ProfileCard(
+        ProfileCard(
           child: ProfileListItem(
             title: l10n.addresses,
             subtitle: l10n.addressesSubtitle,
@@ -146,7 +148,7 @@ class ProfileView extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
 
-        _ProfileCard(
+        ProfileCard(
           child: ProfileListItem(
             title: l10n.myCars,
             subtitle: l10n.myCarsSubtitle,
@@ -159,7 +161,7 @@ class ProfileView extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
 
-        _ProfileCard(
+        ProfileCard(
           child: ProfileListItem(
             title: l10n.myStore,
             subtitle: l10n.myStoreSubtitle,
@@ -173,10 +175,19 @@ class ProfileView extends StatelessWidget {
 
         const SizedBox(height: AppSpacing.lg),
 
-        _SectionLabel(title: l10n.settings),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+          child: Text(
+            l10n.account,
+            style: textTheme.labelLarge?.copyWith(
+              color: colorScheme.onSurface.withValues(alpha: 0.5),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
         const SizedBox(height: AppSpacing.sm),
 
-        _ProfileCard(
+        ProfileCard(
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
@@ -212,7 +223,7 @@ class ProfileView extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
 
-        _ProfileCard(
+        ProfileCard(
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
@@ -248,7 +259,7 @@ class ProfileView extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
 
-        _ProfileCard(
+        ProfileCard(
           child: ProfileListItem(
             title: l10n.notifications,
             subtitle: l10n.notificationsSubtitle,
@@ -262,54 +273,7 @@ class ProfileView extends StatelessWidget {
 
         const SizedBox(height: AppSpacing.xl),
       ],
-    );
-  }
-}
-
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel({required this.title});
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-      child: Text(
-        title,
-        style: textTheme.labelLarge?.copyWith(
-          color: colorScheme.onSurface.withValues(alpha: 0.5),
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-}
-
-class _ProfileCard extends StatelessWidget {
-  const _ProfileCard({required this.child});
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppRadii.lg),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadii.lg),
-        child: child,
-      ),
+    )
     );
   }
 }

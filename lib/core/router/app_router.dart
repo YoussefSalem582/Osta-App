@@ -12,10 +12,11 @@ import 'package:osta/features/auth/password_recovery/presentation/forgot_passwor
 import 'package:osta/features/auth/password_recovery/presentation/reset_password_page.dart';
 import 'package:osta/features/auth/register/presentation/register_page.dart';
 import 'package:osta/features/business/shell/presentation/business_shell_page.dart';
-import 'package:osta/features/customer/booking/presentation/real_time_booking_screen.dart';
-import 'package:osta/features/customer/garage/presentation/add_car_screen.dart';
-import 'package:osta/features/customer/garage/presentation/my_garage_screen.dart';
-import 'package:osta/features/customer/profile/presentation/profile_screen.dart';
+import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
+import 'package:osta/features/customer/booking/presentation/pages/live_booking_screen.dart';
+import 'package:osta/features/customer/garage/presentation/pages/add_car_screen.dart';
+import 'package:osta/features/customer/garage/presentation/pages/my_garage_screen.dart';
+import 'package:osta/features/customer/profile/presentation/pages/profile_screen.dart';
 import 'package:osta/features/customer/shell/presentation/customer_shell_page.dart';
 import 'package:osta/features/onboarding/page/onboarding_page.dart';
 import 'package:osta/features/onboarding/presentation/language_page.dart';
@@ -104,11 +105,15 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.bookingStatus,
-        builder: (context, state) => const RealTimeBookingScreen(),
+        builder: (context, state) => const LiveBookingScreen(),
       ),
       GoRoute(
         path: AppRoutes.profile,
         builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.myBookings,
+        builder: (context, state) => const MyBookingsScreen(),
       ),
 
       // Dev-facing component gallery (not linked from product UI).
