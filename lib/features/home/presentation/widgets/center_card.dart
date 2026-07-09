@@ -41,13 +41,16 @@ class CenterCard extends StatelessWidget {
               const SizedBox(height: 6),
               Row(
                 children: [
-                  Text(
-                    distance,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+                  Expanded(
+                    child: Text(
+                      distance,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(width: 4),
                   Text(
                     '$rate ⭐',
                     style: theme.textTheme.bodyMedium?.copyWith(
