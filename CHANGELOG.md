@@ -5,6 +5,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the pro
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-07-10
+
+Second pre-release cut of `develop` → `main`. Routing and the role shells: every built-but-unreachable screen is now routed, the shells render their real screens, and the business role runs its onboarding wizard before landing. Everything below accumulated on `develop` since `v0.2.0`.
+
+> ‏ثاني إصدارٍ تمهيدي من `develop` إلى `main`. التوجيه وواجهات الأدوار: كل شاشة مبنيّة كانت غير قابلة للوصول صارت موجَّهة، وتعرض الواجهات شاشاتها الحقيقية، ويمرّ دور النشاط التجاري بمُرشد التأهيل قبل الهبوط. كل ما يلي تراكم على `develop` منذ `v0.2.0`.
+
 ### Fixed
 
 - **Customer shell drew two app bars on the Bookings and More tabs** (2026-07-09) — a folder reorg reintroduced full-page `Scaffold` + `AppTopBar` wrappers on `MyBookingsScreen` and `ProfileScreen`, which the shell then embedded as tab bodies **inside its own `Scaffold`** — so those two tabs rendered a second app bar. It also left two files declaring `MyBookingsScreen` (`presentation/` and `presentation/pages/`), an ambiguous-import compile error; the stale `presentation/` copy was already broken (it imported a deleted widget) and was deleted. Split both screens along the pattern the booking feature already used (`LiveBookingScreen` wraps `BookingView`): the routed `MyBookingsScreen` (`/my-bookings`) and `ProfileScreen` (`/profile`) keep their `Scaffold` + `AppTopBar`, while the new scaffold-less `MyBookingsView` and `ProfileView` hold the content and are what the shell embeds. Standalone routes keep their app bar and back button; the shell keeps exactly one of each. Added a widget test that taps through the customer tabs asserting one `AppBar` + one `AppBottomNavBar` per tab. `flutter analyze` clean; all 127 tests pass.
