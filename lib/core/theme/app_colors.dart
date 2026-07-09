@@ -14,6 +14,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.onSuccess,
     required this.warning,
     required this.onWarning,
+    required this.gray,
   });
 
   /// Brand seed — Osta green.
@@ -22,6 +23,19 @@ class AppColors extends ThemeExtension<AppColors> {
   /// Brand accent — Osta lime.
   static const brandLime = Color(0xFFB2D235);
 
+  // --- Light neutrals & brand tints ---------------------------------------
+  // `ColorScheme.fromSeed` renders the light neutrals flat and the primary a
+  // muted olive; these tuned tokens restore the brand green and give the
+  // surfaces a soft green-grey depth (white cards + tinted input fields on a
+  // slightly darker background).
+  static const lightBackground = Color(0xFFF1F5F2); // scaffold + app bar
+  static const lightSurface = Color(0xFFFFFFFF); // cards, sheets
+  static const lightSurfaceAlt = Color(0xFFE8EFEA); // input fill, sections
+  static const lightOnSurface = Color(0xFF171D19); // near-black, green-tinted
+  static const lightOutline = Color(0xFFDBE3DD); // hairline dividers/borders
+  static const lightPrimaryContainer = Color(0xFFCDEBD6); // soft brand tint
+  static const onLightPrimaryContainer = Color(0xFF06331A);
+
   static const light = AppColors(
     accent: brandLime,
     onAccent: Color(0xFF1A2E05),
@@ -29,6 +43,7 @@ class AppColors extends ThemeExtension<AppColors> {
     onSuccess: Colors.white,
     warning: Color(0xFF92400E),
     onWarning: Colors.white,
+    gray: Color(0xFFB9C2BF),
   );
 
   static const dark = AppColors(
@@ -38,6 +53,7 @@ class AppColors extends ThemeExtension<AppColors> {
     onSuccess: Color(0xFF052E16),
     warning: Color(0xFFFBBF24),
     onWarning: Color(0xFF451A03),
+    gray: Color(0xFF64748B),
   );
 
   final Color accent;
@@ -46,6 +62,7 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color onSuccess;
   final Color warning;
   final Color onWarning;
+  final Color gray;
 
   @override
   AppColors copyWith({
@@ -55,6 +72,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? onSuccess,
     Color? warning,
     Color? onWarning,
+    Color? gray,
   }) => AppColors(
     accent: accent ?? this.accent,
     onAccent: onAccent ?? this.onAccent,
@@ -62,6 +80,7 @@ class AppColors extends ThemeExtension<AppColors> {
     onSuccess: onSuccess ?? this.onSuccess,
     warning: warning ?? this.warning,
     onWarning: onWarning ?? this.onWarning,
+    gray: gray ?? this.gray,
   );
 
   @override
@@ -74,6 +93,7 @@ class AppColors extends ThemeExtension<AppColors> {
       onSuccess: Color.lerp(onSuccess, other.onSuccess, t)!,
       warning: Color.lerp(warning, other.warning, t)!,
       onWarning: Color.lerp(onWarning, other.onWarning, t)!,
+      gray: Color.lerp(gray, other.gray, t)!,
     );
   }
 }

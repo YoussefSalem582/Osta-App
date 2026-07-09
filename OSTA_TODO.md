@@ -203,7 +203,7 @@
       then one live smoke payment + refund path verified
 - [ ] **Reverb websockets**: production host/port/TLS reachable from devices; `POST /broadcasting/auth` verified
       against production Sanctum
-- [ ] Production `BASE_URL` (`https://api.osta.dev/api/v1`) supplied via `--dart-define` in release CI — no
+- [ ] Production `BASE_URL` (`https://osta.technology92.com/api/v1`) supplied via `--dart-define` in release CI — no
       hardcoded hosts anywhere (audit)
 
 ### 9.3 Signing & store accounts

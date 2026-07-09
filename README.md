@@ -12,7 +12,7 @@ Feature-first `lib/`, strict shared lints, and a CI pipeline that gates every PR
 git clone https://github.com/YoussefSalem582/Osta-App.git
 cd Osta-App                        # working dir: osta_app
 flutter pub get
-flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1
+flutter run --dart-define=BASE_URL=https://osta.technology92.com/api/v1
 ```
 
 The app boots into a splash screen, then the first-run **role selection**.
@@ -32,7 +32,7 @@ it defaults to the dev API when omitted:
 > ‏عنوان الـ API الأساسي يُحدَّد وقت الترجمة عبر `--dart-define` (بدون أي أسرار داخل المستودع)؛ وعند حذفه يرجع افتراضيًا إلى واجهة الـ dev.
 
 ```bash
-flutter run --dart-define=BASE_URL=https://api.osta.dev/api/v1
+flutter run --dart-define=BASE_URL=https://osta.technology92.com/api/v1
 ```
 
 Multi-flavor (dev/staging/prod) builds are deferred — see
