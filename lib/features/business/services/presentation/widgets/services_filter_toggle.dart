@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 
-/// Segmented toggle for switching between Services (الخدمات) and Offers (العروض).
+/// Segmented toggle for switching between Services (الخدمات)
+/// and Offers (العروض).
 class ServicesFilterToggle extends StatelessWidget {
   const ServicesFilterToggle({
     required this.selectedTab,
@@ -79,7 +80,9 @@ class ServicesFilterToggle extends StatelessWidget {
           label,
           style: theme.textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.w700,
-            color: isSelected ? Colors.white : theme.colorScheme.onSurfaceVariant,
+            color: isSelected
+                ? Colors.white
+                : theme.colorScheme.onSurfaceVariant,
           ),
         ),
       ),

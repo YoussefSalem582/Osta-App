@@ -70,7 +70,9 @@ class ProviderOnboardingPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppRadii.lg),
                     boxShadow: [
                       BoxShadow(
-                        color: theme.colorScheme.primary.withValues(alpha: 0.25),
+                        color: theme.colorScheme.primary.withValues(
+                          alpha: 0.25,
+                        ),
                         blurRadius: 20,
                         offset: const Offset(0, 10),
                       ),

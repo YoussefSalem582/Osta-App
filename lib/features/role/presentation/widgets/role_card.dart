@@ -35,7 +35,7 @@ class RoleCard extends StatelessWidget {
         : theme.colorScheme.surfaceContainerLow;
 
     final iconBgColor = enabled
-        ? theme.colorScheme.primaryContainer.withValues(alpha:0.4)
+        ? theme.colorScheme.primaryContainer.withValues(alpha: 0.4)
         : theme.colorScheme.surfaceContainerHighest;
     final iconColor = enabled
         ? theme.colorScheme.primary
@@ -45,7 +45,6 @@ class RoleCard extends StatelessWidget {
       onTap: enabled ? onTap : null,
       border: border,
       color: backgroundColor,
-      padding: const EdgeInsets.all(AppSpacing.md),
       child: Row(
         children: [
           Container(
@@ -83,7 +82,9 @@ class RoleCard extends StatelessWidget {
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: enabled
                         ? theme.colorScheme.onSurfaceVariant
-                        : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                        : theme.colorScheme.onSurfaceVariant.withValues(
+                            alpha: 0.7,
+                          ),
                   ),
                 ),
               ],
