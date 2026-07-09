@@ -2,6 +2,7 @@
 
 > [INDEX](INDEX.md) > Current Status
 >
+> **Last Updated:** Jul 10, 2026 — **Both CI workflows green; 27 dead doc links found and fixed**: `format · analyze · test` failed on every run (three `my_bookings` widgets missing a trailing comma after `super.key`, so `dart format --set-exit-if-changed` exited 1 first). The whole `docs` workflow had never passed either: `markdownlint-cli2` ran with **no config**, so its default 80-char limit reported 4304 errors across 101 files (the Arabic mirror paragraphs are one long line by design), and `link-check` passed `--exclude-mail`, which current `lychee` rejects outright. Added `.markdownlint.jsonc` disabling only the six rules this repo deliberately violates, auto-fixed the mechanical ones, excluded the vendored `.claude/skills/`, and dropped the bad flag. With the lint finally running, `MD051` exposed a real bug — **all 18 TOC links in `AGENTS.md` and 9 here were dead**, since bilingual headings slug to `#project-overview--نظرة-عامة`, not `#project-overview`. Repointed all 27 with `github-slugger` (a hand-rolled one dropped Arabic diacritics and would have produced fresh dead links). markdownlint: **0 errors**. Analyze clean, 127 tests pass. Detail: [`DOCUMENTATION_UPDATE_SUMMARY.md`](DOCUMENTATION_UPDATE_SUMMARY.md).
 > **Last Updated:** Jul 10, 2026 — **README rebuilt around the brand assets**: the root `README.md` had no imagery. Added a centered brand header and a **Brand assets** section — a preview table mapping each `assets/images/` file to its `AppImages` constant and its verified usage, the `#0E7A3B` brand green, the manual icon/splash regeneration commands, and a note that `logo.png`/`full_logo.png` are white-on-transparent (they vanish on light backgrounds unless tinted, so `app_icon.png` is the safe pick — including for the GitHub header). Corrected three stale claims: `BASE_URL` defaults to the **live** backend (not a dev API), the first-run flow is `splash → language → role → onboarding → auth-choose → auth → shell`, and the `lib/` tree now matches the real `core/` + `features/` folders. Added a Documentation table and badges. All links and image paths resolve. Detail: [`DOCUMENTATION_UPDATE_SUMMARY.md`](DOCUMENTATION_UPDATE_SUMMARY.md).
 > **Last Updated:** Jul 9, 2026 — **Customer shell no longer draws two app bars**: a folder reorg re-wrapped `MyBookingsScreen`/`ProfileScreen` in their own `Scaffold` + `AppTopBar`, which the shell then embedded inside its own `Scaffold` (two app bars on the Bookings and More tabs), and left two files declaring `MyBookingsScreen` (ambiguous-import compile error — the stale `presentation/` copy was deleted). Split both along the existing `LiveBookingScreen`/`BookingView` pattern: routed `MyBookingsScreen` (`/my-bookings`) and `ProfileScreen` (`/profile`) keep the app bar; the new scaffold-less `MyBookingsView`/`ProfileView` are what the shell embeds. Added a widget test asserting one `AppBar` + one `AppBottomNavBar` per tab. Analyze clean, 127 tests pass. Detail: [`DOCUMENTATION_UPDATE_SUMMARY.md`](DOCUMENTATION_UPDATE_SUMMARY.md).
 > **Last Updated:** Jul 9, 2026 — **Booking flow fixed (list → detail)**: the customer Bookings tab was showing `BookingView` (the live-status detail) directly, leaving the built bookings list orphaned. The tab now shows the upcoming/past list (`MyBookingsView`) and tapping a card `push`es `/booking-status` (`LiveBookingScreen` detail). Analyze clean, 127 tests pass. Detail: [`DOCUMENTATION_UPDATE_SUMMARY.md`](DOCUMENTATION_UPDATE_SUMMARY.md).
@@ -32,15 +33,15 @@
 
 ## Table of Contents
 
-- [Executive Summary](#-executive-summary)
-- [Project Metrics](#-project-metrics)
-- [What Exists Today](#-what-exists-today)
-- [Feature Status vs Epics](#-feature-status-vs-epics)
-- [Design System](#-design-system)
-- [Testing](#-testing)
-- [Technical Stack](#-technical-stack)
-- [Backend Status](#-backend-status)
-- [Git & Branch Status](#-git--branch-status)
+- [Executive Summary](#-executive-summary--الملخص-التنفيذي)
+- [Project Metrics](#-project-metrics--مقاييس-المشروع)
+- [What Exists Today](#-what-exists-today--ما-هو-موجود-اليوم)
+- [Feature Status vs Epics](#-feature-status-vs-epics--حالة-الميزات-مقابل-الإبكات)
+- [Design System](#-design-system--نظام-التصميم)
+- [Testing](#-testing--الاختبارات)
+- [Technical Stack](#-technical-stack--المكدّس-التقني)
+- [Backend Status](#-backend-status--حالة-الباك-إند)
+- [Git & Branch Status](#-git--branch-status--حالة-git-والفروع)
 
 ---
 
@@ -110,7 +111,6 @@ The map below groups the built modules by layer. No codegen is involved — only
 | `shared/ui` | AppButton, AppTopBar, AppBottomNavBar, AppCard, AppTextField, AppBottomSheet, Empty/Error/LoadingState |
 | `features/` | splash + role + auth (email/password login+register, password recovery, secure-storage tokens) + business onboarding / catalog / services / shop screens implemented; customer/*, notifications = stub folders |
 | `features/` | splash + role + auth (email/password login+register, password recovery, secure-storage tokens) + business onboarding screens (cards, badges & wizard screens) implemented; customer/*, shop, notifications = stub folders |
-
 
 ---
 

@@ -25,8 +25,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      # Rule config lives in .markdownlint.jsonc. .claude/skills/ is vendored
+      # upstream (see .claude/skills/README.md) — we don't reformat it.
       - name: Run markdownlint-cli2
-        run: npx -y markdownlint-cli2 "**/*.md" "#**/node_modules"
+        run: npx -y markdownlint-cli2 "**/*.md" "#**/node_modules" "#.claude/skills"
 
   link-check:
     name: link-check (lychee)
@@ -36,12 +38,14 @@ jobs:
       - name: Lychee link check
         uses: lycheeverse/lychee-action@v2
         with:
-          # Warn-only on transient remote failures; fail on broken intra-repo links.
+          # Fail on broken intra-repo links; tolerate rate-limited hosts (429).
+          # Mail links are skipped by default, so there is no --exclude-mail:
+          # current lychee rejects that flag outright and the job dies before
+          # checking a single link.
           args: >-
             --no-progress
             --max-redirects 5
             --accept '200..=299, 429'
-            --exclude-mail
             --exclude '^file:'
             --exclude 'http(s)?://localhost'
             './**/*.md'

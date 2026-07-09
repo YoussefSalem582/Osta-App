@@ -12,7 +12,7 @@ Legend: 🔧 = generated (git-ignored) · 🚧 = stub folder (no dart files yet,
 
 > ‏المفتاح: 🔧 = مُولَّد (متجاهَل من git) · 🚧 = مجلد stub (لسه من غير ملفات dart، مخطَّط له في epic مفتوح). حالياً الحاجة الوحيدة المُولَّدة هي l10n.
 
-```
+```text
 lib/
 ├── main.dart                           # Bootstrap: configureDependencies() → runApp(OstaApp)
 ├── app.dart                            # OstaApp: MaterialApp.router + theme + l10n

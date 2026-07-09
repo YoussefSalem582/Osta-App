@@ -48,7 +48,7 @@ The l10n output under `lib/core/l10n/` is the **only** generated code in this pr
 "bookNow": "احجز الآن"
 ```
 
-2. Regenerate:
+1. Regenerate:
 
 > ‏أعِد التوليد:
 
@@ -56,7 +56,7 @@ The l10n output under `lib/core/l10n/` is the **only** generated code in this pr
 flutter gen-l10n
 ```
 
-3. Use it:
+1. Use it:
 
 > ‏استخدمه:
 

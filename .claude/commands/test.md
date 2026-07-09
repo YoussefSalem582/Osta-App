@@ -27,6 +27,7 @@ Reference: `osta_readme_files/guides/10_testing.md`. Existing suite lives in `te
 6. **Rules** — no hardcoded user-facing strings (assert via `context.l10n` keys); tokens via `AppSpacing`/`AppRadii`/`context.appColors`; never touch generated `lib/core/l10n/`.
 
 7. **Run** — no codegen step; `flutter test` picks up l10n automatically:
+
    ```bash
    flutter test path/to/new_test.dart   # the file you wrote
    flutter test                         # full suite before finishing

@@ -31,6 +31,7 @@ AppElevation none=0 low=1 medium=3 high=6
 ```
 
 Colors — `AppColors` is a `ThemeExtension` (access via `context.appColors`):
+
 - Brand: `AppColors.brandGreen` (#0E7A3B seed), `AppColors.brandLime` (#B2D235).
 - Semantic roles: `accent`/`onAccent`, `success`/`onSuccess`, `warning`/`onWarning` (each defined for `light` **and** `dark`).
 - Everything else (primary/secondary/surface/error/onX) comes from the M3 `ColorScheme` seeded from `brandGreen` — use `Theme.of(context).colorScheme`.

@@ -8,6 +8,7 @@ metadata:
 # Previewing Flutter Widgets
 
 ## Contents
+
 - [Preview Guidelines](#preview-guidelines)
 - [Handling Limitations](#handling-limitations)
 - [Workflows](#workflows)
@@ -15,7 +16,7 @@ metadata:
 
 ## Preview Guidelines
 
-Use the Flutter Widget Previewer to render widgets in real-time, isolated from the full application context. 
+Use the Flutter Widget Previewer to render widgets in real-time, isolated from the full application context.
 
 - **Target Elements:** Apply the `@Preview` annotation to top-level functions, static methods within a class, or public widget constructors/factories that have no required arguments and return a `Widget` or `WidgetBuilder`.
 - **Imports:** Always import `package:flutter/widget_previews.dart` to access the preview annotations.
@@ -35,6 +36,7 @@ Adhere to the following constraints when authoring previewable widgets, as the W
 ## Workflows
 
 ### Creating a Widget Preview
+
 Copy and track this checklist when implementing a new widget preview:
 
 - [ ] Import `package:flutter/widget_previews.dart`.
@@ -44,19 +46,23 @@ Copy and track this checklist when implementing a new widget preview:
 - [ ] If applying the same configuration to multiple widgets, extract the configuration into a custom class extending `Preview`.
 
 ### Interacting with Previews
+
 Follow the appropriate conditional workflow to launch and interact with the Widget Previewer:
 
 **If using a supported IDE (Android Studio, IntelliJ, VS Code with Flutter 3.38+):**
+
 1. Launch the IDE. The Widget Previewer starts automatically.
 2. Open the "Flutter Widget Preview" tab in the sidebar.
 3. Toggle "Filter previews by selected file" at the bottom left if you want to view previews outside the currently active file.
 
 **If using the Command Line:**
+
 1. Navigate to the Flutter project's root directory.
 2. Run `flutter widget-preview start`.
 3. View the automatically opened Chrome environment.
 
 **Feedback Loop: Preview Iteration**
+
 1. Modify the widget code or preview configuration.
 2. Observe the automatic update in the Widget Previewer.
 3. If global state (e.g., static initializers) was modified: Click the global hot restart button at the bottom right.
@@ -66,6 +72,7 @@ Follow the appropriate conditional workflow to launch and interact with the Widg
 ## Examples
 
 ### Basic Preview
+
 ```dart
 import 'package:flutter/widget_previews.dart';
 import 'package:flutter/material.dart';
@@ -77,6 +84,7 @@ Widget mySampleText() {
 ```
 
 ### Custom Preview with Runtime Transformation
+
 ```dart
 import 'package:flutter/widget_previews.dart';
 import 'package:flutter/material.dart';
@@ -112,6 +120,7 @@ Widget myButton() => const ElevatedButton(onPressed: null, child: Text('Click'))
 ```
 
 ### MultiPreview Implementation
+
 ```dart
 import 'package:flutter/widget_previews.dart';
 import 'package:flutter/material.dart';
