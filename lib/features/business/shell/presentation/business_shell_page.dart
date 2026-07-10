@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:osta/features/business/bookings/presentation/screens/bookings.dart';
+import 'package:osta/features/business/dashboard/presentation/screens/board_screen.dart';
+import 'package:osta/features/business/dashboard/presentation/screens/more_screen.dart';
 import 'package:osta/features/business/services/presentation/pages/business_services_page.dart';
 import 'package:osta/features/shell/presentation/role_shell.dart';
 import 'package:osta/features/shop/presentation/pages/business_shop_page.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_bottom_nav_bar.dart';
-import 'package:osta/shared/ui/app_toaster.dart';
 
 /// Provider (business) shell — the landing surface for the `business` role.
 /// Same UI as the customer shell (rounded bar + raised center action), but the
@@ -16,16 +18,18 @@ class BusinessShellPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return RoleShell(
-      // Center action: the provider booking calendar (black, vs the customer's
-      // green map action).
+      // Center action: shows the provider bookings screen inside the shell so
+      // the bottom nav stays (black, vs the customer's green map action).
       centerIcon: Icons.calendar_today_outlined,
       centerColor: Colors.black,
-      onCenterTap: () => AppToaster.showMessage(l10n.comingSoonBody),
+      centerBody: const Bookings(),
+      centerLabel: l10n.reservation,
       tabs: [
-        // Dashboard — placeholder until the provider dashboard is built.
+        // Dashboard — the provider board (income, orders, live jobs).
         AppBottomNavItem(
           icon: Icons.grid_view_outlined,
           label: l10n.shellNavDashboard,
+          body: const BoardScreen(),
         ),
         // Catalog & pricing — the business's own services screen.
         AppBottomNavItem(
@@ -39,10 +43,11 @@ class BusinessShellPage extends StatelessWidget {
           label: l10n.shellNavStore,
           body: const BusinessShopPage(),
         ),
-        // More — placeholder until the provider profile is built.
+        // More — the provider profile, management links and account actions.
         AppBottomNavItem(
           icon: Icons.more_horiz,
           label: l10n.shellNavMore,
+          body: const MoreScreen(),
         ),
       ],
     );

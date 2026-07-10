@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:osta/features/business/bookings/presentation/widgets/selectedType.dart';
+import 'package:osta/features/business/bookings/presentation/widgets/selected_type.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 class DriverTitle extends StatelessWidget {

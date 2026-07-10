@@ -89,6 +89,7 @@ String? resolveRedirect({
     AppRoutes.addCar,
     AppRoutes.bookingStatus,
     AppRoutes.home,
+    AppRoutes.technicians,
   };
   final shell = shellFor(role);
   if (location == shell || inAppScreens.contains(location)) return null;
