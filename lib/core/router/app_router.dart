@@ -9,6 +9,7 @@ import 'package:osta/features/auth/login/presentation/login_page.dart';
 import 'package:osta/features/auth/password_recovery/presentation/forgot_password_page.dart';
 import 'package:osta/features/auth/password_recovery/presentation/reset_password_page.dart';
 import 'package:osta/features/auth/register/presentation/register_page.dart';
+import 'package:osta/features/business/dashboard/presentation/screens/tech_screen.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_catalog_page.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_identity_page.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/provider_onboarding_page.dart';
@@ -118,6 +119,10 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.businessShell,
         builder: (context, state) => const BusinessShellPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.technicians,
+        builder: (context, state) => const TechScreen(),
       ),
       GoRoute(
         path: AppRoutes.comingSoon,
