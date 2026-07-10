@@ -10,18 +10,14 @@ class BoardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFD7DBD4),
-
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFD7DBD4),
-
-        title: const AppBarWidget(),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 32),
+    return ColoredBox(
+      color: const Color(0xFFD7DBD4),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
         child: Column(
           children: [
+            const AppBarWidget(),
+            const SizedBox(height: 16),
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(

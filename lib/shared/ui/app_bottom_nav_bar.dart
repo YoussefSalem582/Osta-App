@@ -45,6 +45,7 @@ class AppBottomNavBar extends StatelessWidget {
     this.centerIcon,
     this.onCenterTap,
     this.centerColor,
+    this.centerActive = false,
     super.key,
   });
 
@@ -60,6 +61,10 @@ class AppBottomNavBar extends StatelessWidget {
 
   /// Fill colour of the center action; defaults to the brand green.
   final Color? centerColor;
+
+  /// When true, the center action is the on-screen surface — the FAB fills with
+  /// the brand colour to read as selected (like a highlighted tab).
+  final bool centerActive;
 
   bool get _hasCenter => centerIcon != null && onCenterTap != null;
 
@@ -122,7 +127,9 @@ class AppBottomNavBar extends StatelessWidget {
             child: _CenterFab(
               icon: centerIcon!,
               onTap: onCenterTap!,
-              color: centerColor ?? AppColors.brandGreen,
+              color: centerActive
+                  ? theme.colorScheme.primary
+                  : (centerColor ?? AppColors.brandGreen),
             ),
           ),
         ),

@@ -4,6 +4,28 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-10 — Business dashboard routed (the last commit left it orphaned)
+
+Commit `05361d0` added a whole business dashboard and never wired it to the router: `HomeScreen` — a `Scaffold` with its own raw Material bottom nav (Board / Catalog / Store / More) and a center FAB — plus standalone `TechScreen` and `Bookings`. Nothing built them, nothing linked them; all three were dead code.
+
+**Why the shared shell won, not `HomeScreen`.** The app already had a business shell (`BusinessShellPage`, on the shared `RoleShell` → `AppBottomNavBar` — the *same* rounded bottom bar the customer shell uses, differing only by a black center action). `HomeScreen` was a second, parallel shell with its own plain `BottomNavigationBar`. Two shells for one role, and the odd one out visually. Kept `RoleShell` (consistent nav across both roles, and it already carries the switch-role / sign-out overflow menu) and folded the new *content* into it; deleted `HomeScreen`.
+
+`BusinessShellPage` had two placeholder tabs (Dashboard, More) and two real ones (Catalog → `BusinessServicesPage`, Store → `BusinessShopPage`). The new screens fill the gaps exactly:
+
+- **Dashboard tab → `BoardScreen`**, **More tab → `MoreScreen`**. Both shipped with their own `Scaffold` + `AppBar`; stripped to scaffold-less bodies (a `ColoredBox`/`SingleChildScrollView` and a bare `SingleChildScrollView`) so they embed under the shell's one app bar and nav — the same "strip Scaffold to embed" pattern the customer shell already uses for `MyBookingsView`/`ProfileView`. `BoardScreen`'s `AppBarWidget` (shop-name header) is kept as body content.
+- Catalog/Store keep the **real** pages — `HomeScreen`'s `CatalogScreen`/`StoreScreen` were empty stubs duplicating them, so both stub files were **deleted**.
+- `MoreScreen`'s `switchRole` row was **dropped** — it duplicated `RoleShell`'s overflow menu (which also has sign-out). No `SessionController` wiring needed in the screen.
+
+**`TechScreen`** got a real route (`/business/technicians`), added to `resolveRedirect`'s `inAppScreens` allow-list (so an authed business user isn't bounced back to the shell), reached from a new tappable `MoreScreen` row — `Setting` gained an optional `onTap` (wrapped in an `InkWell`). It keeps its own `Scaffold` (pushed over the shell, so it gets a back button).
+
+**`Bookings`** is the business booking screen the black center FAB opens — but pushing it as a route covered the shell and hid the bottom nav. So instead of a route, `RoleShell` gained an optional `centerBody` (+ `centerLabel` for the app-bar title): when the center action fires and a `centerBody` is set, the shell swaps its body to that widget and **keeps the bottom nav**; tapping any tab clears it. `Bookings` was stripped to a scaffold-less body (its `AppBarWidget` header kept as content) and passed as the business shell's `centerBody`. The customer shell is unaffected — with no `centerBody`, the center action still fires `onCenterTap` as before. The standalone `/business/bookings` route + its `AppRoutes` constant and allow-list entry were removed (nothing pushes it now).
+
+**Renames** (fixing `file_names` lints in the touched feature): `techScreen.dart` → `tech_screen.dart`, and the four camelCase bookings widgets `appBar` / `customRow` / `driverTitle` / `selectedType` → snake_case, importers updated.
+
+Net: `BoardScreen`, `MoreScreen`, `TechScreen`, `Bookings` all reachable through the shared shell (with its bottom nav visible on every one, `Bookings` included); three duplicate files gone (`HomeScreen`, `CatalogScreen`, `StoreScreen`). `flutter analyze` → **No issues found** (the 6 pre-existing `file_names` infos are gone too); all 127 tests pass.
+
+> ‏**توجيه لوحة النشاط (تركها آخر التزام يتيمة)** (2026-07-10) — أضاف `05361d0` لوحة نشاط كاملة دون ربطها بالموجّه: `HomeScreen` (واجهة بشريط Material سفلي خاص وزرّ عائم) و`TechScreen` و`Bookings` مستقلّتين — شيفرة ميتة. كان لدى التطبيق واجهة نشاط على `RoleShell`/`AppBottomNavBar` المشتركة (نفس الشريط السفلي لواجهة العميل، بزرّ مركزي أسود)، و`HomeScreen` واجهة موازية بشريط خاص. أُبقيت `RoleShell` (تنقّل موحّد، وتتضمّن قائمتها تبديل الدور وتسجيل الخروج) وأُدمِج المحتوى الجديد فيها، وحُذف `HomeScreen`. مُلئ تبويبا `BusinessShellPage` النائبان: **اللوحة ← `BoardScreen`**، **المزيد ← `MoreScreen`** (بعد تجريدهما من `Scaffold`/`AppBar` ليندمجا كأجسام تبويب، على نمط `MyBookingsView`/`ProfileView`). ويبقى تبويبا الكتالوج والمتجر على الصفحتين الحقيقيتين — وكان `CatalogScreen`/`StoreScreen` نسختين وهميّتين فحُذفتا. وأُسقِط صفّ `switchRole` من `MoreScreen` لتكراره قائمة `RoleShell`. ووُجِّهت `TechScreen` و`Bookings` إلى `/business/technicians` و`/business/bookings`، مُدرَجتين في `inAppScreens`، ويُوصَل إليهما من صفَّي `MoreScreen` (اكتسب `Setting` مُعامل `onTap`). وأُعيدت تسمية الملفّات إلى snake_case. النتيجة: كل الشاشات قابلة للوصول، وثلاثة ملفّات مكرّرة حُذفت. التحليل: لا مشاكل، و127 اختبارًا تنجح.
+
 ## 2026-07-10 — Build restored: 317 analyzer errors from one commit
 
 `flutter analyze` on `my_branch` reported **317 errors across 47 files**. Every one traced to commit `05361d0` ("Refactor localization strings, remove unused keys, and update app button implementation").
