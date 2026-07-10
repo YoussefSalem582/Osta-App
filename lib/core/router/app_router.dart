@@ -9,10 +9,12 @@ import 'package:osta/features/auth/login/presentation/login_page.dart';
 import 'package:osta/features/auth/password_recovery/presentation/forgot_password_page.dart';
 import 'package:osta/features/auth/password_recovery/presentation/reset_password_page.dart';
 import 'package:osta/features/auth/register/presentation/register_page.dart';
+import 'package:osta/features/business/bookings/presentation/screens/bookings.dart';
+import 'package:osta/features/business/dashboard/presentation/screens/home_screen.dart';
+import 'package:osta/features/business/dashboard/presentation/screens/tech_screen.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_catalog_page.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_identity_page.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/provider_onboarding_page.dart';
-import 'package:osta/features/business/shell/presentation/business_shell_page.dart';
 import 'package:osta/features/customer/booking/presentation/pages/live_booking_screen.dart';
 import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
 import 'package:osta/features/customer/garage/presentation/pages/add_car_screen.dart';
@@ -117,7 +119,15 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.businessShell,
-        builder: (context, state) => const BusinessShellPage(),
+        builder: (context, state) => const HomeScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.technicians,
+        builder: (context, state) => const TechScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.businessBookings,
+        builder: (context, state) => const Bookings(),
       ),
       GoRoute(
         path: AppRoutes.comingSoon,

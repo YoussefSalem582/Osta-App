@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/features/business/dashboard/presentation/screens/board_screen.dart';
-import 'package:osta/features/business/dashboard/presentation/screens/catalog_screen.dart';
 import 'package:osta/features/business/dashboard/presentation/screens/more_screen.dart';
-import 'package:osta/features/business/dashboard/presentation/screens/store_screen.dart';
+import 'package:osta/features/business/services/presentation/pages/business_services_page.dart';
+import 'package:osta/features/shop/presentation/pages/business_shop_page.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,11 +14,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Widget> screens = [
-    const BoardScreen(),
-    const CatalogScreen(),
-    const StoreScreen(),
-    const MoreScreen(),
+  final List<Widget> screens = const [
+    BoardScreen(),
+    BusinessServicesPage(),
+    BusinessShopPage(),
+    MoreScreen(),
   ];
   int index = 0;
 

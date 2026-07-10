@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_colors.dart';
-import 'package:osta/features/business/bookings/presentation/widgets/customRow.dart';
-import 'package:osta/features/business/bookings/presentation/widgets/driverTitle.dart';
-import 'package:osta/features/business/bookings/presentation/widgets/selectedType.dart';
+import 'package:osta/features/business/bookings/presentation/widgets/custom_row.dart';
+import 'package:osta/features/business/bookings/presentation/widgets/driver_title.dart';
+import 'package:osta/features/business/bookings/presentation/widgets/selected_type.dart';
 import 'package:osta/features/business/dashboard/presentation/widgets/appbar.dart';
 import 'package:osta/features/business/dashboard/presentation/widgets/confirm_or_decline.dart';
 import 'package:osta/shared/extensions/context_ext.dart';

@@ -4,6 +4,25 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-10 — Business dashboard routed (the last commit left it orphaned)
+
+Commit `05361d0` added a whole business dashboard and never wired it to the router: `HomeScreen` — a `Scaffold` with its own bottom nav (Board / Catalog / Store / More) and a center FAB — plus standalone `TechScreen` and `Bookings`. Nothing built them, nothing linked them; all three were dead code.
+
+**Why `HomeScreen` became the shell, not a parallel screen.** The app already had a business shell (`BusinessShellPage`, built on the shared `RoleShell`). Keeping both would be two shells for one role. `HomeScreen` was purpose-built as a shell, so it wins; `BusinessShellPage` was deleted. But `HomeScreen` carried three duplications, each resolved rather than shipped:
+
+- Its `CatalogScreen` and `StoreScreen` tabs were **empty stubs** duplicating the real `BusinessServicesPage` / `BusinessShopPage` (which `BusinessShellPage` already wired). Repointed the tabs at the real pages (both are Scaffold-less, so they drop straight into `HomeScreen`'s `body`), and deleted the two stub files.
+- `MoreScreen` had a `switchRole` row that duplicated `RoleShell`'s overflow menu — the only thing of `RoleShell`'s that `HomeScreen` lacked. Rather than keep `RoleShell`, wired that row to `SessionController.switchRole()` and added a sign-out row (`signOut()`), so `HomeScreen` is self-sufficient.
+
+The redirect's `businessShell` route now builds `HomeScreen`; `resolveRedirect` and the onboarding-wizard hand-off already target `AppRoutes.businessShell`, so no guard change was needed there.
+
+**`TechScreen` and `Bookings`** got real routes (`/business/technicians`, `/business/bookings`), were added to `resolveRedirect`'s `inAppScreens` allow-list (so an authed business user isn't bounced back to the shell), and are reached from two new tappable `MoreScreen` rows — `Setting` gained an optional `onTap` (wrapped in an `InkWell`) for this.
+
+**Renames** (fixing `file_names` lints in the touched feature, and my own new import): `techScreen.dart` → `tech_screen.dart`, and the four camelCase bookings widgets `appBar` / `customRow` / `driverTitle` / `selectedType` → snake_case, importers updated.
+
+Net: `HomeScreen`, `BoardScreen`, `MoreScreen`, `TechScreen`, `Bookings` all reachable; three duplicate files gone (`CatalogScreen`, `StoreScreen`, `BusinessShellPage`). `flutter analyze` → **No issues found** (the 6 pre-existing `file_names` infos are gone too); all 127 tests pass.
+
+> ‏**توجيه لوحة النشاط (تركها آخر التزام يتيمة)** (2026-07-10) — أضاف `05361d0` لوحة نشاط كاملة دون ربطها بالموجّه: `HomeScreen` (واجهة بشريط تنقّل سفلي وزرّ عائم) و`TechScreen` و`Bookings` مستقلّتين — شيفرة ميتة. صار `HomeScreen` هو الواجهة (فقد صُمِّم لذلك) وحُذفت `BusinessShellPage`. عُولجت ثلاث تكرارات: وُجِّه تبويبا `CatalogScreen`/`StoreScreen` الوهميّان إلى `BusinessServicesPage`/`BusinessShopPage` الحقيقيتين (بلا Scaffold فتندمجان مباشرة) وحُذف الملفّان؛ ووُصِل صفّ `switchRole` في `MoreScreen` بـ`SessionController.switchRole()` وأُضيف صفّ تسجيل خروج، فاستغنى `HomeScreen` عن قائمة `RoleShell`. ويبني مسار `businessShell` الآن `HomeScreen`. ووُجِّهت `TechScreen` و`Bookings` إلى `/business/technicians` و`/business/bookings` وأُدرِجتا في قائمة `inAppScreens`، ويُوصَل إليهما من صفَّي `MoreScreen` (اكتسب `Setting` مُعامل `onTap`). وأُعيدت تسمية `techScreen.dart` وأربع ودجات bookings إلى snake_case. النتيجة: كل الشاشات قابلة للوصول، وثلاثة ملفّات مكرّرة حُذفت. التحليل: لا مشاكل، و127 اختبارًا تنجح.
+
 ## 2026-07-10 — Build restored: 317 analyzer errors from one commit
 
 `flutter analyze` on `my_branch` reported **317 errors across 47 files**. Every one traced to commit `05361d0` ("Refactor localization strings, remove unused keys, and update app button implementation").

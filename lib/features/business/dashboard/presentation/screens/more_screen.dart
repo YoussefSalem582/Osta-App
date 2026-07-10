@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:osta/core/router/app_routes.dart';
+import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/features/business/dashboard/presentation/widgets/item_type.dart';
 import 'package:osta/features/business/dashboard/presentation/widgets/setting.dart';
@@ -127,6 +131,22 @@ class MoreScreen extends StatelessWidget {
                 height: 8,
               ),
               Setting(
+                icon: Icons.people,
+                text: context.l10n.technicians,
+                onTap: () => context.push(AppRoutes.technicians),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              Setting(
+                icon: Icons.event_note,
+                text: context.l10n.reservation,
+                onTap: () => context.push(AppRoutes.businessBookings),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              Setting(
                 icon: Icons.build,
                 text: context.l10n.generalFile,
               ),
@@ -177,6 +197,15 @@ class MoreScreen extends StatelessWidget {
               Setting(
                 icon: Icons.currency_exchange,
                 text: context.l10n.switchRole,
+                onTap: () => context.read<SessionController>().switchRole(),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              Setting(
+                icon: Icons.logout,
+                text: context.l10n.signOut,
+                onTap: () => context.read<SessionController>().signOut(),
               ),
               const SizedBox(
                 height: 8,

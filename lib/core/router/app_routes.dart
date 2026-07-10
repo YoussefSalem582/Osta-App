@@ -12,6 +12,9 @@ abstract final class AppRoutes {
   static const resetPassword = '/auth/reset-password';
   static const customerShell = '/customer';
   static const businessShell = '/business';
+  // Business dashboard sub-screens, pushed from the shell.
+  static const technicians = '/business/technicians';
+  static const businessBookings = '/business/bookings';
   // Business onboarding wizard (shown to an authed business user until done).
   static const providerOnboarding = '/provider-onboarding';
   static const businessIdentity = '/business-identity';
