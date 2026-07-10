@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:osta/core/theme/app_colors.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/business/bookings/presentation/widgets/selected_type.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
@@ -15,12 +17,12 @@ class DriverTitle extends StatelessWidget {
             Text(
               'Sara Mohammed',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Colors.black,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontWeight: FontWeight.w900,
               ),
             ),
             const SizedBox(
-              height: 4,
+              height: AppSpacing.xs,
             ),
             Text(
               'Car Type',
@@ -28,15 +30,16 @@ class DriverTitle extends StatelessWidget {
                   Theme.of(
                     context,
                   ).textTheme.bodySmall?.copyWith(
-                    color: const Color(0xFF67775A),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
             ),
           ],
         ),
         const Spacer(),
         SelectedType(
-          textColor: const Color(0xFFEB8E4B),
+          textColor: context.appColors.warning,
           text: context.l10n.waiting,
+          // ponytail: no token for this decorative color
           conColor: const Color(0xFFFAD6B8),
         ),
       ],

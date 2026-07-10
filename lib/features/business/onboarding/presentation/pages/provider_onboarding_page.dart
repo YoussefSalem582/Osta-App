@@ -79,10 +79,10 @@ class ProviderOnboardingPage extends StatelessWidget {
                     ],
                   ),
                   alignment: Alignment.center,
-                  child: const Icon(
+                  child: Icon(
                     Icons.assignment_turned_in_rounded,
                     size: 100,
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                   ),
                 ),
               ),

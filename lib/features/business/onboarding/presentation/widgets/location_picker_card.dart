@@ -67,10 +67,10 @@ class LocationPickerCard extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.location_on,
                       size: 16,
-                      color: Color(0xFFDC2626),
+                      color: theme.colorScheme.error,
                     ),
                     const SizedBox(width: AppSpacing.xs),
                     Text(

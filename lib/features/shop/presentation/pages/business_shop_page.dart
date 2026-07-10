@@ -31,7 +31,7 @@ class BusinessShopPage extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       l10n.businessShopTitle,
                       style: theme.textTheme.headlineSmall?.copyWith(
@@ -52,9 +52,9 @@ class BusinessShopPage extends StatelessWidget {
                     color: theme.colorScheme.primary,
                     borderRadius: BorderRadius.circular(AppRadii.lg),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.add,
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                     size: 24,
                   ),
                 ),
