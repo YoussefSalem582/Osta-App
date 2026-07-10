@@ -1,5 +1,6 @@
 import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/network/api_client.dart';
+import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/core/network/token_pair.dart';
 
 /// Exchanges a Google/Apple provider token for Sanctum dual tokens and
@@ -17,7 +18,7 @@ class SocialTokenExchange {
     required String providerToken,
   }) async {
     final result = await _api.post(
-      '/auth/social/$provider',
+      ApiEndpoints.authSocial(provider),
       body: {'token': providerToken},
       authenticated: false,
       parse: parseTokenPair,

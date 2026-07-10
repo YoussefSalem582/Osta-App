@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/config/app_config.dart';
+import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/core/network/auth_events.dart';
 import 'package:osta/core/network/token_pair.dart';
 
@@ -83,7 +84,7 @@ class AuthInterceptor extends QueuedInterceptor {
     final refresh = await _tokens.readRefreshToken();
     if (refresh == null) throw const FormatException('No refresh token');
     final response = await _refreshDio.post<Map<String, dynamic>>(
-      '/auth/refresh',
+      ApiEndpoints.authRefresh,
       data: {'refresh_token': refresh},
     );
     final pair = parseTokenPair(response.data?['data']);
