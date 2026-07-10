@@ -87,10 +87,10 @@ class TimelineRow extends StatelessWidget {
                         : null,
                   ),
                   child: isDone
-                      ? const Icon(
+                      ? Icon(
                           Icons.check_rounded,
                           size: 12,
-                          color: Colors.white,
+                          color: colorScheme.onPrimary,
                         )
                       : null,
                 ),
@@ -98,7 +98,9 @@ class TimelineRow extends StatelessWidget {
                   Expanded(
                     child: Container(
                       width: 2,
-                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      margin: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.xs,
+                      ),
                       color: lineColor,
                     ),
                   ),

@@ -20,7 +20,7 @@ class SegmentedToggle extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Container(
-      padding: const EdgeInsets.all(3),
+      padding: const EdgeInsets.all(AppSpacing.xs),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppRadii.pill),
@@ -45,7 +45,7 @@ class SegmentedToggle extends StatelessWidget {
                 option,
                 style: textTheme.labelMedium?.copyWith(
                   color: isSelected
-                      ? Colors.white
+                      ? colorScheme.onPrimary
                       : colorScheme.onSurface.withValues(alpha: 0.6),
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 ),
