@@ -14,7 +14,7 @@ Every feature is three layers with a strict dependency rule:
 
 > ‏كل ميزة مكوّنة من ثلاث طبقات تحكمها قاعدة اعتماد صارمة:
 
-```
+```text
 Presentation  →  Domain  ←  Data
 (bloc/pages/widgets)   (entities/contracts/usecases)   (models/datasources/repos)
 ```

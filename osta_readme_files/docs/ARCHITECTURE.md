@@ -6,7 +6,7 @@ OSTA follows **Clean Architecture + BLoC**, one module per feature, with a hard 
 
 ## Layers / الطبقات
 
-```
+```text
 ┌──────────────────────────────────────────────────────────┐
 │ Presentation   pages / widgets / bloc (or cubit)          │
 │    depends on ↓                                            │
@@ -26,7 +26,7 @@ OSTA follows **Clean Architecture + BLoC**, one module per feature, with a hard 
 
 ## Data flow / تدفّق البيانات
 
-```
+```text
 UI (Page)
   → adds Event to BLoC
     → BLoC calls UseCase                (inside try/catch)

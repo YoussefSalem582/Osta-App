@@ -63,7 +63,7 @@ All return `Future<ApiResult<T>>` and take `required T Function(Object? data) pa
 
 ## Error flow
 
-```
+```text
 ApiClient  ── throws ApiException (typed)
    ↓
 Repo impl  ── catch (ApiException) → throw Failure  (NetworkFailure / ServerFailure / UnknownFailure)

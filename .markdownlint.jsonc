@@ -1,0 +1,32 @@
+{
+  // Rules this repo deliberately violates. Everything else stays on, so the
+  // docs job still catches real breakage (bad fragments, missing newlines,
+  // malformed lists).
+  //
+  // ‏قواعد يخالفها هذا المستودع عن قصد. ما عداها يبقى مُفعَّلًا ليظلّ فحص
+  // التوثيق قادرًا على التقاط الأعطال الحقيقية.
+
+  // Prose is bilingual: an Arabic mirror paragraph is one long line, and
+  // wrapping it would break the RTL reading order.
+  "MD013": false,
+
+  // Tables are written compact (|---|---|). Cosmetic only.
+  "MD060": false,
+
+  // The README needs a centered <div>/<img> header; GitHub renders no other way.
+  "MD033": false,
+
+  // ...which also means the README's first line is that <div>, not an H1.
+  "MD041": false,
+
+  // CHANGELOG follows Keep a Changelog, where "### Fixed" recurs per release.
+  "MD024": false,
+
+  // The bilingual pattern is an English paragraph followed by a blockquoted
+  // Arabic mirror, which reads as adjacent blockquotes separated by a blank.
+  "MD028": false,
+
+  // The feature docs caption each mockup image with a bold line. That is a
+  // caption, not a section heading.
+  "MD036": false
+}

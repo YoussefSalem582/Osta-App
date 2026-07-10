@@ -8,6 +8,7 @@ metadata:
 # Writing Flutter Widget Tests
 
 ## Contents
+
 - [Setup & Configuration](#setup--configuration)
 - [Core Components](#core-components)
 - [Workflow: Implementing a Widget Test](#workflow-implementing-a-widget-test)
@@ -26,15 +27,16 @@ Ensure the testing environment is properly configured before authoring widget te
 
 Utilize the following `flutter_test` components to interact with and validate the widget tree:
 
-*   **`WidgetTester`**: The primary interface for building and interacting with widgets in the test environment. Provided automatically by the `testWidgets()` function.
-*   **`Finder`**: Locates widgets in the test environment (e.g., `find.text('Submit')`, `find.byType(TextField)`, `find.byKey(Key('submit_btn'))`).
-*   **`Matcher`**: Verifies the presence or state of widgets located by a `Finder` (e.g., `findsOneWidget`, `findsNothing`, `findsNWidgets(2)`, `matchesGoldenFile`).
+- **`WidgetTester`**: The primary interface for building and interacting with widgets in the test environment. Provided automatically by the `testWidgets()` function.
+- **`Finder`**: Locates widgets in the test environment (e.g., `find.text('Submit')`, `find.byType(TextField)`, `find.byKey(Key('submit_btn'))`).
+- **`Matcher`**: Verifies the presence or state of widgets located by a `Finder` (e.g., `findsOneWidget`, `findsNothing`, `findsNWidgets(2)`, `matchesGoldenFile`).
 
 ## Workflow: Implementing a Widget Test
 
 Copy the following checklist to track progress when implementing a new widget test.
 
 ### Task Progress
+
 - [ ] **Step 1: Define the test.** Use `testWidgets('description', (WidgetTester tester) async { ... })`.
 - [ ] **Step 2: Build the widget.** Call `await tester.pumpWidget(MyWidget())` to render the UI. Wrap the widget in a `MaterialApp` or `Directionality` widget if it requires inherited directional or theme data.
 - [ ] **Step 3: Locate elements.** Instantiate `Finder` objects for the target widgets.
@@ -49,21 +51,22 @@ Copy the following checklist to track progress when implementing a new widget te
 
 Apply the following conditional logic based on the type of interaction or state change being tested:
 
-*   **If testing static rendering:** Call `await tester.pumpWidget()` once, then immediately run `expect()` assertions.
-*   **If testing standard state changes (e.g., button taps):** 
+- **If testing static rendering:** Call `await tester.pumpWidget()` once, then immediately run `expect()` assertions.
+- **If testing standard state changes (e.g., button taps):**
     1. Call `await tester.tap(finder)`.
     2. Call `await tester.pump()` to trigger a single frame rebuild.
-*   **If testing animations, transitions, or asynchronous UI updates:** 
+- **If testing animations, transitions, or asynchronous UI updates:**
     1. Trigger the action (e.g., `await tester.drag(finder, Offset(500, 0))`).
     2. Call `await tester.pumpAndSettle()` to repeatedly pump frames until no more frames are scheduled (animation completes).
-*   **If testing text input:** Call `await tester.enterText(textFieldFinder, 'Input string')`.
-*   **If testing items in a dynamic or long list:** Call `await tester.scrollUntilVisible(itemFinder, 500.0, scrollable: listFinder)` to ensure the target widget is rendered before interacting with it.
+- **If testing text input:** Call `await tester.enterText(textFieldFinder, 'Input string')`.
+- **If testing items in a dynamic or long list:** Call `await tester.scrollUntilVisible(itemFinder, 500.0, scrollable: listFinder)` to ensure the target widget is rendered before interacting with it.
 
 ## Examples
 
 ### High-Fidelity Widget Test Implementation
 
 **Target Widget (`lib/todo_list.dart`):**
+
 ```dart
 import 'package:flutter/material.dart';
 
@@ -116,6 +119,7 @@ class _TodoListState extends State<TodoList> {
 ```
 
 **Test Implementation (`test/todo_list_test.dart`):**
+
 ```dart
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

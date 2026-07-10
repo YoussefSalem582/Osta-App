@@ -21,6 +21,42 @@ Separately, the same commit added the business dashboard screens (`board_screen`
 
 `flutter analyze` is clean (6 pre-existing `file_names` infos remain: `appBar.dart`, `customRow.dart`, `driverTitle.dart`, `selectedType.dart`, `techScreen.dart`, `profile_Item.dart` — renaming them touches their importers and was left for a separate pass). All 127 tests pass.
 
+## 2026-07-10 — Docs CI made to pass, which exposed 27 dead links
+
+The `docs` workflow had **never** passed since it was added, so nobody had seen what it was trying to say.
+
+**Why it was red.** `markdownlint-cli2` ran with no config file, so markdownlint's defaults applied — including `MD013`, an 80-character line limit. This repo pairs every English paragraph with an Arabic mirror written as one long line (wrapping it breaks RTL reading order), so the limit alone accounted for 2669 of **4304 errors across 101 files**. Separately, `link-check` passed `--exclude-mail`, which current `lychee` rejects: the job exited with `error: unexpected argument '--exclude-mail' found` before checking a single link.
+
+**The config.** Added `.markdownlint.jsonc` disabling exactly six rules, each one something this repo does on purpose:
+
+| Rule | Why it's off |
+| --- | --- |
+| `MD013` line-length | Arabic mirror paragraphs are deliberately one long line |
+| `MD060` table-column-style | Tables are written compact (`\|---\|---\|`) |
+| `MD033` no-inline-html | The README needs a centered `<div>`/`<img>` header |
+| `MD041` first-line-heading | ...so its first line is that `<div>`, not an H1 |
+| `MD024` no-duplicate-heading | Keep a Changelog repeats `### Fixed` per release |
+| `MD028` no-blanks-blockquote | The English-then-blockquoted-Arabic pattern |
+| `MD036` no-emphasis-as-heading | Feature docs caption each mockup with a bold line |
+
+Everything else stays **on**, so the job still catches real breakage. Then `--fix` cleaned the mechanical violations (blank lines, list markers, trailing whitespace) across 29 files, 11 bare code fences were labelled `text`, and the vendored `.claude/skills/` tree was excluded from the glob — it is upstream code we don't reformat.
+
+**What the lint then found.** With `MD051` finally running, it reported 27 broken link fragments — and it was right. The headings in `AGENTS.md` are bilingual:
+
+```text
+## Project Overview / نظرة عامة
+```
+
+GitHub slugs that to `#project-overview--نظرة-عامة`. The table of contents linked `#project-overview`. **All 18 TOC links in the canonical `AGENTS.md`, and 9 more in `CURRENT_STATUS.md`, silently went nowhere.**
+
+Repointed all 27 with `github-slugger`, the library GitHub itself uses. That mattered: a hand-rolled slugger written first looked correct but dropped Arabic combining marks (`اقرأ هذا أولًا` → `...أولا`), which would have replaced 27 dead links with 27 different dead links. Verified against the real library before committing.
+
+`markdownlint` now reports **0 errors** over 87 files. `dart format`, `flutter analyze` and 127 tests pass.
+
+> ‏لم ينجح خطّ `docs` قطّ منذ إضافته. السبب: `markdownlint-cli2` يعمل بلا ملفّ إعداد، فيُطبَّق حدّ الثمانين حرفًا الافتراضي — وفقرات المرآة العربية سطر طويل واحد عن قصد — فبلغت الأخطاء 4304 في 101 ملفّ؛ كما يمرّر `link-check` وسيطًا `--exclude-mail` يرفضه `lychee` الحالي فيموت قبل فحص أي رابط. أُضيف `.markdownlint.jsonc` يعطّل ستّ قواعد فقط، كلٌّ منها ممارسة مقصودة في هذا المستودع، وتبقى البقيّة مُفعَّلة. ثمّ أُصلحت الانتهاكات الآلية في 29 ملفًّا، ووُسمت 11 كتلة شيفرة، واستُثنيت `.claude/skills/` المستورَدة. وحين عمل الفحص أخيرًا كشفت `MD051` عن 27 مرسًى ميتًا — وكانت مُحقّة: عناوين `AGENTS.md` ثنائية اللغة، فمرساها `#project-overview--نظرة-عامة` لا `#project-overview`، وكانت **كل روابط جدول المحتويات الثمانية عشر** وتسعة في `CURRENT_STATUS.md` لا تؤدّي إلى شيء. صُحِّحت جميعًا عبر `github-slugger` نفسه الذي يستعمله GitHub — وقد كان ذلك مهمًّا: أسقط مولّدٌ يدويّ كُتب أوّلًا علاماتِ التشكيل العربية، فكان سيستبدل بالروابط الميتة روابط ميتة أخرى. الآن صفر أخطاء.
+
+Touched: `.markdownlint.jsonc` (new), `.github/workflows/docs.yml`, `AGENTS.md`, `CONTRIBUTING.md`, `CURRENT_STATUS.md`, `INDEX.md`, `docs/ARCHITECTURE.md`, the `guides/`, `features/`, `reference/`, `decisions/` sets, the `.agents/`/`.cursor/` shims, and three `my_bookings` widgets (`dart format`).
+
 ## 2026-07-10 — README rebuilt around the brand assets
 
 The root `README.md` shipped no imagery at all, and three of its statements no longer matched the code.
@@ -273,6 +309,7 @@ Extended the shared auth surface toward the M1 email+password epic (no OTP): reg
 > ‏تم توسيع واجهة المصادقة نحو ملحمة M1 بالبريد وكلمة المرور (بدون OTP): يجمع التسجيل الآن اسم مستخدم فريدًا ورقم هاتف مصري **+20** إلزاميًا (بقناع، ويُطبَّع إلى E.164) ويؤكّد كلمة المرور ويشترط قبول الشروط والخصوصية؛ ويحصل الدخول على زر إظهار كلمة المرور ورابط «نسيت كلمة المرور؟». وأُضيف تدفّق استعادة من خطوتين — `ForgotPasswordPage` ← `ResetPasswordPage` — على `PasswordRecoveryCubit` جديد ومسارَي `/auth/forgot-password` و`/auth/reset-password`. واكتسب `AuthRepository` الدوال `logout` (إبطال أفضل جهد مع مسح دائم، موصولة بـ `SessionController.signOut`) و`forgotPassword` و`resetPassword`؛ وتظهر أخطاء 422 الآن مضمّنة لكل حقل.
 
 Touched (code + docs): `lib/features/auth/**` (auth page, `auth_cubit`, `auth_validators`, `password_recovery_cubit`, forgot/reset pages, repository), `lib/core/{router,session,di,auth}`, `lib/shared/ui/app_text_field.dart`, `lib/l10n/app_{en,ar}.arb`, matching tests, `CHANGELOG.md`, `CURRENT_STATUS.md`.
+
 ## 2026-07-07 — Debug-only login prefill for the QA/App Review test account
 
 `AuthPage` now prefills the email/password fields with the test account (`test@osta.com` / `osta123123`) under `kDebugMode` only — release builds compile the block out. Speeds local sign-in and gives App Review a one-tap login; the account must still exist backend-side (`/auth/login`). Code + docs change.
@@ -355,6 +392,7 @@ Re-checked the codebase after the "defer advanced Flutter tooling" refactor ([PR
 > ‏**واقع الكود الآن** (راجع [`docs/ROADMAP.md`](../docs/ROADMAP.md)): لا يوجد `fpdart`/`Either`/`Result<T>` — بل `sealed class Failure implements Exception` يُرمى ويُلتقط بـ `try`/`catch` عادي؛ ولا يوجد `freezed`/`json_serializable`/`injectable`/`build_runner` — بل نماذج `Equatable` بسيطة بدوالّ `fromJson`/`toJson` مكتوبة يدويًا وتسجيل `get_it` **يدوي**؛ و`BASE_URL` واحد عبر dart-define (بلا `AppFlavor`/`FLAVOR`)؛ وحُذف مسار معرض المكوّنات `/gallery`؛ واختُصر الـ CI إلى مهمّة واحدة `format · analyze · test`. الأدوات المتقدّمة **مؤجّلة لا مرفوضة** — الخطة المرحلية في `docs/ROADMAP.md`.
 
 **Doc changes**:
+
 - `AGENTS.md` + `CLAUDE.md` — corrected (error/DI/model/config/CI/commands) and made bilingual; added a "Plain-Dart, No Codegen" section and ROADMAP pointers.
 - `decisions/004` rewritten (sealed `Failure` + `try`/`catch`; fpdart deferred), `decisions/005` rewritten (no codegen; freezed/json_serializable/injectable deferred), `decisions/008` (single CI job).
 - All guides, feature docs, and reference docs: stale codegen/fpdart/flavor/gallery/CI facts purged, ROADMAP linked, and Arabic (RTL) prose added alongside English (headings bilingual; identifiers/tables/endpoints stay English).

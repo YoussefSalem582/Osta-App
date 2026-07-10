@@ -21,7 +21,7 @@ Default to **Bloc** for a feature; reach for a Cubit only when there are no mean
 
 One class per file, colocated under the feature's `presentation/`:
 
-```
+```text
 lib/features/<feature>/presentation/bloc/
   <feature>_bloc.dart
   <feature>_event.dart    // sealed base + event subclasses

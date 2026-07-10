@@ -10,7 +10,7 @@ Every feature under `lib/features/**` is a three-layer Clean Architecture module
 
 ## Folder tree
 
-```
+```text
 lib/features/<feature>/
 ├── data/
 │   ├── datasources/    # *RemoteDataSource — calls ApiClient
