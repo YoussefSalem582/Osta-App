@@ -7,15 +7,14 @@ class DriverTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return                     Row(
+    return Row(
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Sara Mohammed',
-              style: Theme.of(context).textTheme.bodyLarge
-                  ?.copyWith(
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: Colors.black,
                 fontWeight: FontWeight.w900,
               ),
@@ -26,11 +25,11 @@ class DriverTitle extends StatelessWidget {
             Text(
               'Car Type',
               style:
-              Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(
-                color: const Color(0xFF67775A),
-              ),
+                  Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(
+                    color: const Color(0xFF67775A),
+                  ),
             ),
           ],
         ),
@@ -42,6 +41,5 @@ class DriverTitle extends StatelessWidget {
         ),
       ],
     );
-
   }
 }

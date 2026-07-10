@@ -22,10 +22,13 @@ class CustomRow extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        Text(text2,style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: Colors.black,
-          fontWeight: FontWeight.w700,
-        ),)
+        Text(
+          text2,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Colors.black,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ],
     );
   }

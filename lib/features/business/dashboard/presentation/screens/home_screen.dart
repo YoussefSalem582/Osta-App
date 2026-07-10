@@ -7,7 +7,7 @@ import 'package:osta/features/business/dashboard/presentation/screens/store_scre
 import 'package:osta/shared/extensions/context_ext.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -68,12 +68,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
             BottomNavigationBarItem(
               icon: const Icon(Icons.store),
-              label: context.l10n.store,
+              label: context.l10n.navStore,
             ),
 
             BottomNavigationBarItem(
               icon: const Icon(Icons.more_horiz),
-              label: context.l10n.more,
+              label: context.l10n.navMore,
             ),
           ],
         ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/features/business/dashboard/presentation/widgets/confirm_or_decline.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
-import 'package:osta/shared/ui/app_button.dart';
 
 class Customer extends StatelessWidget {
   const Customer({super.key});
@@ -13,13 +12,13 @@ class Customer extends StatelessWidget {
       width: double.infinity,
       decoration: const BoxDecoration(
         color: Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.all(Radius.circular(12))
+        borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-        
+
           children: [
             Text(
               'Sara Mohamed',
@@ -49,7 +48,7 @@ class Customer extends StatelessWidget {
                 ),
                 ConfirmOrDecline(
                   bgColor: const Color(0xFFFFFFFF),
-        
+
                   color: const Color(0xFF67775A),
                   text: context.l10n.decline,
                 ),

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:osta/shared/extensions/context_ext.dart';
 
 class Setting extends StatelessWidget {
-  Setting({required this.icon, required this.text, super.key});
+  const Setting({required this.icon, required this.text, super.key});
 
-  IconData icon;
-  String text;
+  final IconData icon;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,10 @@ class Setting extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8),
-                child: Icon(icon,size: 16,),
+                child: Icon(
+                  icon,
+                  size: 16,
+                ),
               ),
             ),
             const SizedBox(

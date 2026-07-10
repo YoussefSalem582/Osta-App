@@ -15,26 +15,27 @@ class AppbarWidget extends StatelessWidget {
                 Text(
                   context.l10n.list,
                   style:
-                  Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(
-                      color: const Color(0xFF909D93),
-                      fontSize: 16
-                  ),
+                      Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(
+                        color: const Color(0xFF909D93),
+                        fontSize: 16,
+                      ),
                 ),
               ],
-            ),Row(
+            ),
+            Row(
               children: [
                 Text(
                   context.l10n.reservation,
                   style:
-                  Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700
-                  ),
+                      Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                      ),
                 ),
               ],
             ),

@@ -77,72 +77,7 @@ class TechScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Mahmoud",
-                          style:
-                              Theme.of(
-                                context,
-                              ).textTheme.bodyLarge?.copyWith(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w900,
-                              ),
-                        ),
-                        const SizedBox(
-                          height: 4,
-                        ),
-                        Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                            color: Color(0xFF84D3A0),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(6),
-                            child: Text(
-                              context.l10n.engine,
-                              style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(
-                                    fontSize: 12,
-                                    color: const Color(0xFF3A694E),
-                                  ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    Container(
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        color: Color(0xFFF2F4F0),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: const Icon(
-                          Icons.edit,
-                          color: Color(0xFF9EABA2),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                color: Colors.white,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Mahmoud",
+                          'Mahmoud',
                           style:
                               Theme.of(
                                 context,
@@ -207,7 +142,72 @@ class TechScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Mahmoud",
+                          'Mahmoud',
+                          style:
+                              Theme.of(
+                                context,
+                              ).textTheme.bodyLarge?.copyWith(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w900,
+                              ),
+                        ),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Container(
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            color: Color(0xFF84D3A0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(6),
+                            child: Text(
+                              context.l10n.engine,
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    fontSize: 12,
+                                    color: const Color(0xFF3A694E),
+                                  ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    Container(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        color: Color(0xFFF2F4F0),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Icon(
+                          Icons.edit,
+                          color: Color(0xFF9EABA2),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                color: Colors.white,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Mahmoud',
                           style:
                               Theme.of(
                                 context,
@@ -263,7 +263,7 @@ class TechScreen extends StatelessWidget {
               alignment: Alignment.center,
 
               decoration: BoxDecoration(
-                border: Border.all(color: AppColors.brandGreen,style: BorderStyle.solid),
+                border: Border.all(color: AppColors.brandGreen),
                 borderRadius: const BorderRadius.all(Radius.circular(12)),
               ),
               child: Padding(
@@ -283,7 +283,7 @@ class TechScreen extends StatelessWidget {
                       context.l10n.addTechnician,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppColors.brandGreen,
-                        fontSize: 20
+                        fontSize: 20,
                       ),
                     ),
                   ],

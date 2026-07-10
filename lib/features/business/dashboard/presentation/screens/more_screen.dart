@@ -13,7 +13,7 @@ class MoreScreen extends StatelessWidget {
       appBar: AppBar(
         centerTitle: false,
         title: Text(
-          context.l10n.more,
+          context.l10n.navMore,
           style:
               Theme.of(
                 context,
@@ -176,7 +176,7 @@ class MoreScreen extends StatelessWidget {
               ),
               Setting(
                 icon: Icons.currency_exchange,
-                text: context.l10n.changingRoles,
+                text: context.l10n.switchRole,
               ),
               const SizedBox(
                 height: 8,

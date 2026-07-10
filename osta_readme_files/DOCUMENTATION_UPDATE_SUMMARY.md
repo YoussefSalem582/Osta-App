@@ -4,6 +4,23 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-10 — Build restored: 317 analyzer errors from one commit
+
+`flutter analyze` on `my_branch` reported **317 errors across 47 files**. Every one traced to commit `05361d0` ("Refactor localization strings, remove unused keys, and update app button implementation").
+
+**Four root causes, all reverted from `HEAD^`:**
+
+1. **The ARB files were emptied.** `lib/l10n/app_en.arb` and `app_ar.arb` went from 276 keys to 23, on the premise the removed strings were unused. They were not — `navHome`, `roleSelection*`, `onboarding*`, `businessShop*`, `showPassword`/`hidePassword` and ~250 others are referenced across 40+ widgets, and account for **305 of the 317 errors**. Restored both files, keeping the one key the commit legitimately added (`retry`).
+2. **`app_router.dart` was gutted.** It lost the `AppRouter(SessionController)` constructor, the `refreshListenable`, the `resolveRedirect` guard, and **15 of its 17 routes** (auth, shells, garage, profile, bookings…). The dropped constructor turned `injection.dart`'s `AppRouter(getIt())` into an arity error.
+3. **A duplicate `AppRoutes`.** The new `core/router/routes.dart` declared a second `AppRoutes` class, colliding with `core/router/app_routes.dart` (`ambiguous_import`). Nothing but the gutted router imported it, and none of its route constants were referenced anywhere — deleted.
+4. **`splash_page.dart` pointed at a file that doesn't exist.** It imported `features/role/presentation/role_selection_page.dart` (the page lives under `presentation/page/`) and replaced `SessionController.bootstrap()` with a hard `context.go(RoleSelectionPage.path)` — which would have skipped the persisted-session launch path even if it compiled.
+
+Separately, the same commit added the business dashboard screens (`board_screen`, `bookings`, `more_screen`, `techScreen`, `home_screen` and their widgets) referencing **30 `context.l10n` keys that were never added to either ARB**. Added all 30 (EN + AR). Three more — `changingRoles`, `store`, `more` — were exact duplicates of the existing `switchRole`, `navStore`, `navMore`, so the call sites were repointed rather than the keys duplicated.
+
+`AppButton.style` was restored (the commit removed the parameter; `profile_screen.dart` still passes it). Finally, `dart fix --apply` cleared the unused imports the commit introduced, and `ItemType`/`Setting` — `@immutable` widgets declaring mutable fields — got `final` fields and `const` constructors.
+
+`flutter analyze` is clean (6 pre-existing `file_names` infos remain: `appBar.dart`, `customRow.dart`, `driverTitle.dart`, `selectedType.dart`, `techScreen.dart`, `profile_Item.dart` — renaming them touches their importers and was left for a separate pass). All 127 tests pass.
+
 ## 2026-07-10 — README rebuilt around the brand assets
 
 The root `README.md` shipped no imagery at all, and three of its statements no longer matched the code.

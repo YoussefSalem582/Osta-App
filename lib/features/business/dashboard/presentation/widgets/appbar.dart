@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 class AppBarWidget extends StatelessWidget {
@@ -32,7 +31,6 @@ class AppBarWidget extends StatelessWidget {
                     fontSize: 20,
                   ),
             ),
-
           ],
         ),
       ],

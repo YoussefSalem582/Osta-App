@@ -1,13 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:osta/core/router/routes.dart';
-import 'package:osta/features/business/bookings/presentation/screens/bookings.dart';
-import 'package:osta/features/business/dashboard/presentation/screens/board_screen.dart';
-import 'package:osta/features/business/dashboard/presentation/screens/catalog_screen.dart';
-import 'package:osta/features/business/dashboard/presentation/screens/home_screen.dart';
-import 'package:osta/features/business/dashboard/presentation/screens/more_screen.dart';
-import 'package:osta/features/business/dashboard/presentation/screens/store_screen.dart';
-import 'package:osta/features/business/dashboard/presentation/screens/techScreen.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/router/go_router_refresh_stream.dart';
 import 'package:osta/core/router/session_redirect.dart';
@@ -40,8 +32,17 @@ import 'package:osta/features/splash/presentation/splash_page.dart';
 ///
 /// Registered by hand in `configureDependencies()` — no injectable codegen.
 class AppRouter {
-  final GoRouter router = GoRouter(
-    initialLocation: SplashPage.path,
+  AppRouter(SessionController session) : router = _build(session);
+
+  final GoRouter router;
+
+  static GoRouter _build(SessionController session) => GoRouter(
+    initialLocation: AppRoutes.splash,
+    refreshListenable: GoRouterRefreshStream(session.stream),
+    redirect: (context, state) => resolveRedirect(
+      session: session.state,
+      location: state.matchedLocation,
+    ),
     routes: [
       GoRoute(
         path: AppRoutes.splash,
@@ -84,9 +85,74 @@ class AppRouter {
         builder: (context, state) => const LanguagePage(),
       ),
       GoRoute(
-        path: RoleSelectionPage.path,
+        path: AppRoutes.role,
         builder: (context, state) => const RoleSelectionPage(),
       ),
+      GoRoute(
+        path: AppRoutes.authChoose,
+        builder: (context, state) => const AuthChoosePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.login,
+        builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.register,
+        builder: (context, state) => const RegisterPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.forgotPassword,
+        builder: (context, state) => const ForgotPasswordPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.resetPassword,
+        builder: (context, state) => ResetPasswordPage(
+          email: state.uri.queryParameters['email'],
+          token: state.uri.queryParameters['token'],
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.customerShell,
+        builder: (context, state) => const CustomerShellPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.businessShell,
+        builder: (context, state) => const BusinessShellPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.comingSoon,
+        builder: (context, state) => const ComingSoonPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.garage,
+        builder: (context, state) => const MyGarageScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.addCar,
+        builder: (context, state) => const AddCarScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.bookingStatus,
+        builder: (context, state) => const LiveBookingScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.profile,
+        builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.myBookings,
+        builder: (context, state) => const MyBookingsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.home,
+        builder: (context, state) => const HomePage(),
+      ),
+
+      // Dev-facing component gallery (not linked from product UI).
+      // GoRoute(
+      //   path: ComponentGalleryPage.path,
+      //   builder: (context, state) => const ComponentGalleryPage(),
+      // ),
     ],
   );
 }

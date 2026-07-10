@@ -6,11 +6,11 @@ import 'package:osta/features/customer/booking/data/model.dart/booking_item.dart
 import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/status_badge.dart';
 
 class BookingCard extends StatelessWidget {
-  const BookingCard({ 
+  const BookingCard({
     required this.booking,
     required this.colorScheme,
     required this.textTheme,
-    super.key
+    super.key,
   });
 
   final BookingItem booking;

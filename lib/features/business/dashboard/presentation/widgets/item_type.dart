@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ItemType extends StatelessWidget {
-  ItemType({
+  const ItemType({
     required this.text1,
     required this.text2,
     required this.color,
@@ -9,10 +9,10 @@ class ItemType extends StatelessWidget {
     super.key,
   });
 
-  String text1;
-  String text2;
-  int? maxLines = 1;
-  Color color;
+  final String text1;
+  final String text2;
+  final int? maxLines;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
