@@ -46,11 +46,9 @@ class PaymentMethodCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Header row ────────────────────────────────────────────────
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Radio circle
               Radio<bool>(
                 value: true,
                 groupValue: isSelected,
@@ -61,11 +59,9 @@ class PaymentMethodCard extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacing.sm),
 
-              // Payment type icon
               leading,
               const SizedBox(width: AppSpacing.sm),
 
-              // Title + subtitle + optional badge
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,7 +94,6 @@ class PaymentMethodCard extends StatelessWidget {
                 ),
               ),
 
-              // Optional trailing card logos
               if (trailingLogos != null && trailingLogos!.isNotEmpty) ...[
                 const SizedBox(width: AppSpacing.sm),
                 Row(
@@ -115,7 +110,6 @@ class PaymentMethodCard extends StatelessWidget {
                 ),
               ],
 
-              // Selected check icon
               if (isSelected) ...[
                 const SizedBox(width: AppSpacing.xs),
                 Icon(
@@ -127,7 +121,6 @@ class PaymentMethodCard extends StatelessWidget {
             ],
           ),
 
-          // ── "Add card" row (bank card) ─────────────────────────────────
           if (addCardLabel != null) ...[
             const SizedBox(height: AppSpacing.sm),
             Padding(
@@ -154,7 +147,6 @@ class PaymentMethodCard extends StatelessWidget {
             ),
           ],
 
-          // ── Wallet chips row ───────────────────────────────────────────
           if (walletChips != null && walletChips!.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.sm),
             Padding(
@@ -169,7 +161,6 @@ class PaymentMethodCard extends StatelessWidget {
             ),
           ],
 
-          // ── Bottom note (cash on delivery) ─────────────────────────────
           if (bottomNote != null) ...[
             const SizedBox(height: AppSpacing.sm),
             Row(
