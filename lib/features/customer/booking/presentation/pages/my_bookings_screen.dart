@@ -54,7 +54,6 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppTopBar(centerTitle: false, title: l10n.navBookings),
       body: Directionality(
         textDirection: TextDirection.rtl,
         child: Column(

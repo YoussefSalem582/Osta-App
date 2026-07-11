@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
-// <<<<<<< HEAD
-// import 'package:osta/features/customer/booking/presentation/my_bookings_screen.dart';
-// =======
-import 'package:osta/features/customer/booking/presentation/pages/live_booking_screen.dart';
-// >>>>>>> 05dd7eefce8d3884570b01b7e0b4d8e0d864abad
 import 'package:osta/features/customer/profile/presentation/pages/profile_screen.dart';
+import 'package:osta/features/customer/wallet/presentation/payment_screen.dart';
 import 'package:osta/features/shell/presentation/role_shell.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_bottom_nav_bar.dart';
@@ -28,7 +24,7 @@ class CustomerShellPage extends StatelessWidget {
         AppBottomNavItem(
           icon: Icons.calendar_month_outlined,
           label: l10n.navBookings,
-          body: const BookingView(),
+          body: const PaymentScreen(),
         ),
         AppBottomNavItem(
           icon: Icons.shopping_bag_outlined,
@@ -47,7 +43,7 @@ class CustomerShellPage extends StatelessWidget {
           title: l10n.navHome,
           message: l10n.shellWelcome,
         ),
-        // Index 1 — Bookings
+        // Index 1 — Bookings → Service Catalog (entry point of booking flow)
         const MyBookingsScreen(),
         // Index 2 — Store (placeholder)
         EmptyState(
