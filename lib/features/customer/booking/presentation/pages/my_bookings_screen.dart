@@ -36,8 +36,6 @@ const past = [
   ),
 ];
 
-/// Full-screen bookings route (`/my-bookings`) — an app bar over
-/// [MyBookingsView].
 class MyBookingsScreen extends StatelessWidget {
   const MyBookingsScreen({super.key});
 
@@ -49,9 +47,6 @@ class MyBookingsScreen extends StatelessWidget {
   );
 }
 
-/// Scaffold-less bookings list — the customer shell's "Bookings" tab body.
-/// The shell owns the app bar and bottom nav. Tapping a card opens the
-/// live-status detail screen.
 class MyBookingsView extends StatefulWidget {
   const MyBookingsView({super.key});
 
