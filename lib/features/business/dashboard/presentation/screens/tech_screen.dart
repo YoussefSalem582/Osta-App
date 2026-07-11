@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_colors.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 class TechScreen extends StatelessWidget {
@@ -8,9 +9,12 @@ class TechScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFD7DBD4),
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 32),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xl,
+        ),
         child: Column(
           children: [
             Row(
@@ -18,20 +22,20 @@ class TechScreen extends StatelessWidget {
                 Container(
                   height: 28,
                   width: 28,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(6),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(AppRadii.sm),
                     ),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.arrow_back_ios,
-                    color: Colors.black,
+                    color: Theme.of(context).colorScheme.onSurface,
                     size: 16,
                   ),
                 ),
                 const SizedBox(
-                  width: 8,
+                  width: AppSpacing.sm,
                 ),
                 Text(
                   context.l10n.technicians,
@@ -39,7 +43,7 @@ class TechScreen extends StatelessWidget {
                       Theme.of(
                         context,
                       ).textTheme.bodyLarge?.copyWith(
-                        color: Colors.black,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontWeight: FontWeight.w900,
                       ),
                 ),
@@ -50,27 +54,29 @@ class TechScreen extends StatelessWidget {
                   decoration: const BoxDecoration(
                     color: AppColors.brandGreen,
                     borderRadius: BorderRadius.all(
-                      Radius.circular(6),
+                      Radius.circular(AppRadii.sm),
                     ),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.add,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onPrimary,
                     size: 16,
                   ),
                 ),
               ],
             ),
             const SizedBox(
-              height: 32,
+              height: AppSpacing.xl,
             ),
             Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                color: Colors.white,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(AppRadii.md),
+                ),
+                color: Theme.of(context).colorScheme.surface,
               ),
               child: Padding(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(AppSpacing.sm),
                 child: Row(
                   children: [
                     Column(
@@ -82,25 +88,27 @@ class TechScreen extends StatelessWidget {
                               Theme.of(
                                 context,
                               ).textTheme.bodyLarge?.copyWith(
-                                color: Colors.black,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontWeight: FontWeight.w900,
                               ),
                         ),
                         const SizedBox(
-                          height: 4,
+                          height: AppSpacing.xs,
                         ),
                         Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                            color: Color(0xFF84D3A0),
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(AppRadii.md),
+                            ),
+                            color: context.appColors.success,
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(6),
+                            padding: const EdgeInsets.all(AppSpacing.sm),
                             child: Text(
                               context.l10n.engine,
                               style: Theme.of(context).textTheme.bodySmall
                                   ?.copyWith(
-                                    fontSize: 12,
+                                    // ponytail: no token for this color
                                     color: const Color(0xFF3A694E),
                                   ),
                             ),
@@ -110,15 +118,19 @@ class TechScreen extends StatelessWidget {
                     ),
                     const Spacer(),
                     Container(
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        color: Color(0xFFF2F4F0),
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(AppRadii.sm),
+                        ),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerLow,
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.sm),
                         child: Icon(
                           Icons.edit,
-                          color: Color(0xFF9EABA2),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ),
@@ -127,15 +139,17 @@ class TechScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              height: 8,
+              height: AppSpacing.sm,
             ),
             Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                color: Colors.white,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(AppRadii.md),
+                ),
+                color: Theme.of(context).colorScheme.surface,
               ),
               child: Padding(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(AppSpacing.sm),
                 child: Row(
                   children: [
                     Column(
@@ -147,25 +161,27 @@ class TechScreen extends StatelessWidget {
                               Theme.of(
                                 context,
                               ).textTheme.bodyLarge?.copyWith(
-                                color: Colors.black,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontWeight: FontWeight.w900,
                               ),
                         ),
                         const SizedBox(
-                          height: 4,
+                          height: AppSpacing.xs,
                         ),
                         Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                            color: Color(0xFF84D3A0),
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(AppRadii.md),
+                            ),
+                            color: context.appColors.success,
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(6),
+                            padding: const EdgeInsets.all(AppSpacing.sm),
                             child: Text(
                               context.l10n.engine,
                               style: Theme.of(context).textTheme.bodySmall
                                   ?.copyWith(
-                                    fontSize: 12,
+                                    // ponytail: no token for this color
                                     color: const Color(0xFF3A694E),
                                   ),
                             ),
@@ -175,15 +191,19 @@ class TechScreen extends StatelessWidget {
                     ),
                     const Spacer(),
                     Container(
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        color: Color(0xFFF2F4F0),
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(AppRadii.sm),
+                        ),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerLow,
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.sm),
                         child: Icon(
                           Icons.edit,
-                          color: Color(0xFF9EABA2),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ),
@@ -192,15 +212,17 @@ class TechScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              height: 8,
+              height: AppSpacing.sm,
             ),
             Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                color: Colors.white,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(AppRadii.md),
+                ),
+                color: Theme.of(context).colorScheme.surface,
               ),
               child: Padding(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(AppSpacing.sm),
                 child: Row(
                   children: [
                     Column(
@@ -212,25 +234,27 @@ class TechScreen extends StatelessWidget {
                               Theme.of(
                                 context,
                               ).textTheme.bodyLarge?.copyWith(
-                                color: Colors.black,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontWeight: FontWeight.w900,
                               ),
                         ),
                         const SizedBox(
-                          height: 4,
+                          height: AppSpacing.xs,
                         ),
                         Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                            color: Color(0xFF84D3A0),
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(AppRadii.md),
+                            ),
+                            color: context.appColors.success,
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(6),
+                            padding: const EdgeInsets.all(AppSpacing.sm),
                             child: Text(
                               context.l10n.engine,
                               style: Theme.of(context).textTheme.bodySmall
                                   ?.copyWith(
-                                    fontSize: 12,
+                                    // ponytail: no token for this color
                                     color: const Color(0xFF3A694E),
                                   ),
                             ),
@@ -240,15 +264,19 @@ class TechScreen extends StatelessWidget {
                     ),
                     const Spacer(),
                     Container(
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        color: Color(0xFFF2F4F0),
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(AppRadii.sm),
+                        ),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerLow,
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.sm),
                         child: Icon(
                           Icons.edit,
-                          color: Color(0xFF9EABA2),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ),
@@ -257,17 +285,19 @@ class TechScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              height: 8,
+              height: AppSpacing.sm,
             ),
             Container(
               alignment: Alignment.center,
 
               decoration: BoxDecoration(
                 border: Border.all(color: AppColors.brandGreen),
-                borderRadius: const BorderRadius.all(Radius.circular(12)),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(AppRadii.md),
+                ),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -277,13 +307,12 @@ class TechScreen extends StatelessWidget {
                       size: 24,
                     ),
                     const SizedBox(
-                      width: 8,
+                      width: AppSpacing.sm,
                     ),
                     Text(
                       context.l10n.addTechnician,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         color: AppColors.brandGreen,
-                        fontSize: 20,
                       ),
                     ),
                   ],

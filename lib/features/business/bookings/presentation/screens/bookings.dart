@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_colors.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/business/bookings/presentation/widgets/custom_row.dart';
 import 'package:osta/features/business/bookings/presentation/widgets/driver_title.dart';
 import 'package:osta/features/business/bookings/presentation/widgets/selected_type.dart';
@@ -13,124 +14,130 @@ class Bookings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
       child: Column(
         children: [
           const AppBarWidget(),
           const SizedBox(
-            height: 12,
+            height: AppSpacing.md,
           ),
           Row(
             children: [
               SelectedType(
-                textColor: Colors.white,
+                textColor: Theme.of(context).colorScheme.onPrimary,
                 text: context.l10n.all,
-                conColor: Colors.black,
+                conColor: Theme.of(context).colorScheme.onSurface,
               ),
               const SizedBox(
-                width: 8,
+                width: AppSpacing.sm,
               ),
               SelectedType(
-                textColor: Colors.black,
+                textColor: Theme.of(context).colorScheme.onSurface,
                 text: context.l10n.waiting,
-                conColor: Colors.white,
+                conColor: Theme.of(context).colorScheme.surface,
               ),
               const SizedBox(
-                width: 8,
+                width: AppSpacing.sm,
               ),
               SelectedType(
-                textColor: Colors.black,
+                textColor: Theme.of(context).colorScheme.onSurface,
 
                 text: context.l10n.sure,
-                conColor: Colors.white,
+                conColor: Theme.of(context).colorScheme.surface,
               ),
               const SizedBox(
-                width: 8,
+                width: AppSpacing.sm,
               ),
               SelectedType(
-                textColor: Colors.black,
+                textColor: Theme.of(context).colorScheme.onSurface,
                 text: context.l10n.underImplementation,
-                conColor: Colors.white,
+                conColor: Theme.of(context).colorScheme.surface,
               ),
             ],
           ),
           const SizedBox(
-            height: 8,
+            height: AppSpacing.sm,
           ),
           Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(16)),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: const BorderRadius.all(
+                Radius.circular(AppRadii.lg),
+              ),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(AppSpacing.sm),
               child: Column(
                 children: [
                   const DriverTitle(),
                   const SizedBox(
-                    height: 8,
+                    height: AppSpacing.sm,
                   ),
-                  const Divider(
-                    color: Color(0xFFC4CCC7),
+                  Divider(
+                    color: Theme.of(context).colorScheme.outlineVariant,
                     endIndent: 8,
                     indent: 8,
                   ),
                   const SizedBox(
-                    height: 8,
+                    height: AppSpacing.sm,
                   ),
                   CustomRow(
                     text1: context.l10n.exchangeOilAndFilter,
                     text2: '250 EGP',
                   ),
                   const SizedBox(
-                    height: 8,
+                    height: AppSpacing.sm,
                   ),
                   CustomRow(
                     text1: context.l10n.appointment,
                     text2: '12:00 Today',
                   ),
                   const SizedBox(
-                    height: 12,
+                    height: AppSpacing.md,
                   ),
                   Row(
                     children: [
                       ConfirmOrDecline(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onPrimary,
                         bgColor: AppColors.brandGreen,
                         text: context.l10n.confirm,
                       ),
                       const SizedBox(
-                        width: 8,
+                        width: AppSpacing.sm,
                       ),
                       ConfirmOrDecline(
-                        color: const Color(0xFFB91D1C),
-                        bgColor: const Color(0xFFFEE2E1),
+                        color: Theme.of(context).colorScheme.error,
+                        bgColor: Theme.of(context).colorScheme.errorContainer,
                         text: context.l10n.decline,
                       ),
                     ],
                   ),
                   const SizedBox(
-                    height: 8,
+                    height: AppSpacing.sm,
                   ),
                   ElevatedButton(
                     onPressed: () {},
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.build,
                           size: 18,
-                          color: Color(0xFF75856F),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                         const SizedBox(
-                          width: 6,
+                          width: AppSpacing.sm,
                         ),
                         Text(
                           context.l10n.mechanicalSupport,
-                          style: Theme.of(context).textTheme.bodyMedium
+                          style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(
-                                color: const Color(0xFF75856F),
-                                fontSize: 16,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
                                 fontWeight: FontWeight.w700,
                               ),
                         ),

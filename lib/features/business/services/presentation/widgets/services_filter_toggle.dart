@@ -81,7 +81,7 @@ class ServicesFilterToggle extends StatelessWidget {
           style: theme.textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.w700,
             color: isSelected
-                ? Colors.white
+                ? theme.colorScheme.onPrimary
                 : theme.colorScheme.onSurfaceVariant,
           ),
         ),

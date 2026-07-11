@@ -17,7 +17,7 @@ class CustomRow extends StatelessWidget {
         Text(
           text1,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: const Color(0xFF636E67),
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -25,7 +25,7 @@ class CustomRow extends StatelessWidget {
         Text(
           text2,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Colors.black,
+            color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w700,
           ),
         ),

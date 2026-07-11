@@ -95,6 +95,7 @@ class StatusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
     return Container(
       width: double.infinity,
@@ -111,16 +112,16 @@ class StatusCard extends StatelessWidget {
               Container(
                 width: 10,
                 height: 10,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Color(0xFF4ADE80),
+                  color: context.appColors.success,
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
                 l10n.live,
                 style: textTheme.labelSmall?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.85),
+                  color: colorScheme.onPrimary.withValues(alpha: 0.85),
                 ),
               ),
             ],
@@ -133,7 +134,7 @@ class StatusCard extends StatelessWidget {
                 child: Text(
                   statusLabel,
                   style: textTheme.titleLarge?.copyWith(
-                    color: Colors.white,
+                    color: colorScheme.onPrimary,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -144,13 +145,13 @@ class StatusCard extends StatelessWidget {
           Text(
             mechanicName,
             style: textTheme.bodySmall?.copyWith(
-              color: Colors.white.withValues(alpha: 0.85),
+              color: colorScheme.onPrimary.withValues(alpha: 0.85),
             ),
           ),
           Text(
             centerName,
             style: textTheme.bodySmall?.copyWith(
-              color: Colors.white.withValues(alpha: 0.75),
+              color: colorScheme.onPrimary.withValues(alpha: 0.75),
             ),
           ),
         ],

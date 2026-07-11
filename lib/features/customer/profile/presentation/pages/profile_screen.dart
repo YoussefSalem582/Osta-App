@@ -93,15 +93,15 @@ class ProfileView extends StatelessWidget {
                     Text(
                       userName,
                       style: textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
+                        color: colorScheme.onPrimary,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       userHandle,
                       style: textTheme.bodySmall?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.75),
+                        color: colorScheme.onPrimary.withValues(alpha: 0.75),
                       ),
                     ),
                   ],
@@ -115,7 +115,7 @@ class ProfileView extends StatelessWidget {
                   backgroundColor: colorScheme.surfaceDim.withValues(
                     alpha: 0.4,
                   ),
-                  foregroundColor: Colors.white,
+                  foregroundColor: colorScheme.onPrimary,
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
                     vertical: AppSpacing.sm,
@@ -124,7 +124,7 @@ class ProfileView extends StatelessWidget {
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(AppRadii.lg),
                   ),
                 ),
               ),
@@ -152,6 +152,7 @@ class ProfileView extends StatelessWidget {
             subtitle: l10n.addressesSubtitle,
             leading: const ProfileItemIcon(
               icon: Icons.location_on_outlined,
+              // ponytail: no token for this decorative color
               color: Colors.redAccent,
             ),
             onTap: () {},
@@ -165,6 +166,7 @@ class ProfileView extends StatelessWidget {
             subtitle: l10n.myCarsSubtitle,
             leading: const ProfileItemIcon(
               icon: Icons.directions_car_rounded,
+              // ponytail: no token for this decorative color
               color: Colors.orange,
             ),
             onTap: () => unawaited(context.push(AppRoutes.garage)),
@@ -178,6 +180,7 @@ class ProfileView extends StatelessWidget {
             subtitle: l10n.myStoreSubtitle,
             leading: const ProfileItemIcon(
               icon: Icons.storefront_outlined,
+              // ponytail: no token for this decorative color
               color: Colors.purple,
             ),
             onTap: () {},
@@ -244,6 +247,7 @@ class ProfileView extends StatelessWidget {
               children: [
                 const ProfileItemIcon(
                   icon: Icons.palette_outlined,
+                  // ponytail: no token for this decorative color
                   color: Colors.amber,
                 ),
                 Expanded(
@@ -276,6 +280,7 @@ class ProfileView extends StatelessWidget {
             subtitle: l10n.notificationsSubtitle,
             leading: const ProfileItemIcon(
               icon: Icons.notifications_outlined,
+              // ponytail: no token for this decorative color
               color: Colors.blue,
             ),
             onTap: () {},

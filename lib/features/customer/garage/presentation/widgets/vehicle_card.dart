@@ -70,7 +70,7 @@ class VehicleCard extends StatelessWidget {
                     Row(
                       children: [
                         if (year != null) ...[
-                          const SizedBox(height: 2),
+                          const SizedBox(height: AppSpacing.xs),
                           Text(
                             year.toString(),
                             style: textTheme.bodySmall?.copyWith(
@@ -80,7 +80,7 @@ class VehicleCard extends StatelessWidget {
                             ),
                           ),
                         ],
-                        const SizedBox(width: 5),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           '-',
                           style: textTheme.bodySmall?.copyWith(
@@ -89,7 +89,7 @@ class VehicleCard extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 5),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           plateNumber,
                           style: textTheme.bodySmall?.copyWith(
@@ -109,7 +109,7 @@ class VehicleCard extends StatelessWidget {
                           size: 14,
                           color: colorScheme.onSurface.withValues(alpha: 0.55),
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           '${formatMileage(mileageKm)} ${context.l10n.km}',
                           style: textTheme.bodySmall?.copyWith(
@@ -166,6 +166,8 @@ class PrimaryBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
@@ -178,13 +180,12 @@ class PrimaryBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.star_rounded, size: 12, color: Colors.white),
-          const SizedBox(width: 4),
+          Icon(Icons.star_rounded, size: 12, color: colorScheme.onPrimary),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             context.l10n.primary,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 11,
+            style: textTheme.labelSmall?.copyWith(
+              color: colorScheme.onPrimary,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -212,20 +213,21 @@ class ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     if (filled) {
       return FilledButton.icon(
         onPressed: onPressed,
         style: FilledButton.styleFrom(
           backgroundColor: color,
-          foregroundColor: Colors.white,
+          foregroundColor: colorScheme.onPrimary,
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
             vertical: AppSpacing.xs,
           ),
           minimumSize: Size.zero,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          textStyle: const TextStyle(
-            fontSize: 12,
+          textStyle: textTheme.bodySmall?.copyWith(
             fontWeight: FontWeight.w600,
           ),
           shape: RoundedRectangleBorder(
@@ -248,8 +250,7 @@ class ActionButton extends StatelessWidget {
         ),
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        textStyle: const TextStyle(
-          fontSize: 12,
+        textStyle: textTheme.bodySmall?.copyWith(
           fontWeight: FontWeight.w600,
         ),
         shape: RoundedRectangleBorder(

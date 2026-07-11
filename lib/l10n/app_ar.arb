@@ -296,5 +296,13 @@
   "generalFile": "الملف العام",
   "operationalCapacity": "الطاقة التشغيلية",
   "analysis": "التحليلات",
-  "boxEvaluations": "التقييمات"
+  "boxEvaluations": "التقييمات",
+  "splashTagline": "صلح عربيتك في دقائق",
+  "homeGreeting": "👋 صباح الخير",
+  "homeBookServiceCta": "احجز خدمة",
+  "homeBookServiceTitle": "محتاج صيانة؟",
+  "homeBookServiceSubtitle": "احجز من أقرب مركز",
+  "homeNearbyCenters": "مراكز قريبة منك",
+  "homeFromShop": "من المتجر",
+  "homeActiveBookingBadge": "حجز نشط"
 }

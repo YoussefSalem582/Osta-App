@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_colors.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/business/dashboard/presentation/widgets/confirm_or_decline.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
@@ -10,12 +11,12 @@ class Customer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.all(Radius.circular(12)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.all(Radius.circular(AppRadii.md)),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(AppSpacing.sm),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
 
@@ -32,24 +33,24 @@ class Customer extends StatelessWidget {
                   Theme.of(
                     context,
                   ).textTheme.bodySmall?.copyWith(
-                    color: const Color(0xFF67775A),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
             ),
             const SizedBox(
-              height: 8,
+              height: AppSpacing.sm,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ConfirmOrDecline(
                   bgColor: AppColors.brandGreen,
-                  color: const Color(0xFFFFFFFF),
+                  color: Theme.of(context).colorScheme.onPrimary,
                   text: context.l10n.confirm,
                 ),
                 ConfirmOrDecline(
-                  bgColor: const Color(0xFFFFFFFF),
+                  bgColor: Theme.of(context).colorScheme.surface,
 
-                  color: const Color(0xFF67775A),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   text: context.l10n.decline,
                 ),
               ],

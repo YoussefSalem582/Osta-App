@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/home/presentation/widgets/product_card.dart';
+import 'package:osta/shared/extensions/context_ext.dart';
 
 class ShopSection extends StatelessWidget {
   const ShopSection({super.key});
@@ -12,13 +14,13 @@ class ShopSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'من المتجر',
+          context.l10n.homeFromShop,
           style: theme.textTheme.titleLarge?.copyWith(
             color: theme.colorScheme.onSurface,
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: AppSpacing.md),
         SizedBox(
           height: 210,
           child: ListView(
@@ -28,7 +30,7 @@ class ShopSection extends StatelessWidget {
                 name: 'إطار ميشلان',
                 price: '2800 ج',
               ),
-              SizedBox(width: 15),
+              SizedBox(width: AppSpacing.md),
               ProductCard(
                 name: 'زيت موبيل',
                 price: '250 ج',
