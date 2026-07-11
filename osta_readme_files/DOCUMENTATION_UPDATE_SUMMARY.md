@@ -4,6 +4,20 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-11 — Network layer consolidated (10 files → 4)
+
+`lib/core/network/` had grown to 10 single-responsibility files, several of them tiny value/plumbing types (10-37 lines) that existed only to be consumed by a neighbor. Folded them into their natural owners, keeping 4 files:
+
+- **`api_client.dart`** now also holds `ApiResult<T>` and `PaginationMeta` (the client's own return / envelope types) — `api_result.dart` and `pagination_meta.dart` deleted.
+- **`dio_client.dart`** now also holds `AuthEvents`, `TokenPair` / `parseTokenPair`, `AuthInterceptor`, and `SocialTokenExchange` (the Dio transport + Sanctum auth plumbing) — `auth_events.dart`, `auth_interceptor.dart`, `token_pair.dart`, `social_token_exchange.dart` deleted.
+- **`api_exception.dart`** and **`api_endpoints.dart`** are unchanged.
+
+The one non-mechanical bit: `api_client.dart` referenced `AuthInterceptor.noAuthKey`, and `dio_client.dart` needs `ApiClient` (for `SocialTokenExchange`), which would make the two files import each other. Moved the `noAuthKey` constant onto `ApiClient`, so the dependency is now one-directional (`dio_client.dart` → `api_client.dart`).
+
+Updated imports across 3 lib files (`di/injection.dart`, `session/session_controller.dart`, `auth/shared/data/auth_repository_impl.dart`) and 5 test files, and repointed the docs that cited the deleted paths (`guides/01_folder_structure.md`, `docs/OSTA_plan.md`, and the `auth` / `business-onboarding` / `role-selection-and-routing` / `my-bookings` / `business-bookings` feature docs). Test file names are unchanged. Pure refactor, no behavior change. `dart format` clean, `flutter analyze` → **No issues found**, all 127 tests pass.
+
+> ‏**دمج طبقة الشبكة (10 ملفّات ← 4)** (2026-07-11) — كان `lib/core/network/` قد تضخّم إلى 10 ملفّات أحادية المسؤولية، عدّة منها أنواع صغيرة (10-37 سطرًا) لا تُستعمل إلا من جارها. دُمجت في مالكها الطبيعي مع الإبقاء على 4 ملفّات: صار `api_client.dart` يضمّ `ApiResult<T>` و`PaginationMeta`، وصار `dio_client.dart` يضمّ `AuthEvents` و`TokenPair`/`parseTokenPair` و`AuthInterceptor` و`SocialTokenExchange`، بينما بقي `api_exception.dart` و`api_endpoints.dart` كما هما. النقطة غير الآلية الوحيدة: نُقل ثابت `noAuthKey` إلى `ApiClient` حتى يصير الاعتماد أحادي الاتجاه (`dio_client.dart` ← `api_client.dart`) بلا استيراد متبادل. حُدِّثت الاستيرادات في 3 ملفّات lib و5 اختبارات، وأُعيد توجيه الوثائق التي أشارت إلى المسارات المحذوفة، وبقيت أسماء ملفّات الاختبار كما هي. إعادة هيكلة صرفة بلا تغيير سلوك؛ التنسيق نظيف، والتحليل بلا مشاكل، و127 اختبارًا تنجح.
+
 ## 2026-07-10 — Dead-code removal, home localization, theme-token wiring
 
 Three cleanups from one "read the project, remove dead code, make sure it's localized and wired to the theme" pass.

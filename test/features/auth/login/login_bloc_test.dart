@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:osta/core/network/api_exception.dart';
-import 'package:osta/core/network/auth_events.dart';
+import 'package:osta/core/network/dio_client.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/session/session_store.dart';

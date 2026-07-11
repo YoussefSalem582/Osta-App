@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:osta/core/network/api_client.dart';
-import 'package:osta/core/network/social_token_exchange.dart';
+import 'package:osta/core/network/dio_client.dart';
 
 import 'fakes.dart';
 

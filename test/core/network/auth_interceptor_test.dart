@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:osta/core/config/app_config.dart';
-import 'package:osta/core/network/auth_events.dart';
-import 'package:osta/core/network/auth_interceptor.dart';
+import 'package:osta/core/network/api_client.dart';
+import 'package:osta/core/network/dio_client.dart';
 
 import 'fakes.dart';
 
@@ -137,7 +137,7 @@ void main() {
     await expectLater(
       buildDio(adapter).get<dynamic>(
         '/auth/login',
-        options: Options(extra: const {AuthInterceptor.noAuthKey: true}),
+        options: Options(extra: const {ApiClient.noAuthKey: true}),
       ),
       throwsA(isA<DioException>()),
     );

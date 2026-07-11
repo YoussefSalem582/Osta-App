@@ -71,7 +71,7 @@ The steps below trace the intended first-run journey end to end.
 3. **Persistence**: `activeRole` goes to `flutter_secure_storage` (per [#33](https://github.com/YoussefSalem582/Osta-App/issues/33)); first-run flags use `shared_preferences` (per [#32](https://github.com/YoussefSalem582/Osta-App/issues/32)). Tokens already live in `core/auth/token_storage.dart` (`access_token`/`refresh_token`).
 4. **`account_type`**: the persisted `activeRole` is sent as `account_type` on `POST /auth/register` and `POST /auth/login` (and on social exchange, per epic [#36](https://github.com/YoussefSalem582/Osta-App/issues/36)).
 5. **Role-aware routing** ([#34](https://github.com/YoussefSalem582/Osta-App/issues/34)): a `go_router` **top-level redirect** keyed on `me.type` — `customer` → `ConsumerShell` at `/home`, `business` → `ProviderShell` at `/dashboard`. Each shell is a `StatefulShellRoute` (the provider shell absorbs the future solo-mechanic/tow-truck roles). Opening the wrong shell auto-corrects with a toast ([#32](https://github.com/YoussefSalem582/Osta-App/issues/32)).
-6. **Session expiry**: 401 ⇒ clear tokens → Login. The plumbing hook already exists: `core/network/auth_events.dart` broadcasts an `onSessionExpired` stream fired by `AuthInterceptor` when the refresh-retry-once fails; the router redirect will listen to it.
+6. **Session expiry**: 401 ⇒ clear tokens → Login. The plumbing hook already exists: `core/network/dio_client.dart` broadcasts an `AuthEvents.onSessionExpired` stream fired by `AuthInterceptor` when the refresh-retry-once fails; the router redirect will listen to it.
 
 ### State management & data flow (planned) / إدارة الحالة وتدفّق البيانات
 

@@ -3,7 +3,7 @@ import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/core/network/api_exception.dart';
-import 'package:osta/core/network/token_pair.dart';
+import 'package:osta/core/network/dio_client.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:osta/features/auth/shared/domain/auth_repository.dart';
 

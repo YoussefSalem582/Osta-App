@@ -96,7 +96,7 @@ All responses use the standard `{success, data, meta?}` envelope under `/api/v1`
 > ‏متاح بالفعل وسيُعاد استخدامه:
 
 - Shared UI (`lib/shared/ui/`): `AppCard` (booking + mechanic cards), `AppButton` (accept/reject/assign actions), `AppBottomSheet` (detail sheet, mechanic form sheet), `AppTopBar`, `AppTextField` (reject reason, mechanic form fields), `EmptyState` / `ErrorState` / `LoadingState` (empty roster CTA, list states).
-- `PaginationMeta` (`lib/core/network/pagination_meta.dart`) for the paginated bookings list.
+- `PaginationMeta` (`lib/core/network/api_client.dart`) for the paginated bookings list.
 - Formatters (`lib/shared/formatters/app_formatters.dart`): `EgpFormatter` for booking totals, `NumberFormatter` (ar_EG Arabic-Indic digits).
 - `context.l10n` (`lib/shared/extensions/context_ext.dart`) — no hardcoded strings; ARB keys in `lib/l10n/`.
 
