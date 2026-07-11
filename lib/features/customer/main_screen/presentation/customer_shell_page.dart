@@ -27,7 +27,7 @@ class CustomerShellPage extends StatelessWidget {
         AppBottomNavItem(
           icon: Icons.calendar_month_outlined,
           label: l10n.navBookings,
-          body: const MyBookingsView(),
+          body: const MyBookingsScreen(),
         ),
         // Store — placeholder until the customer shop screen is built.
         AppBottomNavItem(

@@ -326,5 +326,15 @@
   "homeBookServiceSubtitle": "احجز من أقرب مركز",
   "homeNearbyCenters": "مراكز قريبة منك",
   "homeFromShop": "من المتجر",
-  "homeActiveBookingBadge": "حجز نشط"
+  "homeActiveBookingBadge": "حجز نشط",
+  "bookAppointment": "احجز موعد",
+  "selectDay": "اختر اليوم",
+  "availableTimes": "المواعيد المتاحة",
+  "temporaryReservation": "الموعد محجوز مؤقتاً",
+  "temporaryReservationTimer": "الموعد محجوز مؤقت",
+  "total": "الإجمالي",
+  "confirmAndPayAtCenter": "تأكيد · الدفع في المركز",
+  "bookingService": "العربية",
+  "bookingServiceDetail": "هيونداي إلترا",
+  "bookingServiceSubDetail": "تغيير زيت وفلتر"
 }
