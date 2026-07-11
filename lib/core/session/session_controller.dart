@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:osta/core/network/auth_events.dart';
+import 'package:osta/core/network/dio_client.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:osta/core/session/session_state.dart';
 import 'package:osta/core/session/session_store.dart';
@@ -92,6 +92,14 @@ class SessionController extends Cubit<SessionState> {
             : authoritativeRole,
       ),
     );
+  }
+
+  /// Marks the business onboarding wizard finished for this session, so the
+  /// guard stops forcing it and lets the user into the business shell.
+  /// In-memory (never persisted) — the wizard re-runs on the next launch.
+  void completeBusinessOnboarding() {
+    if (state.businessOnboarded) return;
+    emit(state.copyWith(businessOnboarded: true));
   }
 
   /// Clears the one-shot correction flag once the toast has been shown.

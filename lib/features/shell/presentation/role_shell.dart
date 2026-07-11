@@ -19,22 +19,29 @@ enum _ShellAction { switchRole, signOut }
 class RoleShell extends StatefulWidget {
   const RoleShell({
     required this.tabs,
-    this.pages,
     this.centerIcon,
     this.onCenterTap,
+    this.centerColor,
+    this.centerBody,
+    this.centerLabel,
     super.key,
   });
 
   final List<AppBottomNavItem> tabs;
 
-  /// Optional list of pages to display for each tab. When provided, the
-  /// matching page is shown instead of the generic [EmptyState] placeholder.
-  /// Must have the same length as [tabs] when provided.
-  final List<Widget>? pages;
-
   /// Optional raised center action for the bottom bar (e.g. a map button).
   final IconData? centerIcon;
   final VoidCallback? onCenterTap;
+
+  /// Fill colour of the center action; defaults to the brand green.
+  final Color? centerColor;
+
+  /// Optional screen the center action shows *inside* the shell (keeping the
+  /// bottom nav), instead of firing [onCenterTap]. Tapping any tab leaves it.
+  final Widget? centerBody;
+
+  /// App-bar title shown while [centerBody] is on screen.
+  final String? centerLabel;
 
   @override
   State<RoleShell> createState() => _RoleShellState();
@@ -42,14 +49,24 @@ class RoleShell extends StatefulWidget {
 
 class _RoleShellState extends State<RoleShell> {
   int _index = 0;
+  bool _centerActive = false;
+
+  void _onCenter() {
+    if (widget.centerBody != null) {
+      setState(() => _centerActive = true);
+    } else {
+      widget.onCenterTap?.call();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final tab = widget.tabs[_index];
+    final showingCenter = _centerActive && widget.centerBody != null;
     return Scaffold(
       appBar: AppTopBar(
-        title: tab.label,
+        title: showingCenter ? (widget.centerLabel ?? tab.label) : tab.label,
         leading: Padding(
           padding: const EdgeInsets.all(AppSpacing.sm),
           child: Image.asset(AppImages.logo, color: AppColors.brandGreen),
@@ -70,39 +87,33 @@ class _RoleShellState extends State<RoleShell> {
           ),
         ],
       ),
-// <<<<<<< HEAD
-//       body: widget.pages != null
-//           ? IndexedStack(
-//               index: _index,
-//               children: widget.pages!,
-//             )
-//           : EmptyState(
-//               icon: tab.icon,
-//               title: tab.label,
-//               message: l10n.shellWelcome,
-//             ),
-// =======
-      body:
-          tab.body ??
-          EmptyState(
-            icon: tab.icon,
-            title: tab.label,
-            message: l10n.shellWelcome,
-          ),
-// >>>>>>> 05dd7eefce8d3884570b01b7e0b4d8e0d864abad
+      body: showingCenter
+          ? widget.centerBody!
+          : (tab.body ??
+                EmptyState(
+                  icon: tab.icon,
+                  title: tab.label,
+                  message: l10n.shellWelcome,
+                )),
       bottomNavigationBar: AppBottomNavBar(
         items: widget.tabs,
-        currentIndex: _index,
+        // No tab is selected while the center body is on screen.
+        currentIndex: showingCenter ? -1 : _index,
+        centerActive: showingCenter,
         onChanged: (i) {
           final onTap = widget.tabs[i].onTap;
           if (onTap != null) {
             onTap();
           } else {
-            setState(() => _index = i);
+            setState(() {
+              _centerActive = false;
+              _index = i;
+            });
           }
         },
         centerIcon: widget.centerIcon,
-        onCenterTap: widget.onCenterTap,
+        onCenterTap: widget.centerIcon != null ? _onCenter : null,
+        centerColor: widget.centerColor,
       ),
     );
   }

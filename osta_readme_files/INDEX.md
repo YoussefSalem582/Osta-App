@@ -20,8 +20,8 @@
 
 ### … know what to build next / أعرف ما الذي أبنيه تاليًا
 
-- [`../OSTA_TODO.md`](../OSTA_TODO.md) — **Zero-to-production checklist**: tick-boxed phases from foundation to staged `v1.0.0` launch.
-- [`../OSTA_plan.md`](../OSTA_plan.md) — **Master build instructions for AI agents**: mandates, amendments (talker, skeletonizer, offline-first, releases/tags), per-epic execution order.
+- [`../OSTA_TODO.md`](docs/OSTA_TODO.md) — **Zero-to-production checklist**: tick-boxed phases from foundation to staged `v1.0.0` launch.
+- [`../OSTA_plan.md`](docs/OSTA_plan.md) — **Master build instructions for AI agents**: mandates, amendments (talker, skeletonizer, offline-first, releases/tags), per-epic execution order.
 - [DELIVERY_PLAN.md](reference/DELIVERY_PLAN.md) — Milestones, owners, cross-repo issue map, suggested build order.
 - App tracker [#61](https://github.com/YoussefSalem582/Osta-App/issues/61) · Backend tracker [#63](https://github.com/YoussefSalem582/osta_backend/issues/63).
 - [CURRENT_STATUS.md](CURRENT_STATUS.md) — What exists today (M0 foundation) + metrics.
@@ -103,7 +103,7 @@
 ## I'm an AI agent — give me the read order / أنا عميل ذكاء اصطناعي — أعطني ترتيب القراءة
 
 1. [`../AGENTS.md`](../AGENTS.md) — canonical conventions.
-2. [`../OSTA_plan.md`](../OSTA_plan.md) — master build instructions: mandates, amendments, execution order.
+2. [`../OSTA_plan.md`](docs/OSTA_plan.md) — master build instructions: mandates, amendments, execution order.
 3. Tool shim if applicable ([`../CLAUDE.md`](../CLAUDE.md)).
 4. This INDEX.md to find the right per-task doc.
 5. [DELIVERY_PLAN.md](reference/DELIVERY_PLAN.md) + the feature doc + the GitHub epic before writing feature code.

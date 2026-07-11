@@ -4,7 +4,7 @@ import 'package:osta/features/customer/booking/data/model.dart/booking_item.dart
 import 'package:osta/shared/extensions/context_ext.dart';
 
 class StatusBadge extends StatelessWidget {
-  const StatusBadge({super.key, required this.status});
+  const StatusBadge({required this.status, super.key});
 
   final BookingStatus status;
 
@@ -39,7 +39,7 @@ class StatusBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
-        vertical: 4,
+        vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
         color: bg,

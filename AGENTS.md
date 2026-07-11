@@ -15,24 +15,24 @@
 
 ## Table of Contents
 
-- [Project Overview](#project-overview)
-- [Current Stage — Read This First](#current-stage--read-this-first)
-- [Plain-Dart, No Codegen](#plain-dart-no-codegen)
-- [Key Entry Points](#key-entry-points)
-- [Feature Architecture](#feature-architecture)
-- [Design Tokens — Never Hardcode](#design-tokens--never-hardcode)
-- [State Management (BLoC)](#state-management-bloc)
-- [API Integration](#api-integration)
-- [Error Handling](#error-handling)
-- [DI Registration (manual get_it)](#di-registration-manual-get_it)
-- [Localization](#localization)
-- [Security](#security)
-- [Shared UI Components](#shared-ui-components)
-- [Naming Conventions](#naming-conventions)
-- [Git & PRs](#git--prs)
-- [Mandatory Documentation](#mandatory-documentation-after-every-change)
-- [Approved Commands](#approved-commands)
-- [Issue Trackers & Roadmap](#issue-trackers--roadmap)
+- [Project Overview](#project-overview--نظرة-عامة)
+- [Current Stage — Read This First](#current-stage--read-this-first--المرحلة-الحالية--اقرأ-هذا-أولًا)
+- [Plain-Dart, No Codegen](#plain-dart-no-codegen--دارت-بسيط-بلا-توليد-كود)
+- [Key Entry Points](#key-entry-points--نقاط-الدخول-الرئيسية)
+- [Feature Architecture](#feature-architecture--معمارية-الميزات)
+- [Design Tokens — Never Hardcode](#design-tokens--never-hardcode--رموز-التصميم--لا-تُثبّت-القيم-يدويًا)
+- [State Management (BLoC)](#state-management-bloc--إدارة-الحالة)
+- [API Integration](#api-integration--تكامل-الـ-api)
+- [Error Handling](#error-handling--معالجة-الأخطاء)
+- [DI Registration (manual get_it)](#di-registration-manual-get_it--تسجيل-التبعيات-يدوي)
+- [Localization](#localization--الترجمة)
+- [Security](#security--الأمان)
+- [Shared UI Components](#shared-ui-components--مكوّنات-الواجهة-المشتركة)
+- [Naming Conventions](#naming-conventions--اصطلاحات-التسمية)
+- [Git & PRs](#git--prs--الالتزامات-والطلبات)
+- [Mandatory Documentation](#mandatory-documentation-after-every-change--التوثيق-الإلزامي)
+- [Approved Commands](#approved-commands--الأوامر-المعتمدة)
+- [Issue Trackers & Roadmap](#issue-trackers--roadmap--متتبّعات-القضايا-وخارطة-الطريق)
 
 ## Project Overview / نظرة عامة
 
@@ -91,7 +91,7 @@ Every feature lives under `lib/features/<name>/` (customer/business sub-areas ne
 
 > ‏كل ميزة داخل `lib/features/<name>/` (مناطق العميل/النشاط متداخلة) بثلاث طبقات:
 
-```
+```text
 features/<name>/
 ├── data/          # datasources (ApiClient) · models (Equatable + fromJson/toJson) · repositories
 ├── domain/        # entities (Equatable) · repository contracts · usecases
@@ -215,8 +215,8 @@ Safe to run autonomously. Anything else — `git push`, dependency upgrades, sto
 
 ## Issue Trackers & Roadmap / متتبّعات القضايا وخارطة الطريق
 
-- App epics: https://github.com/YoussefSalem582/Osta-App/issues — tracker [#61](https://github.com/YoussefSalem582/Osta-App/issues/61)
-- Backend epics: https://github.com/YoussefSalem582/osta_backend/issues — tracker [#63](https://github.com/YoussefSalem582/osta_backend/issues/63)
+- App epics: <https://github.com/YoussefSalem582/Osta-App/issues> — tracker [#61](https://github.com/YoussefSalem582/Osta-App/issues/61)
+- Backend epics: <https://github.com/YoussefSalem582/osta_backend/issues> — tracker [#63](https://github.com/YoussefSalem582/osta_backend/issues/63)
 - Deferred tooling + phased plan: [`docs/ROADMAP.md`](docs/ROADMAP.md)
 - Milestones, owners, cross-repo mirror: [`osta_readme_files/reference/DELIVERY_PLAN.md`](osta_readme_files/reference/DELIVERY_PLAN.md)
 - Design mockups: `design-assets` branch (`mockups/*.png`)

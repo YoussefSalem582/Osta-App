@@ -12,7 +12,7 @@ Legend: 🔧 = generated (git-ignored) · 🚧 = stub folder (no dart files yet,
 
 > ‏المفتاح: 🔧 = مُولَّد (متجاهَل من git) · 🚧 = مجلد stub (لسه من غير ملفات dart، مخطَّط له في epic مفتوح). حالياً الحاجة الوحيدة المُولَّدة هي l10n.
 
-```
+```text
 lib/
 ├── main.dart                           # Bootstrap: configureDependencies() → runApp(OstaApp)
 ├── app.dart                            # OstaApp: MaterialApp.router + theme + l10n
@@ -30,15 +30,10 @@ lib/
 │   │   └── failure.dart                # sealed Failure implements Exception (Network/Server/Unknown) — thrown, caught with try/catch
 │   ├── l10n/                           # 🔧 GENERATED AppLocalizations (+ _ar, _en)
 │   ├── network/
-│   │   ├── api_client.dart             # Envelope-aware get/post/put/delete<T> → ApiResult<T>
+│   │   ├── api_client.dart             # Envelope-aware get/post/put/delete<T> → ApiResult<T> (+ ApiResult / PaginationMeta)
+│   │   ├── api_endpoints.dart          # ApiEndpoints — /api/v1 path catalogue
 │   │   ├── api_exception.dart          # sealed typed exceptions (422/401/403/404/429/5xx/transport)
-│   │   ├── api_result.dart             # ApiResult<T> (data + PaginationMeta?)
-│   │   ├── auth_events.dart            # broadcast onSessionExpired stream
-│   │   ├── auth_interceptor.dart       # QueuedInterceptor: bearer attach + 401 refresh-retry-once
-│   │   ├── dio_client.dart             # buildAppDio(): Dio (15s timeouts) + interceptors
-│   │   ├── pagination_meta.dart        # plain Equatable + hand-written fromJson
-│   │   ├── social_token_exchange.dart  # POST /auth/social/{provider} → store token pair
-│   │   └── token_pair.dart             # parse dual tokens from response
+│   │   └── dio_client.dart             # buildAppDio() + AuthInterceptor + AuthEvents + TokenPair + SocialTokenExchange
 │   ├── router/
 │   │   └── app_router.dart             # GoRouter: /splash → /role. No shells yet.
 │   └── theme/

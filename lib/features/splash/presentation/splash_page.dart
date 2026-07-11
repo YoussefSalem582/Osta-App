@@ -5,6 +5,8 @@ import 'package:osta/core/constants/app_images.dart';
 import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/theme/app_colors.dart';
+import 'package:osta/core/theme/app_tokens.dart';
+import 'package:osta/shared/extensions/context_ext.dart';
 
 /// First screen on launch. Reads persisted `{token, activeRole, locale}` via
 /// [SessionController.bootstrap]; the router's redirect then lands the user in
@@ -46,9 +48,9 @@ final class _SplashPageState extends State<SplashPage> {
               AppImages.logo,
               height: 200,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Text(
-              'صلح عربيتك في دقائق',
+              context.l10n.splashTagline,
               style: theme.textTheme.headlineSmall?.copyWith(
                 color: theme.colorScheme.onPrimary,
                 fontWeight: FontWeight.bold,

@@ -54,28 +54,6 @@ class ErrorState extends StatelessWidget {
   );
 }
 
-class LoadingState extends StatelessWidget {
-  const LoadingState({this.label, super.key});
-
-  final String? label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const CircularProgressIndicator(),
-          if (label != null) ...[
-            const SizedBox(height: AppSpacing.md),
-            Text(label!, style: Theme.of(context).textTheme.bodyMedium),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
 class _StatusLayout extends StatelessWidget {
   const _StatusLayout({
     required this.icon,

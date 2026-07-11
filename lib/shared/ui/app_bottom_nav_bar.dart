@@ -44,6 +44,8 @@ class AppBottomNavBar extends StatelessWidget {
     required this.onChanged,
     this.centerIcon,
     this.onCenterTap,
+    this.centerColor,
+    this.centerActive = false,
     super.key,
   });
 
@@ -56,6 +58,13 @@ class AppBottomNavBar extends StatelessWidget {
   /// never changes [currentIndex].
   final IconData? centerIcon;
   final VoidCallback? onCenterTap;
+
+  /// Fill colour of the center action; defaults to the brand green.
+  final Color? centerColor;
+
+  /// When true, the center action is the on-screen surface — the FAB fills with
+  /// the brand colour to read as selected (like a highlighted tab).
+  final bool centerActive;
 
   bool get _hasCenter => centerIcon != null && onCenterTap != null;
 
@@ -115,7 +124,13 @@ class AppBottomNavBar extends StatelessWidget {
           left: 0,
           right: 0,
           child: Center(
-            child: _CenterFab(icon: centerIcon!, onTap: onCenterTap!),
+            child: _CenterFab(
+              icon: centerIcon!,
+              onTap: onCenterTap!,
+              color: centerActive
+                  ? theme.colorScheme.primary
+                  : (centerColor ?? AppColors.brandGreen),
+            ),
           ),
         ),
       ],
@@ -173,15 +188,20 @@ class _NavTab extends StatelessWidget {
 
 /// The raised circular center action.
 class _CenterFab extends StatelessWidget {
-  const _CenterFab({required this.icon, required this.onTap});
+  const _CenterFab({
+    required this.icon,
+    required this.onTap,
+    required this.color,
+  });
 
   final IconData icon;
   final VoidCallback onTap;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.brandGreen,
+      color: color,
       shape: const CircleBorder(),
       elevation: AppElevation.high,
       child: InkWell(

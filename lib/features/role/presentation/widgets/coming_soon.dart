@@ -2,18 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 
-class ComingSoon extends StatelessWidget {
-  const ComingSoon({
-    required this.label,
-    super.key,
-  });
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) => ComingSoonBadge(label: label);
-}
-
 class ComingSoonBadge extends StatelessWidget {
   const ComingSoonBadge({
     required this.label,
@@ -39,6 +27,7 @@ class ComingSoonBadge extends StatelessWidget {
       child: Text(
         label,
         style: theme.textTheme.labelMedium?.copyWith(
+          // ponytail: white on the neutral gray pill; no on-gray token exists
           color: Colors.white,
           fontWeight: FontWeight.w700,
         ),

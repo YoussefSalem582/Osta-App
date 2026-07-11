@@ -1,8 +1,8 @@
 # Contributing / المساهمة
 
-Thanks for working on OSTA. Read [`AGENTS.md`](AGENTS.md) (canonical conventions) and [`ARCHITECTURE.md`](ARCHITECTURE.md) before your first change. Most features are specified by open GitHub epics — read the matching epic and its [feature doc](osta_readme_files/features/README.md) before building.
+Thanks for working on OSTA. Read [`AGENTS.md`](AGENTS.md) (canonical conventions) and [`ARCHITECTURE.md`](osta_readme_files/docs/ARCHITECTURE.md) before your first change. Most features are specified by open GitHub epics — read the matching epic and its [feature doc](osta_readme_files/features/README.md) before building.
 
-> ‏قبل أوّل تغيير اقرأ [`AGENTS.md`](AGENTS.md) (الاصطلاحات الأساسية) و[`ARCHITECTURE.md`](ARCHITECTURE.md). معظم الميزات مُحدَّدة في epics مفتوحة على GitHub — اقرأ الـ epic المطابق و[ملفّ الميزة](osta_readme_files/features/README.md) قبل البناء.
+> ‏قبل أوّل تغيير اقرأ [`AGENTS.md`](AGENTS.md) (الاصطلاحات الأساسية) و[`ARCHITECTURE.md`](osta_readme_files/docs/ARCHITECTURE.md). معظم الميزات مُحدَّدة في epics مفتوحة على GitHub — اقرأ الـ epic المطابق و[ملفّ الميزة](osta_readme_files/features/README.md) قبل البناء.
 
 ## Branch model / نموذج الفروع
 
@@ -67,7 +67,7 @@ Never bypass design tokens (`AppSpacing`/`AppRadii`/`context.appColors`), never 
 
 ## Example graph / مثال للرسم البياني
 
-```
+```text
 *   Merge feat/29-design-system-theming into main (#65)
 |\
 | * feat(ui): shared components, EGP/number formatters, and component gallery

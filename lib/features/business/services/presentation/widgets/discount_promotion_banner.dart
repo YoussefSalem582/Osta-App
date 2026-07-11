@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 
-/// Promotion banner displaying active discount offers (e.g. 15% discount on oil).
+/// Promotion banner displaying active discount offers
+/// (e.g. 15% discount on oil).
 class DiscountPromotionBanner extends StatelessWidget {
   const DiscountPromotionBanner({
     required this.title,
@@ -44,14 +45,14 @@ class DiscountPromotionBanner extends StatelessWidget {
                   title,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   subtitle,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.8),
+                    color: theme.colorScheme.onPrimary.withValues(alpha: 0.8),
                   ),
                 ),
               ],
@@ -71,7 +72,7 @@ class DiscountPromotionBanner extends StatelessWidget {
               activeBadgeText,
               style: theme.textTheme.labelMedium?.copyWith(
                 fontWeight: FontWeight.w800,
-                color: Colors.black,
+                color: context.appColors.onAccent,
               ),
             ),
           ),

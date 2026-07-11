@@ -90,7 +90,6 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
         ],
       ),
       body: vehicles.isEmpty
-
           ? EmptyGarageView(
               onAddVehicle: () => unawaited(context.push(AppRoutes.addCar)),
             )
@@ -132,7 +131,7 @@ class AddVehicleButton extends StatelessWidget {
       onPressed: onPressed,
       style: FilledButton.styleFrom(
         backgroundColor: AppColors.brandGreen,
-        foregroundColor: Colors.white,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
@@ -142,9 +141,8 @@ class AddVehicleButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadii.md),
         ),
-        textStyle: const TextStyle(
+        textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w700,
-          fontSize: 13,
         ),
       ),
       icon: const Icon(Icons.add_rounded, size: 18),

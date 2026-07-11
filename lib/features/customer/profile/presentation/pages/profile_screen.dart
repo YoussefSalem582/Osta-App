@@ -15,8 +15,22 @@ import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
+/// Full-screen profile route (`/profile`) — an app bar over [ProfileView].
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    appBar: AppTopBar(centerTitle: false, title: context.l10n.profile),
+    body: const ProfileView(),
+  );
+}
+
+/// Scaffold-less profile content — the customer shell's "More" tab body.
+/// The shell owns the app bar and bottom nav.
+class ProfileView extends StatelessWidget {
+  const ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +50,7 @@ class ProfileScreen extends StatelessWidget {
 
     final firstChar = userName.isNotEmpty ? userName.characters.first : '؟';
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppTopBar(centerTitle: false, title: context.l10n.profile),
-      body: ListView(
+    return ListView(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
@@ -82,15 +93,15 @@ class ProfileScreen extends StatelessWidget {
                     Text(
                       userName,
                       style: textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
+                        color: colorScheme.onPrimary,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       userHandle,
                       style: textTheme.bodySmall?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.75),
+                        color: colorScheme.onPrimary.withValues(alpha: 0.75),
                       ),
                     ),
                   ],
@@ -104,7 +115,7 @@ class ProfileScreen extends StatelessWidget {
                   backgroundColor: colorScheme.surfaceDim.withValues(
                     alpha: 0.4,
                   ),
-                  foregroundColor: Colors.white,
+                  foregroundColor: colorScheme.onPrimary,
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
                     vertical: AppSpacing.sm,
@@ -113,7 +124,7 @@ class ProfileScreen extends StatelessWidget {
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(AppRadii.lg),
                   ),
                 ),
               ),
@@ -141,6 +152,7 @@ class ProfileScreen extends StatelessWidget {
             subtitle: l10n.addressesSubtitle,
             leading: const ProfileItemIcon(
               icon: Icons.location_on_outlined,
+              // ponytail: no token for this decorative color
               color: Colors.redAccent,
             ),
             onTap: () {},
@@ -154,6 +166,7 @@ class ProfileScreen extends StatelessWidget {
             subtitle: l10n.myCarsSubtitle,
             leading: const ProfileItemIcon(
               icon: Icons.directions_car_rounded,
+              // ponytail: no token for this decorative color
               color: Colors.orange,
             ),
             onTap: () => unawaited(context.push(AppRoutes.garage)),
@@ -167,6 +180,7 @@ class ProfileScreen extends StatelessWidget {
             subtitle: l10n.myStoreSubtitle,
             leading: const ProfileItemIcon(
               icon: Icons.storefront_outlined,
+              // ponytail: no token for this decorative color
               color: Colors.purple,
             ),
             onTap: () {},
@@ -233,6 +247,7 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 const ProfileItemIcon(
                   icon: Icons.palette_outlined,
+                  // ponytail: no token for this decorative color
                   color: Colors.amber,
                 ),
                 Expanded(
@@ -265,6 +280,7 @@ class ProfileScreen extends StatelessWidget {
             subtitle: l10n.notificationsSubtitle,
             leading: const ProfileItemIcon(
               icon: Icons.notifications_outlined,
+              // ponytail: no token for this decorative color
               color: Colors.blue,
             ),
             onTap: () {},
@@ -273,7 +289,6 @@ class ProfileScreen extends StatelessWidget {
 
         const SizedBox(height: AppSpacing.xl),
       ],
-    )
     );
   }
 }

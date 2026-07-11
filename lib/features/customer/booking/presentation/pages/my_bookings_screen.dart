@@ -36,14 +36,25 @@ const past = [
   ),
 ];
 
-class MyBookingsScreen extends StatefulWidget {
+class MyBookingsScreen extends StatelessWidget {
   const MyBookingsScreen({super.key});
 
   @override
-  State<MyBookingsScreen> createState() => _MyBookingsScreenState();
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    appBar: AppTopBar(centerTitle: false, title: context.l10n.navBookings),
+    body: const MyBookingsView(),
+  );
 }
 
-class _MyBookingsScreenState extends State<MyBookingsScreen> {
+class MyBookingsView extends StatefulWidget {
+  const MyBookingsView({super.key});
+
+  @override
+  State<MyBookingsView> createState() => _MyBookingsViewState();
+}
+
+class _MyBookingsViewState extends State<MyBookingsView> {
   int selectedTab = 0;
 
   @override
@@ -52,59 +63,56 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md,
-                AppSpacing.xs,
-                AppSpacing.md,
-                AppSpacing.md,
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              AppSpacing.xs,
+              AppSpacing.md,
+              AppSpacing.md,
+            ),
+            child: Container(
+              height: 40,
+              decoration: BoxDecoration(
+                color: colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.45,
+                ),
+                borderRadius: BorderRadius.circular(AppRadii.pill),
               ),
-              child: Container(
-                height: 40,
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest.withValues(
-                    alpha: 0.45,
+              child: Row(
+                children: [
+                  TabPill(
+                    label: l10n.bookingUpcomingCount(upcoming.length),
+                    selected: selectedTab == 0,
+                    onTap: () => setState(() => selectedTab = 0),
                   ),
-                  borderRadius: BorderRadius.circular(AppRadii.pill),
-                ),
-                child: Row(
-                  children: [
-                    TabPill(
-                      label: l10n.bookingUpcomingCount(upcoming.length),
-                      selected: selectedTab == 0,
-                      onTap: () => setState(() => selectedTab = 0),
-                    ),
-                    TabPill(
-                      label: l10n.bookingPast,
-                      selected: selectedTab == 1,
-                      onTap: () => setState(() => selectedTab = 1),
-                    ),
-                  ],
-                ),
+                  TabPill(
+                    label: l10n.bookingPast,
+                    selected: selectedTab == 1,
+                    onTap: () => setState(() => selectedTab = 1),
+                  ),
+                ],
               ),
             ),
-            Expanded(
-              child: selectedTab == 0
-                  ? BookingList(
-                      bookings: upcoming,
-                      colorScheme: colorScheme,
-                      textTheme: textTheme,
-                    )
-                  : BookingList(
-                      bookings: past,
-                      colorScheme: colorScheme,
-                      textTheme: textTheme,
-                    ),
-            ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: selectedTab == 0
+                ? BookingList(
+                    bookings: upcoming,
+                    colorScheme: colorScheme,
+                    textTheme: textTheme,
+                  )
+                : BookingList(
+                    bookings: past,
+                    colorScheme: colorScheme,
+                    textTheme: textTheme,
+                  ),
+          ),
+        ],
       ),
     );
   }

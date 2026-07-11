@@ -6,11 +6,11 @@ import 'package:osta/features/customer/booking/data/model.dart/booking_item.dart
 import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/status_badge.dart';
 
 class BookingCard extends StatelessWidget {
-  const BookingCard({ 
+  const BookingCard({
     required this.booking,
     required this.colorScheme,
     required this.textTheme,
-    super.key
+    super.key,
   });
 
   final BookingItem booking;
@@ -63,7 +63,7 @@ class BookingCard extends StatelessWidget {
                             color: colorScheme.onSurface,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           booking.address,
                           style: textTheme.bodySmall?.copyWith(
@@ -95,7 +95,7 @@ class BookingCard extends StatelessWidget {
                     size: 13,
                     color: colorScheme.onSurfaceVariant,
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: AppSpacing.xs),
                   Text(
                     booking.date,
                     style: textTheme.bodySmall?.copyWith(

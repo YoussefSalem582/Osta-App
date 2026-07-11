@@ -45,10 +45,10 @@ class LogoUploadBox extends StatelessWidget {
                     color: theme.colorScheme.primary,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.camera_alt_rounded,
                     size: 16,
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                   ),
                 ),
               ),

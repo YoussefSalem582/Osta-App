@@ -38,11 +38,11 @@ All mirrored backend epics are closed — nothing on the app side is backend-blo
 
 > ‏المبنيّ فعلًا (طبقة النواة، المهمة #31 — مدمجة):
 
-- `core/network/auth_interceptor.dart` — `AuthInterceptor extends QueuedInterceptor`: attaches the bearer access token, and on 401 performs a single refresh-retry-once (queued so concurrent requests wait for one refresh).
+- `core/network/dio_client.dart` — `AuthInterceptor extends QueuedInterceptor`: attaches the bearer access token, and on 401 performs a single refresh-retry-once (queued so concurrent requests wait for one refresh).
 - `core/auth/token_storage.dart` — `TokenStorage` over `flutter_secure_storage`, keys `access_token` / `refresh_token` (`readAccessToken` / `readRefreshToken` / `writeTokens` / `clear`).
-- `core/network/social_token_exchange.dart` — `SocialTokenExchange`: `POST /auth/social/{provider}`, parses and stores the token pair.
-- `core/network/token_pair.dart` — parses the dual tokens from the response envelope.
-- `core/network/auth_events.dart` — broadcast `onSessionExpired` stream (refresh failure → app-level reaction).
+- `core/network/dio_client.dart` — `SocialTokenExchange`: `POST /auth/social/{provider}`, parses and stores the token pair.
+- `core/network/dio_client.dart` — `parseTokenPair` / `TokenPair`: parses the dual tokens from the response envelope.
+- `core/network/dio_client.dart` — `AuthEvents`: broadcast `onSessionExpired` stream (refresh failure → app-level reaction).
 - `features/auth/data/models/auth_token_model.dart` — plain `Equatable` dual-token model (hand-written `fromJson`/`toJson`/`props`, no codegen).
 
 **Planned (epics #35/#36):**

@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:osta/features/business/bookings/presentation/screens/bookings.dart';
+import 'package:osta/features/business/dashboard/presentation/screens/board_screen.dart';
+import 'package:osta/features/business/dashboard/presentation/screens/more_screen.dart';
+import 'package:osta/features/business/services/presentation/pages/business_services_page.dart';
 import 'package:osta/features/shell/presentation/role_shell.dart';
+import 'package:osta/features/shop/presentation/pages/business_shop_page.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_bottom_nav_bar.dart';
 
 /// Provider (business) shell — the landing surface for the `business` role.
+/// Same UI as the customer shell (rounded bar + raised center action), but the
+/// action is black and the tabs show the business's own screens.
 class BusinessShellPage extends StatelessWidget {
   const BusinessShellPage({super.key});
 
@@ -11,13 +18,38 @@ class BusinessShellPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return RoleShell(
+      // Center action: shows the provider bookings screen inside the shell so
+      // the bottom nav stays (black, vs the customer's green map action).
+      centerIcon: Icons.calendar_today_outlined,
+      // ponytail: fixed brand color (black action); no token
+      centerColor: Colors.black,
+      centerBody: const Bookings(),
+      centerLabel: l10n.reservation,
       tabs: [
-        AppBottomNavItem(icon: Icons.dashboard_outlined, label: l10n.navHome),
+        // Dashboard — the provider board (income, orders, live jobs).
         AppBottomNavItem(
-          icon: Icons.calendar_month_outlined,
-          label: l10n.navBookings,
+          icon: Icons.grid_view_outlined,
+          label: l10n.shellNavDashboard,
+          body: const BoardScreen(),
         ),
-        AppBottomNavItem(icon: Icons.person_outline, label: l10n.navProfile),
+        // Catalog & pricing — the business's own services screen.
+        AppBottomNavItem(
+          icon: Icons.local_offer_outlined,
+          label: l10n.shellNavCatalog,
+          body: const BusinessServicesPage(),
+        ),
+        // Store — the business's own shop screen.
+        AppBottomNavItem(
+          icon: Icons.shopping_bag_outlined,
+          label: l10n.shellNavStore,
+          body: const BusinessShopPage(),
+        ),
+        // More — the provider profile, management links and account actions.
+        AppBottomNavItem(
+          icon: Icons.more_horiz,
+          label: l10n.shellNavMore,
+          body: const MoreScreen(),
+        ),
       ],
     );
   }

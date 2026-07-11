@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 
 class CenterCard extends StatelessWidget {
   const CenterCard({
@@ -20,17 +21,17 @@ class CenterCard extends StatelessWidget {
       child: Card(
         color: theme.colorScheme.surfaceContainerLow,
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(AppSpacing.sm),
           child: Column(
             children: [
               Container(
                 height: 100,
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppRadii.md),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               Text(
                 name,
                 style: theme.textTheme.titleSmall?.copyWith(
@@ -38,16 +39,19 @@ class CenterCard extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
-                  Text(
-                    distance,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+                  Expanded(
+                    child: Text(
+                      distance,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(width: AppSpacing.xs),
                   Text(
                     '$rate ⭐',
                     style: theme.textTheme.bodyMedium?.copyWith(

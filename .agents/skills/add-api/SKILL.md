@@ -50,6 +50,7 @@ Failure -> a typed `ApiException` is **thrown** (never returned):
 ## Instructions
 
 1. **Path constant.** On the first API PR, create `lib/core/network/api_endpoints.dart` (it does not exist yet). Use `static const` for fixed paths and a small helper method for `{id}` routes. Base URL comes from `AppConfig.baseUrl`; put only the path here.
+
    ```dart
    class ApiEndpoints {
      static const centersNearby = '/centers/nearby';
@@ -58,6 +59,7 @@ Failure -> a typed `ApiException` is **thrown** (never returned):
    ```
 
 2. **Model (hand-written).** Plain `class X extends Equatable` with `factory X.fromJson(Map<String, dynamic>)`, `toJson()`, and `props`. No `@freezed`, no `@JsonSerializable`, no `part '*.g.dart'`. Backend keys are snake_case — map them explicitly. Pattern: lib/features/auth/data/models/auth_token_model.dart.
+
    ```dart
    class CenterModel extends Equatable {
      const CenterModel({required this.id, required this.name});
@@ -74,6 +76,7 @@ Failure -> a typed `ApiException` is **thrown** (never returned):
    ```
 
 3. **Data source — call `ApiClient` with a `parse:` callback.** The real signature is `get/post/put/delete<T>(String path, {required T Function(Object? data) parse, Map<String,dynamic>? query, Object? body, bool authenticated = true})`. `parse` turns `data` into your typed value; the method returns `ApiResult<T>` (read `.data`, and `.meta` for pagination). Pass `authenticated: false` for login / public routes.
+
    ```dart
    class DiscoveryRemoteDataSource {
      DiscoveryRemoteDataSource(this._client);
@@ -93,6 +96,7 @@ Failure -> a typed `ApiException` is **thrown** (never returned):
    ```
 
 4. **Repository — catch `ApiException`, throw a `Failure`.** `ApiClient` throws typed `ApiException`s; the domain layer speaks `Failure` (lib/core/error/failure.dart: `NetworkFailure` / `ServerFailure` / `UnknownFailure`, all `sealed`). Map each subtype by hand and throw — there is no `.toFailure()` helper, no `Either`, no `Result<T>`, no `.fold()`. Success returns the value.
+
    ```dart
    class DiscoveryRepository {
      DiscoveryRepository(this._ds);
@@ -112,9 +116,11 @@ Failure -> a typed `ApiException` is **thrown** (never returned):
      }
    }
    ```
+
    For a form endpoint, let `ValidationException` reach the bloc instead (rethrow it) so it can read `.fieldErrors` — map only the rest to `Failure`.
 
 5. **Use case.** A thin callable that holds the repo and exposes one method. No logic beyond delegating (add validation/composition here if the endpoint needs it).
+
    ```dart
    class GetNearbyCenters {
      GetNearbyCenters(this._repo);
@@ -125,6 +131,7 @@ Failure -> a typed `ApiException` is **thrown** (never returned):
    ```
 
 6. **Bloc — plain `try`/`catch (Failure)`.** Call the use case inside a `try`, emit success or error. Catch `Failure` (and `ValidationException` first if this is a form, to surface `.fieldErrors`).
+
    ```dart
    try {
      final centers = await _getNearbyCenters(lat: lat, lng: lng);
@@ -135,6 +142,7 @@ Failure -> a typed `ApiException` is **thrown** (never returned):
    ```
 
 7. **Register in get_it — by hand.** Add one `registerLazySingleton` line per collaborator in `configureDependencies()` (lib/core/di/injection.dart). Blocs use `registerFactory`. No `injectable`, no `injection.config.dart`, no `build_runner`.
+
    ```dart
    getIt
      ..registerLazySingleton<DiscoveryRemoteDataSource>(() => DiscoveryRemoteDataSource(getIt()))

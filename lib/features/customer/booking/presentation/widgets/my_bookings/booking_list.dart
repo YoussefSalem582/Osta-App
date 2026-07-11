@@ -5,11 +5,11 @@ import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/
 import 'package:osta/shared/extensions/context_ext.dart';
 
 class BookingList extends StatelessWidget {
-  const BookingList({ 
+  const BookingList({
     required this.bookings,
     required this.colorScheme,
     required this.textTheme,
-    super.key
+    super.key,
   });
 
   final List<BookingItem> bookings;
@@ -20,25 +20,25 @@ class BookingList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (bookings.isEmpty) {
       return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.calendar_month_outlined,
-            size: 64,
-            color: colorScheme.onSurface.withValues(alpha: 0.25),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            context.l10n.bookingEmpty,
-            style: textTheme.titleMedium?.copyWith(
-              color: colorScheme.onSurface.withValues(alpha: 0.45),
-              fontWeight: FontWeight.w600,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.calendar_month_outlined,
+              size: 64,
+              color: colorScheme.onSurface.withValues(alpha: 0.25),
             ),
-          ),
-        ],
-      ),
-    );
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              context.l10n.bookingEmpty,
+              style: textTheme.titleMedium?.copyWith(
+                color: colorScheme.onSurface.withValues(alpha: 0.45),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     return ListView.separated(

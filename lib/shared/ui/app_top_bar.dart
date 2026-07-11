@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 
 /// Brand top app bar — thin wrapper over [AppBar] so every screen gets the
 /// same title style and RTL-safe back behavior. Visual styling lives in
@@ -41,7 +42,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (subtitle != null) ...[
-            const SizedBox(height: 5),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               subtitle!,
               style: textTheme.bodySmall?.copyWith(
@@ -49,7 +50,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
           ],
-          const SizedBox(height: 5),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             title,
             style: textTheme.headlineMedium?.copyWith(

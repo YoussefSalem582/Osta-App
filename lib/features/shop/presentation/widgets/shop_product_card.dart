@@ -131,7 +131,7 @@ class ShopProductCard extends StatelessWidget {
                         onTap: onMoreTap,
                         borderRadius: BorderRadius.circular(AppRadii.pill),
                         child: Padding(
-                          padding: const EdgeInsets.all(4),
+                          padding: const EdgeInsets.all(AppSpacing.xs),
                           child: Icon(
                             Icons.more_horiz,
                             size: 20,
