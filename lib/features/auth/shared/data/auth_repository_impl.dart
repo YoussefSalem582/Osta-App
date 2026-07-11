@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/network/api_client.dart';
+import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/core/network/api_exception.dart';
-import 'package:osta/core/network/token_pair.dart';
+import 'package:osta/core/network/dio_client.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:osta/features/auth/shared/domain/auth_repository.dart';
 
@@ -20,7 +21,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<bool> isUsernameAvailable(String username) async {
     final result = await _api.get<bool>(
-      '/auth/check-username',
+      ApiEndpoints.authCheckUsername,
       authenticated: false,
       query: {'username': username},
       parse: (data) =>
@@ -34,7 +35,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String email,
     required String password,
     required AppRole accountType,
-  }) => _authenticate('/auth/login', {
+  }) => _authenticate(ApiEndpoints.authLogin, {
     'email': email,
     'password': password,
     'account_type': accountType.wireName,
@@ -49,7 +50,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
     required AppRole accountType,
     String? phone,
-  }) => _authenticate('/auth/register', {
+  }) => _authenticate(ApiEndpoints.authRegister, {
     'first_name': firstName,
     'last_name': lastName,
     'username': username,
@@ -67,14 +68,18 @@ class AuthRepositoryImpl implements AuthRepository {
     });
     // Content-type is left to Dio; Laravel's `image`/`mimes` rules sniff the
     // file's bytes, not the multipart header.
-    await _api.post<Object?>('/me/avatar', body: form, parse: (data) => data);
+    await _api.post<Object?>(
+      ApiEndpoints.meAvatar,
+      body: form,
+      parse: (data) => data,
+    );
   }
 
   @override
   Future<void> logout() async {
     try {
       await _api.post<Object?>(
-        '/auth/logout',
+        ApiEndpoints.authLogout,
         body: const <String, dynamic>{},
         parse: (data) => data,
       );
@@ -88,7 +93,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> forgotPassword({required String email}) async {
     await _api.post<Object?>(
-      '/forgot-password',
+      ApiEndpoints.authPasswordForgot,
       authenticated: false,
       body: {'email': email},
       parse: (data) => data,
@@ -102,7 +107,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
   }) async {
     await _api.post<Object?>(
-      '/reset-password',
+      ApiEndpoints.authPasswordReset,
       authenticated: false,
       body: {
         'email': email,

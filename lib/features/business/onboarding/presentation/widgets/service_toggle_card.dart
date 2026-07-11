@@ -85,7 +85,7 @@ class ServiceToggleCard extends StatelessWidget {
 
                 // لون الدائرة
                 thumbColor: WidgetStateProperty.resolveWith((states) {
-                  return Colors.white;
+                  return theme.colorScheme.onPrimary;
                 }),
 
                 // لون الخلفية

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:osta/core/theme/app_tokens.dart';
+import 'package:osta/shared/extensions/context_ext.dart';
 
 class ActiveBookingCard extends StatelessWidget {
   const ActiveBookingCard({super.key});
@@ -10,10 +12,10 @@ class ActiveBookingCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: colorScheme.primary,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(AppRadii.lg),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -21,7 +23,7 @@ class ActiveBookingCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                'قيد التنفيذ',
+                context.l10n.statusPending,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: colorScheme.onPrimary.withValues(alpha: 0.8),
                 ),
@@ -29,15 +31,15 @@ class ActiveBookingCard extends StatelessWidget {
               const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
                 ),
                 decoration: BoxDecoration(
                   color: colorScheme.onPrimary.withValues(alpha: 0.16),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(AppRadii.lg),
                 ),
                 child: Text(
-                  'حجز نشط',
+                  context.l10n.homeActiveBookingBadge,
                   style: theme.textTheme.labelLarge?.copyWith(
                     color: colorScheme.onPrimary,
                   ),
@@ -45,7 +47,7 @@ class ActiveBookingCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'تغيير زيت وفلتر',
             style: theme.textTheme.titleLarge?.copyWith(
@@ -53,14 +55,14 @@ class ActiveBookingCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'مركز النصر',
             style: theme.textTheme.bodyMedium?.copyWith(
               color: colorScheme.onPrimary.withValues(alpha: 0.8),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
           LinearProgressIndicator(
             value: .7,
             color: colorScheme.onPrimary,

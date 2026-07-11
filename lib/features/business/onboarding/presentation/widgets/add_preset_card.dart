@@ -42,7 +42,7 @@ class AddPresetCard extends StatelessWidget {
                   Text(
                     l10n.businessCatalogAddCommonTitle,
                     style: theme.textTheme.titleMedium?.copyWith(
-                      color: Colors.white,
+                      color: theme.colorScheme.onPrimary,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -50,7 +50,7 @@ class AddPresetCard extends StatelessWidget {
                   Text(
                     l10n.businessCatalogAddCommonSubtitle,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.8),
+                      color: theme.colorScheme.onPrimary.withValues(alpha: 0.8),
                     ),
                   ),
                 ],

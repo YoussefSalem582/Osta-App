@@ -15,7 +15,7 @@ class AppBarWidget extends StatelessWidget {
               Theme.of(
                 context,
               ).textTheme.bodySmall?.copyWith(
-                color: const Color(0xFF67775A),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
         ),
         Row(
@@ -26,9 +26,8 @@ class AppBarWidget extends StatelessWidget {
               style:
                   Theme.of(
                     context,
-                  ).textTheme.bodyMedium?.copyWith(
+                  ).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w700,
-                    fontSize: 20,
                   ),
             ),
           ],

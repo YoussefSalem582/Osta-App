@@ -21,6 +21,7 @@ class BusinessShellPage extends StatelessWidget {
       // Center action: shows the provider bookings screen inside the shell so
       // the bottom nav stays (black, vs the customer's green map action).
       centerIcon: Icons.calendar_today_outlined,
+      // ponytail: fixed brand color (black action); no token
       centerColor: Colors.black,
       centerBody: const Bookings(),
       centerLabel: l10n.reservation,

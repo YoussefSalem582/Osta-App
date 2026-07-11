@@ -82,7 +82,7 @@ The backend serves the detail via `BookingResource` / `BookingDetailResource` (i
 > ‏**متوفّرة بالفعل وسيُعاد استخدامها:**
 
 - Shared UI (`lib/shared/ui/`): `AppCard` (booking cards), `AppButton` (cancel/reschedule actions), `AppTopBar`, `AppBottomSheet` (action sheets), `EmptyState` / `ErrorState` / `LoadingState` for tab states.
-- `PaginationMeta` (`lib/core/network/pagination_meta.dart`) for the paginated list.
+- `PaginationMeta` (`lib/core/network/api_client.dart`) for the paginated list.
 - Formatters (`lib/shared/formatters/app_formatters.dart`): `EgpFormatter` for booking totals, `NumberFormatter` (ar_EG Arabic-Indic digits).
 - `context.l10n` (`lib/shared/extensions/context_ext.dart`) — no hardcoded strings; ARB keys in `lib/l10n/`.
 

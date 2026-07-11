@@ -296,5 +296,13 @@
   "generalFile": "General profile",
   "operationalCapacity": "Operational capacity",
   "analysis": "Analytics",
-  "boxEvaluations": "Reviews"
+  "boxEvaluations": "Reviews",
+  "splashTagline": "Fix your car in minutes",
+  "homeGreeting": "👋 Good morning",
+  "homeBookServiceCta": "Book a service",
+  "homeBookServiceTitle": "Need maintenance?",
+  "homeBookServiceSubtitle": "Book from the nearest center",
+  "homeNearbyCenters": "Centers near you",
+  "homeFromShop": "From the shop",
+  "homeActiveBookingBadge": "Active booking"
 }

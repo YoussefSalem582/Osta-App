@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 
 class SelectedType extends StatelessWidget {
   const SelectedType({
@@ -17,10 +18,10 @@ class SelectedType extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: conColor,
-        borderRadius: const BorderRadius.all(Radius.circular(14)),
+        borderRadius: const BorderRadius.all(Radius.circular(AppRadii.lg)),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(AppSpacing.sm),
         child: Text(
           text,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(

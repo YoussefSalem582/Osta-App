@@ -45,7 +45,7 @@ class _BusinessServicesPageState extends State<BusinessServicesPage> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       l10n.businessServicesTitle,
                       style: theme.textTheme.headlineSmall?.copyWith(
@@ -66,9 +66,9 @@ class _BusinessServicesPageState extends State<BusinessServicesPage> {
                     color: theme.colorScheme.primary,
                     borderRadius: BorderRadius.circular(AppRadii.lg),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.add,
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                     size: 24,
                   ),
                 ),

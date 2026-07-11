@@ -4,10 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/config/app_config.dart';
 import 'package:osta/core/network/api_client.dart';
-import 'package:osta/core/network/auth_events.dart';
 import 'package:osta/core/network/dio_client.dart';
-import 'package:osta/core/network/social_token_exchange.dart';
-
 import 'package:osta/core/router/app_router.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/session/session_store.dart';

@@ -92,32 +92,3 @@ class ProfileItemIcon extends StatelessWidget {
     );
   }
 }
-
-class ProfileSectionHeader extends StatelessWidget {
-  const ProfileSectionHeader({required this.title, super.key});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.md,
-        AppSpacing.lg,
-        AppSpacing.md,
-        AppSpacing.xs,
-      ),
-      child: Text(
-        title,
-        style: textTheme.labelMedium?.copyWith(
-          color: colorScheme.onSurface.withValues(alpha: 0.5),
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-        ),
-      ),
-    );
-  }
-}

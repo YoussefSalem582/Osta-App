@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 
 class ItemType extends StatelessWidget {
   const ItemType({
@@ -17,14 +18,14 @@ class ItemType extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.all(Radius.circular(16)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.all(Radius.circular(AppRadii.lg)),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(6),
+        padding: const EdgeInsets.all(AppSpacing.sm),
         child: Padding(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(AppSpacing.sm),
           child: Column(
             children: [
               Text(
@@ -35,7 +36,7 @@ class ItemType extends StatelessWidget {
                 ),
               ),
               const SizedBox(
-                height: 4,
+                height: AppSpacing.xs,
               ),
               Text(
                 maxLines: maxLines,
@@ -44,7 +45,7 @@ class ItemType extends StatelessWidget {
                     Theme.of(
                       context,
                     ).textTheme.bodySmall?.copyWith(
-                      color: const Color(0xFF67775A),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
               ),
             ],

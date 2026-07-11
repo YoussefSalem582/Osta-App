@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_colors.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/business/dashboard/presentation/widgets/appbar.dart';
 import 'package:osta/features/business/dashboard/presentation/widgets/customer.dart';
 import 'package:osta/features/business/dashboard/presentation/widgets/item_type.dart';
@@ -11,26 +12,31 @@ class BoardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: const Color(0xFFD7DBD4),
+      color: Theme.of(context).colorScheme.surfaceContainer,
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.md,
+        ),
         child: Column(
           children: [
             const AppBarWidget(),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Container(
               width: double.infinity,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(AppRadii.md),
+                ),
                 color: AppColors.brandGreen,
                 gradient: LinearGradient(
-                  colors: [Color(0xFF155232), Color(0xFF39C67B)],
+                  colors: [AppColors.brandGreen, context.appColors.success],
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 child: Column(
-                  spacing: 16,
+                  spacing: AppSpacing.md,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -39,25 +45,25 @@ class BoardScreen extends StatelessWidget {
                           Theme.of(
                             context,
                           ).textTheme.bodySmall?.copyWith(
-                            color: const Color(0xE6FFFFFF),
+                            color: Theme.of(context).colorScheme.onPrimary,
                           ),
                     ),
                     Text(
                       '4.250 EGP',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w900,
-                        color: const Color(0xE6FFFFFF),
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
                     ),
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.warning,
-                          color: Color(0xFF8EB819),
+                          color: context.appColors.accent,
                           size: 12,
                         ),
                         const SizedBox(
-                          width: 4,
+                          width: AppSpacing.xs,
                         ),
                         Text(
                           '12% From yesterday',
@@ -65,8 +71,7 @@ class BoardScreen extends StatelessWidget {
                               Theme.of(
                                 context,
                               ).textTheme.bodySmall?.copyWith(
-                                fontSize: 12,
-                                color: const Color(0xFF8EB819),
+                                color: context.appColors.accent,
                               ),
                         ),
                       ],
@@ -77,7 +82,7 @@ class BoardScreen extends StatelessWidget {
             ),
 
             const SizedBox(
-              height: 8,
+              height: AppSpacing.sm,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,27 +90,28 @@ class BoardScreen extends StatelessWidget {
                 ItemType(
                   text1: '3',
                   text2: context.l10n.waiting,
-                  color: const Color(0xFFE66F1A),
+                  color: context.appColors.warning,
                 ),
                 ItemType(
                   text1: '5',
                   text2: context.l10n.sure,
-                  color: const Color(0xFF12442B),
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 ItemType(
                   text1: '2',
                   text2: context.l10n.underImplementation,
+                  // ponytail: no token for this decorative color
                   color: const Color(0xFF09276D),
                 ),
                 ItemType(
                   text1: '8',
                   text2: context.l10n.completed,
-                  color: const Color(0xFF67775A),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ],
             ),
             const SizedBox(
-              height: 12,
+              height: AppSpacing.md,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -115,20 +121,19 @@ class BoardScreen extends StatelessWidget {
                   style:
                       Theme.of(
                         context,
-                      ).textTheme.bodyMedium?.copyWith(
+                      ).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w700,
-                        fontSize: 16,
                       ),
                 ),
 
                 Container(
                   decoration: BoxDecoration(
-                    color: const Color(0xFFC7EBD4),
-                    borderRadius: BorderRadius.circular(24),
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(AppRadii.lg),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(
-                      8,
+                      AppSpacing.sm,
                     ),
                     child: Row(
                       children: [

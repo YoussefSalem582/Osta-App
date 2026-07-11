@@ -18,8 +18,8 @@ import 'package:osta/features/customer/booking/presentation/pages/live_booking_s
 import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
 import 'package:osta/features/customer/garage/presentation/pages/add_car_screen.dart';
 import 'package:osta/features/customer/garage/presentation/pages/my_garage_screen.dart';
+import 'package:osta/features/customer/main_screen/presentation/customer_shell_page.dart';
 import 'package:osta/features/customer/profile/presentation/pages/profile_screen.dart';
-import 'package:osta/features/customer/shell/presentation/customer_shell_page.dart';
 import 'package:osta/features/home/presentation/pages/home_page.dart';
 import 'package:osta/features/onboarding/presentation/language_page.dart';
 import 'package:osta/features/onboarding/presentation/pages/onboarding_page.dart';
@@ -152,12 +152,6 @@ class AppRouter {
         path: AppRoutes.home,
         builder: (context, state) => const HomePage(),
       ),
-
-      // Dev-facing component gallery (not linked from product UI).
-      // GoRoute(
-      //   path: ComponentGalleryPage.path,
-      //   builder: (context, state) => const ComponentGalleryPage(),
-      // ),
     ],
   );
 }

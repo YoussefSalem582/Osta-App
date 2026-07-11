@@ -137,8 +137,8 @@ Reuse these. Extending them is normal; re-implementing them is a defect.
 
 | Area | Files | What it gives you |
 |------|-------|-------------------|
-| Networking | `lib/core/network/api_client.dart`, `api_exception.dart`, `api_result.dart`, `pagination_meta.dart`, `dio_client.dart` | `ApiClient.get/post/put/delete<T>(parse: ...)` → `ApiResult<T>` (+ `PaginationMeta`); envelope parsing; 7 typed `ApiException`s mapped from `error.code` (422 validation w/ field errors, 401, 403, 404, 429, 5xx, network) |
-| Auth plumbing | `lib/core/network/auth_interceptor.dart`, `auth_events.dart`, `social_token_exchange.dart`, `token_pair.dart`, `lib/core/auth/token_storage.dart` | Sanctum bearer attach, queued 401 refresh-retry-once, `AuthEvents.onSessionExpired`, Google/Apple token exchange, secure token persistence |
+| Networking | `lib/core/network/api_client.dart` (incl. `ApiResult<T>` + `PaginationMeta`), `api_endpoints.dart`, `api_exception.dart`, `dio_client.dart` | `ApiClient.get/post/put/delete<T>(parse: ...)` → `ApiResult<T>` (+ `PaginationMeta`); envelope parsing; 7 typed `ApiException`s mapped from `error.code` (422 validation w/ field errors, 401, 403, 404, 429, 5xx, network) |
+| Auth plumbing | `lib/core/network/dio_client.dart` (`AuthInterceptor`, `AuthEvents`, `TokenPair`, `SocialTokenExchange`), `lib/core/auth/token_storage.dart` | Sanctum bearer attach, queued 401 refresh-retry-once, `AuthEvents.onSessionExpired`, Google/Apple token exchange, secure token persistence |
 | Config | `lib/core/config/app_config.dart` | Single `BASE_URL` via `--dart-define` (no flavors, no .env) |
 | DI | `lib/core/di/injection.dart` | `getIt` + `configureDependencies()` — register everything here, by hand |
 | Router | `lib/core/router/app_router.dart` | GoRouter; pages expose `static const path`; currently `/splash` → `/role` |

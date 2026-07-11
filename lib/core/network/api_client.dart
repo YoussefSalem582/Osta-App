@@ -1,8 +1,49 @@
 import 'package:dio/dio.dart';
+import 'package:equatable/equatable.dart';
 import 'package:osta/core/network/api_exception.dart';
-import 'package:osta/core/network/api_result.dart';
-import 'package:osta/core/network/auth_interceptor.dart';
-import 'package:osta/core/network/pagination_meta.dart';
+
+/// Pagination block from the `meta` field of list responses.
+///
+/// Plain immutable model with hand-written JSON mapping — no codegen. Reused by
+/// every list feature (bookings, shop, notifications, …).
+class PaginationMeta extends Equatable {
+  const PaginationMeta({
+    required this.currentPage,
+    required this.lastPage,
+    required this.perPage,
+    required this.total,
+  });
+
+  factory PaginationMeta.fromJson(Map<String, dynamic> json) => PaginationMeta(
+    currentPage: json['current_page'] as int,
+    lastPage: json['last_page'] as int,
+    perPage: json['per_page'] as int,
+    total: json['total'] as int,
+  );
+
+  final int currentPage;
+  final int lastPage;
+  final int perPage;
+  final int total;
+
+  Map<String, dynamic> toJson() => {
+    'current_page': currentPage,
+    'last_page': lastPage,
+    'per_page': perPage,
+    'total': total,
+  };
+
+  @override
+  List<Object?> get props => [currentPage, lastPage, perPage, total];
+}
+
+/// Parsed success envelope: typed [data] plus optional pagination [meta].
+class ApiResult<T> {
+  const ApiResult(this.data, {this.meta});
+
+  final T data;
+  final PaginationMeta? meta;
+}
 
 /// Envelope-aware HTTP client — the single entry point features use.
 ///
@@ -11,6 +52,10 @@ import 'package:osta/core/network/pagination_meta.dart';
 /// throws a typed [ApiException] on failure so screens never touch raw JSON.
 class ApiClient {
   ApiClient(this._dio);
+
+  /// Set `extra: {noAuthKey: true}` on a request to skip token attachment
+  /// (e.g. login / social exchange). Read by `AuthInterceptor`.
+  static const noAuthKey = 'no-auth';
 
   final Dio _dio;
 
@@ -63,9 +108,8 @@ class ApiClient {
     parse,
   );
 
-  Options? _options(bool authenticated) => authenticated
-      ? null
-      : Options(extra: const {AuthInterceptor.noAuthKey: true});
+  Options? _options(bool authenticated) =>
+      authenticated ? null : Options(extra: const {noAuthKey: true});
 
   Future<ApiResult<T>> _send<T>(
     Future<Response<dynamic>> Function() send,
@@ -80,10 +124,7 @@ class ApiClient {
     return _parseEnvelope(response.data, parse);
   }
 
-  ApiResult<T> _parseEnvelope<T>(
-    Object? body,
-    T Function(Object? data) parse,
-  ) {
+  ApiResult<T> _parseEnvelope<T>(Object? body, T Function(Object? data) parse) {
     if (body is! Map<String, dynamic>) {
       throw const ServerException('Malformed response envelope');
     }
