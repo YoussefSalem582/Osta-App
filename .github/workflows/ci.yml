@@ -25,4 +25,11 @@ jobs:
       # Format check over hand-written (tracked) Dart files.
       - run: dart format --output=none --set-exit-if-changed $(git ls-files '*.dart')
       - run: flutter analyze
-      - run: flutter test
+      # The test suite was removed; run tests only when present so the job
+      # doesn't fail on an empty suite (and picks them up again if restored).
+      - run: |
+          if [ -n "$(find test -name '*_test.dart' 2>/dev/null)" ]; then
+            flutter test
+          else
+            echo "No test files found — skipping flutter test."
+          fi
