@@ -1,11 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/garage/data/model.dart';
+import 'package:osta/features/customer/garage/data/model/garage_response/datum.dart';
+import 'package:osta/features/customer/garage/presentation/cubit/garage_cubit.dart';
+import 'package:osta/features/customer/garage/presentation/cubit/garage_state.dart';
+import 'package:osta/features/customer/garage/presentation/widgets/empty_garage_view.dart';
 import 'package:osta/features/customer/garage/presentation/widgets/vehicle_card.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
@@ -18,16 +22,21 @@ class MyGarageScreen extends StatefulWidget {
 }
 
 class _MyGarageScreenState extends State<MyGarageScreen> {
-  void onEdit(DummyVehicle vehicle) {}
+  List<Datum> _vehicles = [];
 
-  Future<void> onDelete(DummyVehicle vehicle) async {
+  void onEdit(Datum vehicle) {}
+
+  Future<void> onDelete(Datum vehicle) async {
     final l10n = context.l10n;
     await showDialog<void>(
       context: context,
       builder: (_) => AlertDialog(
         title: Text(l10n.deleteCar),
         content: Text(
-          l10n.deleteCarConfirm(vehicle.brand, vehicle.model),
+          l10n.deleteCarConfirm(
+            vehicle.make ?? '',
+            vehicle.model ?? '',
+          ),
         ),
         actions: [
           TextButton(
@@ -40,7 +49,7 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
             ),
             onPressed: () {
               Navigator.pop(context);
-              setState(() => vehicles.removeWhere((v) => v.id == vehicle.id));
+              setState(() => _vehicles.removeWhere((v) => v.id == vehicle.id));
             },
             child: Text(l10n.delete),
           ),
@@ -49,152 +58,143 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
     );
   }
 
-  void onSetPrimary(DummyVehicle vehicle) {
+  void onSetPrimary(Datum vehicle) {
     setState(() {
-      final updated = vehicles.map((v) {
-        return DummyVehicle(
+      _vehicles = _vehicles.map((v) {
+        return Datum(
           id: v.id,
-          brand: v.brand,
+          make: v.make,
           model: v.model,
-          plateNumber: v.plateNumber,
           year: v.year,
-          mileageKm: v.mileageKm,
+          plateNumber: v.plateNumber,
+          vin: v.vin,
+          color: v.color,
+          fuelType: v.fuelType,
+          transmission: v.transmission,
+          currentMileage: v.currentMileage,
           isPrimary: v.id == vehicle.id,
-          icon: v.icon,
+          deletedAt: v.deletedAt,
+          createdAt: v.createdAt,
+          updatedAt: v.updatedAt,
         );
       }).toList();
-      vehicles
-        ..clear()
-        ..addAll(updated);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    return BlocProvider(
+      create: (context) {
+        final cubit = GarageCubit();
+        unawaited(cubit.getVehicles());
+        return cubit;
+      },
+      child: BlocConsumer<GarageCubit, GarageState>(
+        listener: (context, state) {
+          if (state is GarageSuccess) {
+            setState(() {
+              _vehicles = List<Datum>.from(state.response.data ?? []);
+            });
+          }
+        },
+        builder: (context, state) {
+          final l10n = context.l10n;
 
-    return Scaffold(
-      appBar: AppTopBar(
-        centerTitle: false,
-        title: l10n.myGarage,
-        subtitle: l10n.garageSubtitle,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-            ),
-            child: AddVehicleButton(
-              onPressed: () => unawaited(context.push(AppRoutes.addCar)),
-            ),
-          ),
-        ],
-      ),
-      body: vehicles.isEmpty
-          ? EmptyGarageView(
-              onAddVehicle: () => unawaited(context.push(AppRoutes.addCar)),
-            )
-          : ListView.separated(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.lg,
+          if (state is GarageLoading || state is GarageInitial) {
+            return Scaffold(
+              appBar: AppTopBar(
+                centerTitle: false,
+                title: l10n.myGarage,
+                subtitle: l10n.garageSubtitle,
               ),
-              itemCount: vehicles.length,
-              separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
-              itemBuilder: (context, index) {
-                final vehicle = vehicles[index];
-                return VehicleCard(
-                  brand: vehicle.brand,
-                  model: vehicle.model,
-                  plateNumber: vehicle.plateNumber,
-                  year: vehicle.year,
-                  mileageKm: vehicle.mileageKm,
-                  isPrimary: vehicle.isPrimary,
-                  icon: vehicle.icon,
-                  onEdit: () => onEdit(vehicle),
-                  onDelete: () => onDelete(vehicle),
-                  onSetPrimary: () => onSetPrimary(vehicle),
-                );
-              },
-            ),
-    );
-  }
-}
+              body: const Center(child: CircularProgressIndicator()),
+            );
+          }
 
-class AddVehicleButton extends StatelessWidget {
-  const AddVehicleButton({required this.onPressed, super.key});
-
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: onPressed,
-      style: FilledButton.styleFrom(
-        backgroundColor: AppColors.brandGreen,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadii.md),
-        ),
-        textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-      icon: const Icon(Icons.add_rounded, size: 18),
-    );
-  }
-}
-
-class EmptyGarageView extends StatelessWidget {
-  const EmptyGarageView({required this.onAddVehicle, super.key});
-
-  final VoidCallback onAddVehicle;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-    final l10n = context.l10n;
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.garage_outlined,
-              size: 80,
-              color: colorScheme.onSurface.withValues(alpha: 0.25),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              l10n.emptyGarageTitle,
-              style: textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
+          if (state is GarageError) {
+            return Scaffold(
+              appBar: AppTopBar(
+                centerTitle: false,
+                title: l10n.myGarage,
+                subtitle: l10n.garageSubtitle,
               ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              l10n.emptyGarageSubtitle,
-              textAlign: TextAlign.center,
-              style: textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurface.withValues(alpha: 0.6),
+              body: Center(
+                child: Text(
+                  state.message,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
               ),
+            );
+          }
+
+          return Scaffold(
+            appBar: AppTopBar(
+              centerTitle: false,
+              title: l10n.myGarage,
+              subtitle: l10n.garageSubtitle,
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
+                  child: IconButton(
+                    onPressed: () => unawaited(context.push(AppRoutes.addCar)),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.brandGreen,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.sm,
+                      ),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppRadii.md),
+                      ),
+                      textStyle: Theme.of(context).textTheme.bodyMedium
+                          ?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                    ),
+                    icon: const Icon(Icons.add_rounded, size: 18),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: AppSpacing.lg),
-            FilledButton.icon(
-              onPressed: onAddVehicle,
-              icon: const Icon(Icons.add_rounded),
-              label: Text(l10n.addCar),
-            ),
-          ],
-        ),
+            body: _vehicles.isEmpty
+                ? EmptyGarageView(
+                    onAddVehicle: () =>
+                        unawaited(context.push(AppRoutes.addCar)),
+                  )
+                : ListView.separated(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.lg,
+                    ),
+                    itemCount: _vehicles.length,
+                    separatorBuilder: (_, _) =>
+                        const SizedBox(height: AppSpacing.md),
+                    itemBuilder: (context, index) {
+                      final vehicle = _vehicles[index];
+                      return VehicleCard(
+                        brand: vehicle.make ?? '',
+                        model: vehicle.model ?? '',
+                        plateNumber: vehicle.plateNumber?.toString() ?? '',
+                        year: vehicle.year,
+                        mileageKm:
+                            (vehicle.currentMileage as num?)?.toInt() ?? 0,
+                        isPrimary: vehicle.isPrimary ?? false,
+                        onEdit: () => onEdit(vehicle),
+                        onDelete: () => onDelete(vehicle),
+                        onSetPrimary: () => onSetPrimary(vehicle),
+                      );
+                    },
+                  ),
+          );
+        },
       ),
     );
   }
