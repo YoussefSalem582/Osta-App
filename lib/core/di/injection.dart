@@ -5,6 +5,7 @@ import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/config/app_config.dart';
 import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/dio_client.dart';
+import 'package:osta/core/network/dio_provider.dart';
 import 'package:osta/core/router/app_router.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/session/session_store.dart';
@@ -44,7 +45,12 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<Dio>(
       () => buildAppDio(getIt(), getIt(), getIt()),
     )
+    // Ensure the static DioProvider helpers use the same app-level Dio.
     ..registerLazySingleton<ApiClient>(() => ApiClient(getIt()))
+    ;
+  // Wire the static DioProvider to the resolved Dio instance.
+  DioProvider.dio = getIt<Dio>();
+  getIt
     ..registerLazySingleton<SocialTokenExchange>(
       () => SocialTokenExchange(getIt(), getIt()),
     )
