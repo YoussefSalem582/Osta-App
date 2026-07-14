@@ -12,12 +12,13 @@ class BankCardLogo extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     final isVisa = brand.toUpperCase() == 'VISA';
-    final bg = isVisa
-        ? const Color(0xFF1A1F71)
-        : const Color(0xFFEB001B);
+    final bg = isVisa ? const Color(0xFF1A1F71) : const Color(0xFFEB001B);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 3),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: 3,
+      ),
       decoration: BoxDecoration(
         color: isVisa ? bg : colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(AppRadii.sm),

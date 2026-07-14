@@ -4,10 +4,10 @@ import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 
 class BookingBottomBar extends StatelessWidget {
-  const BookingBottomBar({ 
+  const BookingBottomBar({
     required this.totalPrice,
     required this.onConfirm,
-    super.key
+    super.key,
   });
 
   final String totalPrice;

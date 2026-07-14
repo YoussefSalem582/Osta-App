@@ -20,10 +20,10 @@ class DayCard extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    final backgroundColor =
-        selected ? colorScheme.primary : colorScheme.surface;
-    final textColor =
-        selected ? colorScheme.onPrimary : colorScheme.onSurface;
+    final backgroundColor = selected
+        ? colorScheme.primary
+        : colorScheme.surface;
+    final textColor = selected ? colorScheme.onPrimary : colorScheme.onSurface;
     final subtitleColor = selected
         ? colorScheme.onPrimary.withValues(alpha: 0.75)
         : colorScheme.onSurfaceVariant;

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:osta/core/theme/app_tokens.dart';
+import 'package:osta/features/customer/garage/presentation/cubit/garage_cubit.dart';
+import 'package:osta/features/customer/garage/presentation/cubit/garage_state.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
@@ -21,6 +24,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
   final _yearController = TextEditingController();
   final _mileageController = TextEditingController();
   final _plateController = TextEditingController();
+  final _colorController = TextEditingController();
 
   @override
   void dispose() {
@@ -29,154 +33,205 @@ class _AddCarScreenState extends State<AddCarScreen> {
     _yearController.dispose();
     _mileageController.dispose();
     _plateController.dispose();
+    _colorController.dispose();
     super.dispose();
   }
 
-  void _onSave() {
-    if (_formKey.currentState?.validate() ?? false) {
-      context.pop();
+  void _onSave(BuildContext context) {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    final year = int.tryParse(_yearController.text.trim());
+    if (year == null) {
+      // Validator already covers this, but guard anyway.
+      return;
     }
+
+    context.read<GarageCubit>().addVehicle(
+          make: _brandController.text.trim(),
+          model: _modelController.text.trim(),
+          year: year,
+          plate: _plateController.text.trim(),
+          color: _colorController.text.trim().isEmpty
+              ? null
+              : _colorController.text.trim(),
+        );
   }
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    final l10n = context.l10n;
-
-    return Scaffold(
-      appBar: AppTopBar(
-        centerTitle: false,
-        title: l10n.addYourFirstCar,
-        //subtitle: l10n.requiredStep,
-      ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.lg,
+    return BlocProvider<GarageCubit>(
+      create: (_) => GarageCubit(),
+      child: BlocConsumer<GarageCubit, GarageState>(
+        listenWhen: (_, current) =>
+            current is GarageAddSuccess || current is GarageAddError,
+        listener: (context, state) {
+          if (state is GarageAddSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(context.l10n.saveAndProceed),
+                backgroundColor:
+                    Theme.of(context).colorScheme.primaryContainer,
               ),
-              child: Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(AppRadii.md),
-                ),
-                child: Row(
-                  children: [
-                    const Text('🚗', style: TextStyle(fontSize: 20)),
-                    const SizedBox(width: AppSpacing.sm),
-                    Expanded(
-                      child: Text(
-                        l10n.carDetailsPrompt,
-                        style: textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onPrimaryContainer,
-                          height: 1.5,
-                        ),
+            );
+            context.pop();
+          } else if (state is GarageAddError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          final isLoading = state is GarageAddLoading;
+          final colorScheme = Theme.of(context).colorScheme;
+          final textTheme = Theme.of(context).textTheme;
+          final l10n = context.l10n;
+
+          return Scaffold(
+            appBar: AppTopBar(
+              centerTitle: false,
+              title: l10n.addYourFirstCar,
+            ),
+            body: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.lg,
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: colorScheme.primaryContainer
+                            .withValues(alpha: 0.5),
+                        borderRadius: BorderRadius.circular(AppRadii.md),
+                      ),
+                      child: Row(
+                        children: [
+                          const Text('🚗', style: TextStyle(fontSize: 20)),
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Text(
+                              l10n.carDetailsPrompt,
+                              style: textTheme.bodySmall?.copyWith(
+                                color: colorScheme.onPrimaryContainer,
+                                height: 1.5,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
 
-            const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: AppSpacing.sm),
 
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                ),
-                child: Column(
-                  children: [
-                    AppTextField(
-                      label: l10n.brand,
-                      hint: l10n.brandHint,
-                      controller: _brandController,
-                      textInputAction: TextInputAction.next,
-                      validator: (v) =>
-                          (v == null || v.isEmpty) ? l10n.enterBrand : null,
-                    ),
-
-                    const SizedBox(height: AppSpacing.md),
-
-                    AppTextField(
-                      label: l10n.model,
-                      hint: l10n.modelHint,
-                      controller: _modelController,
-                      textInputAction: TextInputAction.next,
-                      validator: (v) =>
-                          (v == null || v.isEmpty) ? l10n.enterModel : null,
-                    ),
-
-                    const SizedBox(height: AppSpacing.md),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: AppTextField(
-                            label: l10n.year,
-                            hint: l10n.yearHint,
-                            controller: _yearController,
-                            keyboardType: TextInputType.number,
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                      ),
+                      child: Column(
+                        children: [
+                          AppTextField(
+                            label: l10n.brand,
+                            hint: l10n.brandHint,
+                            controller: _brandController,
                             textInputAction: TextInputAction.next,
+                            validator: (v) =>
+                                (v == null || v.isEmpty) ? l10n.enterBrand : null,
+                          ),
+
+                          const SizedBox(height: AppSpacing.md),
+
+                          AppTextField(
+                            label: l10n.model,
+                            hint: l10n.modelHint,
+                            controller: _modelController,
+                            textInputAction: TextInputAction.next,
+                            validator: (v) =>
+                                (v == null || v.isEmpty) ? l10n.enterModel : null,
+                          ),
+
+                          const SizedBox(height: AppSpacing.md),
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: AppTextField(
+                                  label: l10n.year,
+                                  hint: l10n.yearHint,
+                                  controller: _yearController,
+                                  keyboardType: TextInputType.number,
+                                  textInputAction: TextInputAction.next,
+                                  validator: (v) {
+                                    if (v == null || v.isEmpty) {
+                                      return l10n.enterYear;
+                                    }
+                                    if (int.tryParse(v) == null) {
+                                      return l10n.enterYear;
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: AppSpacing.md),
+                              Expanded(
+                                child: AppTextField(
+                                  label: l10n.mileage,
+                                  hint: l10n.mileageHint,
+                                  controller: _mileageController,
+                                  keyboardType: TextInputType.number,
+                                  textInputAction: TextInputAction.next,
+                                  validator: (v) => (v == null || v.isEmpty)
+                                      ? l10n.enterMileage
+                                      : null,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: AppSpacing.md),
+
+                          AppTextField(
+                            label: l10n.plateNumber,
+                            hint: l10n.plateNumberHint,
+                            controller: _plateController,
+                            textInputAction: TextInputAction.done,
                             validator: (v) => (v == null || v.isEmpty)
-                                ? l10n.enterYear
+                                ? l10n.enterPlateNumber
                                 : null,
                           ),
-                        ),
-                        const SizedBox(width: AppSpacing.md),
-                        Expanded(
-                          child: AppTextField(
-                            label: l10n.mileage,
-                            hint: l10n.mileageHint,
-                            controller: _mileageController,
-                            keyboardType: TextInputType.number,
-                            textInputAction: TextInputAction.next,
-                            validator: (v) => (v == null || v.isEmpty)
-                                ? l10n.enterMileage
-                                : null,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+                  ),
 
-                    const SizedBox(height: AppSpacing.md),
-
-                    AppTextField(
-                      label: l10n.plateNumber,
-                      hint: l10n.plateNumberHint,
-                      controller: _plateController,
-                      textInputAction: TextInputAction.done,
-                      validator: (v) => (v == null || v.isEmpty)
-                          ? l10n.enterPlateNumber
-                          : null,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.md,
+                      AppSpacing.md,
+                      AppSpacing.md,
+                      AppSpacing.lg,
                     ),
-                  ],
-                ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: AppButton(
+                        label: l10n.saveAndProceed,
+                        loading: isLoading,
+                        onPressed: isLoading ? null : () => _onSave(context),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md,
-                AppSpacing.md,
-                AppSpacing.md,
-                AppSpacing.lg,
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                child: AppButton(
-                  label: l10n.saveAndProceed,
-                  onPressed: _onSave,
-                ),
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

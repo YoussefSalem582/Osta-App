@@ -28,8 +28,7 @@ class BookingSummaryCard extends StatelessWidget {
       children: [
         Text(
           sectionLabel,
-          style:
-              textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: AppSpacing.sm),
         Container(

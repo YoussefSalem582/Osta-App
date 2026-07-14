@@ -35,8 +35,9 @@ class PaymentMethodCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final appColors = context.appColors;
 
-    final borderColor =
-        isSelected ? appColors.success : colorScheme.outlineVariant;
+    final borderColor = isSelected
+        ? appColors.success
+        : colorScheme.outlineVariant;
     final borderWidth = isSelected ? 1.5 : 1.0;
 
     return AppCard(

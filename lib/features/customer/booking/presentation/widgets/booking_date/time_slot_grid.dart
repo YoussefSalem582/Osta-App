@@ -25,8 +25,9 @@ class TimeSlotChip extends StatelessWidget {
     final Color textColor;
 
     if (disabled) {
-      backgroundColor =
-          colorScheme.surfaceContainerHighest.withValues(alpha: 0.5);
+      backgroundColor = colorScheme.surfaceContainerHighest.withValues(
+        alpha: 0.5,
+      );
       textColor = colorScheme.onSurfaceVariant.withValues(alpha: 0.45);
     } else if (selected) {
       backgroundColor = colorScheme.primary;
@@ -100,7 +101,13 @@ class TimeSlotGrid extends StatelessWidget {
     final parts = slot.split(':');
     final slotHour = int.tryParse(parts[0]) ?? 0;
     final slotMinute = int.tryParse(parts[1]) ?? 0;
-    final slotTime = DateTime(now.year, now.month, now.day, slotHour, slotMinute);
+    final slotTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      slotHour,
+      slotMinute,
+    );
     return slotTime.isBefore(now);
   }
 

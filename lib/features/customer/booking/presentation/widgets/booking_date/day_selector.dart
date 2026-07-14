@@ -37,8 +37,7 @@ class DaySelector extends StatelessWidget {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: daysToShow,
-            separatorBuilder: (_, _) =>
-                const SizedBox(width: AppSpacing.sm),
+            separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.sm),
             itemBuilder: (context, index) {
               final date = today.add(Duration(days: index));
               final isSelected = isSameDay(date, selectedDate);

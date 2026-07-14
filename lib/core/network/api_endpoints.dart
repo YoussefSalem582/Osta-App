@@ -5,7 +5,7 @@
 /// Fixed paths are `const` strings; paths with route params are functions.
 class ApiEndpoints {
   const ApiEndpoints._();
-
+  static const String baseUrl = 'https://osta.technology92.com/api/v1';
   // --- Auth ---
   static const authCheckUsername = '/auth/check-username';
   static const authLogin = '/auth/login';
