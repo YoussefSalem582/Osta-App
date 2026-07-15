@@ -14,6 +14,8 @@ import 'package:osta/features/auth/password_recovery/presentation/bloc/password_
 import 'package:osta/features/auth/register/presentation/bloc/register_bloc.dart';
 import 'package:osta/features/auth/shared/data/auth_repository_impl.dart';
 import 'package:osta/features/auth/shared/domain/auth_repository.dart';
+import 'package:osta/features/customer/map/data/location_service.dart';
+import 'package:osta/features/customer/map/data/repo/centers_repo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Global service locator.
@@ -58,6 +60,12 @@ Future<void> configureDependencies() async {
     )
     ..registerLazySingleton<SessionController>(
       () => SessionController(getIt(), getIt(), getIt()),
+    )
+    ..registerLazySingleton<CentersRepository>(
+      () => CentersRepository(getIt()),
+    )
+    ..registerLazySingleton<LocationService>(
+      GeolocatorLocationService.new,
     )
     ..registerFactory<LoginBloc>(() => LoginBloc(getIt(), getIt()))
     ..registerFactory<RegisterBloc>(() => RegisterBloc(getIt(), getIt()))
