@@ -47,14 +47,14 @@ class _AddCarScreenState extends State<AddCarScreen> {
     }
 
     context.read<GarageCubit>().addVehicle(
-          make: _brandController.text.trim(),
-          model: _modelController.text.trim(),
-          year: year,
-          plate: _plateController.text.trim(),
-          color: _colorController.text.trim().isEmpty
-              ? null
-              : _colorController.text.trim(),
-        );
+      make: _brandController.text.trim(),
+      model: _modelController.text.trim(),
+      year: year,
+      plate: _plateController.text.trim(),
+      color: _colorController.text.trim().isEmpty
+          ? null
+          : _colorController.text.trim(),
+    );
   }
 
   @override
@@ -69,8 +69,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(context.l10n.saveAndProceed),
-                backgroundColor:
-                    Theme.of(context).colorScheme.primaryContainer,
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               ),
             );
             context.pop();
@@ -106,8 +105,9 @@ class _AddCarScreenState extends State<AddCarScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
-                        color: colorScheme.primaryContainer
-                            .withValues(alpha: 0.5),
+                        color: colorScheme.primaryContainer.withValues(
+                          alpha: 0.5,
+                        ),
                         borderRadius: BorderRadius.circular(AppRadii.md),
                       ),
                       child: Row(
@@ -142,8 +142,9 @@ class _AddCarScreenState extends State<AddCarScreen> {
                             hint: l10n.brandHint,
                             controller: _brandController,
                             textInputAction: TextInputAction.next,
-                            validator: (v) =>
-                                (v == null || v.isEmpty) ? l10n.enterBrand : null,
+                            validator: (v) => (v == null || v.isEmpty)
+                                ? l10n.enterBrand
+                                : null,
                           ),
 
                           const SizedBox(height: AppSpacing.md),
@@ -153,8 +154,9 @@ class _AddCarScreenState extends State<AddCarScreen> {
                             hint: l10n.modelHint,
                             controller: _modelController,
                             textInputAction: TextInputAction.next,
-                            validator: (v) =>
-                                (v == null || v.isEmpty) ? l10n.enterModel : null,
+                            validator: (v) => (v == null || v.isEmpty)
+                                ? l10n.enterModel
+                                : null,
                           ),
 
                           const SizedBox(height: AppSpacing.md),

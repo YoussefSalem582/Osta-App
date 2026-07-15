@@ -128,6 +128,7 @@
   "authToRegister": "New here? Create an account",
   "authFailed": "Something went wrong. Please try again.",
   "errorNetwork": "Can't reach the server. Check your connection and try again.",
+  "errorGeneric": "Something went wrong. Please try again.",
   "authForgotPassword": "Forgot password?",
   "authForgotTitle": "Reset your password",
   "authForgotSubtitle": "Enter your email and we'll send you a reset link.",
@@ -336,5 +337,32 @@
   "confirmAndPayAtCenter": "Confirm · Pay at Center",
   "bookingService": "Vehicle",
   "bookingServiceDetail": "Hyundai Elantra",
-  "bookingServiceSubDetail": "Oil & filter change"
+  "bookingServiceSubDetail": "Oil & filter change",
+  "mapSearchHint": "Search for a service center...",
+  "mapCategoryOil": "Oil",
+  "mapCategoryBrakes": "Brakes",
+  "mapCategoryAc": "AC",
+  "mapCategoryTires": "Tires",
+  "mapOpenNow": "Open now",
+  "mapClosed": "Closed",
+  "mapBook": "Book",
+  "mapDetails": "Details",
+  "mapDistanceKm": "{distance} km",
+  "@mapDistanceKm": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "mapRecenter": "Recenter",
+  "mapPermissionTitle": "Location permission needed",
+  "mapPermissionBody": "Allow location access to see the service centers nearest to you.",
+  "mapPermissionGrant": "Allow location",
+  "mapPermissionSettings": "Open settings",
+  "mapLocationDisabledTitle": "Location is off",
+  "mapLocationDisabledBody": "Turn on location services to find centers near you.",
+  "mapEmptyTitle": "No centers found",
+  "mapEmptyBody": "Try a different search or category.",
+  "mapErrorTitle": "Couldn't load centers"
 }
