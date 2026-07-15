@@ -72,6 +72,9 @@ class _RoleShellState extends State<RoleShell> {
     final showingCenter = _centerActive && widget.centerBody != null;
     final fullBleed = showingCenter && widget.centerFullBleed;
     return Scaffold(
+      // Let full-bleed bodies (e.g. the customer map) paint behind the
+      // protruding center FAB instead of the scaffold surface.
+      extendBody: true,
       appBar: fullBleed
           ? null
           : AppTopBar(

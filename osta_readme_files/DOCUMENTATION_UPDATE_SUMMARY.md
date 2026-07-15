@@ -4,6 +4,12 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-16 — Bottom nav FAB white gap removed
+
+`AppBottomNavBar` no longer pads the stack taller for the center FAB (that reserved strip painted the scaffold surface white behind the button). The FAB now overlaps upward with a negative top offset; `RoleShell` sets `extendBody: true` so full-bleed bodies (map) paint behind the protrusion.
+
+Touched: `lib/shared/ui/app_bottom_nav_bar.dart`, `lib/features/shell/presentation/role_shell.dart`, `CHANGELOG.md`.
+
 ## 2026-07-15 — Map screen built (epic #41)
 
 Built the M2 Discovery map surface ([app #41](https://github.com/YoussefSalem582/Osta-App/issues/41)). `lib/features/customer/map/` was three empty stub directories; the customer center FAB fired a "coming soon" toast.

@@ -111,16 +111,15 @@ class AppBottomNavBar extends StatelessWidget {
 
     if (!_hasCenter) return bar;
 
+    // Overlap the FAB above the bar instead of padding the stack taller —
+    // the extra height painted the scaffold surface as a white block behind
+    // the button (see customer map shell).
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        // Reserve the top strip the FAB rises into.
-        Padding(
-          padding: const EdgeInsets.only(top: _kFabProtrusion),
-          child: bar,
-        ),
+        bar,
         Positioned(
-          top: 0,
+          top: -_kFabProtrusion,
           left: 0,
           right: 0,
           child: Center(
