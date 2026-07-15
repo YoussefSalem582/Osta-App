@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
+import 'package:osta/features/customer/map/presentation/pages/map_screen.dart';
 import 'package:osta/features/customer/profile/presentation/pages/profile_screen.dart';
 import 'package:osta/features/home/presentation/pages/home_page.dart';
 import 'package:osta/features/shell/presentation/role_shell.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_bottom_nav_bar.dart';
-import 'package:osta/shared/ui/app_toaster.dart';
 
 /// Consumer (customer) shell — the landing surface for the `customer` role.
 class CustomerShellPage extends StatelessWidget {
@@ -15,9 +15,11 @@ class CustomerShellPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return RoleShell(
-      // Raised center action: find nearby service centers on the map.
+      // Raised center action: find nearby service centers on the map, shown
+      // full-screen inside the shell so the bottom nav stays reachable.
       centerIcon: Icons.location_on_outlined,
-      onCenterTap: () => AppToaster.showMessage(l10n.comingSoonBody),
+      centerBody: const MapScreen(),
+      centerFullBleed: true,
       tabs: [
         AppBottomNavItem(
           icon: Icons.home_outlined,

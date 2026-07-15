@@ -24,6 +24,7 @@ class RoleShell extends StatefulWidget {
     this.centerColor,
     this.centerBody,
     this.centerLabel,
+    this.centerFullBleed = false,
     super.key,
   });
 
@@ -40,8 +41,13 @@ class RoleShell extends StatefulWidget {
   /// bottom nav), instead of firing [onCenterTap]. Tapping any tab leaves it.
   final Widget? centerBody;
 
-  /// App-bar title shown while [centerBody] is on screen.
+  /// App-bar title shown while [centerBody] is on screen. Unused when
+  /// [centerFullBleed] drops the bar.
   final String? centerLabel;
+
+  /// Lets [centerBody] have the whole body with no app bar — the customer map
+  /// is specified full-screen, while business Bookings keeps its bar + title.
+  final bool centerFullBleed;
 
   @override
   State<RoleShell> createState() => _RoleShellState();
@@ -64,29 +70,34 @@ class _RoleShellState extends State<RoleShell> {
     final l10n = context.l10n;
     final tab = widget.tabs[_index];
     final showingCenter = _centerActive && widget.centerBody != null;
+    final fullBleed = showingCenter && widget.centerFullBleed;
     return Scaffold(
-      appBar: AppTopBar(
-        title: showingCenter ? (widget.centerLabel ?? tab.label) : tab.label,
-        leading: Padding(
-          padding: const EdgeInsets.all(AppSpacing.sm),
-          child: Image.asset(AppImages.logo, color: AppColors.brandGreen),
-        ),
-        actions: [
-          PopupMenuButton<_ShellAction>(
-            onSelected: (action) => _onAction(context, action),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: _ShellAction.switchRole,
-                child: Text(l10n.switchRole),
+      appBar: fullBleed
+          ? null
+          : AppTopBar(
+              title: showingCenter
+                  ? (widget.centerLabel ?? tab.label)
+                  : tab.label,
+              leading: Padding(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                child: Image.asset(AppImages.logo, color: AppColors.brandGreen),
               ),
-              PopupMenuItem(
-                value: _ShellAction.signOut,
-                child: Text(l10n.signOut),
-              ),
-            ],
-          ),
-        ],
-      ),
+              actions: [
+                PopupMenuButton<_ShellAction>(
+                  onSelected: (action) => _onAction(context, action),
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: _ShellAction.switchRole,
+                      child: Text(l10n.switchRole),
+                    ),
+                    PopupMenuItem(
+                      value: _ShellAction.signOut,
+                      child: Text(l10n.signOut),
+                    ),
+                  ],
+                ),
+              ],
+            ),
       body: showingCenter
           ? widget.centerBody!
           : (tab.body ??
