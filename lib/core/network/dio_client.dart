@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
+import 'package:flutter/foundation.dart';
 import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/config/app_config.dart';
 import 'package:osta/core/network/api_client.dart';
@@ -150,8 +151,14 @@ Dio buildAppDio(AppConfig config, TokenStorage tokens, AuthEvents events) {
     // Auth first: token attach + 401 refresh-retry-once.
     ..add(AuthInterceptor(tokens, events, config: config))
     ..add(RetryInterceptor(dio: client))
-    // Redacted: headers (incl. Authorization) and bodies are never logged.
-    ..add(PrettyDioLogger(responseBody: false));
+    // Headers (incl. Authorization) and bodies are never logged, but the
+    // request URI is — and that carries query params, including the user's GPS
+    // coordinates on /centers/nearby. Debug builds only: PrettyDioLogger prints
+    // to stdout, which is readable on-device in release.
+    // `enabled:` looks redundant only because kDebugMode is a const true while
+    // analyzing; dropping it is what would restore release logging.
+    // ignore: avoid_redundant_argument_values
+    ..add(PrettyDioLogger(responseBody: false, enabled: kDebugMode));
   return client;
 }
 
