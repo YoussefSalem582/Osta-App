@@ -1,7 +1,18 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+// Google Maps key comes from the git-ignored local.properties, never from the
+// repo: `--dart-define` can't reach the native manifest, so this is the native
+// equivalent of the BASE_URL convention. Empty key => map tiles stay blank.
+val mapsApiKey: String = Properties().run {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+    getProperty("MAPS_API_KEY", "")
 }
 
 android {
@@ -23,6 +34,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
 
     buildTypes {
