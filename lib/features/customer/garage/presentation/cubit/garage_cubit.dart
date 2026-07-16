@@ -26,7 +26,8 @@ class GarageCubit extends Cubit<GarageState> {
     required String make,
     required String model,
     required int year,
-    required String plate,
+    required String plateNumber,
+    int? currentMileage,
     String? color,
   }) async {
     emit(const GarageAddLoading());
@@ -35,7 +36,8 @@ class GarageCubit extends Cubit<GarageState> {
         make: make,
         model: model,
         year: year,
-        plate: plate,
+        plateNumber: plateNumber,
+        currentMileage: currentMileage,
         color: color,
       );
       emit(const GarageAddSuccess());

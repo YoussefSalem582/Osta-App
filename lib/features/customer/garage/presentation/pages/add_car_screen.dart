@@ -52,7 +52,8 @@ class _AddCarScreenState extends State<AddCarScreen> {
       make: _brandController.text.trim(),
       model: _modelController.text.trim(),
       year: year,
-      plate: _plateController.text.trim(),
+      plateNumber: _plateController.text.trim(),
+      currentMileage: int.tryParse(_mileageController.text.trim()),
       color: _colorController.text.trim().isEmpty
           ? null
           : _colorController.text.trim(),
