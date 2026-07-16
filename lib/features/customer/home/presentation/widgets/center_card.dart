@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/customer/home/presentation/widgets/home_tile.dart';
+import 'package:osta/shared/formatters/app_formatters.dart';
 
 class CenterCard extends StatelessWidget {
   const CenterCard({
@@ -16,6 +18,7 @@ class CenterCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final locale = Localizations.localeOf(context).toString();
 
     return HomeTile(
       title: name,
@@ -31,8 +34,11 @@ class CenterCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.xs),
+          // Matches PlaceDialog: a real icon on the warning token, and digits
+          // through NumberFormatter so Arabic renders ٤٫٦ not 4.6.
+          Icon(Icons.star_rounded, size: 16, color: context.appColors.warning),
           Text(
-            '$rate ⭐',
+            NumberFormatter.decimal(rate, locale: locale),
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurface,
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
+import 'package:osta/features/customer/booking/presentation/booking_fixtures.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/booking_date/booking_bottom_bar.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/booking_date/booking_summary_card.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/booking_date/day_selector.dart';
@@ -100,7 +101,7 @@ class BookingDateScreenState extends State<BookingDateScreen> {
           ),
 
           BookingBottomBar(
-            totalPrice: '٢٥٠ ج',
+            totalPrice: BookingFixtures.totalPrice,
             onConfirm: selectionComplete ? () {} : null,
           ),
         ],

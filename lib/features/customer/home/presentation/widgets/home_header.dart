@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
+import 'package:osta/features/customer/home/presentation/home_fixtures.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 class HomeHeader extends StatelessWidget {
@@ -37,7 +38,7 @@ class HomeHeader extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              'أحمد فؤاد',
+              HomeFixtures.customerName,
               style: theme.textTheme.titleLarge?.copyWith(
                 color: theme.colorScheme.onSurface,
                 fontWeight: FontWeight.bold,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
+import 'package:osta/features/customer/home/presentation/home_fixtures.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 class ActiveBookingCard extends StatelessWidget {
@@ -49,7 +50,7 @@ class ActiveBookingCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            'تغيير زيت وفلتر',
+            HomeFixtures.activeBookingService,
             style: theme.textTheme.titleLarge?.copyWith(
               color: colorScheme.onPrimary,
               fontWeight: FontWeight.bold,
@@ -57,7 +58,7 @@ class ActiveBookingCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'مركز النصر',
+            HomeFixtures.activeBookingCenter,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: colorScheme.onPrimary.withValues(alpha: 0.8),
             ),
