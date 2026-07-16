@@ -156,7 +156,15 @@ void main() {
           ),
           isNull,
         );
-        // The garage's "+" pushes the same screen to add an Nth car.
+        // The garage's "+" pushes the same screen to add an Nth car, so
+        // /add-car stays legal once a car exists.
+        //
+        // Which means releasing the gate does NOT evict anyone from it: this
+        // returns null, i.e. "stay put". AddCarScreen has to navigate itself
+        // on success — and when the gate forced the screen there is nothing to
+        // pop, so it must `go` explicitly. Reading this null as "the redirect
+        // will carry them to the shell" is what stranded users on a dead
+        // screen, tapping Save until they had two cars.
         expect(
           resolveRedirect(
             session: customer(hasVehicle: true),

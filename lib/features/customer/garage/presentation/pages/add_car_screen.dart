@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
+import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/customer/garage/data/car_catalog.dart';
@@ -122,15 +123,25 @@ class _AddCarScreenState extends State<AddCarScreen> {
             AppToaster.showMessage(context.l10n.saveAndProceed);
             unawaited(context.read<SessionController>().markVehicleAdded());
             // Pushed from the garage → pop back to it. Forced by the #39 gate →
-            // there is nothing beneath to pop; releasing the gate above lets
-            // the redirect carry the user into the shell.
-            if (context.canPop()) context.pop();
+            // the router replaced the location, so there is nothing to pop and
+            // the user must be sent on explicitly. Releasing the gate is not
+            // enough on its own: once hasVehicle is true, resolveRedirect
+            // allows /add-car (the garage pushes it to add an Nth car), so it
+            // returns null and would leave the user sitting here.
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go(AppRoutes.customerShell);
+            }
           } else if (state is GarageAddError) {
             AppToaster.showError(state.message);
           }
         },
         builder: (context, state) {
-          final isLoading = state is GarageAddLoading;
+          // Stays locked after success, not just during flight: navigation is a
+          // frame away, and a second tap in that window posts a second car.
+          final isLoading =
+              state is GarageAddLoading || state is GarageAddSuccess;
           final colorScheme = Theme.of(context).colorScheme;
           final textTheme = Theme.of(context).textTheme;
           final l10n = context.l10n;
