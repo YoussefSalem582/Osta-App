@@ -19,6 +19,11 @@ abstract interface class AuthRepository {
 
   /// `POST /auth/register`. Persists the returned token pair and returns
   /// `me.type`.
+  ///
+  /// [languagePreference] (`ar`/`en`) is stored on the user and drives mail the
+  /// server sends outside a request — a password-reset email has no
+  /// `Accept-Language` header to read. Omitted, the server defaults it to
+  /// Arabic for everyone.
   Future<AppRole> register({
     required String firstName,
     required String lastName,
@@ -27,6 +32,7 @@ abstract interface class AuthRepository {
     required String password,
     required AppRole accountType,
     String? phone,
+    String? languagePreference,
   });
 
   /// `POST /me/avatar`. Uploads the image at [filePath] (jpeg/png) as the
@@ -38,11 +44,12 @@ abstract interface class AuthRepository {
   /// clears the locally stored token pair, even when the request fails.
   Future<void> logout();
 
-  /// `POST /forgot-password`. Triggers the email broker to send a reset link.
+  /// `POST /auth/password/forgot`. Triggers the email broker to send a reset
+  /// link.
   Future<void> forgotPassword({required String email});
 
-  /// `POST /reset-password`. Completes the reset with the emailed token and a
-  /// new password.
+  /// `POST /auth/password/reset`. Completes the reset with the emailed token
+  /// and a new password.
   Future<void> resetPassword({
     required String email,
     required String token,

@@ -33,9 +33,9 @@ abstract final class AuthValidators {
     return null;
   }
 
-  /// Present, and — when [enforceStrength] (register / reset) — at least 8
-  /// characters with a letter and a digit. Login skips the strength check so
-  /// legacy passwords still surface as a server 422 rather than a client block.
+  /// Present, and — when [enforceStrength] (register / reset) — [_meetsPolicy].
+  /// Login skips the strength check so legacy passwords still surface as a
+  /// server 422 rather than a client block.
   static String? password(
     BuildContext context,
     String? value, {
@@ -43,11 +43,17 @@ abstract final class AuthValidators {
   }) {
     final v = value ?? '';
     if (v.isEmpty) return context.l10n.validationRequired;
-    if (enforceStrength && (v.length < 8 || !_hasLetter(v) || !_hasDigit(v))) {
+    if (enforceStrength && !_meetsPolicy(v)) {
       return context.l10n.validationPassword;
     }
     return null;
   }
+
+  /// The server's rule, mirrored exactly: `Password::min(8)->mixedCase()
+  /// ->numbers()`. Anything looser here blesses a password the server then
+  /// 422s; anything stricter blocks one it would have accepted.
+  static bool _meetsPolicy(String v) =>
+      v.length >= 8 && _hasLower(v) && _hasUpper(v) && _hasDigit(v);
 
   /// Matches [original] exactly (confirm-password fields).
   static String? confirm(
@@ -74,21 +80,18 @@ abstract final class AuthValidators {
     return '+20$digits';
   }
 
-  /// Scores [value] for the strength meter: shorter/simpler is weak, meeting
-  /// the length+letter+digit gate is medium, and adding length or a symbol /
-  /// mixed case on top is strong. Pure, context-free.
+  /// Scores [value] for the strength meter: anything the server would reject is
+  /// weak, meeting [_meetsPolicy] is medium, and extra length or a symbol on
+  /// top is strong. Shares the gate so the meter can never call a password
+  /// "medium" that submit then rejects. Pure, context-free.
   static PasswordStrength strength(String value) {
-    if (value.length < 8 || !_hasLetter(value) || !_hasDigit(value)) {
-      return PasswordStrength.weak;
-    }
+    if (!_meetsPolicy(value)) return PasswordStrength.weak;
     var bonus = 0;
     if (value.length >= 12) bonus++;
     if (_hasSymbol(value)) bonus++;
-    if (_hasLower(value) && _hasUpper(value)) bonus++;
     return bonus >= 2 ? PasswordStrength.strong : PasswordStrength.medium;
   }
 
-  static bool _hasLetter(String v) => RegExp('[A-Za-z]').hasMatch(v);
   static bool _hasDigit(String v) => RegExp('[0-9]').hasMatch(v);
   static bool _hasLower(String v) => RegExp('[a-z]').hasMatch(v);
   static bool _hasUpper(String v) => RegExp('[A-Z]').hasMatch(v);

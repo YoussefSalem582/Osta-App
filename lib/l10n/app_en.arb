@@ -150,7 +150,7 @@
   "comingSoonBody": "This experience isn't ready yet.",
   "validationRequired": "Required",
   "validationEmail": "Enter a valid email",
-  "validationPassword": "At least 8 characters with a letter and a number",
+  "validationPassword": "At least 8 characters, with an uppercase and a lowercase letter and a number",
   "validationPasswordMatch": "Passwords don't match",
   "validationPhone": "Enter a valid Egyptian mobile number",
   "passwordStrengthWeak": "Weak",

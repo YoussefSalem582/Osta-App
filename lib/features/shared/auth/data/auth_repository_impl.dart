@@ -50,6 +50,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
     required AppRole accountType,
     String? phone,
+    String? languagePreference,
   }) => _authenticate(ApiEndpoints.authRegister, {
     'first_name': firstName,
     'last_name': lastName,
@@ -59,6 +60,7 @@ class AuthRepositoryImpl implements AuthRepository {
     'password_confirmation': password,
     'account_type': accountType.wireName,
     if (phone != null && phone.isNotEmpty) 'phone': phone,
+    'language_preference': ?languagePreference,
   });
 
   @override
