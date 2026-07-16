@@ -42,7 +42,6 @@ class PaymentMethodCard extends StatelessWidget {
 
     return AppCard(
       onTap: onTap,
-      padding: const EdgeInsets.all(AppSpacing.md),
       border: BorderSide(color: borderColor, width: borderWidth),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,7 +67,6 @@ class PaymentMethodCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Flexible(
                           child: Text(

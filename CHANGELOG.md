@@ -5,6 +5,30 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the pro
 
 ## [Unreleased]
 
+### Added
+
+- **Merchant logged-out onboarding carousel** (2026-07-16) — `MerchantOnboardingPage` at `/onboarding/business` under `lib/features/onboarding/`, parallel to the customer `/onboarding` slides. Business flow: role → merchant carousel → auth → post-auth wizard. Three merchant-focused EN/AR slides.
+
+  > ‏**شرائح تعريف التاجر قبل الدخول** (2026-07-16) — `MerchantOnboardingPage` عند `/onboarding/business` موازية لشرائح العميل. مسار النشاط: الدور → شرائح التاجر → المصادقة → معالج ما بعد الدخول.
+
+### Fixed
+
+- **Map empty state outside Egypt** (2026-07-16) — iOS Simulator defaults to San Francisco; `GET /centers/nearby` returned `200` with an empty list because OSTA centers are in Egypt. Nearby requests send `radius=25000` (25 km). Empty overlay uses a single user-friendly message (no simulator/coordinate hints).
+
+- **Skip redundant provider intro after business register** (2026-07-16) — post-auth redirect now lands on `/business-identity` (the setup form) instead of `/provider-onboarding`. Merchants already saw the logged-out carousel before register; the intro screen remains routable but is no longer forced.
+
+  > ‏**تخطّي شاشة التعريف المكرّرة بعد تسجيل النشاط** (2026-07-16) — إعادة التوجيه بعد المصادقة تفتح `/business-identity` مباشرةً بدل `/provider-onboarding`.
+
+- **Role-split first-run + role-aware auth titles** (2026-07-16) — customer and business each get their own marketing carousel before auth; login/register titles distinguish the role (`Create business account` vs `Create customer account`).
+
+  > ‏**فصل تدفّق التشغيل الأول + عناوين مصادقة حسب الدور** (2026-07-16) — لكل دور شرائحه التعريفية قبل المصادقة، وعناوين التسجيل/الدخول تميّز الدور.
+
+### Added
+
+- **Business onboarding wired end-to-end ([app #53](https://github.com/YoussefSalem582/Osta-App/issues/53))** (2026-07-16) — the post-auth wizard (`ProviderOnboardingPage` → `BusinessIdentityPage` → `BusinessCatalogPage`) was UI-only. Added `BusinessOnboardingRepository` + `BusinessOnboardingCubit` connecting `PUT /business/profile` (multipart logo), `GET /business/catalog/presets`, and `POST /business/catalog`. Step 1 validates trade name / +20 phone / map pin, picks a logo via `image_picker`, and opens a full-screen Google Map pin picker (`MapPinPickerSheet`, reuses `LocationService`). Step 2 loads the 12 server presets, filters by category, requires ≥1 selection, then Activate attaches the catalog and lands in `/business`. Wizard completion is now **persisted** in `SessionStore` (`business_onboarded`) so cold starts skip a finished wizard. Skip on the intro now goes to identity (not catalog). ShellRoute shares one cubit across the three steps. 15 new tests (model + cubit + redirect). Analyze clean; suite green.
+
+  > ‏**ربط تأهيل النشاط التجاري من الطرف إلى الطرف** (2026-07-16) — كان المعالج بعد التسجيل واجهة فقط. أُضيف مستودع و`Cubit` يربطان `PUT /business/profile` و`GET /business/catalog/presets` و`POST /business/catalog`. الخطوة ١ تتحقّق من الاسم والهاتف والموقع مع اختيار شعار وخريطة؛ الخطوة ٢ تحمّل القوالب وتتطلّب خدمة واحدة على الأقل ثم تفعّل المركز. اكتمال المعالج يُحفظ الآن فلا يُعاد عند الإقلاع. ١٥ اختبارًا جديدًا. التحليل نظيف.
+
 ### Fixed
 
 - **Bottom nav center FAB white gap** — the raised map button no longer shows a white rectangular block above the bar; the FAB now overlaps the body (`extendBody`) instead of padding the nav taller.

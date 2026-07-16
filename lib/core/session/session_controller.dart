@@ -6,7 +6,7 @@ import 'package:osta/core/network/dio_client.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:osta/core/session/session_state.dart';
 import 'package:osta/core/session/session_store.dart';
-import 'package:osta/features/auth/shared/domain/auth_repository.dart';
+import 'package:osta/features/shared/auth/domain/auth_repository.dart';
 
 /// Single source of truth for first-run routing. The splash calls [bootstrap];
 /// the language screen, role chooser and auth flow mutate it; the router
@@ -26,9 +26,11 @@ class SessionController extends Cubit<SessionState> {
   final AuthRepository _authRepository;
   late final StreamSubscription<void> _expiredSub;
 
-  /// Reads persisted `{token, activeRole, locale}` and flips `bootstrapped` so
-  /// the router can leave the splash. A valid `{token, activeRole}` lands the
-  /// user straight in their shell — the chooser never reappears.
+  /// Reads persisted `{token, activeRole, locale, businessOnboarded}` and flips
+  /// `bootstrapped` so the router can leave the splash. A valid
+  /// `{token, activeRole}` lands the user straight in their shell — the
+  /// chooser never reappears. A completed business wizard is skipped on
+  /// cold start via the persisted onboarded flag.
   Future<void> bootstrap() async {
     final code = _store.localeCode;
     emit(
@@ -37,6 +39,7 @@ class SessionController extends Cubit<SessionState> {
         locale: code == null ? null : Locale(code),
         activeRole: _store.activeRole,
         hasToken: await _store.hasToken(),
+        businessOnboarded: _store.businessOnboarded,
       ),
     );
   }
@@ -57,9 +60,9 @@ class SessionController extends Cubit<SessionState> {
     emit(state.copyWith(onboardingAcknowledged: true));
   }
 
-  /// Sends the user back to onboarding (the auth-choose back button): clears
-  /// the in-memory ack so the guard re-routes to the intro. Role + language
-  /// stay, so it lands on onboarding, not the role/language screens.
+  /// Auth-choose back: clears the in-memory onboarding ack so the guard
+  /// re-routes to the role-specific carousel (customer `/onboarding` or
+  /// merchant `/onboarding/business`). Role + language stay.
   void resetOnboarding() {
     if (!state.onboardingAcknowledged) return;
     emit(state.copyWith(onboardingAcknowledged: false));
@@ -94,11 +97,12 @@ class SessionController extends Cubit<SessionState> {
     );
   }
 
-  /// Marks the business onboarding wizard finished for this session, so the
-  /// guard stops forcing it and lets the user into the business shell.
-  /// In-memory (never persisted) — the wizard re-runs on the next launch.
-  void completeBusinessOnboarding() {
+  /// Marks the business onboarding wizard finished and persists the flag so
+  /// the guard skips it on cold start. The guard then lets the user into the
+  /// business shell.
+  Future<void> completeBusinessOnboarding() async {
     if (state.businessOnboarded) return;
+    await _store.writeBusinessOnboarded(value: true);
     emit(state.copyWith(businessOnboarded: true));
   }
 

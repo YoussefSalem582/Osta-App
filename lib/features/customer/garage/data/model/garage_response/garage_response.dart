@@ -1,9 +1,6 @@
-import 'datum.dart';
+import 'package:osta/features/customer/garage/data/model/garage_response/datum.dart';
 
 class GarageResponse {
-  bool? success;
-  List<Datum>? data;
-
   GarageResponse({this.success, this.data});
 
   factory GarageResponse.fromJson(Map<String, dynamic> json) {
@@ -14,6 +11,8 @@ class GarageResponse {
           .toList(),
     );
   }
+  bool? success;
+  List<Datum>? data;
 
   Map<String, dynamic> toJson() => {
     'success': success,

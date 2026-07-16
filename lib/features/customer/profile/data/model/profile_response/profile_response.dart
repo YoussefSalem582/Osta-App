@@ -1,9 +1,6 @@
 import 'package:osta/features/customer/profile/data/model/profile_response/data.dart';
 
 class ProfileResponse {
-  bool? success;
-  Data? data;
-
   ProfileResponse({this.success, this.data});
 
   factory ProfileResponse.fromJson(Map<String, dynamic> json) {
@@ -14,6 +11,8 @@ class ProfileResponse {
           : Data.fromJson(json['data'] as Map<String, dynamic>),
     );
   }
+  bool? success;
+  Data? data;
 
   Map<String, dynamic> toJson() => {
     'success': success,

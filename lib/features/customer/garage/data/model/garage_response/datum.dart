@@ -1,19 +1,4 @@
 class Datum {
-  String? id;
-  String? make;
-  String? model;
-  int? year;
-  dynamic plateNumber;
-  dynamic vin;
-  String? color;
-  dynamic fuelType;
-  dynamic transmission;
-  dynamic currentMileage;
-  bool? isPrimary;
-  dynamic deletedAt;
-  String? createdAt;
-  String? updatedAt;
-
   Datum({
     this.id,
     this.make,
@@ -47,6 +32,20 @@ class Datum {
     createdAt: json['created_at'] as String?,
     updatedAt: json['updated_at'] as String?,
   );
+  String? id;
+  String? make;
+  String? model;
+  int? year;
+  dynamic plateNumber;
+  dynamic vin;
+  String? color;
+  dynamic fuelType;
+  dynamic transmission;
+  dynamic currentMileage;
+  bool? isPrimary;
+  dynamic deletedAt;
+  String? createdAt;
+  String? updatedAt;
 
   Map<String, dynamic> toJson() => {
     'id': id,

@@ -53,9 +53,8 @@ class SessionState extends Equatable {
   final bool roleAcknowledged;
 
   /// Whether an authenticated `business` user has finished the onboarding
-  /// wizard this session. In-memory only (never persisted): a fresh
-  /// [SessionState] each launch resets it to `false`, so a business user
-  /// re-runs the wizard every launch until they complete it (see the guard).
+  /// wizard. Persisted in `SessionStore` so a returning business user skips
+  /// the wizard on cold start (cleared on sign-out).
   final bool businessOnboarded;
 
   bool get isLanguageSelected => locale != null;
@@ -87,6 +86,9 @@ class SessionState extends Equatable {
   /// null" (used by "switch role" and sign-out). Preserves the in-memory
   /// language/onboarding/role acks so clearing the role mid-session doesn't
   /// re-trigger those screens (a fresh cold `bootstrap` resets them anyway).
+  /// Also preserves [businessOnboarded] so "switch role" does not force the
+  /// wizard again when the user returns to business (sign-out clears the
+  /// persisted flag separately via `SessionStore.clearSession`).
   SessionState clearingRole({required bool hasToken}) => SessionState(
     bootstrapped: bootstrapped,
     locale: locale,
@@ -94,6 +96,7 @@ class SessionState extends Equatable {
     onboardingAcknowledged: onboardingAcknowledged,
     languageAcknowledged: languageAcknowledged,
     roleAcknowledged: roleAcknowledged,
+    businessOnboarded: businessOnboarded,
   );
 
   @override

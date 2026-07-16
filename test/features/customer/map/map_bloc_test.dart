@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:osta/core/network/api_exception.dart';
-import 'package:osta/features/customer/map/data/location_service.dart';
+import 'package:osta/core/services/location_service.dart';
 import 'package:osta/features/customer/map/data/model/center_summary.dart';
 import 'package:osta/features/customer/map/data/repo/centers_repo.dart';
 import 'package:osta/features/customer/map/presentation/bloc/map_bloc.dart';

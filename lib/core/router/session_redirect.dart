@@ -12,11 +12,13 @@ String shellFor(AppRole role) => switch (role) {
 };
 
 /// Pure first-run/role-split routing. Returns the location to redirect to, or
-/// `null` to stay put. Order encodes the flow:
+/// `null` to stay put. Order encodes the two role flows:
 ///
-/// splash → language → role chooser → onboarding → auth-choose → auth → shell.
-/// A valid `{token, activeRole}` skips straight to the shell; no route is
-/// reachable without auth (no guest path).
+/// - Customer: language → role → customer onboarding → auth → shell
+/// - Business: language → role → merchant onboarding → auth → wizard → shell
+///
+/// A valid `{token, activeRole}` skips straight to the shell (business
+/// still hits the post-auth wizard until onboarded). No guest path.
 String? resolveRedirect({
   required SessionState session,
   required String location,
@@ -42,11 +44,13 @@ String? resolveRedirect({
     return location == AppRoutes.role ? null : AppRoutes.role;
   }
 
-  // Logged-out intro: shown every launch until acknowledged this session. The
-  // flag is in-memory, so a not-logged-in user re-enters onboarding each cold
-  // start; once tapped through it stays set and the steps below are reachable.
+  // Role-specific marketing carousel (logged-out). Customer → #37 slides;
+  // business → merchant slides. Post-auth center setup stays in the wizard.
   if (!session.hasToken && !session.onboardingAcknowledged) {
-    return location == AppRoutes.onboarding ? null : AppRoutes.onboarding;
+    final intro = role == AppRole.business
+        ? AppRoutes.merchantOnboarding
+        : AppRoutes.onboarding;
+    return location == intro ? null : intro;
   }
 
   // Role chosen but no token: pick login/register on the auth-choose landing,
@@ -71,16 +75,18 @@ String? resolveRedirect({
   // customer screen by typed URL, but no nav entry leads there; scope per role
   // if that ever matters.
   // A freshly-authenticated business user runs the onboarding wizard
-  // (provider-onboarding → identity → catalog) before reaching its shell.
-  // Gated by the in-memory `businessOnboarded` flag, so — like the logged-out
-  // gates — it re-shows every launch until finished this session.
+  // (identity → catalog) before reaching its shell. The provider intro
+  // (`/provider-onboarding`) stays routable but is skipped as the entry —
+  // merchants already saw the logged-out carousel before register.
+  // Gated by `businessOnboarded` (persisted after Activate so cold starts
+  // skip a finished wizard).
   if (role == AppRole.business && !session.businessOnboarded) {
     const wizard = {
       AppRoutes.providerOnboarding,
       AppRoutes.businessIdentity,
       AppRoutes.businessCatalog,
     };
-    return wizard.contains(location) ? null : AppRoutes.providerOnboarding;
+    return wizard.contains(location) ? null : AppRoutes.businessIdentity;
   }
 
   const inAppScreens = {

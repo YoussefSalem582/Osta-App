@@ -1,15 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/router/go_router_refresh_stream.dart';
 import 'package:osta/core/router/session_redirect.dart';
 import 'package:osta/core/session/session_controller.dart';
-import 'package:osta/features/auth/choose/presentation/auth_choose_page.dart';
-import 'package:osta/features/auth/login/presentation/login_page.dart';
-import 'package:osta/features/auth/password_recovery/presentation/forgot_password_page.dart';
-import 'package:osta/features/auth/password_recovery/presentation/reset_password_page.dart';
-import 'package:osta/features/auth/register/presentation/register_page.dart';
 import 'package:osta/features/business/dashboard/presentation/screens/tech_screen.dart';
+import 'package:osta/features/business/intro/presentation/pages/merchant_onboarding_page.dart';
+import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_catalog_page.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_identity_page.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/provider_onboarding_page.dart';
@@ -18,14 +18,19 @@ import 'package:osta/features/customer/booking/presentation/pages/live_booking_s
 import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
 import 'package:osta/features/customer/garage/presentation/pages/add_car_screen.dart';
 import 'package:osta/features/customer/garage/presentation/pages/my_garage_screen.dart';
-import 'package:osta/features/customer/main_screen/presentation/customer_shell_page.dart';
+import 'package:osta/features/customer/home/presentation/pages/home_page.dart';
+import 'package:osta/features/customer/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:osta/features/customer/profile/presentation/pages/profile_screen.dart';
-import 'package:osta/features/home/presentation/pages/home_page.dart';
-import 'package:osta/features/onboarding/presentation/language_page.dart';
-import 'package:osta/features/onboarding/presentation/pages/onboarding_page.dart';
-import 'package:osta/features/role/presentation/coming_soon_page.dart';
-import 'package:osta/features/role/presentation/page/role_selection_page.dart';
-import 'package:osta/features/splash/presentation/splash_page.dart';
+import 'package:osta/features/customer/shell/presentation/customer_shell_page.dart';
+import 'package:osta/features/shared/auth/presentation/choose/auth_choose_page.dart';
+import 'package:osta/features/shared/auth/presentation/login/login_page.dart';
+import 'package:osta/features/shared/auth/presentation/password_recovery/forgot_password_page.dart';
+import 'package:osta/features/shared/auth/presentation/password_recovery/reset_password_page.dart';
+import 'package:osta/features/shared/auth/presentation/register/pages/register_page.dart';
+import 'package:osta/features/shared/onboarding/presentation/language_page.dart';
+import 'package:osta/features/shared/role/presentation/coming_soon_page.dart';
+import 'package:osta/features/shared/role/presentation/page/role_selection_page.dart';
+import 'package:osta/features/shared/splash/presentation/splash_page.dart';
 
 /// Declarative app router. Boots at the splash and defers all navigation to a
 /// single [resolveRedirect] guard keyed on the [SessionController] state, so
@@ -54,31 +59,49 @@ class AppRouter {
         path: AppRoutes.onboarding,
         builder: (context, state) => const OnboardingPage(),
       ),
+      GoRoute(
+        path: AppRoutes.merchantOnboarding,
+        builder: (context, state) => const MerchantOnboardingPage(),
+      ),
 
-      // Business (provider) onboarding + catalog/services/shop flow.
-      GoRoute(
-        path: ProviderOnboardingPage.path,
-        builder: (context, state) => ProviderOnboardingPage(
-          onNext: () => context.push(BusinessIdentityPage.path),
-          onSkip: () => context.push(BusinessCatalogPage.path),
+      // Business wizard: one Cubit shared across intro → identity → catalog.
+      ShellRoute(
+        builder: (context, state, child) => BlocProvider(
+          create: (_) => getIt<BusinessOnboardingCubit>(),
+          child: child,
         ),
-      ),
-      GoRoute(
-        path: BusinessIdentityPage.path,
-        builder: (context, state) => BusinessIdentityPage(
-          onContinue: () => context.push(BusinessCatalogPage.path),
-        ),
-      ),
-      GoRoute(
-        path: BusinessCatalogPage.path,
-        builder: (context, state) => BusinessCatalogPage(
-          // Wizard done: mark onboarding complete, then land in the shell.
-          // (The redirect guard bounces to the shell once the flag flips.)
-          onActivate: () {
-            context.read<SessionController>().completeBusinessOnboarding();
-            context.go(AppRoutes.businessShell);
-          },
-        ),
+        routes: [
+          GoRoute(
+            path: ProviderOnboardingPage.path,
+            builder: (context, state) => ProviderOnboardingPage(
+              onNext: () => context.push(BusinessIdentityPage.path),
+              // Skip still lands on identity (not catalog).
+              onSkip: () => context.push(BusinessIdentityPage.path),
+            ),
+          ),
+          GoRoute(
+            path: BusinessIdentityPage.path,
+            builder: (context, state) => const BusinessIdentityPage(),
+          ),
+          GoRoute(
+            path: BusinessCatalogPage.path,
+            builder: (context, state) => BusinessCatalogPage(
+              onActivated: () {
+                // Await the persisted flag before navigating — otherwise the
+                // redirect guard still sees businessOnboarded=false and bounces
+                // back into the wizard.
+                unawaited(() async {
+                  await context
+                      .read<SessionController>()
+                      .completeBusinessOnboarding();
+                  if (context.mounted) {
+                    context.go(AppRoutes.businessShell);
+                  }
+                }());
+              },
+            ),
+          ),
+        ],
       ),
 
       GoRoute(

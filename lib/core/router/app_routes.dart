@@ -4,6 +4,9 @@ abstract final class AppRoutes {
   static const splash = '/splash';
   static const language = '/language';
   static const onboarding = '/onboarding';
+
+  /// Logged-out merchant marketing carousel (parallel to [onboarding]).
+  static const merchantOnboarding = '/onboarding/business';
   static const role = '/role';
   static const authChoose = '/auth/choose';
   static const login = '/auth';

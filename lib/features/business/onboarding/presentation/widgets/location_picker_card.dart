@@ -3,13 +3,17 @@ import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 /// Location picker card with map grid placeholder and pin selection CTA.
+///
+/// When [hasLocation] is true, the CTA label switches to the "selected" copy.
 class LocationPickerCard extends StatelessWidget {
   const LocationPickerCard({
     this.onTap,
+    this.hasLocation = false,
     super.key,
   });
 
   final VoidCallback? onTap;
+  final bool hasLocation;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +29,9 @@ class LocationPickerCard extends StatelessWidget {
             alpha: 0.6,
           ),
           borderRadius: BorderRadius.circular(AppRadii.lg),
+          border: hasLocation
+              ? Border.all(color: theme.colorScheme.primary, width: 2)
+              : null,
         ),
         clipBehavior: Clip.antiAlias,
         child: Stack(
@@ -40,7 +47,7 @@ class LocationPickerCard extends StatelessWidget {
             ),
             Center(
               child: Icon(
-                Icons.location_on,
+                hasLocation ? Icons.check_circle : Icons.location_on,
                 size: 40,
                 color: theme.colorScheme.primary,
               ),
@@ -70,11 +77,15 @@ class LocationPickerCard extends StatelessWidget {
                     Icon(
                       Icons.location_on,
                       size: 16,
-                      color: theme.colorScheme.error,
+                      color: hasLocation
+                          ? theme.colorScheme.primary
+                          : theme.colorScheme.error,
                     ),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
-                      l10n.businessOnboardingSelectLocation,
+                      hasLocation
+                          ? l10n.businessOnboardingLocationSelected
+                          : l10n.businessOnboardingSelectLocation,
                       style: theme.textTheme.labelMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                         color: theme.colorScheme.onSurface,
@@ -99,12 +110,12 @@ class _GridPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = color
-      ..strokeWidth = 1.0;
+      ..strokeWidth = 1;
     const step = 24.0;
-    for (double x = 0; x < size.width; x += step) {
+    for (var x = 0.0; x < size.width; x += step) {
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
     }
-    for (double y = 0; y < size.height; y += step) {
+    for (var y = 0.0; y < size.height; y += step) {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
     }
   }

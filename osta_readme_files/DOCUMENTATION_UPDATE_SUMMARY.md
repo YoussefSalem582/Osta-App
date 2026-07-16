@@ -4,6 +4,30 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-16 — Map empty state when GPS is outside Egypt
+
+iOS Simulator defaults to San Francisco; `GET /centers/nearby` returns `200` with an empty list when no centers exist in range. `CentersRepository.fetchNearby` sends `radius=25000` (25 km). Map empty overlay uses one friendly user-facing message (removed simulator/coordinate hints).
+
+## 2026-07-16 — Post-auth wizard skips provider intro
+
+After business register/login, `resolveRedirect` now opens `/business-identity` directly instead of `/provider-onboarding`. Merchants already saw the logged-out carousel; the intro screen stays routable but is no longer forced.
+
+## 2026-07-16 — Merchant onboarding carousel under `lib/features/onboarding`
+
+Added `MerchantOnboardingPage` (`/onboarding/business`) as the business twin of the customer `OnboardingPage` (`/onboarding`). Guard routes by role: customer → `/onboarding`, business → `/onboarding/business`, then auth. Post-auth center setup remains the provider wizard. Auth-choose back returns to the matching carousel via `resetOnboarding()`.
+
+## 2026-07-16 — Role-split first-run + role-aware auth titles
+
+Customer and business first-run paths split; login/register titles distinguish the chosen role.
+
+## 2026-07-16 — Business onboarding & registration wired (app #53)
+
+Wired the post-auth business wizard to the live B2B endpoints. Before: presentation-only screens; Activate only flipped an in-memory `businessOnboarded` flag; Skip jumped straight to catalog; wizard re-showed every cold start.
+
+**What landed** — `BusinessOnboardingRepository` (`PUT /business/profile` multipart, `GET /business/catalog/presets`, `POST /business/catalog`) + `BusinessOnboardingCubit` shared via a `ShellRoute` across intro → identity → catalog. Identity step: form validation, `image_picker` logo, full-screen `MapPinPickerSheet` (Google Map + center pin, reuses `LocationService`). Catalog step: 12 API presets, category chips, ≥1 required, Activate persists completion. `SessionStore` now persists `business_onboarded` (cleared on sign-out). Skip → identity. Docs + endpoint catalogue updated. 15 new tests; suite **42/42**.
+
+Touched: `lib/features/business/onboarding/**`, `lib/core/{session,router,di}`, ARB keys, `CHANGELOG.md`, `features/business-onboarding.md`, `guides/09_api_endpoints.md`, `CURRENT_STATUS.md`.
+
 ## 2026-07-16 — Bottom nav FAB white gap removed
 
 `AppBottomNavBar` no longer pads the stack taller for the center FAB (that reserved strip painted the scaffold surface white behind the button). The FAB now overlaps upward with a negative top offset; `RoleShell` sets `extendBody: true` so full-bleed bodies (map) paint behind the protrusion.

@@ -48,7 +48,7 @@ Login, refresh, and social exchange are the only endpoints the app calls today; 
 
 | Method | Path | Purpose | Backend | App status |
 |---|---|---|---|---|
-| POST | `/auth/register` | Register (`account_type`, optional multipart `avatar`) | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37)/[#40](https://github.com/YoussefSalem582/osta_backend/issues/40) | Planned |
+| POST | `/auth/register` | Register (`account_type`, optional multipart `avatar`) | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37)/[#40](https://github.com/YoussefSalem582/osta_backend/issues/40) | **Connected** (`AuthRepositoryImpl.register`) |
 | GET | `/auth/check-username?username=` | Live username availability → `{available: bool}` (public) | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37)/[#40](https://github.com/YoussefSalem582/osta_backend/issues/40) | **Connected** (`isUsernameAvailable`) |
 | POST | `/auth/login` | Email+password login (`account_type`; bad creds → **422**) | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37)/[#40](https://github.com/YoussefSalem582/osta_backend/issues/40) | **Connected** |
 | POST | `/auth/refresh` | Exchange refresh → new token pair | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37) | **Connected** (interceptor) |
@@ -129,9 +129,9 @@ The provider side: booking feed, accept/reject/advance, dashboard, catalog, capa
 | PATCH | `/business/bookings/{id}/status` | Advance state | [#46](https://github.com/YoussefSalem582/osta_backend/issues/46) | Planned |
 | PATCH | `/business/bookings/{id}/assign-mechanic` | `{mechanic_id\|null}` (active same-center or 422) | [#46](https://github.com/YoussefSalem582/osta_backend/issues/46)/[#64](https://github.com/YoussefSalem582/osta_backend/issues/64) | Planned |
 | GET | `/business/dashboard` | Counts + revenue | [#51](https://github.com/YoussefSalem582/osta_backend/issues/51) | Planned |
-| PUT | `/business/profile` | Business info (multipart logo) | [#56](https://github.com/YoussefSalem582/osta_backend/issues/56) | Planned |
-| GET | `/business/catalog/presets` | 12 seeded catalog presets | [#56](https://github.com/YoussefSalem582/osta_backend/issues/56) | Planned |
-| POST | `/business/catalog` | Bulk-attach (≥1) | [#56](https://github.com/YoussefSalem582/osta_backend/issues/56) | Planned |
+| PUT | `/business/profile` | Business info (multipart logo) | [#56](https://github.com/YoussefSalem582/osta_backend/issues/56) | **Connected** (`BusinessOnboardingRepository`) |
+| GET | `/business/catalog/presets` | 12 seeded catalog presets | [#56](https://github.com/YoussefSalem582/osta_backend/issues/56) | **Connected** |
+| POST | `/business/catalog` | Bulk-attach (≥1) | [#56](https://github.com/YoussefSalem582/osta_backend/issues/56) | **Connected** |
 | PUT | `/business/capacity` | Weekly slots/breaks/holidays | [#56](https://github.com/YoussefSalem582/osta_backend/issues/56) | Planned |
 | GET/POST | `/business/services` (+ PUT/DELETE `/{id}`) | Services CRUD | [#57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Planned |
 | GET/POST | `/business/promotions` (+ PUT/DELETE `/{id}`) | Promotions CRUD | [#57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Planned |
