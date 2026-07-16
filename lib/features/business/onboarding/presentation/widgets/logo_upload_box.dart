@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
+import 'package:osta/features/business/onboarding/presentation/widgets/dashed_rect_painter.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 /// Logo upload widget with dashed border and camera button.
@@ -32,7 +33,7 @@ class LogoUploadBox extends StatelessWidget {
             width: 80,
             height: 80,
             child: CustomPaint(
-              painter: _DashedRectPainter(
+              painter: DashedRectPainter(
                 color: theme.colorScheme.primary,
                 radius: AppRadii.lg,
               ),
@@ -97,39 +98,4 @@ class LogoUploadBox extends StatelessWidget {
       ],
     );
   }
-}
-
-class _DashedRectPainter extends CustomPainter {
-  _DashedRectPainter({required this.color, required this.radius});
-  final Color color;
-  final double radius;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1.5
-      ..style = PaintingStyle.stroke;
-    final rrect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      Radius.circular(radius),
-    );
-    final path = Path()..addRRect(rrect);
-    for (final metric in path.computeMetrics()) {
-      var distance = 0.0;
-      while (distance < metric.length) {
-        const length = 6.0;
-        const gap = 4.0;
-        canvas.drawPath(
-          metric.extractPath(distance, distance + length),
-          paint,
-        );
-        distance += length + gap;
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(_DashedRectPainter oldDelegate) =>
-      oldDelegate.color != color || oldDelegate.radius != radius;
 }
