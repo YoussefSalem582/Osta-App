@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/booking/data/model.dart/booking_item.dart';
+import 'package:osta/features/customer/booking/data/model/booking_item.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/booking_list.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/tab_pill.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
