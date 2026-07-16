@@ -12,9 +12,9 @@ import 'package:osta/features/customer/profile/presentation/cubit/profile_cubit.
 import 'package:osta/features/customer/profile/presentation/cubit/profile_state.dart';
 import 'package:osta/features/customer/profile/presentation/widgets/profile_card.dart';
 import 'package:osta/features/customer/profile/presentation/widgets/profile_item.dart';
-import 'package:osta/features/customer/profile/presentation/widgets/segmented_toggle.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
+import 'package:osta/shared/ui/app_segmented_toggle.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -276,13 +276,12 @@ class ProfileViewContent extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SegmentedToggle(
+                      AppSegmentedToggle(
                         options: [l10n.arabic, l10n.english],
-                        selected: isArabic ? l10n.arabic : l10n.english,
-                        onSelect: (val) async {
-                          final toArabic = val == l10n.arabic;
+                        selectedIndex: isArabic ? 0 : 1,
+                        onSelect: (index) async {
                           await sessionController.chooseLanguage(
-                            Locale(toArabic ? 'ar' : 'en'),
+                            Locale(index == 0 ? 'ar' : 'en'),
                           );
                         },
                       ),
@@ -312,13 +311,12 @@ class ProfileViewContent extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SegmentedToggle(
+                      AppSegmentedToggle(
                         options: [l10n.light, l10n.dark],
-                        selected: isDark ? l10n.dark : l10n.light,
-                        onSelect: (val) async {
-                          final toDark = val == l10n.dark;
+                        selectedIndex: isDark ? 1 : 0,
+                        onSelect: (index) async {
                           await themeController.setMode(
-                            toDark ? ThemeMode.dark : ThemeMode.light,
+                            index == 1 ? ThemeMode.dark : ThemeMode.light,
                           );
                         },
                       ),

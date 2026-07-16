@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/service_toggle_card.dart';
 import 'package:osta/features/business/services/presentation/widgets/discount_promotion_banner.dart';
-import 'package:osta/features/business/services/presentation/widgets/services_filter_toggle.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
+import 'package:osta/shared/ui/app_segmented_toggle.dart';
 
 /// الكتالوج والأسعار (الخدمات والعروض) — the Catalog tab body of the business
 /// shell. Scaffold-less: the shell owns the app bar and bottom nav.
@@ -82,11 +82,14 @@ class _BusinessServicesPageState extends State<BusinessServicesPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                ServicesFilterToggle(
-                  selectedTab: _selectedTab,
-                  onTabChanged: (val) => setState(() => _selectedTab = val),
-                  servicesLabel: l10n.businessServicesTabServices,
-                  offersLabel: l10n.businessServicesTabOffers,
+                AppSegmentedToggle(
+                  options: [
+                    l10n.businessServicesTabServices,
+                    l10n.businessServicesTabOffers,
+                  ],
+                  selectedIndex: _selectedTab,
+                  onSelect: (val) => setState(() => _selectedTab = val),
+                  expand: true,
                 ),
                 const SizedBox(height: AppSpacing.md),
                 if (_selectedTab == 0) ...[
