@@ -199,6 +199,24 @@
   "businessOnboardingPhoneLabel": "Center phone number",
   "businessOnboardingPhoneHint": "5678 2401 2",
   "businessOnboardingTypeLabel": "Type",
+  "businessOnboardingYearFoundedLabel": "Year founded",
+  "setupPercentComplete": "{percent}% complete",
+  "@setupPercentComplete": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "businessCustomServiceTitle": "Add a service",
+  "businessCustomServiceName": "Service name",
+  "businessCustomServiceNameHint": "Full synthetic oil change",
+  "businessCustomServiceCategory": "Category (optional)",
+  "businessCustomServicePrice": "Price (EGP)",
+  "businessCustomServiceDuration": "Duration (minutes)",
+  "businessCustomServiceSave": "Add to catalog",
+  "validationPrice": "Enter a price of 0 or more",
+  "validationDuration": "Enter a duration between 1 and 1440 minutes",
   "businessOnboardingCityLabel": "City",
   "businessOnboardingCityValue": "Nasr City",
   "businessOnboardingAddressLabel": "Street address",

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/add_custom_service_button.dart';
+import 'package:osta/features/business/onboarding/presentation/widgets/add_custom_service_sheet.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/add_preset_card.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/preset_services_banner.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/service_category_chips.dart';
@@ -57,7 +58,11 @@ class _BusinessCatalogPageState extends State<BusinessCatalogPage> {
     };
   }
 
-  void _comingSoon() => AppToaster.showMessage(context.l10n.comingSoon);
+  Future<void> _addCustomService() async {
+    final cubit = context.read<BusinessOnboardingCubit>();
+    final service = await AddCustomServiceSheet.show(context);
+    if (service != null) cubit.addCustomService(service);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,8 +163,29 @@ class _BusinessCatalogPageState extends State<BusinessCatalogPage> {
                                 ),
                                 const SizedBox(height: AppSpacing.sm),
                               ],
+                              // Staged locally; Activate posts each to
+                              // /business/services, which is a different
+                              // endpoint from the preset catalog above.
+                              for (final (i, service)
+                                  in state.customServices.indexed) ...[
+                                ServiceToggleCard(
+                                  title: service.name,
+                                  subtitle:
+                                      service.category ??
+                                      l10n.businessCustomServiceTitle,
+                                  price: EgpFormatter.format(
+                                    service.price,
+                                    locale: locale,
+                                  ),
+                                  isSelected: true,
+                                  onChanged: (_) => context
+                                      .read<BusinessOnboardingCubit>()
+                                      .removeCustomService(i),
+                                ),
+                                const SizedBox(height: AppSpacing.sm),
+                              ],
                               const SizedBox(height: AppSpacing.md),
-                              AddCustomServiceButton(onTap: _comingSoon),
+                              AddCustomServiceButton(onTap: _addCustomService),
                               const SizedBox(height: AppSpacing.xl),
                             ],
                           ),

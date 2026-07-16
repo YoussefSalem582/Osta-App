@@ -199,6 +199,24 @@
   "businessOnboardingPhoneLabel": "رقم تليفون المركز",
   "businessOnboardingPhoneHint": "٥٦٧٨ ٢٤٠١ ٢",
   "businessOnboardingTypeLabel": "النوع",
+  "businessOnboardingYearFoundedLabel": "سنة التأسيس",
+  "setupPercentComplete": "اكتمل {percent}٪",
+  "@setupPercentComplete": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "businessCustomServiceTitle": "إضافة خدمة",
+  "businessCustomServiceName": "اسم الخدمة",
+  "businessCustomServiceNameHint": "تغيير زيت صناعي كامل",
+  "businessCustomServiceCategory": "الفئة (اختياري)",
+  "businessCustomServicePrice": "السعر (ج.م)",
+  "businessCustomServiceDuration": "المدة (دقائق)",
+  "businessCustomServiceSave": "أضف إلى الكتالوج",
+  "validationPrice": "أدخل سعرًا لا يقل عن صفر",
+  "validationDuration": "أدخل مدة بين ١ و١٤٤٠ دقيقة",
   "businessOnboardingCityLabel": "المدينة",
   "businessOnboardingCityValue": "مدينة نصر",
   "businessOnboardingAddressLabel": "العنوان",

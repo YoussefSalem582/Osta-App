@@ -86,7 +86,7 @@ Future<void> configureDependencies() async {
       () => PasswordRecoveryBloc(getIt()),
     )
     ..registerFactory<BusinessOnboardingCubit>(
-      () => BusinessOnboardingCubit(getIt()),
+      () => BusinessOnboardingCubit(getIt(), getIt()),
     )
     ..registerLazySingleton<AppRouter>(() => AppRouter(getIt()));
 }

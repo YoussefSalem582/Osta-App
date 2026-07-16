@@ -46,6 +46,12 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
     'car_wash',
   ];
 
+  /// Newest first — a workshop founded last year is a likelier pick than 1900.
+  static List<int> get _foundingYears {
+    final now = DateTime.now().year;
+    return [for (var y = now; y >= 1900; y--) y];
+  }
+
   @override
   void initState() {
     super.initState();
@@ -260,6 +266,34 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
                             controller: _address,
                             textInputAction: TextInputAction.done,
                             errorText: state.fieldErrors['address_line']?.first,
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          // Optional, like the backend's `sometimes` rule; the
+                          // range mirrors `integer|min:1900|max:{this year}`.
+                          DropdownButtonFormField<int>(
+                            initialValue: state.yearFounded,
+                            decoration: InputDecoration(
+                              labelText:
+                                  l10n.businessOnboardingYearFoundedLabel,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(
+                                  AppRadii.md,
+                                ),
+                              ),
+                              errorText:
+                                  state.fieldErrors['year_founded']?.first,
+                            ),
+                            items: [
+                              for (final y in _foundingYears)
+                                DropdownMenuItem(value: y, child: Text('$y')),
+                            ],
+                            onChanged: (v) {
+                              if (v != null) {
+                                context
+                                    .read<BusinessOnboardingCubit>()
+                                    .updateYearFounded(v);
+                              }
+                            },
                           ),
                           const SizedBox(height: AppSpacing.xl),
                         ],

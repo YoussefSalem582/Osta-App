@@ -3,6 +3,7 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/features/business/onboarding/data/models/business_profile_input.dart';
 import 'package:osta/features/business/onboarding/data/models/catalog_preset.dart';
+import 'package:osta/features/business/onboarding/data/models/custom_service_input.dart';
 
 /// Talks to the B2B onboarding endpoints (`/business/profile`, catalog).
 ///
@@ -57,12 +58,24 @@ class BusinessOnboardingRepository {
   }
 
   /// Step 2 — bulk-attach selected presets (≥1 required by the backend).
+  ///
+  /// Only for preset-backed services; `items.*.preset_id` must reference a real
+  /// `catalog_presets` row. Custom ones go through [createCustomService].
   Future<void> attachCatalog(List<String> presetIds) async {
     await _api.post<Object?>(
       ApiEndpoints.businessCatalog,
       body: {
         'items': presetIds.map((id) => {'preset_id': id}).toList(),
       },
+      parse: (data) => data,
+    );
+  }
+
+  /// Step 2 — add one merchant-authored service (`POST /business/services`).
+  Future<void> createCustomService(CustomServiceInput input) async {
+    await _api.post<Object?>(
+      ApiEndpoints.businessServices,
+      body: input.toJson(),
       parse: (data) => data,
     );
   }
