@@ -4,6 +4,26 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-16 — Register feature audited against the backend (#35, #37, #39, #53)
+
+Every request **and response** contract in the register flow was checked against the Laravel source. The register form itself was already sound — it collects every field #35 asks for, and the auth envelope, token-pair keys, `data.user.type`, `CatalogPreset`, `GET /me` and all `BusinessProfileInput` keys match exactly. **Five wire bugs sat either side of it**, none of them loud.
+
+**API drift resolved** — [`guides/09_api_endpoints.md`](guides/09_api_endpoints.md)
+
+- The ⚠️ on `/auth/password/{forgot,reset}` is **gone: the code is fixed**. The previous entry flagged the mismatch but left the code alone pending verification against the deployed server; that verification is done (the flat paths exist at no backend commit), so `ApiEndpoints` now sends the nested paths and both recovery screens resolve.
+- Added the two contracts that are easy to get wrong, because both are invisible from the backend suite:
+  - **`/auth/refresh` takes the refresh token as `Bearer`, with an empty body.** It is behind `auth:sanctum` + `ability:refresh` and reads `$request->user()`; the token *is* the credential. The app sent it as a body field with no header, so every user was logged out at access-token expiry.
+  - **Multipart only parses on POST.** A real `PUT` with a file leaves `$_POST` and `$_FILES` empty; where rules are `sometimes` that validates clean and saves nothing. `PUT /business/profile` therefore discarded the whole step-1 profile whenever a logo was attached.
+- Marked `/auth/refresh`'s auth requirement inline in the table.
+
+**Why the backend suite is green on all of this** — `$this->put(['logo' => UploadedFile::fake()])` injects into Symfony's file bag and never builds a multipart body. The test cannot see the bug. `test/core/network/wire_contract_test.dart` pins these from the client side instead, and the refresh + multipart cases are mutation-checked.
+
+**Issue prose that contradicts the code** — noted so nobody "fixes" the code toward it: #39 names `{brand, model, model_year, plate, kilometers}` and a Riverpod provider (the backend is `{make, model, year, plate_number, current_mileage}`; this app is bloc/get_it); #53 names three business types the backend enum doesn't have.
+
+**Mandatory**
+
+- [`../CHANGELOG.md`](../CHANGELOG.md) and [`CURRENT_STATUS.md`](CURRENT_STATUS.md) — full entries.
+
 ## 2026-07-16 — `lib/features/` reorganised into business / customer / shared
 
 Docs updated for the role-bucket refactor and the dead-code sweep that rode with it.

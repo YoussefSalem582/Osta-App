@@ -5,6 +5,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the pro
 
 ## [Unreleased]
 
+### Added
+
+- **The required add-car gate** (2026-07-16, [#39](https://github.com/YoussefSalem582/Osta-App/issues/39)) — business users got a mandatory setup wizard after register; customers got nothing, so "no car means no Home" was unimplemented. `AppRoutes.addCar` was even *allow-listed* in the redirect, the opposite of forcing it. `SessionState.hasVehicle` now resolves from `GET /vehicles` after auth, on bootstrap and on role switch, and `resolveRedirect` forces add-car while it is false — mirroring the proven `businessOnboarded` mechanism. The flag is tri-state: only an explicit `false` gates, so an offline launch fails open rather than locking someone out of the app, and the check is capped at 4s because bootstrap is awaited on the splash. Brand/model pickers are client-side (no catalogue endpoint exists) and every one carries an "Other" escape to free text — a hardcoded list without one would permanently lock out anyone whose car is missing. The plate validator stays loose for the same reason: Egyptian formats vary by governorate and vintage.
+
+  > ‏**بوابة إضافة السيارة الإلزامية** (2026-07-16) — كان النشاط التجاري يمرّ بمعالج إعداد إجباري بينما العميل لا يمرّ بشيء. الآن لا يصل العميل إلى الرئيسية قبل إضافة سيارة. البوابة تفشل مفتوحةً عند انقطاع الشبكة حتى لا يُحبس أحد خارج التطبيق، ولكل قائمة اختيار خيار "أخرى" لأن القائمة الثابتة ستنقص دائمًا.
+
+- **Add-custom-service sheet for business onboarding** (2026-07-16, [#53](https://github.com/YoussefSalem582/Osta-App/issues/53)) — the button was a "coming soon" toast. Custom services post to `/business/services`, **not** the catalog endpoint: `POST /business/catalog` validates `items.*.preset_id` as `required|uuid|exists:catalog_presets,id`, so a typed-in service physically cannot go through it. `canActivate` therefore counts custom services too, and `activate` skips `/catalog` when no presets are selected (`items` is `required|min:1`, so an empty list would 422).
+
+- **Business wizard drafts survive a cold start** (2026-07-16, [#53](https://github.com/YoussefSalem582/Osta-App/issues/53)) — the wizard is mandatory, but its state survived only via `ShellRoute` scoping, so killing the app dropped the merchant back at an empty step 1. Persisted through `SessionStore`'s existing preferences. The logo path is excluded: it is an `image_picker` cache path the OS may reap, so a restored one can dangle.
+
 ### Changed
 
 - **`lib/features/` reorganised into three role buckets** (2026-07-16) — `business/`, `customer/`, `shared/`. Eight folders sat at the top level with no owner in their path, three of them misfiled: `home/` was the customer Home tab (while an empty `customer/home/` scaffold sat beside it), `shop/` was business-only, and `customer/main_screen/` was really the customer shell. `auth/`, `splash/`, `role/`, `shell/`, `notifications/` and the language page moved to `features/shared/`; the two marketing carousels split to their roles. `LocationService` — the repo's only cross-role import — moved to `core/services/`, so `business/` and `customer/` now import each other zero times. `auth/shared/` was flattened into the canonical `auth/{data,domain,presentation}`. Route paths and `AppRole` are untouched: `"business"` is a backend contract (`UserType::Business`, `account_type`, `me.type`). `features/shop/` deliberately stays unbucketed until [#48](https://github.com/YoussefSalem582/Osta-App/issues/48) (two-sided) and [#57](https://github.com/YoussefSalem582/Osta-App/issues/57) (business-only) agree.
@@ -16,6 +26,32 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the pro
   > ‏**اختبارات بنيوية تحرس حدود الأدوار** — تفشل عند استيراد متقاطع بين الأدوار أو تكرار اسم صنف عام أو مفتاح ترجمة غير موجود. إعادة تنظيم المجلّدات كسرت المشروع مرّتين من قبل.
 
 ### Fixed
+
+> Five wire bugs found by auditing every request **and response** contract in the register flow against the Laravel source (2026-07-16). None failed loudly: four returned 200/201 with a success envelope while discarding data or logging the user out, and the backend's own suite is green on all of them, because Laravel's test client bypasses the exact layers that break.
+
+- **Every user was force-logged-out at access-token expiry** (2026-07-16, [#35](https://github.com/YoussefSalem582/Osta-App/issues/35)) — the refresh call posted `{refresh_token: …}` as a JSON body through a bare Dio that carries no interceptors, and therefore no `Authorization` header. But `/auth/refresh` sits behind `auth:sanctum` + `ability:refresh` and only reads `$request->user()`: the refresh token *is* the credential, a Sanctum PAT minted with the `refresh` ability. So every refresh 401'd, and the catch for a failed refresh cleared the tokens and emitted session-expired. The backend's own test documents the contract — `Bearer {$refresh}`, empty body. `#35`'s "auto-refresh on 401" could never have passed.
+
+  > ‏**كان كل مستخدم يُخرَج من حسابه فور انتهاء صلاحية رمز الوصول** (2026-07-16) — كان التطبيق يرسل رمز التجديد في متن الطلب بلا ترويسة تفويض، بينما نقطة التجديد تتطلّب الرمز نفسه ترويسةً. النتيجة ٤٠١ ثم خروج قسري. رمز التجديد هو بيان الاعتماد.
+
+- **Password recovery had never worked** (2026-07-16, [#35](https://github.com/YoussefSalem582/Osta-App/issues/35)) — the app called `/forgot-password` and `/reset-password`; the backend registers them inside a `Route::prefix('auth')` group, so the real paths are `/auth/password/{forgot,reset}`. Both screens 404'd. The comment defending the flat paths claimed the live repo shipped them: `git log -S"forgot-password" -- routes/` on the backend returns nothing at any commit, and they appear nowhere in its source.
+
+  > ‏**استعادة كلمة المرور لم تعمل قط** (2026-07-16) — كان التطبيق ينادي مسارات مسطّحة لم توجد يومًا في الخادم، فكانت الشاشتان تعيدان ٤٠٤.
+
+- **Picking a business logo silently discarded the entire profile** (2026-07-16, [#53](https://github.com/YoussefSalem582/Osta-App/issues/53)) — step 1 sent a real `PUT` with a multipart body whenever a logo was attached. PHP only parses `multipart/form-data` on POST, so `$_POST` and `$_FILES` both arrived empty; because every rule on `UpdateBusinessProfileRequest` is `sometimes`, that empty payload validated clean and saved nothing. 200 OK — trade name, phone, city, address, business type and map pin all gone, wizard advancing happily. Only the logo path was affected: the no-logo path sends JSON, which Laravel parses on any verb, which is why it went unnoticed. Now POSTs with `_method=PUT`.
+
+  > ‏**اختيار شعار النشاط كان يمحو بيانات الخطوة الأولى بالكامل بصمت** (2026-07-16) — لأن PHP لا يحلّل الطلبات متعدّدة الأجزاء إلا مع POST، فكان الطلب يصل فارغًا ويُحفظ لا شيء مع إرجاع ٢٠٠. الحلّ إرسال POST مع `_method=PUT`.
+
+- **Vehicle plates and kilometres never reached the server** (2026-07-16, [#39](https://github.com/YoussefSalem582/Osta-App/issues/39)) — `addVehicle` sent `plate`, but the rule key is `plate_number` and it is `nullable`, so the misspelling was not a 422: it was a silent drop that still returned 201 with a green toast. Every plate ever entered was thrown away, read back as null, and rendered as an empty string. Kilometres were worse — collected, validated, then never read in `_onSave` at all, so every car showed `0 km`.
+
+  > ‏**أرقام اللوحات والكيلومترات لم تصل إلى الخادم قط** (2026-07-16) — مفتاح خاطئ يُهمَل بصمت مع إرجاع ٢٠١، وحقل الكيلومترات لم يكن يُقرأ أصلًا عند الحفظ.
+
+- **English users got Arabic error messages** (2026-07-16, [#37](https://github.com/YoussefSalem582/Osta-App/issues/37)) — `SetApiLocale` resolves the request locale from `Accept-Language` on every call and defaults to Arabic. The app sent no such header, so every server-side string — all 422 validation text, auth errors — came back Arabic regardless of the pick, and register persisted `language_preference: 'ar'` for them permanently. Sent per request rather than baked into `BaseOptions`, since the language screen can change it after the client is built.
+
+  > ‏**كان المستخدمون بالإنجليزية يرون رسائل الخادم بالعربية** (2026-07-16) — لغياب ترويسة `Accept-Language`، وكان اختيارهم يُحفَظ عربيًّا في حساباتهم بشكل دائم.
+
+- **The register form swallowed some server errors entirely** (2026-07-16, [#35](https://github.com/YoussefSalem582/Osta-App/issues/35)) — it bound `errorText` for only `username`/`email`/`phone`/`password`, and fired the toast only when `fieldErrors` was empty. A 422 on `first_name` (`max:60`) therefore produced no toast *and* no inline error: tap "Create account", nothing happens. Both names are now bound, and the toast fires whenever the returned keys are disjoint from the set the form renders, so `account_type`, `language_preference` and `avatar` can't vanish either.
+
+- **The client accepted passwords the server rejects** (2026-07-16, [#35](https://github.com/YoussefSalem582/Osta-App/issues/35)) — it required a letter and a digit; the server requires `Password::min(8)->mixedCase()->numbers()`. So `password1` passed the form and 422'd on submit. The strength meter shares the gate now, so it can never score a password "medium" that submit rejects.
 
 - **Invisible "engine" labels on the business dashboard** (2026-07-16) — `tech_screen` painted three labels `#3A694E` on an `appColors.success` container: **1.12:1** contrast in the light theme, where WCAG AA wants 4.5:1. Each carried a `// ponytail: no token for this color` comment; the comment was wrong — `onSuccess` is that token, and scores 7.13:1 light / 8.55:1 dark. Added `test/core/theme/contrast_test.dart` (a path AGENTS.md had referenced for a while), asserting every semantic on/background pair clears AA in both themes.
 
