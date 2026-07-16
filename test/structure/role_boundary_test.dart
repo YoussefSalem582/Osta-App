@@ -18,12 +18,13 @@ void main() {
       .toList();
 
   test('lib/features holds only the role buckets', () {
-    final entries = Directory('lib/features')
-        .listSync()
-        .whereType<Directory>()
-        .map((d) => d.path.split('/').last)
-        .toList()
-      ..sort();
+    final entries =
+        Directory('lib/features')
+            .listSync()
+            .whereType<Directory>()
+            .map((d) => d.path.split('/').last)
+            .toList()
+          ..sort();
 
     // `shop/` is a known holdout: #48 (two-sided) and #57 (business) disagree
     // on its bucket. Drop it here once they settle.
@@ -50,8 +51,11 @@ void main() {
 
   test('no public class name is declared twice', () {
     final declaring = <String, List<String>>{};
-    final classRe = RegExp(r'^(?:abstract\s+|final\s+|sealed\s+|base\s+|'
-        r'interface\s+|mixin\s+)*class\s+(\w+)', multiLine: true);
+    final classRe = RegExp(
+      r'^(?:abstract\s+|final\s+|sealed\s+|base\s+|'
+      r'interface\s+|mixin\s+)*class\s+(\w+)',
+      multiLine: true,
+    );
 
     for (final file in libDart) {
       for (final m in classRe.allMatches(file.readAsStringSync())) {
@@ -68,17 +72,18 @@ void main() {
     expect(
       dupes.map((e) => '${e.key}: ${e.value.join(", ")}'),
       isEmpty,
-      reason: 'Two files declaring one class is the ambiguous-import error '
+      reason:
+          'Two files declaring one class is the ambiguous-import error '
           'that broke this repo before.',
     );
   });
 
   test('every l10n key used in lib exists in app_en.arb', () {
     final arb = File('lib/l10n/app_en.arb').readAsStringSync();
-    final declared = RegExp(r'^\s{2}"(\w+)"\s*:', multiLine: true)
-        .allMatches(arb)
-        .map((m) => m.group(1)!)
-        .toSet();
+    final declared = RegExp(
+      r'^\s{2}"(\w+)"\s*:',
+      multiLine: true,
+    ).allMatches(arb).map((m) => m.group(1)!).toSet();
 
     final missing = <String>{};
     final useRe = RegExp(r'\bl10n\.(\w+)');

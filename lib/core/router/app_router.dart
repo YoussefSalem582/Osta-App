@@ -12,7 +12,6 @@ import 'package:osta/features/business/intro/presentation/pages/merchant_onboard
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_catalog_page.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_identity_page.dart';
-import 'package:osta/features/business/onboarding/presentation/pages/provider_onboarding_page.dart';
 import 'package:osta/features/business/shell/presentation/business_shell_page.dart';
 import 'package:osta/features/customer/booking/presentation/pages/live_booking_screen.dart';
 import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
@@ -71,14 +70,6 @@ class AppRouter {
           child: child,
         ),
         routes: [
-          GoRoute(
-            path: ProviderOnboardingPage.path,
-            builder: (context, state) => ProviderOnboardingPage(
-              onNext: () => context.push(BusinessIdentityPage.path),
-              // Skip still lands on identity (not catalog).
-              onSkip: () => context.push(BusinessIdentityPage.path),
-            ),
-          ),
           GoRoute(
             path: BusinessIdentityPage.path,
             builder: (context, state) => const BusinessIdentityPage(),

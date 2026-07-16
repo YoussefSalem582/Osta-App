@@ -18,7 +18,6 @@ abstract final class AppRoutes {
   // Business technicians screen, pushed from the shell's More tab.
   static const technicians = '/business/technicians';
   // Business onboarding wizard (shown to an authed business user until done).
-  static const providerOnboarding = '/provider-onboarding';
   static const businessIdentity = '/business-identity';
   static const businessCatalog = '/business-catalog';
   static const comingSoon = '/coming-soon';

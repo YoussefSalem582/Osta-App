@@ -75,14 +75,12 @@ String? resolveRedirect({
   // customer screen by typed URL, but no nav entry leads there; scope per role
   // if that ever matters.
   // A freshly-authenticated business user runs the onboarding wizard
-  // (identity → catalog) before reaching its shell. The provider intro
-  // (`/provider-onboarding`) stays routable but is skipped as the entry —
-  // merchants already saw the logged-out carousel before register.
+  // (identity → catalog) before reaching its shell. Merchants already saw the
+  // logged-out carousel before register, so there is no intro step here.
   // Gated by `businessOnboarded` (persisted after Activate so cold starts
   // skip a finished wizard).
   if (role == AppRole.business && !session.businessOnboarded) {
     const wizard = {
-      AppRoutes.providerOnboarding,
       AppRoutes.businessIdentity,
       AppRoutes.businessCatalog,
     };
