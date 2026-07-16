@@ -57,10 +57,21 @@ String? resolveRedirect({
   // then the auth form (sends `account_type = activeRole`). The
   // password-recovery screens hang off the same unauthenticated surface.
   if (!session.hasToken) {
+    // Each role has its own register screen, like its own carousel. Pin the
+    // location to the active role's: RegisterBloc reads account_type from the
+    // session, so landing on the other role's URL would show one role's
+    // heading while registering as the other.
+    const registerRoutes = {AppRoutes.register, AppRoutes.registerBusiness};
+    if (registerRoutes.contains(location)) {
+      final ownRegister = role == AppRole.business
+          ? AppRoutes.registerBusiness
+          : AppRoutes.register;
+      return location == ownRegister ? null : ownRegister;
+    }
+
     const authSurface = {
       AppRoutes.authChoose,
       AppRoutes.login,
-      AppRoutes.register,
       AppRoutes.forgotPassword,
       AppRoutes.resetPassword,
     };

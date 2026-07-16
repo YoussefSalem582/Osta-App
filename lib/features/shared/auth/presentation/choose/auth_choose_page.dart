@@ -47,7 +47,9 @@ class AuthChoosePage extends StatelessWidget {
               ? l10n.authRegisterTitleBusiness
               : l10n.authRegisterTitleCustomer,
           variant: AppButtonVariant.secondary,
-          onPressed: () => context.go(AppRoutes.register),
+          onPressed: () => context.go(
+            isBusiness ? AppRoutes.registerBusiness : AppRoutes.register,
+          ),
         ),
         const SizedBox(height: AppSpacing.lg),
         OrDivider(label: l10n.authChooseOr),

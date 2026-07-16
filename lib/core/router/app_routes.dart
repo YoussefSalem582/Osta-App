@@ -10,7 +10,13 @@ abstract final class AppRoutes {
   static const role = '/role';
   static const authChoose = '/auth/choose';
   static const login = '/auth';
+
+  /// Customer sign-up.
   static const register = '/auth/register';
+
+  /// Business sign-up (parallel to [register], as [merchantOnboarding] is to
+  /// [onboarding]). Same fields — `account_type` is what differs on the wire.
+  static const registerBusiness = '/auth/register/business';
   static const forgotPassword = '/auth/forgot-password';
   static const resetPassword = '/auth/reset-password';
   static const customerShell = '/customer';

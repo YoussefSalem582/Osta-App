@@ -5,11 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:osta/core/constants/app_images.dart';
-import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
 import 'package:osta/core/router/app_routes.dart';
-import 'package:osta/core/session/app_role.dart';
-import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/shared/auth/presentation/register/bloc/register_bloc.dart';
@@ -25,32 +22,25 @@ import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/brand_scaffold.dart';
 import 'package:osta/shared/ui/or_divider.dart';
 
-/// Register entry for the chosen role. Sends `account_type = activeRole`;
-/// success hands the authoritative role to the session and the router leaves
-/// this screen. The username field checks availability live; "have an account"
-/// navigates to login.
-class RegisterPage extends StatelessWidget {
-  const RegisterPage({super.key});
+/// The register form itself — identical for every role.
+///
+/// The backend takes only personal fields at `POST /auth/register`
+/// (RegisterRequest: name, username, email, phone, password, avatar); the role
+/// rides along as `account_type`, and business details are a separate
+/// authenticated call. So both roles submit exactly these fields, and the
+/// role-specific screens are thin wrappers over this one form.
+class RegisterForm extends StatefulWidget {
+  const RegisterForm({required this.title, super.key});
 
-  static const String path = AppRoutes.register;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider<RegisterBloc>(
-      create: (_) => getIt<RegisterBloc>(),
-      child: const _RegisterView(),
-    );
-  }
-}
-
-class _RegisterView extends StatefulWidget {
-  const _RegisterView();
+  /// Role-specific heading — the one thing the two register screens differ on
+  /// today. Give this widget more knobs as (and only as) they diverge.
+  final String title;
 
   @override
-  State<_RegisterView> createState() => _RegisterViewState();
+  State<RegisterForm> createState() => _RegisterFormState();
 }
 
-class _RegisterViewState extends State<_RegisterView> {
+class _RegisterFormState extends State<RegisterForm> {
   final _formKey = GlobalKey<FormState>();
   final _firstName = TextEditingController();
   final _lastName = TextEditingController();
@@ -162,15 +152,10 @@ class _RegisterViewState extends State<_RegisterView> {
             : (state.errorMessage ?? context.l10n.authFailed),
       ),
       builder: (context, state) {
-        final isBusiness =
-            context.read<SessionController>().state.activeRole ==
-            AppRole.business;
         return BrandScaffold(
           logo: AppImages.logo,
           logoHeight: BrandScaffold.markLogoHeight,
-          title: isBusiness
-              ? l10n.authRegisterTitleBusiness
-              : l10n.authRegisterTitleCustomer,
+          title: widget.title,
           onBack: () => context.go(AppRoutes.authChoose),
           children: [
             AppCard(

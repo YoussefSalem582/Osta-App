@@ -56,6 +56,56 @@ void main() {
         isNull,
       );
     });
+
+    test('each role is pinned to its own register screen', () {
+      SessionState atAuth(AppRole role) => SessionState(
+        bootstrapped: true,
+        languageAcknowledged: true,
+        roleAcknowledged: true,
+        onboardingAcknowledged: true,
+        activeRole: role,
+      );
+
+      // RegisterBloc takes account_type from the session, not the URL. If a
+      // customer could sit on /auth/register/business they would read "Create
+      // business account" and register as a customer.
+      expect(
+        resolveRedirect(
+          session: atAuth(AppRole.customer),
+          location: AppRoutes.register,
+        ),
+        isNull,
+      );
+      expect(
+        resolveRedirect(
+          session: atAuth(AppRole.customer),
+          location: AppRoutes.registerBusiness,
+        ),
+        AppRoutes.register,
+        reason: 'a customer must be bounced off the business register',
+      );
+
+      expect(
+        resolveRedirect(
+          session: atAuth(AppRole.business),
+          location: AppRoutes.registerBusiness,
+        ),
+        isNull,
+      );
+      expect(
+        resolveRedirect(
+          session: atAuth(AppRole.business),
+          location: AppRoutes.register,
+        ),
+        AppRoutes.registerBusiness,
+        reason: 'a business user must be bounced off the customer register',
+      );
+    });
+
+    test('the two register routes are distinct', () {
+      expect(AppRoutes.register, isNot(AppRoutes.registerBusiness));
+      expect(AppRoutes.registerBusiness, startsWith(AppRoutes.register));
+    });
   });
 
   group('resolveRedirect — business onboarding', () {

@@ -25,7 +25,8 @@ import 'package:osta/features/shared/auth/presentation/choose/auth_choose_page.d
 import 'package:osta/features/shared/auth/presentation/login/login_page.dart';
 import 'package:osta/features/shared/auth/presentation/password_recovery/forgot_password_page.dart';
 import 'package:osta/features/shared/auth/presentation/password_recovery/reset_password_page.dart';
-import 'package:osta/features/shared/auth/presentation/register/pages/register_page.dart';
+import 'package:osta/features/shared/auth/presentation/register/pages/business_register_page.dart';
+import 'package:osta/features/shared/auth/presentation/register/pages/customer_register_page.dart';
 import 'package:osta/features/shared/onboarding/presentation/language_page.dart';
 import 'package:osta/features/shared/role/presentation/coming_soon_page.dart';
 import 'package:osta/features/shared/role/presentation/page/role_selection_page.dart';
@@ -113,7 +114,11 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.register,
-        builder: (context, state) => const RegisterPage(),
+        builder: (context, state) => const CustomerRegisterPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.registerBusiness,
+        builder: (context, state) => const BusinessRegisterPage(),
       ),
       GoRoute(
         path: AppRoutes.forgotPassword,
