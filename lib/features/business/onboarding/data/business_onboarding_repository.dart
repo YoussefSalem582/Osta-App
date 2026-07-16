@@ -15,20 +15,29 @@ class BusinessOnboardingRepository {
 
   /// Step 1 — save business info + optional logo + map pin.
   ///
-  /// Uses multipart when `logoPath` is set; JSON otherwise.
+  /// Two transports, because PHP only parses `multipart/form-data` on POST —
+  /// never on PUT. A real PUT with a multipart body leaves `$_POST`/`$_FILES`
+  /// empty, and since every rule on `UpdateBusinessProfileRequest` is
+  /// `sometimes`, it validates clean and saves *nothing*: 200 OK, whole profile
+  /// discarded. So the logo path POSTs with `_method: PUT` (Laravel resolves
+  /// the override before routing, matching the same `Route::put`); the
+  /// JSON path can PUT directly, since Laravel parses JSON on any verb.
   Future<void> updateProfile(BusinessProfileInput input) async {
     final logoPath = input.logoPath;
-    final Object body;
-    if (logoPath != null && logoPath.isNotEmpty) {
-      final map = <String, dynamic>{
-        ...input.toJson(),
-        'logo': await MultipartFile.fromFile(logoPath),
-      };
-      body = FormData.fromMap(map);
-    } else {
-      body = input.toJson();
+    if (logoPath == null || logoPath.isEmpty) {
+      await _api.put<Object?>(
+        ApiEndpoints.businessProfile,
+        body: input.toJson(),
+        parse: (data) => data,
+      );
+      return;
     }
-    await _api.put<Object?>(
+    final body = FormData.fromMap(<String, dynamic>{
+      ...input.toJson(),
+      '_method': 'PUT',
+      'logo': await MultipartFile.fromFile(logoPath),
+    });
+    await _api.post<Object?>(
       ApiEndpoints.businessProfile,
       body: body,
       parse: (data) => data,
