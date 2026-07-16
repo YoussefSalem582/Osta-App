@@ -70,7 +70,7 @@ The codebase was **intentionally simplified** so a team new to Flutter can be pr
 
 > ‏جرى **تبسيط الشيفرة عمدًا** ليكون فريق جديد على Flutter مُنتِجًا بدارت بسيطة وقابلة للقراءة. أُجِّلت الأدوات المتقدّمة (freezed، json_serializable، injectable، build_runner، fpdart، نكهات البناء) ولم تُرفَض — وخطّة إعادة إدخالها على مراحل في [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
-**There is no `build_runner` step.** Models are hand-written `Equatable` classes, DI is hand-wired `get_it`, errors are a `sealed Failure` thrown with `try/catch`. The **only** generated code is localizations (`lib/core/l10n/`, git-ignored, via `flutter gen-l10n`). Do not add codegen packages without following the ROADMAP phase.
+**There is no `build_runner` step**, and the codegen packages are not even dependencies — `freezed`, `json_serializable`, `injectable` and `build_runner` were removed once it was clear nothing imported them. Models are hand-written `Equatable` classes, DI is hand-wired `get_it`, errors are a `sealed ApiException` (`core/network/api_exception.dart`) thrown with `try/catch`. The **only** generated code is localizations (`lib/core/l10n/`, git-ignored, via `flutter gen-l10n`). Do not add codegen packages without following the ROADMAP phase.
 
 ## Key Entry Points / نقاط الدخول الرئيسية
 
@@ -87,9 +87,23 @@ The codebase was **intentionally simplified** so a team new to Flutter can be pr
 
 ## Feature Architecture / معمارية الميزات
 
-Every feature lives under `lib/features/<name>/` (customer/business sub-areas nested, e.g. `features/customer/garage/`) with three layers:
+`lib/features/` has exactly **three role buckets** — a file's owner is its path:
 
-> ‏كل ميزة داخل `lib/features/<name>/` (مناطق العميل/النشاط متداخلة) بثلاث طبقات:
+| Bucket | Holds | Examples |
+|--------|-------|----------|
+| `business/` | Only the `business` role sees it | `onboarding/` (post-auth wizard) · `intro/` (logged-out carousel) · `dashboard/` · `bookings/` · `services/` · `shell/` |
+| `customer/` | Only the `customer` role sees it | `home/` · `booking/` · `garage/` · `map/` · `profile/` · `onboarding/` (logged-out carousel) · `shell/` |
+| `shared/` | Both roles, or pre-role | `auth/` · `splash/` · `role/` · `onboarding/` (language) · `shell/` (`RoleShell`) · `notifications/` |
+
+**`business/` and `customer/` must never import each other** — `test/structure/role_boundary_test.dart` fails the build if they do. Anything both need goes to `shared/` (a screen flow), `lib/shared/ui/` (a widget), or `lib/core/` (plumbing, e.g. `core/services/location_service.dart`).
+
+> One exception: `features/shop/` is unbucketed pending [#48](https://github.com/YoussefSalem582/Osta-App/issues/48) (two-sided) vs [#57](https://github.com/YoussefSalem582/Osta-App/issues/57) (business-only). The boundary test lists it explicitly; drop it once that settles.
+
+Note `lib/shared/` (reusable **UI kit**) and `lib/features/shared/` (role-neutral **feature flows**) are different things at different scopes.
+
+Every feature keeps three layers:
+
+> ‏مجلّد `lib/features/` فيه ثلاثة أقسام حسب الدور: `business/` و`customer/` و`shared/`. ولا يستورد قسم العميل من قسم النشاط ولا العكس — اختبار الحدود يمنع ذلك. وكل ميزة بثلاث طبقات:
 
 ```text
 features/<name>/
@@ -163,7 +177,7 @@ getIt.registerFactory(() => GarageBloc(getIt()));
 
 Check `lib/shared/ui/` before building new UI:
 
-**AppButton** · **AppTopBar** (RTL-safe) · **AppBottomNavBar** / `AppBottomNavItem` · **AppCard** · **AppTextField** · **AppBottomSheet** · **EmptyState** / **ErrorState** / **LoadingState**
+**AppButton** · **AppTopBar** (RTL-safe) · **AppBottomNavBar** / `AppBottomNavItem` · **AppCard** · **AppTextField** · **AppToaster** · **AppPill** · **AppSegmentedToggle** · **BrandScaffold** · **OrDivider** · **EmptyState** / **ErrorState**
 
 Plus `EgpFormatter` / `NumberFormatter` (`shared/formatters/`) and `context.l10n` (`shared/extensions/`). (The dev component gallery route was removed — see [`docs/ROADMAP.md`](docs/ROADMAP.md).)
 

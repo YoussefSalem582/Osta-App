@@ -4,6 +4,33 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-16 — `lib/features/` reorganised into business / customer / shared
+
+Docs updated for the role-bucket refactor and the dead-code sweep that rode with it.
+
+**Structure**
+
+- [`../AGENTS.md`](../AGENTS.md) § Feature Architecture — replaced "customer/business sub-areas nested" with the three-bucket table, the no-cross-role-imports rule and the test that enforces it, the `features/shop/` exception, and the `lib/shared/` vs `lib/features/shared/` distinction.
+- [`guides/01_folder_structure.md`](guides/01_folder_structure.md) — the `features/` tree was **badly stale**: it claimed `business/` and `customer/` had "no dart files" while both held ~60. Rewritten to the real tree with epic links per folder. The `test/` row claimed 11 files naming ones that don't exist; now 16, matching reality.
+- [`INDEX.md`](INDEX.md) — feature map repointed at the buckets.
+
+**Corrections found while editing** (stale on a different axis than the refactor)
+
+- [`../CLAUDE.md`](../CLAUDE.md) and [`../AGENTS.md`](../AGENTS.md) both described errors as a `sealed Failure`. **There is no `Failure` type** — it was deleted 2026-07-10. The real type is `sealed ApiException` (`core/network/api_exception.dart`). CLAUDE.md's own tool-use rules were instructing agents to use a class that doesn't exist.
+- `AGENTS.md` § Shared UI listed `AppBottomSheet` and `LoadingState`, both deleted 2026-07-10, and missed `AppToaster`, `BrandScaffold` and `OrDivider`. Now lists what `lib/shared/ui/` actually exports, plus the new `AppPill` and `AppSegmentedToggle`.
+- Both files said "no `build_runner` step"; true, but the codegen packages were still declared. They are now removed, and the docs say so.
+- `AGENTS.md` referenced `test/core/theme/contrast_test.dart`, which did not exist. It does now.
+
+**API drift** — [`guides/09_api_endpoints.md`](guides/09_api_endpoints.md)
+
+- `POST /forgot-password` / `/reset-password` were documented and **are what the app sends**. The backend registers `password/forgot` and `password/reset` inside `Route::prefix('auth')` under `Route::prefix('v1')` — real paths `/api/v1/auth/password/{forgot,reset}`. `git log -S"forgot-password" -- routes/` in the backend returns nothing, so the flat paths never existed. Documented with a ⚠️; **the code was not changed** — a live auth path deserves verification against the deployed server rather than a drive-by edit inside a refactor.
+- Marked `/legal/*` as having no route or controller (it read "Backend route shipped").
+- Added the undocumented-but-live `POST /telemetry/broadcast-latency`, `PATCH /business/bookings/{id}/assign-roster-mechanic`, and the `POST` halves of the reviews endpoints.
+
+**Mandatory**
+
+- [`../CHANGELOG.md`](../CHANGELOG.md) and [`CURRENT_STATUS.md`](CURRENT_STATUS.md) — full entries.
+
 ## 2026-07-16 — Map empty state when GPS is outside Egypt
 
 iOS Simulator defaults to San Francisco; `GET /centers/nearby` returns `200` with an empty list when no centers exist in range. `CentersRepository.fetchNearby` sends `radius=25000` (25 km). Map empty overlay uses one friendly user-facing message (removed simulator/coordinate hints).

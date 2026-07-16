@@ -54,8 +54,10 @@ Login, refresh, and social exchange are the only endpoints the app calls today; 
 | POST | `/auth/refresh` | Exchange refresh → new token pair | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37) | **Connected** (interceptor) |
 | POST | `/auth/logout` | Revoke current token | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37) | Planned |
 | POST | `/auth/social/{google\|apple}` | Server-side Socialite token exchange | [#38](https://github.com/YoussefSalem582/osta_backend/issues/38) | **Connected** (`SocialTokenExchange`) |
-| POST | `/forgot-password` | Send reset email (public) | [#39](https://github.com/YoussefSalem582/osta_backend/issues/39) | Planned |
-| POST | `/reset-password` | Reset with token (public) | [#39](https://github.com/YoussefSalem582/osta_backend/issues/39) | Planned |
+| POST | `/auth/password/forgot` | Send reset email (public) | [#39](https://github.com/YoussefSalem582/osta_backend/issues/39) | **Shipped** (backend) — ⚠️ app calls the wrong path |
+| POST | `/auth/password/reset` | Reset with token (public) | [#39](https://github.com/YoussefSalem582/osta_backend/issues/39) | **Shipped** (backend) — ⚠️ app calls the wrong path |
+
+> ⚠️ **Mismatch.** `ApiEndpoints.authPasswordForgot` / `authPasswordReset` (`lib/core/network/api_endpoints.dart:16-17`) send `/forgot-password` and `/reset-password`. The backend registers `password/forgot` and `password/reset` inside `Route::prefix('auth')` (`routes/api/v1/auth.php:26-30`), under `Route::prefix('v1')` — so the real paths are `/api/v1/auth/password/{forgot,reset}`, and the app's calls 404. `git log -S"forgot-password" -- routes/` in the backend returns nothing, so the flat paths never existed there. Not changed here — it is a live auth path that wants verifying against the deployed server, not a drive-by edit inside a refactor.
 
 ---
 
@@ -89,6 +91,7 @@ Nearby PostGIS radius search, free-text search, and center detail — the custom
 | GET | `/centers/{center}` | Center profile (+counts) | [#42](https://github.com/YoussefSalem582/osta_backend/issues/42) | Planned |
 | GET | `/centers/{center}/services` | Active services | [#42](https://github.com/YoussefSalem582/osta_backend/issues/42)/[#57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Planned |
 | GET | `/centers/{center}/reviews` | Paginated reviews (+`meta.summary`) | [#42](https://github.com/YoussefSalem582/osta_backend/issues/42) | Planned |
+| POST | `/centers/{center}/reviews` | Leave a centre review (auth) | [#42](https://github.com/YoussefSalem582/osta_backend/issues/42) | Planned — was undocumented (`routes/api/v1/reviews.php:20-21`) |
 | GET | `/centers/{center}/availability?date=` | Slots `{start,end,available}` in center TZ | [#42](https://github.com/YoussefSalem582/osta_backend/issues/42) | Planned |
 | GET | `/centers/{center}/products` | Center storefront | [#52](https://github.com/YoussefSalem582/osta_backend/issues/52) | Planned |
 
@@ -128,6 +131,7 @@ The provider side: booking feed, accept/reject/advance, dashboard, catalog, capa
 | PATCH | `/business/bookings/{id}/reject` | Reject (`reason`) | [#46](https://github.com/YoussefSalem582/osta_backend/issues/46) | Planned |
 | PATCH | `/business/bookings/{id}/status` | Advance state | [#46](https://github.com/YoussefSalem582/osta_backend/issues/46) | Planned |
 | PATCH | `/business/bookings/{id}/assign-mechanic` | `{mechanic_id\|null}` (active same-center or 422) | [#46](https://github.com/YoussefSalem582/osta_backend/issues/46)/[#64](https://github.com/YoussefSalem582/osta_backend/issues/64) | Planned |
+| PATCH | `/business/bookings/{id}/assign-roster-mechanic` | Assign from the no-login mechanic roster | [#64](https://github.com/YoussefSalem582/osta_backend/issues/64) | Planned — was undocumented (`routes/api/v1/business.php:71`) |
 | GET | `/business/dashboard` | Counts + revenue | [#51](https://github.com/YoussefSalem582/osta_backend/issues/51) | Planned |
 | PUT | `/business/profile` | Business info (multipart logo) | [#56](https://github.com/YoussefSalem582/osta_backend/issues/56) | **Connected** (`BusinessOnboardingRepository`) |
 | GET | `/business/catalog/presets` | 12 seeded catalog presets | [#56](https://github.com/YoussefSalem582/osta_backend/issues/56) | **Connected** |
@@ -188,6 +192,7 @@ Browse products and storefronts and send an enquiry — there is no cart and no 
 | POST | `/products/{id}/enquiries` | Contact lead (`message`) | [#52](https://github.com/YoussefSalem582/osta_backend/issues/52) | Planned |
 | GET/POST/PUT/DELETE | `/me/products` (`/{id}`) | Manage own listings (owner server-resolved) | [#53](https://github.com/YoussefSalem582/osta_backend/issues/53) | Planned |
 | GET | `/users/{id}/reviews` | Shop reviews | [#53](https://github.com/YoussefSalem582/osta_backend/issues/53) | Planned |
+| POST | `/users/{user}/reviews` | Leave a shop review (auth) | [#53](https://github.com/YoussefSalem582/osta_backend/issues/53) | Planned — was undocumented (`routes/api/v1/reviews.php:18-19`) |
 
 No cart, no checkout — browse + enquire only.
 
@@ -220,7 +225,7 @@ Versioned bilingual terms and privacy docs, served publicly and localized via `A
 
 | Method | Path | Purpose | Backend | App status |
 |---|---|---|---|---|
-| GET | `/legal/terms` · `/legal/privacy` | Versioned bilingual docs (public, `Accept-Language`) | [#58](https://github.com/YoussefSalem582/osta_backend/issues/58) | Planned |
+| GET | `/legal/terms` · `/legal/privacy` | Versioned bilingual docs (public, `Accept-Language`) | [#58](https://github.com/YoussefSalem582/osta_backend/issues/58) | **Blocked** — no route, no controller in the backend (was "Planned", which per the legend claims the route ships) |
 
 ---
 
@@ -241,6 +246,16 @@ These routes are flagged for a later phase and are not final — payouts, subscr
 > ‏هذه المسارات مُعلَّمة لمرحلة لاحقة وليست نهائية — المدفوعات للمقدّمين، الاشتراكات، قدرات المقدّم، التتبّع اللحظي، ملاحظات العملاء، وسجلات المصروفات/الوقود/التذكيرات.
 
 `GET /provider/payouts` · `GET /subscription-plans` · `POST /subscriptions` · `POST /provider/capabilities` · `POST /jobs/{job}/location` (+ WS `tracking.{jobId}`) · `GET/POST /provider/customers/{customer}/notes` · `/expenses` · `/fuel-logs` · `/maintenance-reminders` — all [backend #62](https://github.com/YoussefSalem582/osta_backend/issues/62).
+
+---
+
+## Telemetry / القياس
+
+Shipped in the backend, undocumented here until now (`routes/api/v1/telemetry.php:17`). `ApiEndpoints.telemetryBroadcastLatency` already exists in the app but nothing calls it.
+
+| Method | Path | Purpose | Backend | App |
+|---|---|---|---|---|
+| POST | `/telemetry/broadcast-latency` | Report realtime broadcast latency | — | Planned |
 
 ---
 

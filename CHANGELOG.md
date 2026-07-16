@@ -5,9 +5,47 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the pro
 
 ## [Unreleased]
 
+### Changed
+
+- **`lib/features/` reorganised into three role buckets** (2026-07-16) — `business/`, `customer/`, `shared/`. Eight folders sat at the top level with no owner in their path, three of them misfiled: `home/` was the customer Home tab (while an empty `customer/home/` scaffold sat beside it), `shop/` was business-only, and `customer/main_screen/` was really the customer shell. `auth/`, `splash/`, `role/`, `shell/`, `notifications/` and the language page moved to `features/shared/`; the two marketing carousels split to their roles. `LocationService` — the repo's only cross-role import — moved to `core/services/`, so `business/` and `customer/` now import each other zero times. `auth/shared/` was flattened into the canonical `auth/{data,domain,presentation}`. Route paths and `AppRole` are untouched: `"business"` is a backend contract (`UserType::Business`, `account_type`, `me.type`). `features/shop/` deliberately stays unbucketed until [#48](https://github.com/YoussefSalem582/Osta-App/issues/48) (two-sided) and [#57](https://github.com/YoussefSalem582/Osta-App/issues/57) (business-only) agree.
+
+  > ‏**إعادة تنظيم `lib/features/` إلى ثلاثة أقسام حسب الدور** (2026-07-16) — `business/` و`customer/` و`shared/`. ثمانية مجلّدات كانت في الجذر بلا دور واضح، وثلاثة منها في المكان الخطأ. صار قسم العميل وقسم النشاط لا يستورد أحدهما الآخر إطلاقًا. مسارات التوجيه و`AppRole` بلا تغيير لأن `"business"` عقد مع الخادم.
+
+- **Structural invariants guard the role boundary** — `test/structure/role_boundary_test.dart` fails the build on a cross-role import, a duplicate public class name, a stray top-level feature folder, or an `l10n.<key>` with no ARB entry. Folder reorgs broke this repo twice before (2026-07-09): one left two `MyBookingsScreen` declarations — an ambiguous-import compile error — and another left a dead duplicate widget. Each assertion is mutation-tested.
+
+  > ‏**اختبارات بنيوية تحرس حدود الأدوار** — تفشل عند استيراد متقاطع بين الأدوار أو تكرار اسم صنف عام أو مفتاح ترجمة غير موجود. إعادة تنظيم المجلّدات كسرت المشروع مرّتين من قبل.
+
+### Fixed
+
+- **Invisible "engine" labels on the business dashboard** (2026-07-16) — `tech_screen` painted three labels `#3A694E` on an `appColors.success` container: **1.12:1** contrast in the light theme, where WCAG AA wants 4.5:1. Each carried a `// ponytail: no token for this color` comment; the comment was wrong — `onSuccess` is that token, and scores 7.13:1 light / 8.55:1 dark. Added `test/core/theme/contrast_test.dart` (a path AGENTS.md had referenced for a while), asserting every semantic on/background pair clears AA in both themes.
+
+  > ‏**تصحيح تباين نصوص غير مرئية في لوحة النشاط** (2026-07-16) — كانت النصوص بنسبة تباين ١٫١٢:١ في الوضع الفاتح بينما المعيار ٤٫٥:١. استُخدم رمز `onSuccess` الصحيح، وأُضيف اختبار تباين لكل الأزواج الدلالية.
+
+- **Ratings rendered with Latin digits and an emoji** (2026-07-16) — `CenterCard` printed `'$rate ⭐'`, so Arabic users saw `4.6` instead of `٤٫٦`. Now a real star `Icon` on `appColors.warning` plus `NumberFormatter.decimal`, matching `PlaceDialog`.
+
+- **Whitespace passed required-field validation** (2026-07-16) — five `add_car_screen` validators tested `value.isEmpty`, so `"   "` was accepted. They use `AuthValidators.requiredField`, which trims; it gained an optional `message` so the field-specific prompts ("Enter the brand") survive.
+
+- **Unreadable error toast** (2026-07-16) — `add_car_screen` showed `SnackBar(backgroundColor: colorScheme.error)` with no text colour. `AppToaster.showError` pairs `errorContainer` with `onErrorContainer`.
+
+### Removed
+
+- **Unreachable `ProviderOnboardingPage`** (2026-07-16, 149 lines) — the redirect guard always entered the business wizard at `businessIdentity` and nothing pushed the page; its own route wired both `onNext` and `onSkip` to `BusinessIdentityPage`. Its doc called it "Screen 3 of wizard flow"; the wizard has two steps. Removed with its route, `AppRoutes.providerOnboarding`, and the 4 l10n keys it alone used.
+
+- **Dead code and unused dependencies** (2026-07-16) — 36 unused l10n keys (358 → 318 in both ARBs; the 9 `businessCatalogService*` were superseded by the server-driven `catalog_preset.dart`, `roleCustomer`/`roleBusiness` by `roleSelection*Title`); `AuthTokenModel` (zero references, superseded by `TokenStorage`); and the entire codegen toolchain — `freezed_annotation`, `json_annotation`, `injectable`, `cupertino_icons`, `bloc`, `build_runner`, `freezed`, `json_serializable`, `injectable_generator`. Zero imports each, zero generated files; `pubspec.lock` 182 → 148 packages.
+
+  > ‏**حذف شيفرة ميتة وحزم غير مستخدمة** (2026-07-16) — ٣٦ مفتاح ترجمة غير مستخدم، ونموذج رمز المصادقة، وكامل أدوات توليد الشيفرة التي لا يستوردها شيء. انخفض قفل الحزم من ١٨٢ إلى ١٤٨.
+
+- **Duplicated widgets** (2026-07-16) — the two marketing carousels were ~90% identical (only class name, path const and 6 l10n keys differed) → one `MarketingCarousel` in `shared/onboarding/`, 324 → 225 lines. `CenterCard`/`ProductCard` shared a byte-identical chassis → `HomeTile`; `NearbyCentersSection`/`ShopSection` → `HomeRail`. Two segmented toggles → `AppSegmentedToggle` in `shared/ui/` (150 → 74). `_DashedRectPainter` was implemented twice. Added `AppPill` for four hand-rolled badges. Raw `Card`/`SnackBar`/`FilledButton` now route through `AppCard`/`AppToaster`/`AppButton` — no raw `Card(` or `showSnackBar(` outside `shared/ui/` remains.
+
+- **Mock data lifted out of the widget trees** (2026-07-16) — Home and Bookings rendered fake centres, prices and a fake customer name inline; `my_bookings_screen` even exported `upcoming`/`past` as public consts. They now sit in `HomeFixtures`/`BookingFixtures`, deliberately unlocalized (they are fake API responses, not UI copy), so wiring real repositories ([#51](https://github.com/YoussefSalem582/Osta-App/issues/51), [#44](https://github.com/YoussefSalem582/Osta-App/issues/44)) is a delete of two files.
+
+### Fixed (structure)
+
+- **`data/model.dart` was a directory** (2026-07-16) — `lib/features/customer/booking/data/model.dart/` held `booking_item.dart`, so four files imported through a path ending `.dart/`. Dated 2026-07-09 — the same day as the reorg that broke the repo. Renamed to `data/model/`.
+
 ### Added
 
-- **Merchant logged-out onboarding carousel** (2026-07-16) — `MerchantOnboardingPage` at `/onboarding/business` under `lib/features/onboarding/`, parallel to the customer `/onboarding` slides. Business flow: role → merchant carousel → auth → post-auth wizard. Three merchant-focused EN/AR slides.
+- **Merchant logged-out onboarding carousel** (2026-07-16) — `MerchantOnboardingPage` at `/onboarding/business`, now under `lib/features/business/intro/` and rendering the shared `MarketingCarousel`, parallel to the customer `/onboarding` slides. Business flow: role → merchant carousel → auth → post-auth wizard. Three merchant-focused EN/AR slides.
 
   > ‏**شرائح تعريف التاجر قبل الدخول** (2026-07-16) — `MerchantOnboardingPage` عند `/onboarding/business` موازية لشرائح العميل. مسار النشاط: الدور → شرائح التاجر → المصادقة → معالج ما بعد الدخول.
 
