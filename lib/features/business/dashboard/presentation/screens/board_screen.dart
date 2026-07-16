@@ -100,9 +100,9 @@ class BoardScreen extends StatelessWidget {
                 ItemType(
                   text1: '2',
                   text2: context.l10n.underImplementation,
-                  // ponytail: decorative stat tint, deliberately not a semantic
-                  // role — it means "in progress", not success/warning/error.
-                  // Promote to AppColors if a second screen needs the same navy.
+                  // ponytail: decorative stat tint, not a semantic role — it
+                  // means "in progress", not success/warning/error. Promote to
+                  // AppColors if a second screen needs the same navy.
                   color: const Color(0xFF09276D),
                 ),
                 ItemType(
