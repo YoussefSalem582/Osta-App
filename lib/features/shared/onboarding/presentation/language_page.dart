@@ -4,6 +4,7 @@ import 'package:osta/core/constants/app_images.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
+import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/brand_scaffold.dart';
 
 /// Language pick (Arabic / English). Shown every logged-out launch —
@@ -55,14 +56,14 @@ class _LanguageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadii.lg),
-        side: selected
-            ? BorderSide(color: theme.colorScheme.primary, width: 2)
-            : BorderSide.none,
-      ),
+    return AppCard(
+      // AppCard's null border falls through to CardTheme's shape, which is the
+      // same RoundedRectangleBorder(AppRadii.lg) this used to spell out.
+      border: selected
+          ? BorderSide(color: theme.colorScheme.primary, width: 2)
+          : null,
+      // The ListTile brings its own contentPadding.
+      padding: EdgeInsets.zero,
       child: ListTile(
         onTap: onTap,
         contentPadding: const EdgeInsets.symmetric(

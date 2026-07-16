@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/customer/garage/presentation/cubit/garage_cubit.dart';
 import 'package:osta/features/customer/garage/presentation/cubit/garage_state.dart';
+import 'package:osta/features/shared/auth/presentation/validators/auth_validators.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
+import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
 class AddCarScreen extends StatefulWidget {
@@ -66,20 +68,10 @@ class _AddCarScreenState extends State<AddCarScreen> {
             current is GarageAddSuccess || current is GarageAddError,
         listener: (context, state) {
           if (state is GarageAddSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(context.l10n.saveAndProceed),
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-              ),
-            );
+            AppToaster.showMessage(context.l10n.saveAndProceed);
             context.pop();
           } else if (state is GarageAddError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
-            );
+            AppToaster.showError(state.message);
           }
         },
         builder: (context, state) {
@@ -142,9 +134,11 @@ class _AddCarScreenState extends State<AddCarScreen> {
                             hint: l10n.brandHint,
                             controller: _brandController,
                             textInputAction: TextInputAction.next,
-                            validator: (v) => (v == null || v.isEmpty)
-                                ? l10n.enterBrand
-                                : null,
+                            validator: (v) => AuthValidators.requiredField(
+                              context,
+                              v,
+                              message: l10n.enterBrand,
+                            ),
                           ),
 
                           const SizedBox(height: AppSpacing.md),
@@ -154,9 +148,11 @@ class _AddCarScreenState extends State<AddCarScreen> {
                             hint: l10n.modelHint,
                             controller: _modelController,
                             textInputAction: TextInputAction.next,
-                            validator: (v) => (v == null || v.isEmpty)
-                                ? l10n.enterModel
-                                : null,
+                            validator: (v) => AuthValidators.requiredField(
+                              context,
+                              v,
+                              message: l10n.enterModel,
+                            ),
                           ),
 
                           const SizedBox(height: AppSpacing.md),
@@ -170,15 +166,15 @@ class _AddCarScreenState extends State<AddCarScreen> {
                                   controller: _yearController,
                                   keyboardType: TextInputType.number,
                                   textInputAction: TextInputAction.next,
-                                  validator: (v) {
-                                    if (v == null || v.isEmpty) {
-                                      return l10n.enterYear;
-                                    }
-                                    if (int.tryParse(v) == null) {
-                                      return l10n.enterYear;
-                                    }
-                                    return null;
-                                  },
+                                  validator: (v) =>
+                                      AuthValidators.requiredField(
+                                        context,
+                                        v,
+                                        message: l10n.enterYear,
+                                      ) ??
+                                      (int.tryParse(v!.trim()) == null
+                                          ? l10n.enterYear
+                                          : null),
                                 ),
                               ),
                               const SizedBox(width: AppSpacing.md),
@@ -189,9 +185,12 @@ class _AddCarScreenState extends State<AddCarScreen> {
                                   controller: _mileageController,
                                   keyboardType: TextInputType.number,
                                   textInputAction: TextInputAction.next,
-                                  validator: (v) => (v == null || v.isEmpty)
-                                      ? l10n.enterMileage
-                                      : null,
+                                  validator: (v) =>
+                                      AuthValidators.requiredField(
+                                        context,
+                                        v,
+                                        message: l10n.enterMileage,
+                                      ),
                                 ),
                               ),
                             ],
@@ -204,9 +203,11 @@ class _AddCarScreenState extends State<AddCarScreen> {
                             hint: l10n.plateNumberHint,
                             controller: _plateController,
                             textInputAction: TextInputAction.done,
-                            validator: (v) => (v == null || v.isEmpty)
-                                ? l10n.enterPlateNumber
-                                : null,
+                            validator: (v) => AuthValidators.requiredField(
+                              context,
+                              v,
+                              message: l10n.enterPlateNumber,
+                            ),
                           ),
                         ],
                       ),

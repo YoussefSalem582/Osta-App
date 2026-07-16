@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 
-/// A titled horizontal rail of [HomeTile]s — the home feed's one section shape.
+/// A titled horizontal rail of tiles — the home feed's one section shape.
 class HomeRail extends StatelessWidget {
   const HomeRail({required this.title, required this.tiles, super.key});
 

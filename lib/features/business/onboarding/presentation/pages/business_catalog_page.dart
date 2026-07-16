@@ -57,11 +57,7 @@ class _BusinessCatalogPageState extends State<BusinessCatalogPage> {
     };
   }
 
-  void _comingSoon() {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(context.l10n.comingSoon)));
-  }
+  void _comingSoon() => AppToaster.showMessage(context.l10n.comingSoon);
 
   @override
   Widget build(BuildContext context) {

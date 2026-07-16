@@ -8,6 +8,7 @@ import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
+import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/brand_scaffold.dart';
 import 'package:osta/shared/ui/or_divider.dart';
 
@@ -68,9 +69,6 @@ class AuthChoosePage extends StatelessWidget {
     );
   }
 
-  void _comingSoon(BuildContext context, String message) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
-  }
+  void _comingSoon(BuildContext context, String message) =>
+      AppToaster.showMessage(message);
 }

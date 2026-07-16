@@ -15,10 +15,14 @@ abstract final class AuthValidators {
   /// obvious typos before a round-trip.
   static final _emailRe = RegExp(r'^[\w.+-]+@[\w-]+(\.[\w-]+)+$');
 
-  /// Non-empty (after trimming).
-  static String? requiredField(BuildContext context, String? value) =>
-      (value == null || value.trim().isEmpty)
-      ? context.l10n.validationRequired
+  /// Non-empty (after trimming). [message] overrides the generic "required"
+  /// text where a field-specific prompt reads better ("Enter the brand").
+  static String? requiredField(
+    BuildContext context,
+    String? value, {
+    String? message,
+  }) => (value == null || value.trim().isEmpty)
+      ? (message ?? context.l10n.validationRequired)
       : null;
 
   /// Present and shaped like an email (`x@y.z`).

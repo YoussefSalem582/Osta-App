@@ -76,11 +76,11 @@ void main() {
 
     await pump(
       tester,
-      AppPill(
+      const AppPill(
         label: 'Loud',
         background: Colors.grey,
         foreground: Colors.black,
-        textStyle: const TextStyle(fontSize: 99),
+        textStyle: TextStyle(fontSize: 99),
         fontWeight: FontWeight.w700,
       ),
     );

@@ -91,11 +91,7 @@ class _RegisterViewState extends State<_RegisterView> {
   }
 
   /// Social sign-in is not wired yet — same stub the auth-choose screen shows.
-  void _comingSoon() {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(context.l10n.comingSoon)));
-  }
+  void _comingSoon() => AppToaster.showMessage(context.l10n.comingSoon);
 
   /// Pick an avatar from the gallery. Uses the system photo picker (PHPicker on
   /// iOS / Photo Picker on Android), so no gallery permission prompt is needed.

@@ -5,8 +5,9 @@ import 'package:osta/shared/ui/app_card.dart';
 /// Fixed-width tile for the home feed's horizontal rails: thumbnail, title,
 /// then whatever [footer] the caller needs (a price, a distance + rating).
 ///
-/// [CenterCard] and [ProductCard] were byte-identical above the footer, so the
-/// chassis lives here once.
+/// `CenterCard` and `ProductCard` were byte-identical above the footer, so the
+/// chassis lives here once. (Named in prose, not doc links — they import this,
+/// so a link would make the import circular.)
 class HomeTile extends StatelessWidget {
   const HomeTile({required this.title, required this.footer, super.key});
 
