@@ -16,6 +16,7 @@ class SessionState extends Equatable {
     this.languageAcknowledged = false,
     this.roleAcknowledged = false,
     this.businessOnboarded = false,
+    this.hasVehicle,
   });
 
   /// `false` until the splash finishes reading persisted `{token, activeRole}`.
@@ -57,6 +58,15 @@ class SessionState extends Equatable {
   /// the wizard on cold start (cleared on sign-out).
   final bool businessOnboarded;
 
+  /// Whether an authenticated `customer` has at least one vehicle — the gate
+  /// behind the required add-car step (#39).
+  ///
+  /// Tri-state on purpose. `null` means "not known / not applicable": a
+  /// logged-out user, a business user, or a customer whose `GET /vehicles`
+  /// check could not be completed. Only an explicit `false` gates, so a network
+  /// failure can never strand someone outside the app.
+  final bool? hasVehicle;
+
   bool get isLanguageSelected => locale != null;
 
   SessionState copyWith({
@@ -69,6 +79,7 @@ class SessionState extends Equatable {
     bool? languageAcknowledged,
     bool? roleAcknowledged,
     bool? businessOnboarded,
+    bool? hasVehicle,
   }) => SessionState(
     bootstrapped: bootstrapped ?? this.bootstrapped,
     locale: locale ?? this.locale,
@@ -80,6 +91,7 @@ class SessionState extends Equatable {
     languageAcknowledged: languageAcknowledged ?? this.languageAcknowledged,
     roleAcknowledged: roleAcknowledged ?? this.roleAcknowledged,
     businessOnboarded: businessOnboarded ?? this.businessOnboarded,
+    hasVehicle: hasVehicle ?? this.hasVehicle,
   );
 
   /// Copy that can null out [activeRole] — `copyWith` can't express "set to
@@ -110,5 +122,6 @@ class SessionState extends Equatable {
     languageAcknowledged,
     roleAcknowledged,
     businessOnboarded,
+    hasVehicle,
   ];
 }

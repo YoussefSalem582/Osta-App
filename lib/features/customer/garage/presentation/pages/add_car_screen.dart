@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:osta/core/l10n/app_localizations.dart';
+import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/theme/app_tokens.dart';
+import 'package:osta/features/customer/garage/data/car_catalog.dart';
 import 'package:osta/features/customer/garage/presentation/cubit/garage_cubit.dart';
 import 'package:osta/features/customer/garage/presentation/cubit/garage_state.dart';
 import 'package:osta/features/shared/auth/presentation/validators/auth_validators.dart';
@@ -21,36 +26,81 @@ class AddCarScreen extends StatefulWidget {
 class _AddCarScreenState extends State<AddCarScreen> {
   final _formKey = GlobalKey<FormState>();
 
+  /// Free-text fallbacks, used only when the picker is on [otherOption].
   final _brandController = TextEditingController();
   final _modelController = TextEditingController();
-  final _yearController = TextEditingController();
   final _mileageController = TextEditingController();
   final _plateController = TextEditingController();
   final _colorController = TextEditingController();
+
+  String? _brand;
+  String? _model;
+  int? _year;
+
+  /// #39 asks for 1980+; the backend allows back to 1900. Narrower on purpose —
+  /// a dropdown of 120 years is worse than one of 40, and the server stays the
+  /// real bound for anything older.
+  static const _earliestYear = 1980;
+
+  bool get _brandIsOther => _brand == otherOption;
+  bool get _modelIsOther => _model == otherOption;
+
+  List<int> get _years {
+    final latest = DateTime.now().year + 1;
+    return [for (var y = latest; y >= _earliestYear; y--) y];
+  }
 
   @override
   void dispose() {
     _brandController.dispose();
     _modelController.dispose();
-    _yearController.dispose();
     _mileageController.dispose();
     _plateController.dispose();
     _colorController.dispose();
     super.dispose();
   }
 
+  /// Mirrors `current_mileage`'s `integer|min:0`.
+  String? _validateMileage(String? value, AppLocalizations l10n) {
+    final required = AuthValidators.requiredField(
+      context,
+      value,
+      message: l10n.enterMileage,
+    );
+    if (required != null) return required;
+    final km = int.tryParse(value!.trim());
+    return (km == null || km < 0) ? l10n.validationMileage : null;
+  }
+
+  /// Present, and within the backend's `max:20`.
+  ///
+  /// ponytail: deliberately no format regex. Egyptian plates vary by
+  /// governorate and vintage (Arabic letters, Latin transliterations, differing
+  /// digit counts), and this screen gates entry to the app — a false reject
+  /// here locks a real customer out of Home with no way past. The server is the
+  /// real guard; this only catches empty and absurd.
+  String? _validatePlate(String? value, AppLocalizations l10n) {
+    final required = AuthValidators.requiredField(
+      context,
+      value,
+      message: l10n.enterPlateNumber,
+    );
+    if (required != null) return required;
+    return value!.trim().length > 20 ? l10n.validationPlateLength : null;
+  }
+
   void _onSave(BuildContext context) {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-
-    final year = int.tryParse(_yearController.text.trim());
-    if (year == null) {
-      // Validator already covers this, but guard anyway.
-      return;
-    }
+    final year = _year;
+    if (year == null) return; // validator covers it; guard anyway
 
     context.read<GarageCubit>().addVehicle(
-      make: _brandController.text.trim(),
-      model: _modelController.text.trim(),
+      make: _brandIsOther ? _brandController.text.trim() : _brand!,
+      // An "Other" brand hides the model dropdown entirely, so _model is null
+      // there and the free-text field is the only source.
+      model: (_brandIsOther || _modelIsOther)
+          ? _modelController.text.trim()
+          : _model!,
       year: year,
       plateNumber: _plateController.text.trim(),
       currentMileage: int.tryParse(_mileageController.text.trim()),
@@ -70,7 +120,11 @@ class _AddCarScreenState extends State<AddCarScreen> {
         listener: (context, state) {
           if (state is GarageAddSuccess) {
             AppToaster.showMessage(context.l10n.saveAndProceed);
-            context.pop();
+            unawaited(context.read<SessionController>().markVehicleAdded());
+            // Pushed from the garage → pop back to it. Forced by the #39 gate →
+            // there is nothing beneath to pop; releasing the gate above lets
+            // the redirect carry the user into the shell.
+            if (context.canPop()) context.pop();
           } else if (state is GarageAddError) {
             AppToaster.showError(state.message);
           }
@@ -80,11 +134,14 @@ class _AddCarScreenState extends State<AddCarScreen> {
           final colorScheme = Theme.of(context).colorScheme;
           final textTheme = Theme.of(context).textTheme;
           final l10n = context.l10n;
+          // Only the gate is the *first* car; the garage's "+" adds an Nth.
+          final isGating =
+              context.read<SessionController>().state.hasVehicle == false;
 
           return Scaffold(
             appBar: AppTopBar(
               centerTitle: false,
-              title: l10n.addYourFirstCar,
+              title: isGating ? l10n.addYourFirstCar : l10n.addCar,
             ),
             body: Form(
               key: _formKey,
@@ -130,52 +187,109 @@ class _AddCarScreenState extends State<AddCarScreen> {
                       ),
                       child: Column(
                         children: [
-                          AppTextField(
-                            label: l10n.brand,
-                            hint: l10n.brandHint,
-                            controller: _brandController,
-                            textInputAction: TextInputAction.next,
-                            validator: (v) => AuthValidators.requiredField(
-                              context,
-                              v,
-                              message: l10n.enterBrand,
-                            ),
+                          DropdownButtonFormField<String>(
+                            initialValue: _brand,
+                            decoration: InputDecoration(labelText: l10n.brand),
+                            items: [
+                              for (final brand in carBrands)
+                                DropdownMenuItem(
+                                  value: brand,
+                                  child: Text(brand),
+                                ),
+                              DropdownMenuItem(
+                                value: otherOption,
+                                child: Text(l10n.carBrandOther),
+                              ),
+                            ],
+                            onChanged: (v) => setState(() {
+                              _brand = v;
+                              // The model list is derived from the brand, so a
+                              // stale pick would submit a mismatched pair.
+                              _model = null;
+                              _modelController.clear();
+                            }),
+                            validator: (v) =>
+                                v == null ? l10n.enterBrand : null,
                           ),
+
+                          if (_brandIsOther) ...[
+                            const SizedBox(height: AppSpacing.sm),
+                            AppTextField(
+                              label: l10n.brand,
+                              hint: l10n.carBrandOtherHint,
+                              controller: _brandController,
+                              textInputAction: TextInputAction.next,
+                              validator: (v) => AuthValidators.requiredField(
+                                context,
+                                v,
+                                message: l10n.enterBrand,
+                              ),
+                            ),
+                          ],
 
                           const SizedBox(height: AppSpacing.md),
 
-                          AppTextField(
-                            label: l10n.model,
-                            hint: l10n.modelHint,
-                            controller: _modelController,
-                            textInputAction: TextInputAction.next,
-                            validator: (v) => AuthValidators.requiredField(
-                              context,
-                              v,
-                              message: l10n.enterModel,
+                          // Depends on the brand; "Other" brand has no model
+                          // list, so it goes straight to free text.
+                          if (!_brandIsOther)
+                            DropdownButtonFormField<String>(
+                              initialValue: _model,
+                              decoration: InputDecoration(
+                                labelText: l10n.model,
+                              ),
+                              items: [
+                                for (final model in modelsFor(_brand))
+                                  DropdownMenuItem(
+                                    value: model,
+                                    child: Text(model),
+                                  ),
+                                DropdownMenuItem(
+                                  value: otherOption,
+                                  child: Text(l10n.carBrandOther),
+                                ),
+                              ],
+                              onChanged: (v) => setState(() => _model = v),
+                              validator: (v) =>
+                                  v == null ? l10n.enterModel : null,
                             ),
-                          ),
+
+                          if (_brandIsOther || _modelIsOther) ...[
+                            if (!_brandIsOther)
+                              const SizedBox(height: AppSpacing.sm),
+                            AppTextField(
+                              label: l10n.model,
+                              hint: l10n.carModelOtherHint,
+                              controller: _modelController,
+                              textInputAction: TextInputAction.next,
+                              validator: (v) => AuthValidators.requiredField(
+                                context,
+                                v,
+                                message: l10n.enterModel,
+                              ),
+                            ),
+                          ],
 
                           const SizedBox(height: AppSpacing.md),
 
                           Row(
                             children: [
                               Expanded(
-                                child: AppTextField(
-                                  label: l10n.year,
-                                  hint: l10n.yearHint,
-                                  controller: _yearController,
-                                  keyboardType: TextInputType.number,
-                                  textInputAction: TextInputAction.next,
+                                child: DropdownButtonFormField<int>(
+                                  initialValue: _year,
+                                  isExpanded: true,
+                                  decoration: InputDecoration(
+                                    labelText: l10n.year,
+                                  ),
+                                  items: [
+                                    for (final y in _years)
+                                      DropdownMenuItem(
+                                        value: y,
+                                        child: Text('$y'),
+                                      ),
+                                  ],
+                                  onChanged: (v) => setState(() => _year = v),
                                   validator: (v) =>
-                                      AuthValidators.requiredField(
-                                        context,
-                                        v,
-                                        message: l10n.enterYear,
-                                      ) ??
-                                      (int.tryParse(v!.trim()) == null
-                                          ? l10n.enterYear
-                                          : null),
+                                      v == null ? l10n.enterYear : null,
                                 ),
                               ),
                               const SizedBox(width: AppSpacing.md),
@@ -186,12 +300,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
                                   controller: _mileageController,
                                   keyboardType: TextInputType.number,
                                   textInputAction: TextInputAction.next,
-                                  validator: (v) =>
-                                      AuthValidators.requiredField(
-                                        context,
-                                        v,
-                                        message: l10n.enterMileage,
-                                      ),
+                                  validator: (v) => _validateMileage(v, l10n),
                                 ),
                               ),
                             ],
@@ -204,11 +313,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
                             hint: l10n.plateNumberHint,
                             controller: _plateController,
                             textInputAction: TextInputAction.done,
-                            validator: (v) => AuthValidators.requiredField(
-                              context,
-                              v,
-                              message: l10n.enterPlateNumber,
-                            ),
+                            validator: (v) => _validatePlate(v, l10n),
                           ),
                         ],
                       ),

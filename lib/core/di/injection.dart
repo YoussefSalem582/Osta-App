@@ -69,7 +69,7 @@ Future<void> configureDependencies() async {
       () => AuthRepositoryImpl(getIt(), getIt()),
     )
     ..registerLazySingleton<SessionController>(
-      () => SessionController(getIt(), getIt(), getIt()),
+      () => SessionController(getIt(), getIt(), getIt(), getIt()),
     )
     ..registerLazySingleton<CentersRepository>(
       () => CentersRepository(getIt()),

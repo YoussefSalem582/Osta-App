@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:osta/core/network/api_client.dart';
+import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/core/network/dio_client.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:osta/core/session/session_state.dart';
@@ -16,15 +18,49 @@ import 'package:osta/features/shared/auth/domain/auth_repository.dart';
 ///
 /// Registered by hand in `configureDependencies()` — no injectable codegen.
 class SessionController extends Cubit<SessionState> {
-  SessionController(this._store, this._authEvents, this._authRepository)
-    : super(const SessionState()) {
+  SessionController(
+    this._store,
+    this._authEvents,
+    this._authRepository,
+    this._api,
+  ) : super(const SessionState()) {
     _expiredSub = _authEvents.onSessionExpired.listen((_) => _onExpired());
   }
 
   final SessionStore _store;
   final AuthEvents _authEvents;
   final AuthRepository _authRepository;
+  final ApiClient _api;
   late final StreamSubscription<void> _expiredSub;
+
+  /// How long the gate check may hold up a launch before it gives up.
+  ///
+  /// [bootstrap] awaits this on the splash, on top of the branding hold, so an
+  /// unbounded call would leave a user on a slow connection staring at the logo
+  /// for Dio's full 15s timeout. Capped well under that and failed open.
+  static const _vehicleGateTimeout = Duration(seconds: 4);
+
+  /// Whether an authenticated customer already has a car, for the #39 gate.
+  ///
+  /// Returns `null` — "don't gate" — for anyone the gate doesn't apply to, and
+  /// on any failure or timeout. Failing open is deliberate: a flaky connection
+  /// must never lock a user out of the whole app. The cost is that a carless
+  /// customer whose check times out skips the gate until their next launch.
+  ///
+  /// ponytail: calls the endpoint directly rather than reusing `GarageRepo`,
+  /// which lives in `features/customer/` — `core/` must not depend on a
+  /// feature. One `isNotEmpty` is not duplication worth inverting layers for.
+  Future<bool?> _resolveVehicleGate(AppRole? role, {required bool hasToken}) {
+    if (role != AppRole.customer || !hasToken) return Future.value();
+    return _api
+        .get<bool>(
+          ApiEndpoints.vehicles,
+          parse: (data) => (data! as List<dynamic>).isNotEmpty,
+        )
+        .then<bool?>((r) => r.data)
+        .timeout(_vehicleGateTimeout, onTimeout: () => null)
+        .catchError((_) => null);
+  }
 
   /// Reads persisted `{token, activeRole, locale, businessOnboarded}` and flips
   /// `bootstrapped` so the router can leave the splash. A valid
@@ -33,13 +69,16 @@ class SessionController extends Cubit<SessionState> {
   /// cold start via the persisted onboarded flag.
   Future<void> bootstrap() async {
     final code = _store.localeCode;
+    final role = _store.activeRole;
+    final hasToken = await _store.hasToken();
     emit(
       SessionState(
         bootstrapped: true,
         locale: code == null ? null : Locale(code),
-        activeRole: _store.activeRole,
-        hasToken: await _store.hasToken(),
+        activeRole: role,
+        hasToken: hasToken,
         businessOnboarded: _store.businessOnboarded,
+        hasVehicle: await _resolveVehicleGate(role, hasToken: hasToken),
       ),
     );
   }
@@ -74,7 +113,16 @@ class SessionController extends Cubit<SessionState> {
   /// token the router lands the shell; otherwise auth sends `account_type`.
   Future<void> chooseRole(AppRole role) async {
     await _store.writeActiveRole(role);
-    emit(state.copyWith(activeRole: role, roleAcknowledged: true));
+    emit(
+      state.copyWith(
+        activeRole: role,
+        roleAcknowledged: true,
+        // "Switch role" keeps the token and clears hasVehicle, so re-derive it
+        // here — otherwise a carless customer could switch away and back to
+        // land in the shell with the gate still null, walking straight past it.
+        hasVehicle: await _resolveVehicleGate(role, hasToken: state.hasToken),
+      ),
+    );
   }
 
   /// Called after a successful register/login. [authoritativeRole] is
@@ -93,8 +141,20 @@ class SessionController extends Cubit<SessionState> {
         correctedRole: authoritativeRole == requested
             ? null
             : authoritativeRole,
+        // A fresh customer has no cars, so this resolves false and the gate
+        // fires immediately after register — which is exactly #39's ask.
+        hasVehicle: await _resolveVehicleGate(
+          authoritativeRole,
+          hasToken: true,
+        ),
       ),
     );
+  }
+
+  /// Marks the customer's first car saved, releasing the #39 gate.
+  Future<void> markVehicleAdded() async {
+    if (state.hasVehicle ?? false) return;
+    emit(state.copyWith(hasVehicle: true));
   }
 
   /// Marks the business onboarding wizard finished and persists the flag so

@@ -108,6 +108,108 @@ void main() {
     });
   });
 
+  group('resolveRedirect — required add-car gate (#39)', () {
+    SessionState customer({bool? hasVehicle}) => SessionState(
+      bootstrapped: true,
+      hasToken: true,
+      activeRole: AppRole.customer,
+      hasVehicle: hasVehicle,
+    );
+
+    test('a carless customer is forced to add-car from anywhere', () {
+      // "No car means no Home — the gate cannot be skipped."
+      for (final location in [
+        AppRoutes.customerShell,
+        AppRoutes.home,
+        AppRoutes.profile,
+        AppRoutes.garage,
+        AppRoutes.bookingStatus,
+      ]) {
+        expect(
+          resolveRedirect(
+            session: customer(hasVehicle: false),
+            location: location,
+          ),
+          AppRoutes.addCar,
+          reason: '$location must not be reachable without a car',
+        );
+      }
+    });
+
+    test('the gate lets its own screen through', () {
+      expect(
+        resolveRedirect(
+          session: customer(hasVehicle: false),
+          location: AppRoutes.addCar,
+        ),
+        isNull,
+      );
+    });
+
+    test(
+      'a customer with a car reaches the shell, and add-car still opens',
+      () {
+        expect(
+          resolveRedirect(
+            session: customer(hasVehicle: true),
+            location: AppRoutes.customerShell,
+          ),
+          isNull,
+        );
+        // The garage's "+" pushes the same screen to add an Nth car.
+        expect(
+          resolveRedirect(
+            session: customer(hasVehicle: true),
+            location: AppRoutes.addCar,
+          ),
+          isNull,
+        );
+      },
+    );
+
+    test('an unresolved check fails open rather than stranding the user', () {
+      // null = the GET /vehicles check never completed (offline, timeout).
+      // Gating on that would lock someone out of the app over a flaky network.
+      expect(
+        resolveRedirect(
+          session: customer(),
+          location: AppRoutes.customerShell,
+        ),
+        isNull,
+      );
+    });
+
+    test('the gate never applies to business users', () {
+      // Regression guard: business has its own wizard and no vehicles.
+      const business = SessionState(
+        bootstrapped: true,
+        hasToken: true,
+        activeRole: AppRole.business,
+        businessOnboarded: true,
+        hasVehicle: false,
+      );
+      expect(
+        resolveRedirect(session: business, location: AppRoutes.businessShell),
+        isNull,
+      );
+    });
+
+    test('auth still comes first for a logged-out customer', () {
+      const loggedOut = SessionState(
+        bootstrapped: true,
+        languageAcknowledged: true,
+        roleAcknowledged: true,
+        onboardingAcknowledged: true,
+        activeRole: AppRole.customer,
+        hasVehicle: false,
+      );
+      expect(
+        resolveRedirect(session: loggedOut, location: AppRoutes.customerShell),
+        AppRoutes.authChoose,
+      );
+    });
+  });
+
   group('resolveRedirect — business onboarding', () {
     test(
       'forces identity wizard when business authenticated and not onboarded',

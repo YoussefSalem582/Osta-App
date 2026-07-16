@@ -98,6 +98,13 @@ String? resolveRedirect({
     return wizard.contains(location) ? null : AppRoutes.businessIdentity;
   }
 
+  // The customer's counterpart to that wizard: no car, no Home (#39). Gates on
+  // an explicit `false` only — `null` means the check never resolved, and a
+  // failed network call must not strand the user outside the app.
+  if (role == AppRole.customer && session.hasVehicle == false) {
+    return location == AppRoutes.addCar ? null : AppRoutes.addCar;
+  }
+
   const inAppScreens = {
     AppRoutes.profile,
     AppRoutes.garage,
