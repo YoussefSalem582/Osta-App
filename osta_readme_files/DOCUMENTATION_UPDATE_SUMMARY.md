@@ -4,6 +4,38 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-17 — Two-sided Shop: browse, detail, seller catalog, enquire & my-products (#48)
+
+The Store tab shipped as a hardcoded stub on both shells — `business_shop_page.dart` rendered four fixed `ShopProductCard`s, the customer Store tab had no body, and the home "From the shop" rail (`ShopSection`) still reads `HomeFixtures`. The backend Shop API (#48 — polymorphic `Product` owned by a `User` **or** a `ServiceCenter`) was already implemented and tested, so this change wires the app to it end to end for both roles.
+
+**Data layer** — `Product`/`ProductOwner` are plain `Equatable` models with hand-written `fromJson` mirroring `ProductResource` (price coerced from int/double/string, `images` defaulting to `[]`, `owner` present only when loaded, `owner.type` the slug `user`/`service_center`). `ShopRepo` is a static repo like `GarageRepo` (`GetIt.instance<ApiClient>()`) that lets the sealed `ApiException` bubble up: `browse`, `detail`, `sellerCatalog` (center vs user endpoint), `enquire`, and `myProducts`/`createProduct`/`updateProduct`/`deleteProduct`.
+
+**State** — `ShopListCubit` (a source enum drives browse vs one seller's storefront; a single `ShopListState` with a status enum keeps the query/category/page cursor across reloads; append-on-scroll pagination guarded by `meta.pagination.current_page < last_page`), `ProductDetailCubit`, and `MyProductsCubit` (list + delete; create/edit are self-contained in the form and reload on return).
+
+**Screens** — `ShopBrowsePage` (customer Store tab): debounced search, category chips accumulated from loaded products, infinite scroll, pull-to-refresh, over a shared `ShopProductGrid`. `ProductDetailPage`: `PageView` image carousel (no `carousel_slider` dependency) with dots, EGP price, `SellerCard` → `SellerCatalogPage` for **both** owner kinds. `EnquireSheet`: a message bottom sheet → `POST …/enquiries` → success toast. `MyProductsPage` (business Store tab, and pushed from browse): grid of own listings with add/edit/delete; `ProductFormPage` is the create/edit form (name, price, category, description, status dropdown, optional image URLs).
+
+**Wiring** — customer Store tab → `ShopBrowsePage`; business Store tab → `MyProductsPage` (replacing the deleted `business_shop_page.dart`). Routes `/shop`, `/product` (extra = id), `/seller-catalog` (extra = `SellerCatalogArgs`), `/my-products`, `/product-form` (extra = `Product?`). ~46 l10n keys added to both ARBs (`shopPriceEgp` uses a `decimalPattern` num placeholder for locale-aware grouping).
+
+**Decisions / gaps** — no new dependencies: `PageView` replaces `carousel_slider`, `GridView` replaces `flutter_staggered_grid_view`, enquire is a backend POST (not `url_launcher`), and product images are **URL strings** because the backend exposes no product-image upload endpoint — the form takes links, so `image_picker`/`share_plus` from the epic's package list stay deferred. Update is `PUT` (not the epic's `PATCH`), matching the route. Shop stays at `lib/features/shop/` — the role-boundary test's sanctioned holdout.
+
+**Verification** — `flutter analyze` is clean across the shop tree; `test/structure/role_boundary_test.dart` passes (including "every l10n key used in lib exists in app_en.arb" and the shop-holdout bucket check); 3 `Product.fromJson` contract tests green.
+
+## 2026-07-17 — Offline-first shared profile hub + skeleton loading (#40)
+
+Two changes landed together on `feat/40-account-profile`.
+
+**Shared profile hub** — the customer had a real `ProfileScreen`; the business "More" tab (`business/dashboard/.../more_screen.dart`) was a static mock (hardcoded `'N'` avatar, fake `4.8/312/24` stats, a dead settings link, no language/theme/sign-out/edit/delete). The whole profile feature **moved** `customer/profile/` → `features/shared/profile/` (move, not copy — the duplicate-class invariant forbids two), and both `CustomerShellPage` and `BusinessShellPage` now render the same `ProfileView`. `more_screen.dart` + its `Setting` widget are deleted (`ItemType` kept — `board_screen.dart` still uses it); technicians/capacity/analytics are phase-2 #58. Account quick-links are role-gated (My cars ↔ customer, My Shop ↔ business); everything else is shared.
+
+**Offline-first read** — `ProfileRepo` went from static to an injected instance (`ApiClient` + new `ProfileCache`) doing **cache-then-network**: `ProfileCubit.getProfile` paints the cached `/me` (JSON in `SharedPreferences`, keyed by `SessionStore.profileCacheKey`) instantly, then refreshes; `NetworkException` with a cache keeps showing it behind a "saved profile · last updated" chip, without a cache surfaces the error. Cache clears on sign-out via `SessionStore.clearSession()`. Writes stay online-only — the full §7 sqflite/sync module is deferred; the cache-then-network shape makes that a repo-internal swap later. First-load with no cache renders a `Skeletonizer` over the real layout instead of a spinner (§10; adds `skeletonizer`, no shimmer).
+
+**Note** — the working tree also carried unrelated in-progress shop work (`#48`/`#57`) that does not yet compile; profile changes were verified in isolation (analyze clean, 8 profile tests + structure invariants green).
+
+**Docs**
+
+- [`../CHANGELOG.md`](../CHANGELOG.md) — Added (offline profile + skeleton) and Changed (shared hub) entries.
+- [`CURRENT_STATUS.md`](CURRENT_STATUS.md) — status entry.
+- [`features/account-more.md`](features/account-more.md) — corrected the stale "empty stub" line for `customer/profile/`.
+
 ## 2026-07-17 — Architecture diagram set added (SVG)
 
 `osta_readme_files/diagrams/` held a single `register_flow.png` with **no committed source** — it couldn't be edited or extended. Added four hand-authored SVG diagrams that complement it: `routing_guard.svg` (the `resolveRedirect` decision ladder — splash → gates → shell), `http_auth_refresh.svg` (request path + queued 401 refresh-once + typed `ApiException`), `booking_funnel.svg` (epic #44 funnel: service → slot → 10-min hold → confirm → live status), and `clean_architecture_bloc.svg` (the 3-layer dependency rule + event→state cycle + repository error boundary).
