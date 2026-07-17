@@ -37,7 +37,7 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
   final _phone = TextEditingController();
   final _city = TextEditingController();
   final _address = TextEditingController();
-  String? _locationError;
+  bool _showLocationError = false;
 
   static const _businessTypes = [
     'workshop',
@@ -105,15 +105,13 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
     final point = await MapPinPickerSheet.show(context, initial: initial);
     if (point != null && mounted) {
       cubit.setLocation(point);
-      setState(() => _locationError = null);
+      setState(() => _showLocationError = false);
     }
   }
 
   void _submit() {
-    final cubit = context.read<BusinessOnboardingCubit>();
-    final l10n = context.l10n;
     // Sync controllers → cubit before submit.
-    cubit
+    final cubit = context.read<BusinessOnboardingCubit>()
       ..updateTradeName(_tradeName.text)
       ..updateLegalName(_legalName.text)
       ..updatePhone(_phone.text)
@@ -121,10 +119,10 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
       ..updateAddressLine(_address.text);
 
     final formOk = _formKey.currentState?.validate() ?? false;
-    if (!cubit.state.hasLocation) {
-      setState(() => _locationError = l10n.businessOnboardingLocationRequired);
-    }
-    if (!formOk || !cubit.state.hasLocation) return;
+    final hasLocation = cubit.state.hasLocation;
+    // Re-derive every submit so a fixed location clears the card error too.
+    setState(() => _showLocationError = !hasLocation);
+    if (!formOk || !hasLocation) return;
     unawaited(cubit.submitProfile());
   }
 
@@ -148,7 +146,10 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
       },
       builder: (context, state) {
         return Scaffold(
-          appBar: AppTopBar(title: l10n.businessOnboardingTitle),
+          appBar: AppTopBar(
+            title: l10n.businessOnboardingTitle,
+            subtitle: l10n.businessOnboardingLiveInstantly,
+          ),
           body: SafeArea(
             child: Column(
               children: [
@@ -204,18 +205,9 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
                           const SizedBox(height: AppSpacing.lg),
                           LocationPickerCard(
                             hasLocation: state.hasLocation,
+                            hasError: _showLocationError,
                             onTap: () => unawaited(_pickLocation()),
                           ),
-                          if (_locationError != null) ...[
-                            const SizedBox(height: AppSpacing.sm),
-                            Text(
-                              _locationError!,
-                              style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(
-                                    color: Theme.of(context).colorScheme.error,
-                                  ),
-                            ),
-                          ],
                           const SizedBox(height: AppSpacing.lg),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,

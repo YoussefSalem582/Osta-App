@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
+import 'package:osta/features/business/onboarding/presentation/widgets/activation_review_sheet.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/add_custom_service_button.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/add_custom_service_sheet.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/add_preset_card.dart';
@@ -63,6 +65,33 @@ class _BusinessCatalogPageState extends State<BusinessCatalogPage> {
     final cubit = context.read<BusinessOnboardingCubit>();
     final service = await AddCustomServiceSheet.show(context);
     if (service != null) cubit.addCustomService(service);
+  }
+
+  String _typeLabel(BuildContext context, String wire) {
+    final l10n = context.l10n;
+    return switch (wire) {
+      'dealership' => l10n.businessTypeDealership,
+      'mobile' => l10n.businessTypeMobile,
+      'tire_shop' => l10n.businessTypeTireShop,
+      'car_wash' => l10n.businessTypeCarWash,
+      _ => l10n.businessTypeWorkshop,
+    };
+  }
+
+  /// Last-look review before the center goes live, then activate on confirm.
+  Future<void> _confirmAndActivate(
+    BuildContext context,
+    BusinessOnboardingState state,
+  ) async {
+    final cubit = context.read<BusinessOnboardingCubit>();
+    final confirmed = await ActivationReviewSheet.show(
+      context,
+      tradeName: state.tradeName,
+      typeLabel: _typeLabel(context, state.businessType),
+      hasLocation: state.hasLocation,
+      serviceCount: state.selectedServiceCount,
+    );
+    if (confirmed ?? false) unawaited(cubit.activate());
   }
 
   @override
@@ -139,12 +168,17 @@ class _BusinessCatalogPageState extends State<BusinessCatalogPage> {
                                       );
                                 },
                               ),
-                              const SizedBox(height: AppSpacing.lg),
-                              AddPresetCard(
-                                onTap: () => context
-                                    .read<BusinessOnboardingCubit>()
-                                    .selectAllPresets(),
-                              ),
+                              // Hidden once every visible preset is already in
+                              // — the shortcut has nothing left to add.
+                              if (!state.allFilteredSelected) ...[
+                                const SizedBox(height: AppSpacing.lg),
+                                AddPresetCard(
+                                  count: state.filteredPresets.length,
+                                  onTap: () => context
+                                      .read<BusinessOnboardingCubit>()
+                                      .selectFilteredPresets(),
+                                ),
+                              ],
                               const SizedBox(height: AppSpacing.md),
                               for (final preset in state.filteredPresets) ...[
                                 ServiceToggleCard(
@@ -178,8 +212,7 @@ class _BusinessCatalogPageState extends State<BusinessCatalogPage> {
                                     service.price,
                                     locale: locale,
                                   ),
-                                  isSelected: true,
-                                  onChanged: (_) => context
+                                  onRemove: () => context
                                       .read<BusinessOnboardingCubit>()
                                       .removeCustomService(i),
                                 ),
@@ -211,16 +244,35 @@ class _BusinessCatalogPageState extends State<BusinessCatalogPage> {
                                 ),
                           ),
                         ),
-                      AppButton(
-                        label: l10n.businessCatalogCreateAndActivate,
-                        loading: state.isActivating,
-                        onPressed: state.canActivate
-                            ? () => unawaited(
-                                context
-                                    .read<BusinessOnboardingCubit>()
-                                    .activate(),
-                              )
-                            : null,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: AppButton(
+                              label: l10n.commonBack,
+                              variant: AppButtonVariant.secondary,
+                              onPressed: state.isActivating
+                                  ? null
+                                  : () => context.pop(),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            flex: 2,
+                            child: AppButton(
+                              label: state.selectedServiceCount > 0
+                                  ? l10n.businessCatalogActivateWithCount(
+                                      state.selectedServiceCount,
+                                    )
+                                  : l10n.businessCatalogCreateAndActivate,
+                              loading: state.isActivating,
+                              onPressed: state.canActivate
+                                  ? () => unawaited(
+                                      _confirmAndActivate(context, state),
+                                    )
+                                  : null,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
