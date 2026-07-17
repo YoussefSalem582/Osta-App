@@ -111,13 +111,54 @@ void main() {
       await cubit.close();
     });
 
-    test('selectAllPresets is still the one-tap path', () async {
+    test(
+      'selectFilteredPresets adds every visible preset in one tap',
+      () async {
+        final cubit = build();
+        await cubit.loadPresets();
+        cubit.selectFilteredPresets();
+
+        expect(cubit.state.selectedPresetIds, {_oil.id, _brakes.id});
+        expect(cubit.state.canActivate, isTrue);
+        await cubit.close();
+      },
+    );
+
+    test('selectFilteredPresets respects the filter and unions', () async {
+      // A brakes pick already made, then the "add all" tapped while filtered to
+      // oils: the oils join, the brakes pick survives, nothing else is touched.
       final cubit = build();
       await cubit.loadPresets();
-      cubit.selectAllPresets();
+      cubit
+        ..togglePreset(_brakes.id)
+        ..setCategoryFilter('oil')
+        ..selectFilteredPresets();
 
-      expect(cubit.state.selectedPresetIds, {_oil.id, _brakes.id});
-      expect(cubit.state.canActivate, isTrue);
+      expect(cubit.state.selectedPresetIds, {_brakes.id, _oil.id});
+      await cubit.close();
+    });
+
+    test('allFilteredSelected flips once the visible set is in', () async {
+      final cubit = build();
+      await cubit.loadPresets();
+      cubit.setCategoryFilter('oil');
+      expect(cubit.state.allFilteredSelected, isFalse);
+
+      cubit.selectFilteredPresets();
+      expect(cubit.state.allFilteredSelected, isTrue);
+      await cubit.close();
+    });
+
+    test('selectedServiceCount sums presets and custom services', () async {
+      final cubit = build();
+      await cubit.loadPresets();
+      cubit
+        ..togglePreset(_oil.id)
+        ..addCustomService(
+          const CustomServiceInput(name: 'Ceramic coating', price: 1200),
+        );
+
+      expect(cubit.state.selectedServiceCount, 2);
       await cubit.close();
     });
 
