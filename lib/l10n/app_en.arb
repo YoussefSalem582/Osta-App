@@ -379,5 +379,9 @@
   "deleteAccountDialogTitle": "Delete Account",
   "deleteAccountDialogMessage": "Are you sure you want to delete your account? This action cannot be undone.",
   "deleteAccountSuccess": "Your account has been deleted.",
-  "deleteAccountError": "Failed to delete account. Please try again."
+  "deleteAccountError": "Failed to delete account. Please try again.",
+  "deleteVehicleDialogTitle": "Delete Vehicle",
+  "deleteVehicleDialogMessage": "Are you sure you want to delete this vehicle?",
+  "deleteVehicleSuccess": "Vehicle deleted successfully.",
+  "setPrimarySuccess": "Vehicle set as primary."
 }

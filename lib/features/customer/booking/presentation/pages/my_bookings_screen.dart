@@ -4,7 +4,6 @@ import 'package:osta/features/customer/booking/data/model.dart/booking_item.dart
 import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/booking_list.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/tab_pill.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
-import 'package:osta/shared/ui/app_top_bar.dart';
 
 const upcoming = [
   BookingItem(
