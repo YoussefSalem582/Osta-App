@@ -4,6 +4,22 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-17 — Data layer wired to every backend endpoint
+
+An audit of all **78** `routes/api/v1/*` routes against the app found a large gap hidden behind a complete-looking `ApiEndpoints`: the constants file declared every path, but **30 helpers across 14 areas were never called** — dead constants, because the features that would use them (`customer/booking`, `business/bookings`, `business/team`, `business/dashboard`, `shared/notifications`, address book, reviews, vehicle-maintenance, promotions, capacity, center-detail, devices, telemetry) shipped as fixture-only or empty-directory stubs. Only 7 repos reached the backend at all (auth, profile, vehicles, centers, shop, business catalog/services). The chosen scope was **data layer only** — remote repos + models, no new UI/state/DI — so the epic-driven screens consume a ready API layer as they land instead of inventing wire contracts under deadline.
+
+**Method.** Contracts were extracted straight from the Laravel source (each `Controller`, its `FormRequest` `rules()`, and its `Resource` `toArray()`), then mirrored into Dart — so request keys and response shapes are literal, not guessed. Fan-out was one contract-extract → build pass per area.
+
+**Shape.** Static repos in the established `ShopRepo`/`GarageRepo` house style — `abstract final class XRepo { static ApiClient get _api => GetIt.instance<ApiClient>(); … }` — with the sealed `ApiException` left to bubble (no per-repo try/catch, per the throw convention). Models are plain `Equatable` with hand-written `fromJson`, defensive number/date parsing, and no `toJson` unless the repo sends the model as a body. **No `get_it` registration** — like garage/shop, these self-resolve, so nothing shared was edited and the 10 build agents ran conflict-free.
+
+**23 new files** across: addresses, customer bookings (+ nested service/center/mechanic), business bookings (all six B2B transitions), mechanics CRUD, dashboard + `PUT` capacity, promotions CRUD + `PUT`/`DELETE` service, center detail (show/availability/services), vehicle maintenance (+ export), reviews (user + center, read + write), and notifications + devices + telemetry.
+
+**Two core changes.** `ApiClient.patch()` was added — no wired endpoint had ever used `PATCH`, but reschedule, the five business-booking transitions, and mechanic-update are all `PATCH`. And a **latent envelope bug** was fixed at the root: `_parseEnvelope` ran `PaginationMeta.fromJson` on any non-empty `meta`, so booking cancel's `meta: {refund: …}` (no `pagination` block) would cast a missing `current_page` to `int` and throw a raw `TypeError` instead of a typed `ApiException` — now guarded to build `PaginationMeta` only when a pagination block is present (the flat-shape fallback is kept). This is the second-order tail of the Jul-16 pagination fix, reachable now that `cancel` is wired.
+
+**Coverage.** All 30 previously-dead endpoints are referenced; the sole remaining unused helper is `bookingsByStatus`, since `BookingRepo.list({status})` sends `?status=` on the base `/bookings` path instead — functionally equivalent and cleaner.
+
+**Verified.** `flutter analyze` **0 errors / 0 warnings** (38 style infos, matching existing repos); `dart format` clean; `test/structure/` role-boundary + duplicate-class-name + l10n-key invariants pass — the duplicate-class guard caught a `BookingService` collision between the customer and business booking models, renamed to `BusinessBookingService`; full suite **141/141**.
+
 ## 2026-07-17 — Two-sided Shop: browse, detail, seller catalog, enquire & my-products (#48)
 
 The Store tab shipped as a hardcoded stub on both shells — `business_shop_page.dart` rendered four fixed `ShopProductCard`s, the customer Store tab had no body, and the home "From the shop" rail (`ShopSection`) still reads `HomeFixtures`. The backend Shop API (#48 — polymorphic `Product` owned by a `User` **or** a `ServiceCenter`) was already implemented and tested, so this change wires the app to it end to end for both roles.
