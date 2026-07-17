@@ -6,7 +6,6 @@ import 'package:osta/features/business/services/presentation/widgets/services_fi
 import 'package:osta/shared/extensions/context_ext.dart';
 
 /// الكتالوج والأسعار (الخدمات والعروض) — the Catalog tab body of the business
-/// shell. Scaffold-less: the shell owns the app bar and bottom nav.
 class BusinessServicesPage extends StatefulWidget {
   const BusinessServicesPage({super.key});
 

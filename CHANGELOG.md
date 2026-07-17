@@ -5,6 +5,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the pro
 
 ## [Unreleased]
 
+### Fixed
+
+- **Business catalog route now provides its bloc scope** (2026-07-17) — `BusinessCatalogPage` was being pushed directly from `app_router.dart` even though it calls `context.read<CatalogCubit>()` in `initState()`, so opening the page threw `ProviderNotFoundException`. Wrapped the route in a `BlocProvider(create: (_) => CatalogCubit())` and imported the cubit in the router so the page can load its initial data as soon as it opens.
+
 ### Removed
 
 - **Entire test suite** (2026-07-11) — deleted the whole `test/` directory: 18 `_test.dart` files plus the shared `fakes.dart` helper (the 127-test suite covering `core/network`, `core/session`, `core/router`, `core/theme`, the `features/auth` blocs + validators + repository, `shared/formatters`, `shared/ui`, and the top-level `widget_test.dart` / `auth_token_model_test.dart`). CI's `flutter test` step (`.github/workflows/ci.yml`) is now guarded so it skips — instead of failing — when no tests are present, and auto-runs again if they return. **This removes the project's automated regression safety net**; `flutter analyze` still gates CI, but there is no behavioral coverage until tests are re-added (`git restore test` brings them back).

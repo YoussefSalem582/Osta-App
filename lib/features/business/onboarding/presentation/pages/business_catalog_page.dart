@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/core/theme/app_tokens.dart';
+import 'package:osta/features/business/onboarding/presentation/cubit/catalog_cubit.dart';
+import 'package:osta/features/business/onboarding/presentation/cubit/catalog_state.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/add_custom_service_button.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/add_preset_card.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/preset_services_banner.dart';
@@ -30,10 +33,14 @@ class BusinessCatalogPage extends StatefulWidget {
 }
 
 class _BusinessCatalogPageState extends State<BusinessCatalogPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<CatalogCubit>().loadInitData();
+  }
+
   String? _selectedCategory;
-  bool _oilSelected = true;
-  bool _brakesSelected = true;
-  bool _acSelected = true;
 
   @override
   Widget build(BuildContext context) {
@@ -80,31 +87,47 @@ class _BusinessCatalogPageState extends State<BusinessCatalogPage> {
                     ),
 
                     //--------------------------------{ليستة الخدمات}-------------------------------//
-                    const SizedBox(height: AppSpacing.md),
-                    ServiceToggleCard(
-                      title: l10n.businessCatalogServiceOilTitle,
-                      subtitle: l10n.businessCatalogServiceOilSubtitle,
-                      price: l10n.businessCatalogServiceOilPrice,
-                      isSelected: _oilSelected,
-                      onChanged: (val) => setState(() => _oilSelected = val),
-                    ),
+                    BlocBuilder<CatalogCubit, CatalogState>(
+                      builder: (context, state) {
+                        if (state is CatalogLoadedState) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
 
-                    const SizedBox(height: AppSpacing.sm),
-                    ServiceToggleCard(
-                      title: l10n.businessCatalogServiceBrakesTitle,
-                      subtitle: l10n.businessCatalogServiceBrakesSubtitle,
-                      price: l10n.businessCatalogServiceBrakesPrice,
-                      isSelected: _brakesSelected,
-                      onChanged: (val) => setState(() => _brakesSelected = val),
-                    ),
+                        if (state is CatalogErrorState) {
+                          return const Center(
+                            child: Text("Something went wrong"),
+                          );
+                        }
 
-                    const SizedBox(height: AppSpacing.sm),
-                    ServiceToggleCard(
-                      title: l10n.businessCatalogServiceAcTitle,
-                      subtitle: l10n.businessCatalogServiceAcSubtitle,
-                      price: l10n.businessCatalogServiceAcPrice,
-                      isSelected: _acSelected,
-                      onChanged: (val) => setState(() => _acSelected = val),
+                        if (state is CatalogSuccessState) {
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: state.services.length,
+                            itemBuilder: (context, index) {
+                              final service = state.services[index];
+                              final subtitle =
+                                  "${service.durationMinutes ?? 0} دقيقة • ${service.priceType ?? ""}";
+                              return Padding(
+                                padding: const EdgeInsets.only(
+                                  bottom: AppSpacing.sm,
+                                ),
+                                child: ServiceToggleCard(
+                                  title: service.name ?? '',
+                                  subtitle: subtitle,
+                                  price: '${service.price ?? 0} ج',
+                                  isSelected: service.isActive ?? false,
+                                  onChanged: (value) {},
+                                ),
+                              );
+                            },
+                          );
+                        }
+
+                        return const SizedBox();
+                      },
                     ),
 
                     //--------------------------------{اضافة خدمة مخصصه}-------------------------------//

@@ -10,6 +10,7 @@ import 'package:osta/features/auth/password_recovery/presentation/forgot_passwor
 import 'package:osta/features/auth/password_recovery/presentation/reset_password_page.dart';
 import 'package:osta/features/auth/register/presentation/register_page.dart';
 import 'package:osta/features/business/dashboard/presentation/screens/tech_screen.dart';
+import 'package:osta/features/business/onboarding/presentation/cubit/catalog_cubit.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_catalog_page.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_identity_page.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/provider_onboarding_page.dart';
@@ -71,13 +72,14 @@ class AppRouter {
       ),
       GoRoute(
         path: BusinessCatalogPage.path,
-        builder: (context, state) => BusinessCatalogPage(
-          // Wizard done: mark onboarding complete, then land in the shell.
-          // (The redirect guard bounces to the shell once the flag flips.)
-          onActivate: () {
-            context.read<SessionController>().completeBusinessOnboarding();
-            context.go(AppRoutes.businessShell);
-          },
+        builder: (context, state) => BlocProvider(
+          create: (_) => CatalogCubit(),
+          child: BusinessCatalogPage(
+            onActivate: () {
+              context.read<SessionController>().completeBusinessOnboarding();
+              context.go(AppRoutes.businessShell);
+            },
+          ),
         ),
       ),
 

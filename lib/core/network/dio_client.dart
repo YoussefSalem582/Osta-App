@@ -83,54 +83,90 @@ class AuthInterceptor extends QueuedInterceptor {
   }
 
   @override
-  Future<void> onError(
-    DioException err,
-    ErrorInterceptorHandler handler,
-  ) async {
-    final options = err.requestOptions;
-    final eligible =
-        err.response?.statusCode == 401 &&
-        options.extra[ApiClient.noAuthKey] != true &&
-        options.extra[_retriedKey] != true;
-    if (!eligible) return handler.next(err);
+  @override
+Future<void> onError(
+  DioException err,
+  ErrorInterceptorHandler handler,
+) async {
+  final options = err.requestOptions;
 
-    try {
-      final access = await _freshAccessToken(options);
-      options.extra[_retriedKey] = true;
-      options.headers['Authorization'] = 'Bearer $access';
-      final response = await _refreshDio.fetch<dynamic>(options);
-      handler.resolve(response);
-    } on Exception {
-      await _tokens.clear();
-      _events.emitSessionExpired();
-      handler.next(err);
-    }
+  final eligible =
+      err.response?.statusCode == 401 &&
+      options.extra[ApiClient.noAuthKey] != true &&
+      options.extra[_retriedKey] != true;
+
+  if (!eligible) {
+    return handler.next(err);
   }
 
-  /// Returns a valid access token, refreshing at most once.
-  ///
-  /// If another queued request already rotated the tokens while this one was
-  /// in flight, reuse the stored token instead of re-consuming the (rotated,
-  /// single-use) refresh token — a second refresh would fail and force a
-  /// spurious logout.
-  Future<String> _freshAccessToken(RequestOptions failed) async {
-    final stored = await _tokens.readAccessToken();
-    final sentHeader = failed.headers['Authorization'];
-    if (stored != null && sentHeader != 'Bearer $stored') return stored;
+  try {
+    print("========== TOKEN EXPIRED ==========");
+    print("Refreshing token...");
 
-    final refresh = await _tokens.readRefreshToken();
-    if (refresh == null) throw const FormatException('No refresh token');
-    final response = await _refreshDio.post<Map<String, dynamic>>(
-      ApiEndpoints.authRefresh,
-      data: {'refresh_token': refresh},
-    );
-    final pair = parseTokenPair(response.data?['data']);
-    await _tokens.writeTokens(
-      accessToken: pair.accessToken,
-      refreshToken: pair.refreshToken,
-    );
-    return pair.accessToken;
+    final access = await _freshAccessToken(options);
+
+    print("New Access Token: $access");
+
+    options.extra[_retriedKey] = true;
+    options.headers['Authorization'] = 'Bearer $access';
+
+    final response = await _refreshDio.fetch<dynamic>(options);
+
+    print("Original request retried successfully.");
+
+    handler.resolve(response);
+  } catch (e, s) {
+    print("========== REFRESH FAILED ==========");
+    print(e);
+    print(s);
+
+    await _tokens.clear();
+    _events.emitSessionExpired();
+
+    handler.next(err);
   }
+}
+
+Future<String> _freshAccessToken(RequestOptions failed) async {
+  final stored = await _tokens.readAccessToken();
+  final sentHeader = failed.headers['Authorization'];
+
+  if (stored != null && sentHeader != 'Bearer $stored') {
+    print("Another request already refreshed the token.");
+    return stored;
+  }
+
+  final refresh = await _tokens.readRefreshToken();
+
+  if (refresh == null) {
+    throw Exception("Refresh token is null");
+  }
+
+  print("Sending refresh request...");
+  print("Refresh Token: $refresh");
+
+  final response = await _refreshDio.post<Map<String, dynamic>>(
+    ApiEndpoints.authRefresh,
+    data: {
+      'refresh_token': refresh,
+    },
+  );
+
+  print("Refresh Status Code: ${response.statusCode}");
+  print("Refresh Response:");
+  print(response.data);
+
+  final pair = parseTokenPair(response.data?['data']);
+
+  await _tokens.writeTokens(
+    accessToken: pair.accessToken,
+    refreshToken: pair.refreshToken,
+  );
+
+  print("Tokens saved successfully.");
+
+  return pair.accessToken;
+}
 }
 
 /// Builds the shared [Dio] client every feature request flows through.

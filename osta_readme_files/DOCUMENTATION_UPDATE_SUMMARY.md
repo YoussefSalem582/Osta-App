@@ -4,6 +4,12 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-17 — Business catalog route now owns its bloc scope
+
+`BusinessCatalogPage` was being routed directly from `app_router.dart` even though it calls `context.read<CatalogCubit>()` in `initState()`, which caused a `ProviderNotFoundException` on open. Wrapped the route in a `BlocProvider(create: (_) => CatalogCubit())` and imported the cubit in the router so the page can load its initial data immediately.
+
+> ‏**مسار كتالوج النشاط صار يوفّر نطاق الـ bloc الخاص به** (2026-07-17) — كانت `BusinessCatalogPage` تُفتح مباشرةً من `app_router.dart` رغم أنها تستدعي `context.read<CatalogCubit>()` في `initState()`، فكانت ترمي `ProviderNotFoundException` عند الفتح. أُحيط المسار بـ `BlocProvider(create: (_) => CatalogCubit())` واستُورد الـ cubit في الموجّه حتى يحمّل الصفحة بياناتها الأولية فور فتحها.
+
 ## 2026-07-11 — Test suite removed
 
 Deleted the entire `test/` directory at the user's request — all 18 `_test.dart` files plus the shared `fakes.dart` helper (the 127-test suite: `core/network`, `core/session`, `core/router`, `core/theme`, the `features/auth` blocs + validators + repository, `shared/formatters`, `shared/ui`, and the top-level `widget_test.dart` / `auth_token_model_test.dart`).
