@@ -88,9 +88,10 @@ String? resolveRedirect({
   // A freshly-authenticated business user runs the onboarding wizard
   // (identity → catalog) before reaching its shell. Merchants already saw the
   // logged-out carousel before register, so there is no intro step here.
-  // Gated by `businessOnboarded` (persisted after Activate so cold starts
-  // skip a finished wizard).
-  if (role == AppRole.business && !session.businessOnboarded) {
+  // Gates on an explicit `false` only, like the customer's gate below: `null`
+  // means the catalog check never resolved, and re-running a finished wizard
+  // would duplicate the owner's catalog.
+  if (role == AppRole.business && session.businessOnboarded == false) {
     const wizard = {
       AppRoutes.businessIdentity,
       AppRoutes.businessCatalog,

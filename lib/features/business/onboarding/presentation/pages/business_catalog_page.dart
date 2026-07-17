@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/add_custom_service_button.dart';
@@ -22,10 +23,10 @@ import 'package:osta/shared/ui/status_states.dart';
 class BusinessCatalogPage extends StatefulWidget {
   const BusinessCatalogPage({this.onActivated, super.key});
 
-  static const path = '/business-catalog';
+  static const String path = AppRoutes.businessCatalog;
 
   /// Called after a successful `POST /business/catalog` so the router can
-  /// persist the onboarded flag and land in the business shell.
+  /// release the onboarding gate and land in the business shell.
   final VoidCallback? onActivated;
 
   @override

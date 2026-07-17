@@ -19,6 +19,36 @@ void main() {
       );
     });
 
+    test('clearing the role from a carousel returns to the chooser', () {
+      // What the carousel's back button leans on: switchRole() nulls the role,
+      // and the guard forces /role from there — no separate mechanism.
+      const cleared = SessionState(
+        bootstrapped: true,
+        languageAcknowledged: true,
+        roleAcknowledged: true,
+      );
+      expect(
+        resolveRedirect(session: cleared, location: AppRoutes.onboarding),
+        AppRoutes.role,
+      );
+    });
+
+    test('switching role after the chooser shows the other carousel', () {
+      // onboardingAcknowledged is one global flag, so this pins that the
+      // second role still gets its own slides: coming back through the chooser
+      // always lands here with the ack already false.
+      const switched = SessionState(
+        bootstrapped: true,
+        languageAcknowledged: true,
+        roleAcknowledged: true,
+        activeRole: AppRole.business,
+      );
+      expect(
+        resolveRedirect(session: switched, location: AppRoutes.onboarding),
+        AppRoutes.merchantOnboarding,
+      );
+    });
+
     test('business hits merchant carousel, not customer slides', () {
       const session = SessionState(
         bootstrapped: true,
@@ -226,6 +256,7 @@ void main() {
           bootstrapped: true,
           hasToken: true,
           activeRole: AppRole.business,
+          businessOnboarded: false,
         );
         expect(
           resolveRedirect(session: session, location: AppRoutes.businessShell),
@@ -237,6 +268,51 @@ void main() {
             location: AppRoutes.businessIdentity,
           ),
           isNull,
+        );
+      },
+    );
+
+    test('an unresolved catalog check fails open, not into re-onboarding', () {
+      // `null` is "couldn't tell" — a flaky check must not march an owner who
+      // already onboarded back through the wizard, which would re-submit their
+      // identity and re-attach their catalog.
+      const unknown = SessionState(
+        bootstrapped: true,
+        hasToken: true,
+        activeRole: AppRole.business,
+      );
+      expect(
+        resolveRedirect(session: unknown, location: AppRoutes.businessShell),
+        isNull,
+      );
+    });
+
+    test(
+      'a returning owner with a catalog goes to the shell, not the wizard',
+      () {
+        // The bug this whole gate replaced: completion used to be a local flag
+        // that sign-out wiped, so signing back in re-ran the wizard and
+        // re-attached the catalog. Derived from the server, the catalog
+        // survives the sign-out and the wizard stays closed.
+        const returning = SessionState(
+          bootstrapped: true,
+          hasToken: true,
+          activeRole: AppRole.business,
+          businessOnboarded: true,
+        );
+        expect(
+          resolveRedirect(
+            session: returning,
+            location: AppRoutes.businessShell,
+          ),
+          isNull,
+        );
+        expect(
+          resolveRedirect(
+            session: returning,
+            location: AppRoutes.businessIdentity,
+          ),
+          AppRoutes.businessShell,
         );
       },
     );
@@ -259,6 +335,7 @@ void main() {
         bootstrapped: true,
         hasToken: true,
         activeRole: AppRole.business,
+        businessOnboarded: false,
       );
       expect(
         resolveRedirect(

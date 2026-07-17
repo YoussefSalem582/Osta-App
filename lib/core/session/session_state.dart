@@ -15,7 +15,7 @@ class SessionState extends Equatable {
     this.onboardingAcknowledged = false,
     this.languageAcknowledged = false,
     this.roleAcknowledged = false,
-    this.businessOnboarded = false,
+    this.businessOnboarded,
     this.hasVehicle,
   });
 
@@ -54,9 +54,13 @@ class SessionState extends Equatable {
   final bool roleAcknowledged;
 
   /// Whether an authenticated `business` user has finished the onboarding
-  /// wizard. Persisted in `SessionStore` so a returning business user skips
-  /// the wizard on cold start (cleared on sign-out).
-  final bool businessOnboarded;
+  /// wizard (#53) — derived from their catalog being non-empty, since the
+  /// wizard cannot finish without attaching a service.
+  ///
+  /// Tri-state on the same terms as [hasVehicle]: `null` means "not known /
+  /// not applicable", and only an explicit `false` opens the wizard, so a
+  /// failed check can never trap an onboarded owner in it again.
+  final bool? businessOnboarded;
 
   /// Whether an authenticated `customer` has at least one vehicle — the gate
   /// behind the required add-car step (#39).
@@ -98,9 +102,8 @@ class SessionState extends Equatable {
   /// null" (used by "switch role" and sign-out). Preserves the in-memory
   /// language/onboarding/role acks so clearing the role mid-session doesn't
   /// re-trigger those screens (a fresh cold `bootstrap` resets them anyway).
-  /// Also preserves [businessOnboarded] so "switch role" does not force the
-  /// wizard again when the user returns to business (sign-out clears the
-  /// persisted flag separately via `SessionStore.clearSession`).
+  /// Both role gates drop to `null` with the role that scoped them —
+  /// `chooseRole` re-derives whichever one the new role needs.
   SessionState clearingRole({required bool hasToken}) => SessionState(
     bootstrapped: bootstrapped,
     locale: locale,
@@ -108,7 +111,6 @@ class SessionState extends Equatable {
     onboardingAcknowledged: onboardingAcknowledged,
     languageAcknowledged: languageAcknowledged,
     roleAcknowledged: roleAcknowledged,
-    businessOnboarded: businessOnboarded,
   );
 
   @override

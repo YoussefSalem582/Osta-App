@@ -4,6 +4,25 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-17 — Register flow: onboarding completion moved to server state (#53, #32)
+
+A second pass over the register flow, this time following the two role branches all the way through rather than auditing contracts field by field. **The flow's shape needed no change** — `resolveRedirect` already encodes both branches exactly as epic [#53](https://github.com/YoussefSalem582/Osta-App/issues/53) specifies, and #53 explicitly defines the two-step post-register wizard, so nothing moved or merged. Three bugs sat underneath it.
+
+**Business onboarding re-ran on every sign-in and duplicated the catalog** — completion was a device-local `session_business_onboarded` preference that `clearSession()` wiped on sign-out. Nothing could restore it: `_AuthData.fromEnvelope` reads only `user.type` and dropped the `user.service_center` the backend does send (`service_center` had zero matches in `lib/`), and the backend had no completion signal at all — no column, none on `GET /me`'s `UserResource`, and no `GET /business/profile` (only `PUT`, `routes/api/v1/business.php:30`). Sign-out, reinstall or a second device each re-ran a finished wizard, and `AttachCatalogPresetsAction` blind-inserted every preset — no dedupe, no unique index on `services` — so 12 services became 24, then 36.
+
+`SessionState.businessOnboarded` now derives from `GET /business/services` being non-empty, mirroring the customer add-car gate that already worked: same tri-state (`null` = unknown, only `false` gates), same 4s cap, same fail-open. The catalog **is** the completion record — the wizard can't finish without ≥1 service. The preference was deleted rather than kept as a cache, so server state can't drift out of sync with itself.
+
+**Two more from the same audit** — `LoginWithSocialAction::createUser()` had no `UserType::Business` branch, so a social business signup got the role but no `ServiceCenter` and `ownerCenterOrFail` 403'd every `/business/*` endpoint; this became load-bearing once the gate started failing open, and `provisionCenter()` is now a `ProvisionsOwnerCenter` trait shared with `RegisterUserAction`. And the pre-auth role pick was a one-way door (no back affordance on the chooser or either carousel; auth-choose's back returned to the carousel) — the carousel now reuses `switchRole()`, which the guard's existing `role == null` branch already handles.
+
+**Backend** — `AttachCatalogPresetsAction` uses `updateOrCreate` keyed on the preset name within the center, so an Activate retry after a timeout the server had already applied re-prices instead of duplicating.
+
+**Tests** — 7 new across both repos (`test/core/session/session_gates_test.dart` + redirect and backend feature cases), each **verified to fail on the pre-fix source**. App 122/122, backend 14/14.
+
+**Docs**
+
+- [`features/business-onboarding.md`](features/business-onboarding.md) — the architecture and routing lines documented completion as persisted in `SessionStore`; both now describe the server-derived gate.
+- [`../CHANGELOG.md`](../CHANGELOG.md) and [`CURRENT_STATUS.md`](CURRENT_STATUS.md) — full entries.
+
 ## 2026-07-16 — Register feature audited against the backend (#35, #37, #39, #53)
 
 Every request **and response** contract in the register flow was checked against the Laravel source. The register form itself was already sound — it collects every field #35 asks for, and the auth envelope, token-pair keys, `data.user.type`, `CatalogPreset`, `GET /me` and all `BusinessProfileInput` keys match exactly. **Five wire bugs sat either side of it**, none of them loud.

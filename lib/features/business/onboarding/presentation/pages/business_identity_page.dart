@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_catalog_page.dart';
@@ -23,7 +24,7 @@ import 'package:osta/shared/ui/app_top_bar.dart';
 class BusinessIdentityPage extends StatefulWidget {
   const BusinessIdentityPage({super.key});
 
-  static const path = '/business-identity';
+  static const String path = AppRoutes.businessIdentity;
 
   @override
   State<BusinessIdentityPage> createState() => _BusinessIdentityPageState();

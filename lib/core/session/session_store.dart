@@ -16,7 +16,6 @@ class SessionStore {
 
   static const _localeKey = 'session_locale';
   static const _activeRoleKey = 'session_active_role';
-  static const _businessOnboardedKey = 'session_business_onboarded';
   static const _businessDraftKey = 'business_onboarding_draft';
 
   /// The chosen language code (`ar`/`en`), or `null` on a true first run —
@@ -38,15 +37,6 @@ class SessionStore {
   /// the user to the chooser without logging them out.
   Future<void> clearActiveRole() => _prefs.remove(_activeRoleKey);
 
-  /// Whether the business onboarding wizard has been completed (persisted so
-  /// a returning business user skips the wizard on cold start).
-  bool get businessOnboarded => _prefs.getBool(_businessOnboardedKey) ?? false;
-
-  Future<void> writeBusinessOnboarded({required bool value}) =>
-      _prefs.setBool(_businessOnboardedKey, value);
-
-  Future<void> clearBusinessOnboarded() => _prefs.remove(_businessOnboardedKey);
-
   /// The in-progress business onboarding wizard, as a JSON string.
   ///
   /// The wizard is mandatory and multi-step, so without this a merchant who
@@ -66,6 +56,5 @@ class SessionStore {
   Future<void> clearSession() async {
     await _tokens.clear();
     await clearActiveRole();
-    await clearBusinessOnboarded();
   }
 }

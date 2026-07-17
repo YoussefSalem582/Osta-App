@@ -33,40 +33,54 @@ class SessionController extends Cubit<SessionState> {
   final ApiClient _api;
   late final StreamSubscription<void> _expiredSub;
 
-  /// How long the gate check may hold up a launch before it gives up.
+  /// How long a gate check may hold up a launch before it gives up.
   ///
   /// [bootstrap] awaits this on the splash, on top of the branding hold, so an
   /// unbounded call would leave a user on a slow connection staring at the logo
   /// for Dio's full 15s timeout. Capped well under that and failed open.
-  static const _vehicleGateTimeout = Duration(seconds: 4);
+  static const _gateTimeout = Duration(seconds: 4);
+
+  /// Both role gates ask the same question — "does this list have anything in
+  /// it?" — so they share one call shape. `null` means "couldn't tell": a
+  /// failure or a timeout never gates, because a flaky connection must not lock
+  /// a user out of the whole app.
+  ///
+  /// ponytail: calls the endpoints directly rather than reusing `GarageRepo` /
+  /// `BusinessOnboardingRepository`, which live in `features/` — `core/` must
+  /// not depend on a feature. One `isNotEmpty` is not duplication worth
+  /// inverting layers for.
+  Future<bool?> _gate(String path) => _api
+      .get<bool>(path, parse: (data) => (data! as List<dynamic>).isNotEmpty)
+      .then<bool?>((r) => r.data)
+      .timeout(_gateTimeout, onTimeout: () => null)
+      .catchError((_) => null);
 
   /// Whether an authenticated customer already has a car, for the #39 gate.
   ///
-  /// Returns `null` — "don't gate" — for anyone the gate doesn't apply to, and
-  /// on any failure or timeout. Failing open is deliberate: a flaky connection
-  /// must never lock a user out of the whole app. The cost is that a carless
-  /// customer whose check times out skips the gate until their next launch.
-  ///
-  /// ponytail: calls the endpoint directly rather than reusing `GarageRepo`,
-  /// which lives in `features/customer/` — `core/` must not depend on a
-  /// feature. One `isNotEmpty` is not duplication worth inverting layers for.
-  Future<bool?> _resolveVehicleGate(AppRole? role, {required bool hasToken}) {
-    if (role != AppRole.customer || !hasToken) return Future.value();
-    return _api
-        .get<bool>(
-          ApiEndpoints.vehicles,
-          parse: (data) => (data! as List<dynamic>).isNotEmpty,
-        )
-        .then<bool?>((r) => r.data)
-        .timeout(_vehicleGateTimeout, onTimeout: () => null)
-        .catchError((_) => null);
-  }
+  /// The cost of failing open is that a carless customer whose check times out
+  /// skips the gate until their next launch.
+  Future<bool?> _resolveVehicleGate(AppRole? role, {required bool hasToken}) =>
+      role == AppRole.customer && hasToken
+      ? _gate(ApiEndpoints.vehicles)
+      : Future.value();
 
-  /// Reads persisted `{token, activeRole, locale, businessOnboarded}` and flips
-  /// `bootstrapped` so the router can leave the splash. A valid
-  /// `{token, activeRole}` lands the user straight in their shell — the
-  /// chooser never reappears. A completed business wizard is skipped on
-  /// cold start via the persisted onboarded flag.
+  /// Whether an authenticated business owner has finished onboarding (#53).
+  ///
+  /// The catalog *is* the completion record: the wizard cannot finish without
+  /// attaching at least one service, so a non-empty catalog means it ran.
+  /// Asking the server rather than a local flag is what lets a returning owner
+  /// — new device, reinstall, or just a sign-out — skip a wizard they already
+  /// did instead of re-running it and duplicating their catalog.
+  Future<bool?> _resolveCatalogGate(AppRole? role, {required bool hasToken}) =>
+      role == AppRole.business && hasToken
+      ? _gate(ApiEndpoints.businessServices)
+      : Future.value();
+
+  /// Reads persisted `{token, activeRole, locale}` and flips `bootstrapped` so
+  /// the router can leave the splash. A valid `{token, activeRole}` lands the
+  /// user straight in their shell — the chooser never reappears. Both role
+  /// gates are re-derived from the server here; they are mutually exclusive by
+  /// role, so only one ever hits the network.
   Future<void> bootstrap() async {
     final code = _store.localeCode;
     final role = _store.activeRole;
@@ -77,7 +91,7 @@ class SessionController extends Cubit<SessionState> {
         locale: code == null ? null : Locale(code),
         activeRole: role,
         hasToken: hasToken,
-        businessOnboarded: _store.businessOnboarded,
+        businessOnboarded: await _resolveCatalogGate(role, hasToken: hasToken),
         hasVehicle: await _resolveVehicleGate(role, hasToken: hasToken),
       ),
     );
@@ -117,9 +131,14 @@ class SessionController extends Cubit<SessionState> {
       state.copyWith(
         activeRole: role,
         roleAcknowledged: true,
-        // "Switch role" keeps the token and clears hasVehicle, so re-derive it
-        // here — otherwise a carless customer could switch away and back to
-        // land in the shell with the gate still null, walking straight past it.
+        // "Switch role" keeps the token and clears both gates, so re-derive
+        // them here — otherwise a carless customer could switch away and back
+        // to land in the shell with the gate still null, walking straight past
+        // it.
+        businessOnboarded: await _resolveCatalogGate(
+          role,
+          hasToken: state.hasToken,
+        ),
         hasVehicle: await _resolveVehicleGate(role, hasToken: state.hasToken),
       ),
     );
@@ -141,6 +160,12 @@ class SessionController extends Cubit<SessionState> {
         correctedRole: authoritativeRole == requested
             ? null
             : authoritativeRole,
+        // A fresh business owner has an empty catalog, so this resolves false
+        // and the wizard runs; a returning one resolves true and skips it.
+        businessOnboarded: await _resolveCatalogGate(
+          authoritativeRole,
+          hasToken: true,
+        ),
         // A fresh customer has no cars, so this resolves false and the gate
         // fires immediately after register — which is exactly #39's ask.
         hasVehicle: await _resolveVehicleGate(
@@ -157,12 +182,11 @@ class SessionController extends Cubit<SessionState> {
     emit(state.copyWith(hasVehicle: true));
   }
 
-  /// Marks the business onboarding wizard finished and persists the flag so
-  /// the guard skips it on cold start. The guard then lets the user into the
-  /// business shell.
+  /// Marks the wizard finished, releasing the #53 gate — the business twin of
+  /// [markVehicleAdded]. In-memory only: Activate has just written the catalog
+  /// server-side, so the next cold start re-derives this from it.
   Future<void> completeBusinessOnboarding() async {
-    if (state.businessOnboarded) return;
-    await _store.writeBusinessOnboarded(value: true);
+    if (state.businessOnboarded ?? false) return;
     emit(state.copyWith(businessOnboarded: true));
   }
 
