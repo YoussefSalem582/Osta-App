@@ -4,6 +4,232 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-17 — Data layer wired to every backend endpoint
+
+An audit of all **78** `routes/api/v1/*` routes against the app found a large gap hidden behind a complete-looking `ApiEndpoints`: the constants file declared every path, but **30 helpers across 14 areas were never called** — dead constants, because the features that would use them (`customer/booking`, `business/bookings`, `business/team`, `business/dashboard`, `shared/notifications`, address book, reviews, vehicle-maintenance, promotions, capacity, center-detail, devices, telemetry) shipped as fixture-only or empty-directory stubs. Only 7 repos reached the backend at all (auth, profile, vehicles, centers, shop, business catalog/services). The chosen scope was **data layer only** — remote repos + models, no new UI/state/DI — so the epic-driven screens consume a ready API layer as they land instead of inventing wire contracts under deadline.
+
+**Method.** Contracts were extracted straight from the Laravel source (each `Controller`, its `FormRequest` `rules()`, and its `Resource` `toArray()`), then mirrored into Dart — so request keys and response shapes are literal, not guessed. Fan-out was one contract-extract → build pass per area.
+
+**Shape.** Static repos in the established `ShopRepo`/`GarageRepo` house style — `abstract final class XRepo { static ApiClient get _api => GetIt.instance<ApiClient>(); … }` — with the sealed `ApiException` left to bubble (no per-repo try/catch, per the throw convention). Models are plain `Equatable` with hand-written `fromJson`, defensive number/date parsing, and no `toJson` unless the repo sends the model as a body. **No `get_it` registration** — like garage/shop, these self-resolve, so nothing shared was edited and the 10 build agents ran conflict-free.
+
+**23 new files** across: addresses, customer bookings (+ nested service/center/mechanic), business bookings (all six B2B transitions), mechanics CRUD, dashboard + `PUT` capacity, promotions CRUD + `PUT`/`DELETE` service, center detail (show/availability/services), vehicle maintenance (+ export), reviews (user + center, read + write), and notifications + devices + telemetry.
+
+**Two core changes.** `ApiClient.patch()` was added — no wired endpoint had ever used `PATCH`, but reschedule, the five business-booking transitions, and mechanic-update are all `PATCH`. And a **latent envelope bug** was fixed at the root: `_parseEnvelope` ran `PaginationMeta.fromJson` on any non-empty `meta`, so booking cancel's `meta: {refund: …}` (no `pagination` block) would cast a missing `current_page` to `int` and throw a raw `TypeError` instead of a typed `ApiException` — now guarded to build `PaginationMeta` only when a pagination block is present (the flat-shape fallback is kept). This is the second-order tail of the Jul-16 pagination fix, reachable now that `cancel` is wired.
+
+**Coverage.** All 30 previously-dead endpoints are referenced; the sole remaining unused helper is `bookingsByStatus`, since `BookingRepo.list({status})` sends `?status=` on the base `/bookings` path instead — functionally equivalent and cleaner.
+
+**Verified.** `flutter analyze` **0 errors / 0 warnings** (38 style infos, matching existing repos); `dart format` clean; `test/structure/` role-boundary + duplicate-class-name + l10n-key invariants pass — the duplicate-class guard caught a `BookingService` collision between the customer and business booking models, renamed to `BusinessBookingService`; full suite **141/141**.
+
+## 2026-07-17 — Two-sided Shop: browse, detail, seller catalog, enquire & my-products (#48)
+
+The Store tab shipped as a hardcoded stub on both shells — `business_shop_page.dart` rendered four fixed `ShopProductCard`s, the customer Store tab had no body, and the home "From the shop" rail (`ShopSection`) still reads `HomeFixtures`. The backend Shop API (#48 — polymorphic `Product` owned by a `User` **or** a `ServiceCenter`) was already implemented and tested, so this change wires the app to it end to end for both roles.
+
+**Data layer** — `Product`/`ProductOwner` are plain `Equatable` models with hand-written `fromJson` mirroring `ProductResource` (price coerced from int/double/string, `images` defaulting to `[]`, `owner` present only when loaded, `owner.type` the slug `user`/`service_center`). `ShopRepo` is a static repo like `GarageRepo` (`GetIt.instance<ApiClient>()`) that lets the sealed `ApiException` bubble up: `browse`, `detail`, `sellerCatalog` (center vs user endpoint), `enquire`, and `myProducts`/`createProduct`/`updateProduct`/`deleteProduct`.
+
+**State** — `ShopListCubit` (a source enum drives browse vs one seller's storefront; a single `ShopListState` with a status enum keeps the query/category/page cursor across reloads; append-on-scroll pagination guarded by `meta.pagination.current_page < last_page`), `ProductDetailCubit`, and `MyProductsCubit` (list + delete; create/edit are self-contained in the form and reload on return).
+
+**Screens** — `ShopBrowsePage` (customer Store tab): debounced search, category chips accumulated from loaded products, infinite scroll, pull-to-refresh, over a shared `ShopProductGrid`. `ProductDetailPage`: `PageView` image carousel (no `carousel_slider` dependency) with dots, EGP price, `SellerCard` → `SellerCatalogPage` for **both** owner kinds. `EnquireSheet`: a message bottom sheet → `POST …/enquiries` → success toast. `MyProductsPage` (business Store tab, and pushed from browse): grid of own listings with add/edit/delete; `ProductFormPage` is the create/edit form (name, price, category, description, status dropdown, optional image URLs).
+
+**Wiring** — customer Store tab → `ShopBrowsePage`; business Store tab → `MyProductsPage` (replacing the deleted `business_shop_page.dart`). Routes `/shop`, `/product` (extra = id), `/seller-catalog` (extra = `SellerCatalogArgs`), `/my-products`, `/product-form` (extra = `Product?`). ~46 l10n keys added to both ARBs (`shopPriceEgp` uses a `decimalPattern` num placeholder for locale-aware grouping).
+
+**Decisions / gaps** — no new dependencies: `PageView` replaces `carousel_slider`, `GridView` replaces `flutter_staggered_grid_view`, enquire is a backend POST (not `url_launcher`). Update is `PUT` (not the epic's `PATCH`), matching the route. Shop stays at `lib/features/shop/` — the role-boundary test's sanctioned holdout.
+
+**Device image upload + selective categories (follow-up)** — the first cut stored images as free-typed URLs (no upload path). Added a backend endpoint **`POST /api/v1/me/products/images`** (`MeProductController::uploadImage` + `UploadProductImageRequest`, `uploads.products_path` config) that stores an uploaded photo on the public disk and returns its URL, mirroring the avatar upload. The form now picks with `image_picker` (already a repo dependency, used by avatar/onboarding), uploads, and shows removable thumbnails, with a paste-image-URL dialog alongside for links the seller already hosts; `ShopRepo.uploadProductImage` posts multipart via Dio `FormData`. Category changed from free-text to a **fixed, localized key list** (`product_categories.dart` → `productCategoryKeys` + `categoryLabel`), surfaced as a form dropdown and the browse chips (`CategoryChips` now takes a `labelOf`), so filter and create agree on stable keys.
+
+**Bring-up fixes** — (1) `resolveRedirect` had a flat allow-list; the shop routes weren't in it, so every shop push bounced to the role shell (the "+ opens the dashboard" report) — added them. (2) `ShopBrowsePage`/`MyProductsPage` are chrome-less Store-tab bodies; pushed as their own route they had no `Scaffold` → "No Material" + a ~99k-px overflow — their route builders now wrap them in `Scaffold(body: SafeArea(...))`. (3) The edit `PUT` omitted cleared optional fields so a clear silently didn't persist; the form now always sends them on edit. (4) Category chips dropped all-but-first new category (`.any` side-effect) — moot now that categories are a fixed list.
+
+**Verification** — `flutter analyze lib` clean (0 errors/0 warnings); `test/structure/role_boundary_test.dart` passes (including "every l10n key used in lib exists in app_en.arb" and the shop-holdout bucket check); 3 `Product.fromJson` contract tests green. Backend: `vendor/bin/pint` clean and **34 Shop feature tests pass** (incl. new product-image upload/reject tests).
+
+## 2026-07-17 — Offline-first shared profile hub + skeleton loading (#40)
+
+Two changes landed together on `feat/40-account-profile`.
+
+**Shared profile hub** — the customer had a real `ProfileScreen`; the business "More" tab (`business/dashboard/.../more_screen.dart`) was a static mock (hardcoded `'N'` avatar, fake `4.8/312/24` stats, a dead settings link, no language/theme/sign-out/edit/delete). The whole profile feature **moved** `customer/profile/` → `features/shared/profile/` (move, not copy — the duplicate-class invariant forbids two), and both `CustomerShellPage` and `BusinessShellPage` now render the same `ProfileView`. `more_screen.dart` + its `Setting` widget are deleted (`ItemType` kept — `board_screen.dart` still uses it); technicians/capacity/analytics are phase-2 #58. Account quick-links are role-gated (My cars ↔ customer, My Shop ↔ business); everything else is shared.
+
+**Offline-first read** — `ProfileRepo` went from static to an injected instance (`ApiClient` + new `ProfileCache`) doing **cache-then-network**: `ProfileCubit.getProfile` paints the cached `/me` (JSON in `SharedPreferences`, keyed by `SessionStore.profileCacheKey`) instantly, then refreshes; `NetworkException` with a cache keeps showing it behind a "saved profile · last updated" chip, without a cache surfaces the error. Cache clears on sign-out via `SessionStore.clearSession()`. Writes stay online-only — the full §7 sqflite/sync module is deferred; the cache-then-network shape makes that a repo-internal swap later. First-load with no cache renders a `Skeletonizer` over the real layout instead of a spinner (§10; adds `skeletonizer`, no shimmer).
+
+**Note** — the working tree also carried unrelated in-progress shop work (`#48`/`#57`) that does not yet compile; profile changes were verified in isolation (analyze clean, 8 profile tests + structure invariants green).
+
+**Docs**
+
+- [`../CHANGELOG.md`](../CHANGELOG.md) — Added (offline profile + skeleton) and Changed (shared hub) entries.
+- [`CURRENT_STATUS.md`](CURRENT_STATUS.md) — status entry.
+- [`features/account-more.md`](features/account-more.md) — corrected the stale "empty stub" line for `customer/profile/`.
+
+## 2026-07-17 — Architecture diagram set added (SVG)
+
+`osta_readme_files/diagrams/` held a single `register_flow.png` with **no committed source** — it couldn't be edited or extended. Added four hand-authored SVG diagrams that complement it: `routing_guard.svg` (the `resolveRedirect` decision ladder — splash → gates → shell), `http_auth_refresh.svg` (request path + queued 401 refresh-once + typed `ApiException`), `booking_funnel.svg` (epic #44 funnel: service → slot → 10-min hold → confirm → live status), and `clean_architecture_bloc.svg` (the 3-layer dependency rule + event→state cycle + repository error boundary).
+
+Each is grounded in real source (`lib/core/router/session_redirect.dart`, `guides/02_architecture.md`, `features/booking-funnel.md`) and shares one visual system — the role palette (customer teal / business purple / server-gate orange / shared neutral) was sampled **pixel-exact** from `register_flow.png`. SVG is the source of truth (editable, inline on GitHub, no build step); a white background keeps them readable in a dark README theme.
+
+Two diagrams surface a known doc-vs-code drift: `02_architecture.md` prose still calls the error type a sealed `Failure`, but it was **deleted 2026-07-10** — the diagrams use `sealed ApiException` (`core/network/api_exception.dart`), the real type.
+
+**Docs**
+
+- [`diagrams/README.md`](diagrams/README.md) — new; palette tokens, the diagram set, and how to add one.
+- [`../CHANGELOG.md`](../CHANGELOG.md) and [`CURRENT_STATUS.md`](CURRENT_STATUS.md) — entries.
+
+## 2026-07-17 — Business onboarding wizard UI/UX pass (#53)
+
+A friction + visual pass over the two-step wizard (`business_identity_page` → `business_catalog_page`, one shared `BusinessOnboardingCubit`). Structure unchanged — still two pushed routes, no PageView.
+
+**The data-loss trap** — `ServiceToggleCard` rendered an always-on `Switch` for custom services wired to `removeCustomService`, so a merchant flipping it "off" silently deleted a service they'd typed. The card now has two explicit modes (an `assert` enforces exactly one): presets **toggle** (Switch, tap-anywhere), custom services are **removable** (a `Custom` `AppPill` badge + a delete `IconButton`). Pinned by `test/features/business/onboarding/service_toggle_card_test.dart`.
+
+**Other friction** — the "Add common services" card hardcoded "12" and `selectAllPresets` replaced the whole selection ignoring the active chip; it's now `selectFilteredPresets` (unions the filtered set), the card shows the filtered count via an ICU-plural key, and hides once `allFilteredSelected`. The required-location error moved from a loose `Text` into `LocationPickerCard` itself (`hasError` → red border + inline message, re-derived every submit). The overloaded step-1 indicator string was slimmed to "Identity & location" with the "goes live instantly · no verification" reassurance moved to `AppTopBar(subtitle:)`.
+
+**New** — `selectedServiceCount` on the state drives an ICU-plural Activate label ("Activate center · N services"); a footer `Back` button (`AppButtonVariant.secondary` → `context.pop`); and `activation_review_sheet.dart` (mirrors `add_custom_service_sheet.dart`), a `Future<bool?>` bottom sheet shown before `activate()` — trade name, type, location ✓, service count, "goes live immediately," *Activate now* / *Keep editing*.
+
+**Visual refresh** — `ServiceToggleCard`, `LocationPickerCard`, `AddPresetCard` moved onto `AppCard` + `AppElevation` tokens, dropping the hand-rolled `Colors.black12` shadows and the stray Arabic-only comments.
+
+**Deliberately skipped** — the plan floated an `EmptyState` for "presets loaded but empty"; dropped as YAGNI (the seeded catalog always has all four categories, and a body-replacing empty state would trap the still-valid custom-service path).
+
+**Tests** — 8 new: the delete-trap regression + mode assert (`service_toggle_card_test`), `selectFilteredPresets` union / `allFilteredSelected` / `selectedServiceCount` (`business_onboarding_cubit_test`), and a page-level drive of the real `BusinessCatalogPage` — select → count label → review sheet → cancel-then-confirm (`business_catalog_page_test`). Suite 122 → 130, analyze clean.
+
+**Docs** — [`features/business-onboarding.md`](features/business-onboarding.md) (wizard UX), [`../CHANGELOG.md`](../CHANGELOG.md), [`CURRENT_STATUS.md`](CURRENT_STATUS.md).
+
+## 2026-07-17 — Register flow: onboarding completion moved to server state (#53, #32)
+
+A second pass over the register flow, this time following the two role branches all the way through rather than auditing contracts field by field. **The flow's shape needed no change** — `resolveRedirect` already encodes both branches exactly as epic [#53](https://github.com/YoussefSalem582/Osta-App/issues/53) specifies, and #53 explicitly defines the two-step post-register wizard, so nothing moved or merged. Three bugs sat underneath it.
+
+**Business onboarding re-ran on every sign-in and duplicated the catalog** — completion was a device-local `session_business_onboarded` preference that `clearSession()` wiped on sign-out. Nothing could restore it: `_AuthData.fromEnvelope` reads only `user.type` and dropped the `user.service_center` the backend does send (`service_center` had zero matches in `lib/`), and the backend had no completion signal at all — no column, none on `GET /me`'s `UserResource`, and no `GET /business/profile` (only `PUT`, `routes/api/v1/business.php:30`). Sign-out, reinstall or a second device each re-ran a finished wizard, and `AttachCatalogPresetsAction` blind-inserted every preset — no dedupe, no unique index on `services` — so 12 services became 24, then 36.
+
+`SessionState.businessOnboarded` now derives from `GET /business/services` being non-empty, mirroring the customer add-car gate that already worked: same tri-state (`null` = unknown, only `false` gates), same 4s cap, same fail-open. The catalog **is** the completion record — the wizard can't finish without ≥1 service. The preference was deleted rather than kept as a cache, so server state can't drift out of sync with itself.
+
+**Two more from the same audit** — `LoginWithSocialAction::createUser()` had no `UserType::Business` branch, so a social business signup got the role but no `ServiceCenter` and `ownerCenterOrFail` 403'd every `/business/*` endpoint; this became load-bearing once the gate started failing open, and `provisionCenter()` is now a `ProvisionsOwnerCenter` trait shared with `RegisterUserAction`. And the pre-auth role pick was a one-way door (no back affordance on the chooser or either carousel; auth-choose's back returned to the carousel) — the carousel now reuses `switchRole()`, which the guard's existing `role == null` branch already handles.
+
+**Backend** — `AttachCatalogPresetsAction` uses `updateOrCreate` keyed on the preset name within the center, so an Activate retry after a timeout the server had already applied re-prices instead of duplicating.
+
+**Tests** — 7 new across both repos (`test/core/session/session_gates_test.dart` + redirect and backend feature cases), each **verified to fail on the pre-fix source**. App 122/122, backend 14/14.
+
+**Docs**
+
+- [`features/business-onboarding.md`](features/business-onboarding.md) — the architecture and routing lines documented completion as persisted in `SessionStore`; both now describe the server-derived gate.
+- [`../CHANGELOG.md`](../CHANGELOG.md) and [`CURRENT_STATUS.md`](CURRENT_STATUS.md) — full entries.
+
+## 2026-07-16 — Register feature audited against the backend (#35, #37, #39, #53)
+
+Every request **and response** contract in the register flow was checked against the Laravel source. The register form itself was already sound — it collects every field #35 asks for, and the auth envelope, token-pair keys, `data.user.type`, `CatalogPreset`, `GET /me` and all `BusinessProfileInput` keys match exactly. **Five wire bugs sat either side of it**, none of them loud.
+
+**API drift resolved** — [`guides/09_api_endpoints.md`](guides/09_api_endpoints.md)
+
+- The ⚠️ on `/auth/password/{forgot,reset}` is **gone: the code is fixed**. The previous entry flagged the mismatch but left the code alone pending verification against the deployed server; that verification is done (the flat paths exist at no backend commit), so `ApiEndpoints` now sends the nested paths and both recovery screens resolve.
+- Added the two contracts that are easy to get wrong, because both are invisible from the backend suite:
+  - **`/auth/refresh` takes the refresh token as `Bearer`, with an empty body.** It is behind `auth:sanctum` + `ability:refresh` and reads `$request->user()`; the token *is* the credential. The app sent it as a body field with no header, so every user was logged out at access-token expiry.
+  - **Multipart only parses on POST.** A real `PUT` with a file leaves `$_POST` and `$_FILES` empty; where rules are `sometimes` that validates clean and saves nothing. `PUT /business/profile` therefore discarded the whole step-1 profile whenever a logo was attached.
+- Marked `/auth/refresh`'s auth requirement inline in the table.
+
+**Why the backend suite is green on all of this** — `$this->put(['logo' => UploadedFile::fake()])` injects into Symfony's file bag and never builds a multipart body. The test cannot see the bug. `test/core/network/wire_contract_test.dart` pins these from the client side instead, and the refresh + multipart cases are mutation-checked.
+
+**Issue prose that contradicts the code** — noted so nobody "fixes" the code toward it: #39 names `{brand, model, model_year, plate, kilometers}` and a Riverpod provider (the backend is `{make, model, year, plate_number, current_mileage}`; this app is bloc/get_it); #53 names three business types the backend enum doesn't have.
+
+**Mandatory**
+
+- [`../CHANGELOG.md`](../CHANGELOG.md) and [`CURRENT_STATUS.md`](CURRENT_STATUS.md) — full entries.
+
+## 2026-07-16 — `lib/features/` reorganised into business / customer / shared
+
+Docs updated for the role-bucket refactor and the dead-code sweep that rode with it.
+
+**Structure**
+
+- [`../AGENTS.md`](../AGENTS.md) § Feature Architecture — replaced "customer/business sub-areas nested" with the three-bucket table, the no-cross-role-imports rule and the test that enforces it, the `features/shop/` exception, and the `lib/shared/` vs `lib/features/shared/` distinction.
+- [`guides/01_folder_structure.md`](guides/01_folder_structure.md) — the `features/` tree was **badly stale**: it claimed `business/` and `customer/` had "no dart files" while both held ~60. Rewritten to the real tree with epic links per folder. The `test/` row claimed 11 files naming ones that don't exist; now 16, matching reality.
+- [`INDEX.md`](INDEX.md) — feature map repointed at the buckets.
+
+**Corrections found while editing** (stale on a different axis than the refactor)
+
+- [`../CLAUDE.md`](../CLAUDE.md) and [`../AGENTS.md`](../AGENTS.md) both described errors as a `sealed Failure`. **There is no `Failure` type** — it was deleted 2026-07-10. The real type is `sealed ApiException` (`core/network/api_exception.dart`). CLAUDE.md's own tool-use rules were instructing agents to use a class that doesn't exist.
+- `AGENTS.md` § Shared UI listed `AppBottomSheet` and `LoadingState`, both deleted 2026-07-10, and missed `AppToaster`, `BrandScaffold` and `OrDivider`. Now lists what `lib/shared/ui/` actually exports, plus the new `AppPill` and `AppSegmentedToggle`.
+- Both files said "no `build_runner` step"; true, but the codegen packages were still declared. They are now removed, and the docs say so.
+- `AGENTS.md` referenced `test/core/theme/contrast_test.dart`, which did not exist. It does now.
+
+**API drift** — [`guides/09_api_endpoints.md`](guides/09_api_endpoints.md)
+
+- `POST /forgot-password` / `/reset-password` were documented and **are what the app sends**. The backend registers `password/forgot` and `password/reset` inside `Route::prefix('auth')` under `Route::prefix('v1')` — real paths `/api/v1/auth/password/{forgot,reset}`. `git log -S"forgot-password" -- routes/` in the backend returns nothing, so the flat paths never existed. Documented with a ⚠️; **the code was not changed** — a live auth path deserves verification against the deployed server rather than a drive-by edit inside a refactor.
+- Marked `/legal/*` as having no route or controller (it read "Backend route shipped").
+- Added the undocumented-but-live `POST /telemetry/broadcast-latency`, `PATCH /business/bookings/{id}/assign-roster-mechanic`, and the `POST` halves of the reviews endpoints.
+
+**Mandatory**
+
+- [`../CHANGELOG.md`](../CHANGELOG.md) and [`CURRENT_STATUS.md`](CURRENT_STATUS.md) — full entries.
+
+## 2026-07-16 — Map empty state when GPS is outside Egypt
+
+iOS Simulator defaults to San Francisco; `GET /centers/nearby` returns `200` with an empty list when no centers exist in range. `CentersRepository.fetchNearby` sends `radius=25000` (25 km). Map empty overlay uses one friendly user-facing message (removed simulator/coordinate hints).
+
+## 2026-07-16 — Post-auth wizard skips provider intro
+
+After business register/login, `resolveRedirect` now opens `/business-identity` directly instead of `/provider-onboarding`. Merchants already saw the logged-out carousel; the intro screen stays routable but is no longer forced.
+
+## 2026-07-16 — Merchant onboarding carousel under `lib/features/onboarding`
+
+Added `MerchantOnboardingPage` (`/onboarding/business`) as the business twin of the customer `OnboardingPage` (`/onboarding`). Guard routes by role: customer → `/onboarding`, business → `/onboarding/business`, then auth. Post-auth center setup remains the provider wizard. Auth-choose back returns to the matching carousel via `resetOnboarding()`.
+
+## 2026-07-16 — Role-split first-run + role-aware auth titles
+
+Customer and business first-run paths split; login/register titles distinguish the chosen role.
+
+## 2026-07-16 — Business onboarding & registration wired (app #53)
+
+Wired the post-auth business wizard to the live B2B endpoints. Before: presentation-only screens; Activate only flipped an in-memory `businessOnboarded` flag; Skip jumped straight to catalog; wizard re-showed every cold start.
+
+**What landed** — `BusinessOnboardingRepository` (`PUT /business/profile` multipart, `GET /business/catalog/presets`, `POST /business/catalog`) + `BusinessOnboardingCubit` shared via a `ShellRoute` across intro → identity → catalog. Identity step: form validation, `image_picker` logo, full-screen `MapPinPickerSheet` (Google Map + center pin, reuses `LocationService`). Catalog step: 12 API presets, category chips, ≥1 required, Activate persists completion. `SessionStore` now persists `business_onboarded` (cleared on sign-out). Skip → identity. Docs + endpoint catalogue updated. 15 new tests; suite **42/42**.
+
+Touched: `lib/features/business/onboarding/**`, `lib/core/{session,router,di}`, ARB keys, `CHANGELOG.md`, `features/business-onboarding.md`, `guides/09_api_endpoints.md`, `CURRENT_STATUS.md`.
+
+## 2026-07-16 — Bottom nav FAB white gap removed
+
+`AppBottomNavBar` no longer pads the stack taller for the center FAB (that reserved strip painted the scaffold surface white behind the button). The FAB now overlaps upward with a negative top offset; `RoleShell` sets `extendBody: true` so full-bleed bodies (map) paint behind the protrusion.
+
+Touched: `lib/shared/ui/app_bottom_nav_bar.dart`, `lib/features/shell/presentation/role_shell.dart`, `CHANGELOG.md`.
+
+## 2026-07-15 — Map screen built (epic #41)
+
+Built the M2 Discovery map surface ([app #41](https://github.com/YoussefSalem582/Osta-App/issues/41)). `lib/features/customer/map/` was three empty stub directories; the customer center FAB fired a "coming soon" toast.
+
+**Feature** — a full-screen Google Map rendered **inside** the shell (bottom nav stays visible, center FAB reads as active — matching the mockup). Resolves the user's position, calls `GET /centers/nearby` (nearest-first), renders each center with coordinates as a tappable marker, and opens a `PlaceDialog` bottom sheet on tap (thumbnail, name, rating, distance, open-now, **Book** + **Details**). Search is debounced 350 ms and swaps to `GET /centers/search`; four category chips (oil · brakes · AC · tires) pass a `category` filter to whichever endpoint is active and clear on re-tap. Permission-denied, denied-forever (opens OS settings rather than re-prompting in a loop), location-services-off, empty and network-error each render their own surface floated over the map.
+
+**Structure** — `CenterSummary` (hand-written `Equatable` + `fromJson`, no codegen), `CentersRepository` (through `ApiClient`; lets the sealed `ApiException` propagate — the bloc owns the `try`/`catch`), a `LocationService` seam over `geolocator`, and `MapBloc`/`MapEvent`/`MapState`. Two hand-written DI lines. The `/centers/nearby` · `/centers/search` · `/centers/{id}` endpoints already existed in `ApiEndpoints` — nothing was added there.
+
+**Documented deviations** (all deliberate):
+
+- **One state class + status enum**, not `GarageState`'s class-per-state — the map's position/centers/query/category change together, and every status must retain the others.
+- **Instance repo + constructor injection**, not the garage's static `GetIt.instance<ApiClient>()` methods — the epic mandates repo/bloc/permission unit tests, which the static shape can't support. This matches the AGENTS.md-canonical auth pattern.
+- **`MapBloc` (events), not a Cubit** — converted after the initial cut to match the mandated BLoC pattern the auth blocs already use (`AGENTS.md` §118): `MapStarted`/`SearchChanged`/`CategorySelected`/`RetryRequested` sealed events replace the old public methods. Debounce and stale-response protection are unchanged (`_searchGeneration`/`_loadGeneration` counters). The manual `isClosed`-guarded `_emit` the Cubit needed is gone — `Bloc.close()` cancels in-flight emitters itself, so a handler resuming after close silently no-ops instead of throwing; the regression test now exercises that framework guarantee instead of hand-rolled code.
+- **`LocationService` abstraction with one implementation** — the platform seam the permission tests need.
+- **Book/Details show the coming-soon toast** — the booking funnel and center profile ([#42](https://github.com/YoussefSalem582/Osta-App/issues/42)) have no route yet.
+- **`CenterSummary` tolerates alternate key spellings** (`lat`/`latitude`, `distance_meters`/`distance`, …) and has no `toJson` — the epic documents the fields but not the JSON, the endpoints need a bearer token, so the wire contract is **unverified**; tighten it once a real payload is captured. Nothing writes a center back.
+- **Deferred**: `google_maps_cluster_manager_2` (clustering), `geocoding`, and the mockup's price-pill markers (`CenterSummary.price` is parsed and waiting; default green pins ship). `permission_handler` was **dropped entirely** — `geolocator` already covers request/denied/deniedForever/openAppSettings.
+
+**Shared widget** — `RoleShell` gained `centerFullBleed` (default `false`). The epic and mockup call for a full-screen map with no app bar, but `centerBody`'s existing caller (business `Bookings`) needs its bar and `centerLabel` title, so the behavior is opt-in rather than a redefinition.
+
+**Native config** — the Maps key is consumed by the native layer, which `--dart-define` cannot reach, so the `BASE_URL` convention doesn't extend to it and **no key is committed**: Android reads `MAPS_API_KEY` from the git-ignored `local.properties` into a manifest placeholder; iOS reads a git-ignored `ios/Flutter/Secrets.xcconfig` (optional `#include?`, so a fresh clone still builds) → `Info.plist` `GMSApiKey` → `AppDelegate`. ⚠️ **The two platforms fail differently when the key is missing**, which the self-review caught: Android renders blank tiles, but the Maps iOS SDK throws an uncaught `GMSServicesException` the moment `GMSMapView` is constructed — iOS **crashes** on the map tab. `AppDelegate` therefore asserts at launch with the fix spelled out rather than skipping silently. `Secrets.xcconfig` is mandatory before running iOS. Added `ACCESS_FINE_LOCATION`/`ACCESS_COARSE_LOCATION` and `NSLocationWhenInUseUsageDescription` (an Info.plist string has no `context.l10n` path — localize via `InfoPlist.strings` if it ever needs to be). iOS deployment target 13 → 15 across the 3 pbxproj configs + the Podfile (Google Maps SDK 9.x floor). Android `minSdk` 24 already cleared every requirement.
+
+**l10n** — 18 keys added to both `app_en.arb` / `app_ar.arb` (Arabic copy taken from the mockup: `دوّر على مركز صيانة...`, `مفتوح الآن`, `احجز`, `التفاصيل`), reusing the existing `retry` / `errorNetwork` / `comingSoonBody`. Parity intact.
+
+**Tests** — `test/` returns with 3 files / 25 cases, which **re-activates CI's guarded `flutter test` step** (it had been skipping an empty suite since 2026-07-11). `MapScreen` itself is not widget-tested: `GoogleMap` needs a platform view the harness can't render.
+
+**Self-review** — an adversarial pass over the diff (each finding independently verified against the code, 2 claims refuted) caught **8 real defects, all fixed before landing**, none of which `flutter analyze` can see:
+
+1. **Stale-response race** — `_load()` had no request sequencing, so tapping chip A then B could leave B lit while A's markers showed, permanently. Fixed with a `_loadGeneration` counter; regression test included.
+2. **`emit()` after `close()`** — leaving the map mid-request threw `StateError` on the Cubit, and the `on Object catch` blocks re-emitted and threw *again*, uncaught (`start()` is unawaited). Fixed at the time with an `isClosed`-guarded `_emit`; regression test included. Superseded by the later Cubit→Bloc conversion — `Bloc.close()` cancels in-flight emitters itself, so this class of bug can no longer occur here.
+3. **Camera stuck on the fallback** — the one-shot camera move was dropped whenever the GPS fix beat `onMapCreated`, which is the common ordering. `onMapCreated` now applies a known position.
+4. **Status overlay blanketed the map** — `EmptyState`/`ErrorState` centre into whatever they're given, so the card stretched over the map and swallowed every pan/zoom. Now shrink-wrapped.
+5. **`MarkerId('')` collisions** — centers with no id collapsed to one marker (the plugin silently drops duplicates). Now falls back to a per-index id.
+6. **Book/Details looked dead** — the coming-soon toast rendered *behind* the still-open bottom sheet. The sheet now closes first.
+7. **iOS crash on a missing key** — documented as "blank tiles"; it is actually an uncaught `GMSServicesException`. Corrected everywhere and made to assert at launch.
+8. **GPS in release logs** — see the *Fixed* entry in `CHANGELOG.md`; the leak lives in `core/network/dio_client.dart` but this feature is what would have triggered it.
+
+Both regression tests were confirmed to **fail without their fix and pass with it**, so they are not tautological.
+
+**Verification** — `dart format --set-exit-if-changed` clean, `flutter analyze` reports **no issues in the new code** (the 14 remaining are pre-existing in garage/profile/wallet), 25/25 tests pass. `add_car_screen.dart` carries a **formatting-only** diff: it was already failing `dart format` on `develop`, and the repo-wide format run fixed it.
+
+**Confirmed on a real device (iOS Simulator, default location)** — `GMSServices.provideAPIKey` succeeded (no `GMSServicesException` crash, so `Secrets.xcconfig` is wired correctly), and `GET /centers/nearby` returned `200 OK`. That run also surfaced a real bug the static review missed: the map showed **"can't reach the server" on a successful response**. Immediate cause — `ApiClient._parseEnvelope` called `parse(body['data'])` outside any `try`/`catch`, so a parse-time exception propagated as an untyped `Object` instead of an `ApiException`; `MapScreen._errorMessage`'s fallback then mapped every non-`ApiException`/`NetworkException` error to the network-unreachable string. Fixed: `_parseEnvelope` now wraps `parse()` and rethrows a `ServerException` carrying the real cause, and the map's fallback got its own `errorGeneric` string instead of borrowing `errorNetwork`'s.
+
+**Actual root cause, confirmed by reading `osta_backend` directly** — not the map at all: `PaginationMeta.fromJson` read pagination fields flat off `meta`, but `ApiResponse::paginated()` (`osta_backend/app/Http/Support/ApiResponse.php:47`) nests them under `meta.pagination`. Since `_parseEnvelope` parses `meta` unconditionally on every list response, `json['current_page'] as int` cast `null` to `int` and threw on **every paginated endpoint in the app**, not just centers — this had been broken since `PaginationMeta` was written and nothing caught it (zero test coverage on `ApiClient` until today). Fixed by reading `meta['pagination']` with a flat-`meta` fallback; added `test/core/network/api_client_test.dart`. Two more mismatches found the same way, both map-specific: the category chips sent `?category=` but the backend only reads `?service=` (silently filtered nothing), and `ServiceCenterResource` nests coordinates as `location: {latitude, longitude}` instead of flat keys (every marker was silently missing its position). Both fixed; see the `CHANGELOG.md` *Fixed* entries for the full writeup. The map's "wire contract is unverified" caveat (`map-discovery.md`) is now resolved — verified against the actual backend source, not guessed.
+
+> ‏**بناء شاشة الخريطة (الملحمة #41)** (2026-07-15) — كان مجلّد الخريطة فارغًا والزرّ العائم يُظهر «قريبًا». صارت خريطة بملء الشاشة داخل الواجهة (يبقى الشريط السفلي): تحديد الموقع ← `GET /centers/nearby` ← علامات قابلة للضغط ← حوار سفلي (صورة، اسم، تقييم، مسافة، «مفتوح الآن»، احجز، التفاصيل)، مع بحث مؤجَّل 350 مللي يستدعي `GET /centers/search`، ورقائق فئات تمرّر `category` وتُلغى بإعادة الضغط، ومعالجة رفض الإذن والرفض النهائي (يفتح الإعدادات) وتوقّف الخدمة والفراغ وخطأ الشبكة. البنية: نموذج مكتوب يدويًّا بلا توليد كود، ومستودع عبر `ApiClient` يترك الاستثناء يُرمى، وطبقة موقع فوق `geolocator`، وكيوبت بصنف حالة واحد؛ وسطران في حقن التبعيات؛ والنقاط موجودة أصلًا. الانحرافات المتعمَّدة: صنف حالة واحد بدل صنف لكل حالة، ومستودع بحقن بالمُنشئ (لا ثابت) لأجل الاختبارات، وطبقة موقع بتطبيق واحد للاختبار، وزرّا «احجز/التفاصيل» يُظهران «قريبًا» لغياب مساريهما، ونموذج متسامح مع تهجئات المفاتيح لأن العقد غير مُتحقَّق منه، وتأجيل التجميع والترميز العكسي وعلامات السعر، وإسقاط `permission_handler`. واكتسبت `RoleShell` مُعامل `centerFullBleed` اختياريًّا حتى لا تتأثّر حجوزات النشاط. ومفتاح الخرائط لا يُلتزم أبدًا: أندرويد من `local.properties` المستثنى، وiOS من `Secrets.xcconfig` المستثنى ← `Info.plist` ← `AppDelegate`، ويتحوّل غيابه إلى بلاطات فارغة؛ وأُضيفت أذونات الموقع، ورُفع حدّ نشر iOS إلى 15. وأُضيف 18 مفتاحًا للغتين بنصوص النموذج العربية. وعاد مجلّد `test/` بـ23 اختبارًا فأُعيد تفعيل خطوة `flutter test`. التنسيق نظيف والتحليل بلا مشاكل في الشيفرة الجديدة و23 اختبارًا تنجح. **ولم تُبنَ نسختا أندرويد وiOS في هذه الجلسة** — رُوجعت الإعدادات الأصلية ثابتًا لا تصريفًا.
+
 ## 2026-07-11 — Test suite removed
 
 Deleted the entire `test/` directory at the user's request — all 18 `_test.dart` files plus the shared `fakes.dart` helper (the 127-test suite: `core/network`, `core/session`, `core/router`, `core/theme`, the `features/auth` blocs + validators + repository, `shared/formatters`, `shared/ui`, and the top-level `widget_test.dart` / `auth_token_model_test.dart`).

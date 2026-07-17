@@ -43,31 +43,52 @@ lib/
 │       ├── app_typography.dart         # Cairo variable font, full TextTheme
 │       └── theme_mode_controller.dart  # Cubit<ThemeMode>, persists 'theme_mode' (SharedPreferences)
 │
-├── features/                           # Feature-first modules
-│   ├── auth/                           # 🚧 STUB — only data/models/auth_token_model.dart (plain Equatable dual-token);
-│   │                                   #    domain/presentation empty. Epics: app #35, #36
-│   ├── business/                       # 🚧 STUB dirs: bookings/ dashboard/ services/ team/ wallet/
-│   │                                   #    (no dart files). Epics: app #54, #55, #56, #62, #58
-│   ├── customer/                       # 🚧 STUB dirs: booking/ garage/ home/ map/ profile/ wallet/
-│   │                                   #    (no dart files). Epics: app #44/#45/#47, #39/#50, #51, #41–#43, #40, #46
-│   ├── notifications/                  # 🚧 STUB — data/domain/presentation dirs only. Epic: app #52
-│   ├── role/
-│   │   └── presentation/role_selection_page.dart   # Role picker (customer vs business)
-│   ├── shop/                           # 🚧 STUB — data/domain/presentation dirs only. Epics: app #48, #49, #57
-│   └── splash/
-│       └── presentation/splash_page.dart           # 2s intro → role selection
+├── features/                           # Three role buckets — a file's owner is its path
+│   ├── business/                       # Only the `business` role sees these
+│   │   ├── intro/                      #   Logged-out merchant carousel (MarketingCarousel)
+│   │   ├── onboarding/                 #   Post-auth setup wizard: identity → catalog. Epic: #53
+│   │   ├── dashboard/                  #   Board / tech / more screens. Epics: #54, #58
+│   │   ├── bookings/                   #   Epic: #55
+│   │   ├── services/                   #   Catalog & pricing. Epic: #56
+│   │   ├── shell/                      #   BusinessShellPage — configures RoleShell
+│   │   └── team/ wallet/               # 🚧 STUB dirs. Epics: #62, —
+│   ├── customer/                       # Only the `customer` role sees these
+│   │   ├── home/                       #   Home tab. Renders HomeFixtures until wired. Epic: #51
+│   │   ├── onboarding/                 #   Logged-out customer carousel (MarketingCarousel)
+│   │   ├── booking/                    #   Epics: #44, #45, #47
+│   │   ├── garage/                     #   Epics: #39, #50
+│   │   ├── map/                        #   Shipped. Epics: #41–#43
+│   │   ├── profile/                    #   Epic: #40
+│   │   ├── shell/                      #   CustomerShellPage — configures RoleShell
+│   │   └── wallet/                     #   Payment UI, built but unrouted — blocked on the
+│   │                                   #     backend payments API. Epic: #46
+│   ├── shared/                         # Both roles, or pre-role
+│   │   ├── auth/                       #   data/domain/presentation; sub-flows under
+│   │   │                               #     presentation/{choose,login,register,password_recovery}
+│   │   │                               #     Epics: #35, #36
+│   │   ├── splash/                     #   2s intro → language
+│   │   ├── role/                       #   Role picker + coming-soon. Epic: #33
+│   │   ├── onboarding/                 #   Language page + the shared MarketingCarousel. Epic: #37
+│   │   ├── shell/                      #   RoleShell — the chrome both shells configure. Epic: #34
+│   │   └── notifications/              # 🚧 STUB. Epic: #52
+│   └── shop/                           # Unbucketed: #48 says two-sided, #57 says business-only
 │
 ├── l10n/
-│   ├── app_en.arb                      # Localization source template (~6 keys today)
-│   └── app_ar.arb                      # Arabic — default & RTL-first
+│   ├── app_en.arb                      # Localization source template (318 keys)
+│   └── app_ar.arb                      # Arabic — default & RTL-first (same key set)
 │
-└── shared/                             # Reusable presentation-layer code (used across features)
+└── shared/                             # Reusable presentation-layer code (NOT features/shared/)
     ├── extensions/context_ext.dart     # context.l10n
     ├── formatters/app_formatters.dart  # EgpFormatter, NumberFormatter (ar_EG Arabic-Indic digits)
     └── ui/                             # AppButton, AppTopBar, AppBottomNavBar(+Item), AppCard,
-                                        # AppTextField, AppBottomSheet, status_states.dart
-                                        # (EmptyState/ErrorState/LoadingState)
+                                        # AppTextField, AppToaster, AppPill, AppSegmentedToggle,
+                                        # BrandScaffold, OrDivider, status_states.dart
+                                        # (EmptyState/ErrorState)
 ```
+
+**The role rule**: `business/` and `customer/` must never import each other. `test/structure/role_boundary_test.dart` fails the build if they do, and also pins the `features/` entry list, so a new top-level folder is a deliberate choice rather than a drift. Anything both roles need goes to `features/shared/` (a screen flow), `lib/shared/ui/` (a widget), or `lib/core/` (plumbing — `core/services/location_service.dart` landed there for exactly this reason).
+
+Two different things are called "shared": `lib/shared/` is the UI kit; `lib/features/shared/` is role-neutral feature flows.
 
 The tree is intentionally flat and readable: no generated `*.g.dart` / `*.freezed.dart` / `injection.config.dart`, no build flavors, no dev gallery. Everything you see is hand-written Dart except the l10n output.
 
@@ -113,7 +134,7 @@ The table below maps the supporting files outside `lib/`.
 
 | Location | Contents |
 |---|---|
-| `test/` | 11 files mirroring `lib/`: `test/auth_token_model_test.dart`, `test/core/network/` (envelope, auth interceptor, social exchange + `fakes.dart` helpers), `test/core/theme/` (theme mode, WCAG contrast), `test/shared/ui/` (components, navigation), `test/shared/formatters/`, root `widget_test.dart` smoke. Tooling: `flutter_test`, `http_mock_adapter`, hand-written fakes (no mockito/mocktail). Golden tests (light/dark × RTL/LTR) planned per [app #29](https://github.com/YoussefSalem582/Osta-App/issues/29). |
+| `test/` | 16 files mirroring `lib/`: `test/structure/` (the role-boundary invariants), `test/core/` (api client, session redirect, WCAG contrast), `test/features/{business,customer,shared}/` mirroring the role buckets, `test/shared/ui/` (AppPill, AppSegmentedToggle). Tooling: `flutter_test`, `http_mock_adapter`, hand-written fakes (no mockito/mocktail). Golden tests (light/dark × RTL/LTR) planned per [app #29](https://github.com/YoussefSalem582/Osta-App/issues/29). |
 | `assets/images/` | Logo, full logo, mascot — referenced via `AppImages` (`core/constants/app_images.dart`), declared in `pubspec.yaml`. |
 | `lib/l10n/` | ARB sources: `app_en.arb` (template) + `app_ar.arb`. Config in root `l10n.yaml` (`nullable-getter: false`). Output generated to `lib/core/l10n/` as `AppLocalizations`; accessed via `context.l10n`. |
 | `.github/workflows/ci.yml` | CI: a single job **"format · analyze · test"** on ubuntu — `flutter pub get` → `flutter gen-l10n` → `dart format --set-exit-if-changed` → `flutter analyze` → `flutter test`. No `build_runner` step, no android/iOS build jobs (deferred — see [`../../docs/ROADMAP.md`](../../docs/ROADMAP.md), Phase 4). Flutter pinned to 3.44.1. |

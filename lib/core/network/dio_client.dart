@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
+import 'package:flutter/foundation.dart';
 import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/config/app_config.dart';
 import 'package:osta/core/network/api_client.dart';
@@ -43,6 +44,29 @@ TokenPair parseTokenPair(Object? data) {
     accessToken: read('access_token', 'accessToken'),
     refreshToken: read('refresh_token', 'refreshToken'),
   );
+}
+
+/// Tells the backend which language to answer in.
+///
+/// `SetApiLocale` runs on every API request and resolves `app()->setLocale()`
+/// from this header, falling back to Arabic. Without it an English user gets
+/// every server-side string — validation messages, auth errors — in Arabic, and
+/// register persists `language_preference: 'ar'` for them permanently.
+///
+/// Reads the locale per request rather than baking it into `BaseOptions`,
+/// because the language screen can change it after the client is built.
+class LocaleInterceptor extends Interceptor {
+  LocaleInterceptor(this._localeCode);
+
+  /// Current `ar`/`en`, or null on a true first run (backend default applies).
+  final String? Function() _localeCode;
+
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    final code = _localeCode();
+    if (code != null) options.headers['Accept-Language'] = code;
+    handler.next(options);
+  }
 }
 
 /// Attaches the Sanctum access token and transparently handles expiry:
@@ -120,9 +144,13 @@ class AuthInterceptor extends QueuedInterceptor {
 
     final refresh = await _tokens.readRefreshToken();
     if (refresh == null) throw const FormatException('No refresh token');
+    // The refresh token IS the credential: `/auth/refresh` sits behind
+    // `auth:sanctum` + `ability:refresh` and reads `$request->user()`, never a
+    // body field. Sending it as JSON instead of a Bearer header 401s, which the
+    // catch below turns into a forced logout on every access-token expiry.
     final response = await _refreshDio.post<Map<String, dynamic>>(
       ApiEndpoints.authRefresh,
-      data: {'refresh_token': refresh},
+      options: Options(headers: {'Authorization': 'Bearer $refresh'}),
     );
     final pair = parseTokenPair(response.data?['data']);
     await _tokens.writeTokens(
@@ -138,7 +166,12 @@ class AuthInterceptor extends QueuedInterceptor {
 /// Configured against [AppConfig.baseUrl] (`/api/v1`) with Sanctum auth,
 /// automatic retries, and a redacted logger. Wired up manually in
 /// `configureDependencies()`.
-Dio buildAppDio(AppConfig config, TokenStorage tokens, AuthEvents events) {
+Dio buildAppDio(
+  AppConfig config,
+  TokenStorage tokens,
+  AuthEvents events, {
+  required String? Function() localeCode,
+}) {
   final client = Dio(
     BaseOptions(
       baseUrl: config.baseUrl,
@@ -149,9 +182,16 @@ Dio buildAppDio(AppConfig config, TokenStorage tokens, AuthEvents events) {
   client.interceptors
     // Auth first: token attach + 401 refresh-retry-once.
     ..add(AuthInterceptor(tokens, events, config: config))
+    ..add(LocaleInterceptor(localeCode))
     ..add(RetryInterceptor(dio: client))
-    // Redacted: headers (incl. Authorization) and bodies are never logged.
-    ..add(PrettyDioLogger(responseBody: false));
+    // Headers (incl. Authorization) and bodies are never logged, but the
+    // request URI is — and that carries query params, including the user's GPS
+    // coordinates on /centers/nearby. Debug builds only: PrettyDioLogger prints
+    // to stdout, which is readable on-device in release.
+    // `enabled:` looks redundant only because kDebugMode is a const true while
+    // analyzing; dropping it is what would restore release logging.
+    // ignore: avoid_redundant_argument_values
+    ..add(PrettyDioLogger(responseBody: false, enabled: kDebugMode));
   return client;
 }
 

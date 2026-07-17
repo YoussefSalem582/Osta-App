@@ -62,9 +62,7 @@ class _CorrectionToast extends StatelessWidget {
           current.correctedRole != null &&
           previous.correctedRole != current.correctedRole,
       listener: (context, state) {
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(SnackBar(content: Text(context.l10n.roleCorrected)));
+        AppToaster.showMessage(context.l10n.roleCorrected);
         context.read<SessionController>().acknowledgeCorrection();
       },
       child: child ?? const SizedBox.shrink(),

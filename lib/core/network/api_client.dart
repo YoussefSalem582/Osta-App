@@ -14,12 +14,18 @@ class PaginationMeta extends Equatable {
     required this.total,
   });
 
-  factory PaginationMeta.fromJson(Map<String, dynamic> json) => PaginationMeta(
-    currentPage: json['current_page'] as int,
-    lastPage: json['last_page'] as int,
-    perPage: json['per_page'] as int,
-    total: json['total'] as int,
-  );
+  factory PaginationMeta.fromJson(Map<String, dynamic> json) {
+    // The backend nests these under `meta.pagination` (`ApiResponse::paginated`
+    // in osta_backend), not flat on `meta` — this was written against the
+    // wrong shape and threw a cast error on every single paginated response.
+    final page = json['pagination'] as Map<String, dynamic>? ?? json;
+    return PaginationMeta(
+      currentPage: page['current_page'] as int,
+      lastPage: page['last_page'] as int,
+      perPage: page['per_page'] as int,
+      total: page['total'] as int,
+    );
+  }
 
   final int currentPage;
   final int lastPage;
@@ -94,6 +100,17 @@ class ApiClient {
     parse,
   );
 
+  Future<ApiResult<T>> patch<T>(
+    String path, {
+    required T Function(Object? data) parse,
+    Object? body,
+    bool authenticated = true,
+  }) => _send(
+    () =>
+        _dio.patch<dynamic>(path, data: body, options: _options(authenticated)),
+    parse,
+  );
+
   Future<ApiResult<T>> delete<T>(
     String path, {
     required T Function(Object? data) parse,
@@ -132,9 +149,30 @@ class ApiClient {
       throw _envelopeException(body);
     }
     final meta = body['meta'];
+    // A 200 whose `data` shape doesn't match what this feature's `parse`
+    // expects (e.g. a nested pagination wrapper) throws a raw TypeError here
+    // — without this, callers see it as some untyped Object and every screen
+    // that switches on ApiException/NetworkException mislabels it.
+    final T data;
+    try {
+      data = parse(body['data']);
+    } on ApiException {
+      rethrow;
+    } on Object catch (e) {
+      throw ServerException('Malformed response data: $e');
+    }
     return ApiResult(
-      parse(body['data']),
-      meta: meta is Map<String, dynamic> ? PaginationMeta.fromJson(meta) : null,
+      data,
+      // `meta` is not always pagination: `ApiResponse::success` also ships
+      // arbitrary blocks here (e.g. booking cancel returns `{refund: …}`).
+      // Only build PaginationMeta when a pagination block is actually present —
+      // otherwise `PaginationMeta.fromJson` casts a missing `current_page` and
+      // throws a raw TypeError instead of a typed ApiException.
+      meta:
+          meta is Map<String, dynamic> &&
+              (meta['pagination'] != null || meta['current_page'] != null)
+          ? PaginationMeta.fromJson(meta)
+          : null,
     );
   }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/booking/data/model.dart/booking_item.dart';
+import 'package:osta/features/customer/booking/data/model/booking_item.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
+import 'package:osta/shared/ui/app_pill.dart';
 
 class StatusBadge extends StatelessWidget {
   const StatusBadge({required this.status, super.key});
@@ -11,7 +11,6 @@ class StatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
 
     final (label, bg, fg) = switch (status) {
       BookingStatus.pending => (
@@ -36,22 +35,6 @@ class StatusBadge extends StatelessWidget {
       ),
     };
 
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(AppRadii.pill),
-      ),
-      child: Text(
-        label,
-        style: textTheme.labelSmall?.copyWith(
-          color: fg,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
+    return AppPill(label: label, background: bg, foreground: fg);
   }
 }

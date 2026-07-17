@@ -12,11 +12,13 @@ String shellFor(AppRole role) => switch (role) {
 };
 
 /// Pure first-run/role-split routing. Returns the location to redirect to, or
-/// `null` to stay put. Order encodes the flow:
+/// `null` to stay put. Order encodes the two role flows:
 ///
-/// splash → language → role chooser → onboarding → auth-choose → auth → shell.
-/// A valid `{token, activeRole}` skips straight to the shell; no route is
-/// reachable without auth (no guest path).
+/// - Customer: language → role → customer onboarding → auth → shell
+/// - Business: language → role → merchant onboarding → auth → wizard → shell
+///
+/// A valid `{token, activeRole}` skips straight to the shell (business
+/// still hits the post-auth wizard until onboarded). No guest path.
 String? resolveRedirect({
   required SessionState session,
   required String location,
@@ -42,21 +44,34 @@ String? resolveRedirect({
     return location == AppRoutes.role ? null : AppRoutes.role;
   }
 
-  // Logged-out intro: shown every launch until acknowledged this session. The
-  // flag is in-memory, so a not-logged-in user re-enters onboarding each cold
-  // start; once tapped through it stays set and the steps below are reachable.
+  // Role-specific marketing carousel (logged-out). Customer → #37 slides;
+  // business → merchant slides. Post-auth center setup stays in the wizard.
   if (!session.hasToken && !session.onboardingAcknowledged) {
-    return location == AppRoutes.onboarding ? null : AppRoutes.onboarding;
+    final intro = role == AppRole.business
+        ? AppRoutes.merchantOnboarding
+        : AppRoutes.onboarding;
+    return location == intro ? null : intro;
   }
 
   // Role chosen but no token: pick login/register on the auth-choose landing,
   // then the auth form (sends `account_type = activeRole`). The
   // password-recovery screens hang off the same unauthenticated surface.
   if (!session.hasToken) {
+    // Each role has its own register screen, like its own carousel. Pin the
+    // location to the active role's: RegisterBloc reads account_type from the
+    // session, so landing on the other role's URL would show one role's
+    // heading while registering as the other.
+    const registerRoutes = {AppRoutes.register, AppRoutes.registerBusiness};
+    if (registerRoutes.contains(location)) {
+      final ownRegister = role == AppRole.business
+          ? AppRoutes.registerBusiness
+          : AppRoutes.register;
+      return location == ownRegister ? null : ownRegister;
+    }
+
     const authSurface = {
       AppRoutes.authChoose,
       AppRoutes.login,
-      AppRoutes.register,
       AppRoutes.forgotPassword,
       AppRoutes.resetPassword,
     };
@@ -71,25 +86,40 @@ String? resolveRedirect({
   // customer screen by typed URL, but no nav entry leads there; scope per role
   // if that ever matters.
   // A freshly-authenticated business user runs the onboarding wizard
-  // (provider-onboarding → identity → catalog) before reaching its shell.
-  // Gated by the in-memory `businessOnboarded` flag, so — like the logged-out
-  // gates — it re-shows every launch until finished this session.
-  if (role == AppRole.business && !session.businessOnboarded) {
+  // (identity → catalog) before reaching its shell. Merchants already saw the
+  // logged-out carousel before register, so there is no intro step here.
+  // Gates on an explicit `false` only, like the customer's gate below: `null`
+  // means the catalog check never resolved, and re-running a finished wizard
+  // would duplicate the owner's catalog.
+  if (role == AppRole.business && session.businessOnboarded == false) {
     const wizard = {
-      AppRoutes.providerOnboarding,
       AppRoutes.businessIdentity,
       AppRoutes.businessCatalog,
     };
-    return wizard.contains(location) ? null : AppRoutes.providerOnboarding;
+    return wizard.contains(location) ? null : AppRoutes.businessIdentity;
+  }
+
+  // The customer's counterpart to that wizard: no car, no Home (#39). Gates on
+  // an explicit `false` only — `null` means the check never resolved, and a
+  // failed network call must not strand the user outside the app.
+  if (role == AppRole.customer && session.hasVehicle == false) {
+    return location == AppRoutes.addCar ? null : AppRoutes.addCar;
   }
 
   const inAppScreens = {
     AppRoutes.profile,
+    AppRoutes.editProfile,
     AppRoutes.garage,
     AppRoutes.addCar,
     AppRoutes.bookingStatus,
     AppRoutes.home,
     AppRoutes.technicians,
+    // Shop (#48) — pushed over either shell, so they keep a back button.
+    AppRoutes.shopBrowse,
+    AppRoutes.productDetail,
+    AppRoutes.sellerCatalog,
+    AppRoutes.myProducts,
+    AppRoutes.productForm,
   };
   final shell = shellFor(role);
   if (location == shell || inAppScreens.contains(location)) return null;

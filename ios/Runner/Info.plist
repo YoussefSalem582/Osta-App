@@ -4,6 +4,10 @@
 	<dict>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true/>
+		<key>GMSApiKey</key>
+		<string>$(MAPS_API_KEY)</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>OSTA uses your location to show the service centers nearest to you on the map.</string>
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>

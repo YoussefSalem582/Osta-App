@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 1200" font-family="-apple-system, 'Segoe UI', Roboto, system-ui, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888780"/>
+    </marker>
+  </defs>
+  <style>
+    .title  { font-weight: 700; font-size: 15px; }
+    .sub    { font-size: 12px; }
+    .node   { stroke-width: 2; }
+    .customer   { fill: #e1f5ee; stroke: #0f6e56; }
+    .customer-t { fill: #0f6e56; }
+    .business   { fill: #eeedfe; stroke: #534ab7; }
+    .business-t { fill: #534ab7; }
+    .gate       { fill: #faeeda; stroke: #854f0b; }
+    .gate-t     { fill: #854f0b; }
+    .shared     { fill: #f1efe8; stroke: #e2e0d9; }
+    .shared-t   { fill: #444441; }
+    .edge     { stroke: #888780; stroke-width: 2; fill: none; }
+    .edge-lbl { fill: #6b6a63; font-size: 12px; }
+    .heading  { fill: #2b2b28; font-weight: 700; font-size: 22px; }
+  </style>
+
+  <rect x="0" y="0" width="1060" height="1200" fill="#ffffff"/>
+
+  <text x="40" y="42" class="heading">Routing guard — resolveRedirect()</text>
+  <text x="40" y="66" class="shared-t sub">lib/core/router/session_redirect.dart · evaluated top to bottom every navigation; first match wins, else stay put</text>
+
+  <!-- legend -->
+  <g transform="translate(40,88)">
+    <rect x="0"   y="0" width="18" height="18" rx="4" class="node customer"/>
+    <text x="24"  y="14" class="shared-t sub">customer</text>
+    <rect x="120" y="0" width="18" height="18" rx="4" class="node business"/>
+    <text x="144" y="14" class="shared-t sub">business</text>
+    <rect x="240" y="0" width="18" height="18" rx="4" class="node gate"/>
+    <text x="264" y="14" class="shared-t sub">server gate · fails open</text>
+    <rect x="450" y="0" width="18" height="18" rx="4" class="node shared"/>
+    <text x="474" y="14" class="shared-t sub">shared / predicate</text>
+    <text x="620" y="14" class="edge-lbl sub">yes → redirect    ·    no ↓ next check</text>
+  </g>
+
+  <!-- ===== spine of predicates (left) → destinations (right) ===== -->
+  <!-- geometry: predicate box x=90 w=380 ; destination x=650 w=340 -->
+
+  <!-- P1 -->
+  <g>
+    <rect x="90" y="150" width="380" height="58" rx="12" class="node shared"/>
+    <text x="280" y="176" text-anchor="middle" class="title shared-t">!session.bootstrapped</text>
+    <text x="280" y="196" text-anchor="middle" class="sub shared-t">persisted state not read yet</text>
+    <rect x="650" y="150" width="340" height="58" rx="12" class="node shared"/>
+    <text x="820" y="176" text-anchor="middle" class="title shared-t">/splash</text>
+    <text x="820" y="196" text-anchor="middle" class="sub shared-t">hold until bootstrap completes</text>
+    <path class="edge" d="M470,179 H650" marker-end="url(#arrow)"/>
+    <text x="560" y="171" text-anchor="middle" class="edge-lbl">yes</text>
+    <path class="edge" d="M280,208 V246" marker-end="url(#arrow)"/>
+    <text x="292" y="232" class="edge-lbl">no</text>
+  </g>
+
+  <!-- P2 -->
+  <g>
+    <rect x="90" y="248" width="380" height="58" rx="12" class="node shared"/>
+    <text x="280" y="274" text-anchor="middle" class="title shared-t">!hasToken &amp;&amp; !languageAcknowledged</text>
+    <text x="280" y="294" text-anchor="middle" class="sub shared-t">logged out, language not picked this session</text>
+    <rect x="650" y="248" width="340" height="58" rx="12" class="node shared"/>
+    <text x="820" y="274" text-anchor="middle" class="title shared-t">/language</text>
+    <text x="820" y="294" text-anchor="middle" class="sub shared-t">persisted locale is the default</text>
+    <path class="edge" d="M470,277 H650" marker-end="url(#arrow)"/>
+    <text x="560" y="269" text-anchor="middle" class="edge-lbl">yes</text>
+    <path class="edge" d="M280,306 V344" marker-end="url(#arrow)"/>
+    <text x="292" y="330" class="edge-lbl">no</text>
+  </g>
+
+  <!-- P3 -->
+  <g>
+    <rect x="90" y="346" width="380" height="58" rx="12" class="node shared"/>
+    <text x="280" y="372" text-anchor="middle" class="title shared-t">(!hasToken &amp;&amp; !roleAcknowledged) || role==null</text>
+    <text x="280" y="392" text-anchor="middle" class="sub shared-t">no active role, or not picked this session</text>
+    <rect x="650" y="346" width="340" height="58" rx="12" class="node shared"/>
+    <text x="820" y="372" text-anchor="middle" class="title shared-t">/role</text>
+    <text x="820" y="392" text-anchor="middle" class="sub shared-t">customer · business (mechanic/tow soon)</text>
+    <path class="edge" d="M470,375 H650" marker-end="url(#arrow)"/>
+    <text x="560" y="367" text-anchor="middle" class="edge-lbl">yes</text>
+    <path class="edge" d="M280,404 V442" marker-end="url(#arrow)"/>
+    <text x="292" y="428" class="edge-lbl">no</text>
+  </g>
+
+  <!-- P4 carousel (role-split destination) -->
+  <g>
+    <rect x="90" y="444" width="380" height="58" rx="12" class="node shared"/>
+    <text x="280" y="470" text-anchor="middle" class="title shared-t">!hasToken &amp;&amp; !onboardingAcknowledged</text>
+    <text x="280" y="490" text-anchor="middle" class="sub shared-t">logged out, marketing carousel not seen</text>
+    <rect x="650" y="430" width="340" height="42" rx="10" class="node customer"/>
+    <text x="820" y="456" text-anchor="middle" class="title customer-t">/onboarding  ·  customer slides</text>
+    <rect x="650" y="480" width="340" height="42" rx="10" class="node business"/>
+    <text x="820" y="506" text-anchor="middle" class="title business-t">/onboarding/business  ·  merchant slides</text>
+    <path class="edge" d="M470,466 C560,466 560,451 650,451" marker-end="url(#arrow)"/>
+    <path class="edge" d="M470,480 C560,480 560,501 650,501" marker-end="url(#arrow)"/>
+    <text x="560" y="440" text-anchor="middle" class="edge-lbl">by role</text>
+    <path class="edge" d="M280,502 V540" marker-end="url(#arrow)"/>
+    <text x="292" y="526" class="edge-lbl">no</text>
+  </g>
+
+  <!-- P5 auth surface -->
+  <g>
+    <rect x="90" y="542" width="380" height="58" rx="12" class="node shared"/>
+    <text x="280" y="568" text-anchor="middle" class="title shared-t">!hasToken</text>
+    <text x="280" y="588" text-anchor="middle" class="sub shared-t">role chosen, still signed out</text>
+    <rect x="650" y="536" width="340" height="70" rx="12" class="node shared"/>
+    <text x="820" y="560" text-anchor="middle" class="title shared-t">auth surface</text>
+    <text x="820" y="579" text-anchor="middle" class="sub shared-t">/auth/choose · /auth · /auth/register*</text>
+    <text x="820" y="596" text-anchor="middle" class="sub shared-t">/forgot-password · /reset-password</text>
+    <path class="edge" d="M470,571 H650" marker-end="url(#arrow)"/>
+    <text x="560" y="563" text-anchor="middle" class="edge-lbl">yes</text>
+    <path class="edge" d="M280,600 V648" marker-end="url(#arrow)"/>
+    <text x="292" y="626" class="edge-lbl">no · authenticated</text>
+    <text x="656" y="628" class="edge-lbl sub">* own-role register pinned: account_type = activeRole</text>
+  </g>
+
+  <!-- P6 business gate -->
+  <g>
+    <rect x="90" y="650" width="380" height="58" rx="12" class="node gate"/>
+    <text x="280" y="676" text-anchor="middle" class="title gate-t">role==business &amp;&amp; businessOnboarded==false</text>
+    <text x="280" y="696" text-anchor="middle" class="sub gate-t">catalog empty on GET /business/services</text>
+    <rect x="650" y="650" width="340" height="58" rx="12" class="node business"/>
+    <text x="820" y="676" text-anchor="middle" class="title business-t">onboarding wizard</text>
+    <text x="820" y="696" text-anchor="middle" class="sub business-t">/business-identity  ⇄  /business-catalog</text>
+    <path class="edge" d="M470,679 H650" marker-end="url(#arrow)"/>
+    <text x="560" y="671" text-anchor="middle" class="edge-lbl">yes</text>
+    <path class="edge" d="M280,708 V746" marker-end="url(#arrow)"/>
+    <text x="292" y="732" class="edge-lbl">no</text>
+  </g>
+
+  <!-- P7 customer gate -->
+  <g>
+    <rect x="90" y="748" width="380" height="58" rx="12" class="node gate"/>
+    <text x="280" y="774" text-anchor="middle" class="title gate-t">role==customer &amp;&amp; hasVehicle==false</text>
+    <text x="280" y="794" text-anchor="middle" class="sub gate-t">no car on GET /vehicles</text>
+    <rect x="650" y="748" width="340" height="58" rx="12" class="node customer"/>
+    <text x="820" y="774" text-anchor="middle" class="title customer-t">/add-car</text>
+    <text x="820" y="794" text-anchor="middle" class="sub customer-t">no car, no Home (#39)</text>
+    <path class="edge" d="M470,777 H650" marker-end="url(#arrow)"/>
+    <text x="560" y="769" text-anchor="middle" class="edge-lbl">yes</text>
+    <path class="edge" d="M280,806 V852" marker-end="url(#arrow)"/>
+    <text x="292" y="832" class="edge-lbl">no</text>
+  </g>
+
+  <!-- terminal shells -->
+  <g>
+    <rect x="90" y="854" width="380" height="58" rx="12" class="node shared"/>
+    <text x="280" y="880" text-anchor="middle" class="title shared-t">authenticated · gates passed</text>
+    <text x="280" y="900" text-anchor="middle" class="sub shared-t">shellFor(role) + in-app allow-list</text>
+    <rect x="650" y="840" width="340" height="42" rx="10" class="node customer"/>
+    <text x="820" y="866" text-anchor="middle" class="title customer-t">/customer  ·  ConsumerShell</text>
+    <rect x="650" y="890" width="340" height="42" rx="10" class="node business"/>
+    <text x="820" y="916" text-anchor="middle" class="title business-t">/business  ·  ProviderShell</text>
+    <path class="edge" d="M470,876 C560,876 560,861 650,861" marker-end="url(#arrow)"/>
+    <path class="edge" d="M470,890 C560,890 560,911 650,911" marker-end="url(#arrow)"/>
+    <text x="560" y="850" text-anchor="middle" class="edge-lbl">by role</text>
+  </g>
+
+  <!-- in-app allow-list note -->
+  <text x="150" y="950" class="edge-lbl sub">In-app allow-list over the shell (pushed on top, keeps a back button):</text>
+  <text x="150" y="968" class="edge-lbl sub">/profile · /garage · /add-car · /booking-status · /home · /technicians  —  any other location bounces to the active shell</text>
+
+  <!-- fail-open callout -->
+  <g>
+    <rect x="90" y="1000" width="900" height="72" rx="12" class="node gate"/>
+    <text x="112" y="1026" class="title gate-t">Gates fail open</text>
+    <text x="112" y="1048" class="sub gate-t">The two orange gates fire on an explicit  == false  only. A  null  means the server check never resolved (a failed network call) —</text>
+    <text x="112" y="1064" class="sub gate-t">it falls through to the shell rather than trapping the user outside the app. Same "fails open" semantics as register_flow.png.</text>
+  </g>
+</svg>
