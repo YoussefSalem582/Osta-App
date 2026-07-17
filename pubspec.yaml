@@ -46,6 +46,8 @@ dependencies:
   intl: ^0.20.2
   pretty_dio_logger: ^1.4.0
   shared_preferences: ^2.5.5
+  # Skeleton placeholders for content first-loads (OSTA_plan §10; no shimmer).
+  skeletonizer: ^2.1.0+1
   smooth_page_indicator: ^1.2.1
 
 dev_dependencies:

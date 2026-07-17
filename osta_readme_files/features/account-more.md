@@ -4,7 +4,7 @@
 
 ## Overview / نظرة عامة
 
-The Account & More hub is the "More" tab shown in both the customer and business shells. It groups everything account-related in one place: Profile (with avatar swap and the user's `support_id`), Settings, My cars, My Shop, saved addresses, legal pages, feedback, logout, and soft account deletion. The whole feature is **planned** — specified by epic [app #40](https://github.com/YoussefSalem582/Osta-App/issues/40) (M1, b2c, p1, owner roaa); the corresponding `lib/features/customer/profile/` folder is currently an empty stub. The backend side ([backend #39](https://github.com/YoussefSalem582/osta_backend/issues/39)) is already merged, so the app work is unblocked.
+The Account & More hub is the "More" tab shown in both the customer and business shells. It groups everything account-related in one place: Profile (with avatar swap and the user's `support_id`), Settings, My cars, My Shop, saved addresses, legal pages, feedback, logout, and soft account deletion. The hub is specified by epic [app #40](https://github.com/YoussefSalem582/Osta-App/issues/40) (M1, b2c, p1, owner roaa). The profile screens are **built** and, as of 2026-07-17, live at `lib/features/shared/profile/` (moved out of `customer/` so both shells render the same `ProfileView`), with an offline-first read-cache and skeleton loading; the remaining hub entries (addresses CRUD, legal, feedback) are still planned. The backend side ([backend #39](https://github.com/YoussefSalem582/osta_backend/issues/39)) is already merged, so the app work is unblocked.
 
 > ‏تبويب "المزيد" هو مركز الحساب في واجهتي العميل والنشاط التجاري معًا: الملف الشخصي (مع تغيير الصورة وعرض مُعرّف الدعم `support_id`)، الإعدادات، سياراتي، متجري، العناوين المحفوظة، الصفحات القانونية، إرسال الملاحظات، تسجيل الخروج، والحذف المرن للحساب. الميزة بأكملها **مخططة** ولم تُبنَ بعد — موصوفة في المهمة app ‎#40، ومجلد الميزة في التطبيق ما يزال فارغًا، بينما واجهات الخادم المقابلة (backend ‎#39) مدموجة وجاهزة.
 
@@ -30,9 +30,9 @@ Related epics: the hub's "My Shop" entry is detailed in [app #49](https://github
 
 ## Planned architecture / البنية المخططة
 
-Everything below is **planned** — nothing in this feature is built yet. The feature folder `lib/features/customer/profile/` exists only as empty `data/domain/presentation` directories.
+The profile/settings surface is **built** at `lib/features/shared/profile/` (cubit, repo, `ProfileScreen`/`EditProfileScreen`, avatar, delete, plus the cache-then-network `ProfileCache`); the sections below describe the remaining hub entries (addresses CRUD, legal, feedback) that are still planned.
 
-> ‏كل ما يلي **مخطط** — لم يُبنَ أي جزء من هذه الميزة بعد. مجلد الميزة `lib/features/customer/profile/` موجود فقط كأدلة فارغة `data/domain/presentation`.
+> ‏واجهة الملف/الإعدادات **مبنية** في `lib/features/shared/profile/`؛ وما يلي يصف بقية عناصر المركز (العناوين والصفحات القانونية والملاحظات) التي لم تُبنَ بعد.
 
 - **Layers**: Clean Architecture, `data → domain ← presentation`. Models are plain `Equatable` classes with hand-written `fromJson`/`toJson`, mirroring the backend `UserResource` shape `{id, first_name, last_name, username, email, phone, language_preference, avatar_url, type, roles[], support_id}` ([backend #39](https://github.com/YoussefSalem582/osta_backend/issues/39)). No `freezed`/`json_serializable` codegen — that stack is deferred; see [ROADMAP](../../docs/ROADMAP.md).
 - **State management**: BLoC/Cubit (`flutter_bloc` 9). Expect cubits for profile load/update, avatar upload, addresses CRUD, and account deletion/logout flows — exact naming TBD, see epic [app #40](https://github.com/YoussefSalem582/Osta-App/issues/40).

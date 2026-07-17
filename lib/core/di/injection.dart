@@ -19,6 +19,8 @@ import 'package:osta/features/shared/auth/domain/auth_repository.dart';
 import 'package:osta/features/shared/auth/presentation/login/bloc/login_bloc.dart';
 import 'package:osta/features/shared/auth/presentation/password_recovery/bloc/password_recovery_bloc.dart';
 import 'package:osta/features/shared/auth/presentation/register/bloc/register_bloc.dart';
+import 'package:osta/features/shared/profile/data/profile_cache.dart';
+import 'package:osta/features/shared/profile/data/repo/profile_repo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Global service locator.
@@ -79,6 +81,9 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<CentersRepository>(
       () => CentersRepository(getIt()),
     )
+    // Profile: cache-then-network read-cache on the prefs singleton.
+    ..registerLazySingleton<ProfileCache>(() => ProfileCache(getIt()))
+    ..registerLazySingleton<ProfileRepo>(() => ProfileRepo(getIt(), getIt()))
     ..registerLazySingleton<LocationService>(
       GeolocatorLocationService.new,
     )

@@ -423,5 +423,67 @@
   "deleteVehicleDialogTitle": "Delete Vehicle",
   "deleteVehicleDialogMessage": "Are you sure you want to delete this vehicle?",
   "deleteVehicleSuccess": "Vehicle deleted successfully.",
-  "setPrimarySuccess": "Vehicle set as primary."
+  "setPrimarySuccess": "Vehicle set as primary.",
+  "profileOfflineSaved": "Showing saved profile",
+  "profileLastUpdated": "Updated {time}",
+  "@profileLastUpdated": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "shopPriceEgp": "{price} EGP",
+  "@shopPriceEgp": {
+    "placeholders": {
+      "price": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "shopCategoryAll": "All",
+  "shopSearchHint": "Search products",
+  "shopSellerLabel": "Seller",
+  "shopSellerFallback": "Seller shop",
+  "shopViewShop": "View shop",
+  "shopSellerEmptyMessage": "This seller has no products yet.",
+  "shopEnquire": "Enquire",
+  "shopEnquireTitle": "Contact seller",
+  "shopEnquireSubtitle": "Ask about availability, condition or price.",
+  "shopEnquireMessageLabel": "Your message",
+  "shopEnquireMessageHint": "e.g. Is this still available?",
+  "shopEnquireSend": "Send enquiry",
+  "shopEnquireSuccess": "Enquiry sent to the seller.",
+  "shopEnquireEmptyError": "Please write a short message.",
+  "shopErrorTitle": "Couldn't load products",
+  "shopEmptyTitle": "No products yet",
+  "shopEmptyMessage": "Check back soon for new listings.",
+  "shopProductTitle": "Product",
+  "shopBrowseMarketplace": "Browse marketplace",
+  "myProductsTitle": "My Store",
+  "myProductsEmptyTitle": "No listings yet",
+  "myProductsEmptyMessage": "Add your first product to start selling.",
+  "addProduct": "Add product",
+  "editProduct": "Edit product",
+  "edit": "Edit",
+  "deleteProductDialogTitle": "Delete product",
+  "deleteProductDialogMessage": "Are you sure you want to delete this listing?",
+  "deleteProductSuccess": "Product deleted.",
+  "productSaved": "Product saved.",
+  "productFormName": "Product name",
+  "productFormNameRequired": "Enter a product name",
+  "productFormPrice": "Price (EGP)",
+  "productFormPriceRequired": "Enter a valid price",
+  "productFormCategory": "Category (optional)",
+  "productFormDescription": "Description (optional)",
+  "productFormStatus": "Status",
+  "productStatusActive": "Active",
+  "productStatusInactive": "Inactive",
+  "productStatusDiscontinued": "Discontinued",
+  "productFormSave": "Save product",
+  "productFormImages": "Images (optional)",
+  "productFormImagesHint": "Paste image links — there's no photo upload yet.",
+  "productFormImageUrl": "Image URL",
+  "productFormAddImage": "Add image"
 }

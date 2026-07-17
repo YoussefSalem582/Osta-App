@@ -18,6 +18,12 @@ class SessionStore {
   static const _activeRoleKey = 'session_active_role';
   static const _businessDraftKey = 'business_onboarding_draft';
 
+  /// Keys for the profile read-cache (`GET /me`). Declared here — the prefs
+  /// registry — so [clearSession] can wipe them on sign-out; the profile
+  /// feature's `ProfileCache` reads the same constants (core ← feature).
+  static const profileCacheKey = 'profile_me';
+  static const profileFetchedAtKey = 'profile_me_fetched_at';
+
   /// The chosen language code (`ar`/`en`), or `null` on a true first run —
   /// the signal that gates the one-time language screen.
   String? get localeCode => _prefs.getString(_localeKey);
@@ -52,9 +58,12 @@ class SessionStore {
   /// Whether a Sanctum access token is held in secure storage.
   Future<bool> hasToken() async => await _tokens.readAccessToken() != null;
 
-  /// Full sign-out: drops both the tokens and the active role.
+  /// Full sign-out: drops the tokens, the active role, and the profile cache
+  /// so the next user never sees the previous one.
   Future<void> clearSession() async {
     await _tokens.clear();
     await clearActiveRole();
+    await _prefs.remove(profileCacheKey);
+    await _prefs.remove(profileFetchedAtKey);
   }
 }
