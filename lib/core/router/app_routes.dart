@@ -34,4 +34,20 @@ abstract final class AppRoutes {
   static const editProfile = '/edit-profile';
   static const myBookings = '/my-bookings';
   static const home = '/home';
+
+  // Shop (#48) — two-sided marketplace, shared by both roles.
+  /// Marketplace browse grid (also the customer Store tab).
+  static const shopBrowse = '/shop';
+
+  /// Product detail; `extra` is the product id (`String`).
+  static const productDetail = '/product';
+
+  /// One seller's storefront; `extra` is a `SellerCatalogArgs`.
+  static const sellerCatalog = '/seller-catalog';
+
+  /// Own listings management (also the business Store tab).
+  static const myProducts = '/my-products';
+
+  /// Create / edit an own product; `extra` is a `Product?` (null = create).
+  static const productForm = '/product-form';
 }

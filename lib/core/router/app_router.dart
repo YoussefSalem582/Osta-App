@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:osta/core/di/injection.dart';
@@ -189,11 +190,14 @@ class AppRouter {
         builder: (context, state) => const HomePage(),
       ),
 
-      // Shop (#48) — pushable routes; the browse + my-products bodies also live
-      // inside the role shells as the Store tab.
+      // Shop (#48). ShopBrowsePage + MyProductsPage are chrome-less Store-tab
+      // bodies (the RoleShell supplies their Scaffold/Material), so when pushed
+      // as their own route they must be wrapped in a Scaffold — otherwise they
+      // render with no Material ancestor and overflow.
       GoRoute(
         path: AppRoutes.shopBrowse,
-        builder: (context, state) => const ShopBrowsePage(),
+        builder: (context, state) =>
+            const Scaffold(body: SafeArea(child: ShopBrowsePage())),
       ),
       GoRoute(
         path: AppRoutes.productDetail,
@@ -204,13 +208,16 @@ class AppRouter {
         path: AppRoutes.sellerCatalog,
         builder: (context, state) {
           final args = state.extra as SellerCatalogArgs?;
-          if (args == null) return const ShopBrowsePage();
+          if (args == null) {
+            return const Scaffold(body: SafeArea(child: ShopBrowsePage()));
+          }
           return SellerCatalogPage(args: args);
         },
       ),
       GoRoute(
         path: AppRoutes.myProducts,
-        builder: (context, state) => const MyProductsPage(),
+        builder: (context, state) =>
+            const Scaffold(body: SafeArea(child: MyProductsPage())),
       ),
       GoRoute(
         path: AppRoutes.productForm,

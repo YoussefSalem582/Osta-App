@@ -114,6 +114,12 @@ String? resolveRedirect({
     AppRoutes.bookingStatus,
     AppRoutes.home,
     AppRoutes.technicians,
+    // Shop (#48) — pushed over either shell, so they keep a back button.
+    AppRoutes.shopBrowse,
+    AppRoutes.productDetail,
+    AppRoutes.sellerCatalog,
+    AppRoutes.myProducts,
+    AppRoutes.productForm,
   };
   final shell = shellFor(role);
   if (location == shell || inAppScreens.contains(location)) return null;
