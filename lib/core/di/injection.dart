@@ -58,8 +58,7 @@ Future<void> configureDependencies() async {
       ),
     )
     // Ensure the static DioProvider helpers use the same app-level Dio.
-    ..registerLazySingleton<ApiClient>(() => ApiClient(getIt()))
-    ;
+    ..registerLazySingleton<ApiClient>(() => ApiClient(getIt()));
   // Wire the static DioProvider to the resolved Dio instance.
   DioProvider.dio = getIt<Dio>();
   getIt

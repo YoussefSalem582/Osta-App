@@ -8,7 +8,6 @@ abstract class ProfileState extends Equatable {
   List<Object?> get props => [];
 }
 
-
 class ProfileInitial extends ProfileState {
   const ProfileInitial();
 }
@@ -56,7 +55,6 @@ class ProfileUpdateError extends ProfileState {
   @override
   List<Object?> get props => [errorMessage];
 }
-
 
 class ProfileAvatarUploading extends ProfileState {
   const ProfileAvatarUploading();

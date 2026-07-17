@@ -28,7 +28,8 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
   Future<void> onDelete(BuildContext ctx, Datum vehicle) async {
     final currentState = ctx.read<GarageCubit>().state;
     if (currentState is GarageSetPrimaryLoading ||
-        currentState is GarageDeleteLoading) return;
+        currentState is GarageDeleteLoading)
+      return;
     final l10n = ctx.l10n;
     final confirmed = await AppConfirmDialog.show(
       context: ctx,
@@ -46,7 +47,8 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
   Future<void> onSetPrimary(BuildContext ctx, Datum vehicle) async {
     final currentState = ctx.read<GarageCubit>().state;
     if (currentState is GarageSetPrimaryLoading ||
-        currentState is GarageDeleteLoading) return;
+        currentState is GarageDeleteLoading)
+      return;
     await ctx.read<GarageCubit>().setPrimary(vehicle.id!);
   }
 
@@ -187,16 +189,14 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
                           return VehicleCard(
                             brand: vehicle.make ?? '',
                             model: vehicle.model ?? '',
-                            plateNumber:
-                                vehicle.plateNumber?.toString() ?? '',
+                            plateNumber: vehicle.plateNumber?.toString() ?? '',
                             year: vehicle.year,
                             mileageKm:
                                 (vehicle.currentMileage as num?)?.toInt() ?? 0,
                             isPrimary: vehicle.isPrimary ?? false,
                             isActionLoading: isActionBusy,
                             onDelete: () => onDelete(context, vehicle),
-                            onSetPrimary: () =>
-                                onSetPrimary(context, vehicle),
+                            onSetPrimary: () => onSetPrimary(context, vehicle),
                           );
                         },
                       ),
