@@ -23,6 +23,7 @@ abstract final class AppRoutes {
   static const addCar = '/add-car';
   static const bookingStatus = '/booking-status';
   static const profile = '/profile';
+  static const editProfile = '/edit-profile';
   static const myBookings = '/my-bookings';
   static const home = '/home';
 }
