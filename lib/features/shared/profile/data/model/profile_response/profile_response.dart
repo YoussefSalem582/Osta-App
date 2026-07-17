@@ -1,4 +1,4 @@
-import 'package:osta/features/customer/profile/data/model/profile_response/data.dart';
+import 'package:osta/features/shared/profile/data/model/profile_response/data.dart';
 
 class ProfileResponse {
   ProfileResponse({this.success, this.data});

@@ -417,6 +417,15 @@
   "deleteVehicleDialogMessage": "هل تريد حذف هذه السيارة؟",
   "deleteVehicleSuccess": "تم حذف السيارة بنجاح.",
   "setPrimarySuccess": "تم تعيين السيارة كأساسية.",
+  "profileOfflineSaved": "يتم عرض ملف محفوظ",
+  "profileLastUpdated": "آخر تحديث {time}",
+  "@profileLastUpdated": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "shopPriceEgp": "{price} ج.م",
   "@shopPriceEgp": {
     "placeholders": {

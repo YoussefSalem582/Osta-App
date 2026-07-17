@@ -24,6 +24,22 @@ The Store tab shipped as a hardcoded stub on both shells — `business_shop_page
 
 **Verification** — `flutter analyze lib` clean (0 errors/0 warnings); `test/structure/role_boundary_test.dart` passes (including "every l10n key used in lib exists in app_en.arb" and the shop-holdout bucket check); 3 `Product.fromJson` contract tests green. Backend: `vendor/bin/pint` clean and **34 Shop feature tests pass** (incl. new product-image upload/reject tests).
 
+## 2026-07-17 — Offline-first shared profile hub + skeleton loading (#40)
+
+Two changes landed together on `feat/40-account-profile`.
+
+**Shared profile hub** — the customer had a real `ProfileScreen`; the business "More" tab (`business/dashboard/.../more_screen.dart`) was a static mock (hardcoded `'N'` avatar, fake `4.8/312/24` stats, a dead settings link, no language/theme/sign-out/edit/delete). The whole profile feature **moved** `customer/profile/` → `features/shared/profile/` (move, not copy — the duplicate-class invariant forbids two), and both `CustomerShellPage` and `BusinessShellPage` now render the same `ProfileView`. `more_screen.dart` + its `Setting` widget are deleted (`ItemType` kept — `board_screen.dart` still uses it); technicians/capacity/analytics are phase-2 #58. Account quick-links are role-gated (My cars ↔ customer, My Shop ↔ business); everything else is shared.
+
+**Offline-first read** — `ProfileRepo` went from static to an injected instance (`ApiClient` + new `ProfileCache`) doing **cache-then-network**: `ProfileCubit.getProfile` paints the cached `/me` (JSON in `SharedPreferences`, keyed by `SessionStore.profileCacheKey`) instantly, then refreshes; `NetworkException` with a cache keeps showing it behind a "saved profile · last updated" chip, without a cache surfaces the error. Cache clears on sign-out via `SessionStore.clearSession()`. Writes stay online-only — the full §7 sqflite/sync module is deferred; the cache-then-network shape makes that a repo-internal swap later. First-load with no cache renders a `Skeletonizer` over the real layout instead of a spinner (§10; adds `skeletonizer`, no shimmer).
+
+**Note** — the working tree also carried unrelated in-progress shop work (`#48`/`#57`) that does not yet compile; profile changes were verified in isolation (analyze clean, 8 profile tests + structure invariants green).
+
+**Docs**
+
+- [`../CHANGELOG.md`](../CHANGELOG.md) — Added (offline profile + skeleton) and Changed (shared hub) entries.
+- [`CURRENT_STATUS.md`](CURRENT_STATUS.md) — status entry.
+- [`features/account-more.md`](features/account-more.md) — corrected the stale "empty stub" line for `customer/profile/`.
+
 ## 2026-07-17 — Architecture diagram set added (SVG)
 
 `osta_readme_files/diagrams/` held a single `register_flow.png` with **no committed source** — it couldn't be edited or extended. Added four hand-authored SVG diagrams that complement it: `routing_guard.svg` (the `resolveRedirect` decision ladder — splash → gates → shell), `http_auth_refresh.svg` (request path + queued 401 refresh-once + typed `ApiException`), `booking_funnel.svg` (epic #44 funnel: service → slot → 10-min hold → confirm → live status), and `clean_architecture_bloc.svg` (the 3-layer dependency rule + event→state cycle + repository error boundary).

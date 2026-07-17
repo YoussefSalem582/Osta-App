@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
 import 'package:osta/features/customer/home/presentation/pages/home_page.dart';
 import 'package:osta/features/customer/map/presentation/pages/map_screen.dart';
-import 'package:osta/features/customer/profile/presentation/pages/profile_screen.dart';
+import 'package:osta/features/shared/profile/presentation/pages/profile_screen.dart';
 import 'package:osta/features/shared/shell/presentation/role_shell.dart';
+import 'package:osta/features/shop/presentation/pages/shop_browse_page.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_bottom_nav_bar.dart';
 
@@ -31,10 +32,11 @@ class CustomerShellPage extends StatelessWidget {
           label: l10n.navBookings,
           body: const MyBookingsScreen(),
         ),
-        // Store — placeholder until the customer shop screen is built.
+        // Store — the two-sided marketplace: browse, detail, enquire (#48).
         AppBottomNavItem(
           icon: Icons.shopping_bag_outlined,
           label: l10n.navStore,
+          body: const ShopBrowsePage(),
         ),
         AppBottomNavItem(
           icon: Icons.more_horiz,

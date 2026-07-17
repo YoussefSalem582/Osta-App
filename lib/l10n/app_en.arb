@@ -424,6 +424,15 @@
   "deleteVehicleDialogMessage": "Are you sure you want to delete this vehicle?",
   "deleteVehicleSuccess": "Vehicle deleted successfully.",
   "setPrimarySuccess": "Vehicle set as primary.",
+  "profileOfflineSaved": "Showing saved profile",
+  "profileLastUpdated": "Updated {time}",
+  "@profileLastUpdated": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "shopPriceEgp": "{price} EGP",
   "@shopPriceEgp": {
     "placeholders": {
