@@ -95,14 +95,25 @@ class BusinessOnboardingState extends Equatable {
   /// A custom service counts: #53 requires ≥1 service in the catalog, not ≥1
   /// preset. Reading only selectedPresetIds would block a merchant who typed
   /// their own services in and picked none of the presets.
-  bool get canActivate =>
-      (selectedPresetIds.isNotEmpty || customServices.isNotEmpty) &&
-      !isActivating;
+  bool get canActivate => selectedServiceCount > 0 && !isActivating;
+
+  /// Everything the catalog would post on Activate — chosen presets plus staged
+  /// custom services. Drives the count on the Activate button.
+  int get selectedServiceCount =>
+      selectedPresetIds.length + customServices.length;
 
   List<CatalogPreset> get filteredPresets {
     final filter = categoryFilter;
     if (filter == null || filter.isEmpty) return presets;
     return presets.where((p) => p.category == filter).toList();
+  }
+
+  /// Whether every currently-visible preset is already selected — the "add all"
+  /// shortcut has nothing left to do, so the page hides it.
+  bool get allFilteredSelected {
+    final filtered = filteredPresets;
+    return filtered.isNotEmpty &&
+        filtered.every((p) => selectedPresetIds.contains(p.id));
   }
 
   /// The identity draft, for [SessionStore.writeBusinessDraft].

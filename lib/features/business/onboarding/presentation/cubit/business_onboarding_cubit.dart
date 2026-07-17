@@ -94,11 +94,18 @@ class BusinessOnboardingCubit extends Cubit<BusinessOnboardingState> {
     emit(state.copyWith(selectedPresetIds: next));
   }
 
-  /// Selects every loaded preset (the "Add 12 common" CTA).
-  void selectAllPresets() {
+  /// Selects every preset visible under the current category filter, unioned
+  /// into the existing selection (the "add all" shortcut). Unioning — not
+  /// replacing — respects the active chip and keeps picks from other
+  /// categories, so tapping it while "Oils" is showing adds the oils and
+  /// touches nothing else.
+  void selectFilteredPresets() {
     emit(
       state.copyWith(
-        selectedPresetIds: state.presets.map((p) => p.id).toSet(),
+        selectedPresetIds: {
+          ...state.selectedPresetIds,
+          for (final p in state.filteredPresets) p.id,
+        },
       ),
     );
   }
