@@ -190,7 +190,8 @@
   "roleSelectionTowTruckSubtitle": "Roadside help coming soon",
   "roleSelectionInfoBanner": "You can switch roles later from More.",
   "businessOnboardingTitle": "Register your business",
-  "businessOnboardingStep1Indicator": "Step 1 of 2 · Identity & Location · No verification ✓",
+  "businessOnboardingStep1Indicator": "Identity & location",
+  "businessOnboardingLiveInstantly": "Goes live instantly · no verification",
   "businessOnboardingLogoTitle": "Service center logo",
   "businessOnboardingLogoSubtitle": "Shown to customers on map\nand center profile",
   "businessOnboardingTradeNameLabel": "Trade name (shown to customers)",
@@ -235,16 +236,47 @@
   "businessTypeCarWash": "Car wash",
   "businessCatalogSelectAtLeastOne": "Select at least one service to activate",
   "businessCatalogTitle": "Services catalog",
-  "businessCatalogStep2Indicator": "Step 2 of 2 · Services catalog",
+  "businessCatalogStep2Indicator": "Services catalog",
   "businessCatalogBannerText": "Select at least one service to activate your center. You can add custom services or change pricing anytime.",
   "businessCatalogFilterAll": "All",
   "businessCatalogFilterOils": "Oils & fluids",
   "businessCatalogFilterBrakes": "Brakes & suspension",
   "businessCatalogFilterAc": "AC & cooling",
-  "businessCatalogAddCommonTitle": "Add 12 common preset services",
+  "businessCatalogAddCommonTitle": "{count, plural, =1{Add 1 preset service} other{Add all {count} preset services}}",
+  "@businessCatalogAddCommonTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "businessCatalogAddCommonSubtitle": "Includes oil change, brake pads, AC refill & more",
   "businessCatalogAddCustomService": "Add custom service",
   "businessCatalogCreateAndActivate": "Create center and activate",
+  "businessCatalogActivateWithCount": "{count, plural, =1{Activate center · 1 service} other{Activate center · {count} services}}",
+  "@businessCatalogActivateWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "businessCatalogCustomBadge": "Custom",
+  "businessCatalogRemoveService": "Remove service",
+  "businessCatalogReviewTitle": "Ready to go live?",
+  "businessCatalogReviewLiveNote": "Your center becomes visible to customers immediately.",
+  "businessCatalogReviewLocationSet": "Location pinned on map",
+  "businessCatalogReviewServices": "{count, plural, =1{1 service} other{{count} services}}",
+  "@businessCatalogReviewServices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "businessCatalogReviewConfirm": "Activate now",
+  "businessCatalogReviewCancel": "Keep editing",
+  "commonBack": "Back",
   "shellNavDashboard": "Dashboard",
   "shellNavCatalog": "Catalog",
   "shellNavStore": "Store",

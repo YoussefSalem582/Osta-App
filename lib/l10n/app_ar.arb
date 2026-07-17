@@ -190,7 +190,8 @@
   "roleSelectionTowTruckSubtitle": "المساعدة على الطريق قريباً",
   "roleSelectionInfoBanner": "تقدر تبدل الدور لاحقاً من المزيد.",
   "businessOnboardingTitle": "سجّل نشاطك",
-  "businessOnboardingStep1Indicator": "الخطوة ١ من ٢ · الهوية والموقع · بدون توثيق ✓",
+  "businessOnboardingStep1Indicator": "الهوية والموقع",
+  "businessOnboardingLiveInstantly": "يُفعَّل فورًا · بدون توثيق",
   "businessOnboardingLogoTitle": "شعار المركز",
   "businessOnboardingLogoSubtitle": "يظهر للعملاء في الخريطة\nوملف المركز",
   "businessOnboardingTradeNameLabel": "الاسم التجاري (الظاهر للعملاء)",
@@ -235,16 +236,47 @@
   "businessTypeCarWash": "غسيل سيارات",
   "businessCatalogSelectAtLeastOne": "اختر خدمة واحدة على الأقل للتفعيل",
   "businessCatalogTitle": "كتالوج الخدمات",
-  "businessCatalogStep2Indicator": "الخطوة ٢ من ٢ · مطلوب لتفعيل المركز",
+  "businessCatalogStep2Indicator": "كتالوج الخدمات",
   "businessCatalogBannerText": "ابدأ من خدمات جاهزة وعدّلها وقت ما تحب – لازم خدمة واحدة على الأقل لتفعيل المركز.",
   "businessCatalogFilterAll": "الكل",
   "businessCatalogFilterOils": "زيوت",
   "businessCatalogFilterBrakes": "فرامل",
   "businessCatalogFilterAc": "تكييف",
-  "businessCatalogAddCommonTitle": "أضف ١٢ خدمة شائعة",
+  "businessCatalogAddCommonTitle": "{count, plural, =1{أضف خدمة جاهزة} other{أضف {count} خدمات جاهزة}}",
+  "@businessCatalogAddCommonTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "businessCatalogAddCommonSubtitle": "جاهزة بالأسعار - عدّلها بعدين",
   "businessCatalogAddCustomService": "أضف خدمة مخصصة",
   "businessCatalogCreateAndActivate": "إنشاء المركز وتفعيله",
+  "businessCatalogActivateWithCount": "{count, plural, =1{تفعيل المركز · خدمة واحدة} other{تفعيل المركز · {count} خدمات}}",
+  "@businessCatalogActivateWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "businessCatalogCustomBadge": "مخصّصة",
+  "businessCatalogRemoveService": "إزالة الخدمة",
+  "businessCatalogReviewTitle": "جاهز للتفعيل؟",
+  "businessCatalogReviewLiveNote": "سيظهر مركزك للعملاء فورًا.",
+  "businessCatalogReviewLocationSet": "الموقع محدّد على الخريطة",
+  "businessCatalogReviewServices": "{count, plural, =1{خدمة واحدة} other{{count} خدمات}}",
+  "@businessCatalogReviewServices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "businessCatalogReviewConfirm": "فعّل الآن",
+  "businessCatalogReviewCancel": "متابعة التعديل",
+  "commonBack": "رجوع",
   "shellNavDashboard": "لوحة",
   "shellNavCatalog": "الكتالوج",
   "shellNavStore": "المتجر",
