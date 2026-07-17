@@ -21,22 +21,21 @@ class BusinessCatalogRepo {
 
   static Future<void> addService({
     required String name,
-    required num price,
-    required int duration_minutes,
+    required int price,
+    required int durationMinutes,
   }) async {
     final response = await DioProvider.post(
       endpoint: ApiEndpoints.businessServices,
       data: {
-        'name': name,
-        'price': price,
-        'durationMinutes': duration_minutes,
+        "name": name,
+        "price": price,
+        "duration_minutes": durationMinutes,
       },
     );
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return;
-      // return ServiseModel.fromJson(response.data as Map<String, dynamic>);
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception("Failed to add service");
     }
-    throw Exception('Failed to add business services: ${response.statusCode}');
   }
 
   // ----------------------------------------------------------------

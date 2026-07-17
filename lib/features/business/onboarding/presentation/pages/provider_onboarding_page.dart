@@ -4,6 +4,7 @@ import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 
 /// Provider onboarding overview slide (Screen 3 of wizard flow).
+/// سكرين تعريف النشاط
 class ProviderOnboardingPage extends StatelessWidget {
   const ProviderOnboardingPage({
     this.onNext,

@@ -26,6 +26,8 @@ import 'package:osta/features/onboarding/presentation/language_page.dart';
 import 'package:osta/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:osta/features/role/presentation/coming_soon_page.dart';
 import 'package:osta/features/role/presentation/page/role_selection_page.dart';
+import 'package:osta/features/shop/presentation/cubit/shop_cubit.dart';
+import 'package:osta/features/shop/presentation/pages/business_shop_page.dart';
 import 'package:osta/features/splash/presentation/splash_page.dart';
 
 /// Declarative app router. Boots at the splash and defers all navigation to a
@@ -82,7 +84,15 @@ class AppRouter {
           ),
         ),
       ),
-
+      GoRoute(
+        path: BusinessShopPage.path,
+        builder: (context, state) {
+          return BlocProvider(
+            create: (_) => ShopCubit(),
+            child: const BusinessShopPage(),
+          );
+        },
+      ),
       GoRoute(
         path: AppRoutes.language,
         builder: (context, state) => const LanguagePage(),

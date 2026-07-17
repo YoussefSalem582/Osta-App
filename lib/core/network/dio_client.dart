@@ -84,89 +84,89 @@ class AuthInterceptor extends QueuedInterceptor {
 
   @override
   @override
-Future<void> onError(
-  DioException err,
-  ErrorInterceptorHandler handler,
-) async {
-  final options = err.requestOptions;
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
+    final options = err.requestOptions;
 
-  final eligible =
-      err.response?.statusCode == 401 &&
-      options.extra[ApiClient.noAuthKey] != true &&
-      options.extra[_retriedKey] != true;
+    final eligible =
+        err.response?.statusCode == 401 &&
+        options.extra[ApiClient.noAuthKey] != true &&
+        options.extra[_retriedKey] != true;
 
-  if (!eligible) {
-    return handler.next(err);
+    if (!eligible) {
+      return handler.next(err);
+    }
+
+    try {
+      print("========== TOKEN EXPIRED ==========");
+      print("Refreshing token...");
+
+      final access = await _freshAccessToken(options);
+
+      print("New Access Token: $access");
+
+      options.extra[_retriedKey] = true;
+      options.headers['Authorization'] = 'Bearer $access';
+
+      final response = await _refreshDio.fetch<dynamic>(options);
+
+      print("Original request retried successfully.");
+
+      handler.resolve(response);
+    } catch (e, s) {
+      print("========== REFRESH FAILED ==========");
+      print(e);
+      print(s);
+
+      await _tokens.clear();
+      _events.emitSessionExpired();
+
+      handler.next(err);
+    }
   }
 
-  try {
-    print("========== TOKEN EXPIRED ==========");
-    print("Refreshing token...");
+  Future<String> _freshAccessToken(RequestOptions failed) async {
+    final stored = await _tokens.readAccessToken();
+    final sentHeader = failed.headers['Authorization'];
 
-    final access = await _freshAccessToken(options);
+    if (stored != null && sentHeader != 'Bearer $stored') {
+      print("Another request already refreshed the token.");
+      return stored;
+    }
 
-    print("New Access Token: $access");
+    final refresh = await _tokens.readRefreshToken();
 
-    options.extra[_retriedKey] = true;
-    options.headers['Authorization'] = 'Bearer $access';
+    if (refresh == null) {
+      throw Exception("Refresh token is null");
+    }
 
-    final response = await _refreshDio.fetch<dynamic>(options);
+    print("Sending refresh request...");
+    print("Refresh Token: $refresh");
 
-    print("Original request retried successfully.");
+    final response = await _refreshDio.post<Map<String, dynamic>>(
+      ApiEndpoints.authRefresh,
+      data: {
+        'refresh_token': refresh,
+      },
+    );
 
-    handler.resolve(response);
-  } catch (e, s) {
-    print("========== REFRESH FAILED ==========");
-    print(e);
-    print(s);
+    print("Refresh Status Code: ${response.statusCode}");
+    print("Refresh Response:");
+    print(response.data);
 
-    await _tokens.clear();
-    _events.emitSessionExpired();
+    final pair = parseTokenPair(response.data?['data']);
 
-    handler.next(err);
+    await _tokens.writeTokens(
+      accessToken: pair.accessToken,
+      refreshToken: pair.refreshToken,
+    );
+
+    print("Tokens saved successfully.");
+
+    return pair.accessToken;
   }
-}
-
-Future<String> _freshAccessToken(RequestOptions failed) async {
-  final stored = await _tokens.readAccessToken();
-  final sentHeader = failed.headers['Authorization'];
-
-  if (stored != null && sentHeader != 'Bearer $stored') {
-    print("Another request already refreshed the token.");
-    return stored;
-  }
-
-  final refresh = await _tokens.readRefreshToken();
-
-  if (refresh == null) {
-    throw Exception("Refresh token is null");
-  }
-
-  print("Sending refresh request...");
-  print("Refresh Token: $refresh");
-
-  final response = await _refreshDio.post<Map<String, dynamic>>(
-    ApiEndpoints.authRefresh,
-    data: {
-      'refresh_token': refresh,
-    },
-  );
-
-  print("Refresh Status Code: ${response.statusCode}");
-  print("Refresh Response:");
-  print(response.data);
-
-  final pair = parseTokenPair(response.data?['data']);
-
-  await _tokens.writeTokens(
-    accessToken: pair.accessToken,
-    refreshToken: pair.refreshToken,
-  );
-
-  print("Tokens saved successfully.");
-
-  return pair.accessToken;
-}
 }
 
 /// Builds the shared [Dio] client every feature request flows through.

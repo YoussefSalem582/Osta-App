@@ -1,12 +1,14 @@
+import 'owner.dart';
+
 class Datum {
   String? id;
   String? name;
-  dynamic description;
-  dynamic category;
+  String? description;
+  String? category;
   int? price;
-  String? priceType;
-  int? durationMinutes;
-  bool? isActive;
+  List<dynamic>? images;
+  String? status;
+  Owner? owner;
   String? createdAt;
 
   Datum({
@@ -15,21 +17,23 @@ class Datum {
     this.description,
     this.category,
     this.price,
-    this.priceType,
-    this.durationMinutes,
-    this.isActive,
+    this.images,
+    this.status,
+    this.owner,
     this.createdAt,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     id: json['id'] as String?,
     name: json['name'] as String?,
-    description: json['description'] as dynamic,
-    category: json['category'] as dynamic,
+    description: json['description'] as String?,
+    category: json['category'] as String?,
     price: json['price'] as int?,
-    priceType: json['price_type'] as String?,
-    durationMinutes: json['duration_minutes'] as int?,
-    isActive: json['is_active'] as bool?,
+    images: json['images'] as List<dynamic>?,
+    status: json['status'] as String?,
+    owner: json['owner'] == null
+        ? null
+        : Owner.fromJson(json['owner'] as Map<String, dynamic>),
     createdAt: json['created_at'] as String?,
   );
 
@@ -39,9 +43,9 @@ class Datum {
     'description': description,
     'category': category,
     'price': price,
-    'price_type': priceType,
-    'duration_minutes': durationMinutes,
-    'is_active': isActive,
+    'images': images,
+    'status': status,
+    'owner': owner?.toJson(),
     'created_at': createdAt,
   };
 }

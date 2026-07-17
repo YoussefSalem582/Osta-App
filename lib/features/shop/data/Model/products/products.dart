@@ -1,20 +1,26 @@
 import 'datum.dart';
+import 'meta.dart';
 
-class ServiseModel {
+class Products {
   bool? success;
   List<Datum>? data;
+  Meta? meta;
 
-  ServiseModel({this.success, this.data});
+  Products({this.success, this.data, this.meta});
 
-  factory ServiseModel.fromJson(Map<String, dynamic> json) => ServiseModel(
+  factory Products.fromJson(Map<String, dynamic> json) => Products(
     success: json['success'] as bool?,
     data: (json['data'] as List<dynamic>?)
         ?.map((e) => Datum.fromJson(e as Map<String, dynamic>))
         .toList(),
+    meta: json['meta'] == null
+        ? null
+        : Meta.fromJson(json['meta'] as Map<String, dynamic>),
   );
 
   Map<String, dynamic> toJson() => {
     'success': success,
     'data': data?.map((e) => e.toJson()).toList(),
+    'meta': meta?.toJson(),
   };
 }

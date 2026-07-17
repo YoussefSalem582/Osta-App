@@ -1,19 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/core/theme/app_tokens.dart';
+import 'package:osta/features/shop/presentation/cubit/shop_cubit.dart';
+import 'package:osta/features/shop/presentation/cubit/shop_state.dart';
 import 'package:osta/features/shop/presentation/widgets/shop_product_card.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
-/// متجري (منتجات المركز) — the Store tab body of the business shell.
-/// Scaffold-less: the shell owns the app bar and bottom nav.
-class BusinessShopPage extends StatelessWidget {
+/// متجري (منتجات المركز)
+class BusinessShopPage extends StatefulWidget {
   const BusinessShopPage({super.key});
+
+  @override
+  State<BusinessShopPage> createState() => _BusinessShopPageState();
+    static const path = '/business-shop';
+
+}
+
+class _BusinessShopPageState extends State<BusinessShopPage> {
+@override
+void initState() {
+  super.initState();
+
+  context.read<ShopCubit>().loadInitData();
+}
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
+    
 
     return Column(
+      
       children: [
         Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
@@ -63,46 +81,45 @@ class BusinessShopPage extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: GridView.count(
-            crossAxisCount: 2,
-            crossAxisSpacing: AppSpacing.md,
-            mainAxisSpacing: AppSpacing.md,
-            childAspectRatio: 0.8,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm,
-            ),
-            children: [
-              ShopProductCard(
-                title: l10n.businessShopItem1Title,
-                price: l10n.businessShopItem1Price,
-                isActive: true,
-                activeText: l10n.businessShopBadgeActive,
-                pausedText: l10n.businessShopBadgePaused,
-              ),
-              ShopProductCard(
-                title: l10n.businessShopItem2Title,
-                price: l10n.businessShopItem2Price,
-                isActive: true,
-                activeText: l10n.businessShopBadgeActive,
-                pausedText: l10n.businessShopBadgePaused,
-              ),
-              ShopProductCard(
-                title: l10n.businessShopItem3Title,
-                price: l10n.businessShopItem3Price,
-                isActive: true,
-                activeText: l10n.businessShopBadgeActive,
-                pausedText: l10n.businessShopBadgePaused,
-              ),
-              ShopProductCard(
-                title: l10n.businessShopItem4Title,
-                price: l10n.businessShopItem4Price,
-                isActive: false,
-                activeText: l10n.businessShopBadgeActive,
-                pausedText: l10n.businessShopBadgePaused,
-              ),
-            ],
-          ),
+          
+          child: BlocBuilder<ShopCubit, ShopState>(
+  builder: (context, state) {
+
+    if (state is ShopLoadedState) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (state is ShopSuccessState) {
+
+      return GridView.builder(
+        itemCount: state.products.length,
+        gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: AppSpacing.md,
+          mainAxisSpacing: AppSpacing.md,
+          childAspectRatio: .8,
+        ),
+        itemBuilder: (_, index) {
+
+          final product = state.products[index];
+
+return ShopProductCard(
+  title: product.name ?? '',
+  price: '${product.price ?? 0} ج',
+  isActive: product.status == 'active',
+  activeText: l10n.businessShopBadgeActive,
+  pausedText: l10n.businessShopBadgePaused,
+);
+        },
+      );
+    }
+
+    return const SizedBox();
+  },
+)
         ),
       ],
     );

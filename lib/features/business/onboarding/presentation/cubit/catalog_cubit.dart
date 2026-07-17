@@ -22,4 +22,41 @@ class CatalogCubit extends Cubit<CatalogState> {
       emit(CatalogErrorState());
     }
   }
+
+  // ------------------------------------------------------
+  Future<void> addservice({
+    required String name,
+    required int price,
+    required int duration,
+  }) async {
+    try {
+      await BusinessCatalogRepo.addService(
+        name: name,
+        price: price,
+        durationMinutes: duration,
+      );
+      await loadInitData();
+    } catch (e) {
+      emit(CatalogErrorState());
+    }
+  }
+
+  // ------------------------------------------------------
+  Future<void> addCustomService({
+    required String name,
+    required int price,
+    required int duration,
+  }) async {
+    try {
+      await BusinessCatalogRepo.addService(
+        name: name,
+        price: price,
+        durationMinutes: duration,
+      );
+
+      await loadInitData();
+    } catch (e) {
+      emit(CatalogErrorState());
+    }
+  }
 }
