@@ -100,6 +100,17 @@ class ApiClient {
     parse,
   );
 
+  Future<ApiResult<T>> patch<T>(
+    String path, {
+    required T Function(Object? data) parse,
+    Object? body,
+    bool authenticated = true,
+  }) => _send(
+    () =>
+        _dio.patch<dynamic>(path, data: body, options: _options(authenticated)),
+    parse,
+  );
+
   Future<ApiResult<T>> delete<T>(
     String path, {
     required T Function(Object? data) parse,
@@ -152,7 +163,16 @@ class ApiClient {
     }
     return ApiResult(
       data,
-      meta: meta is Map<String, dynamic> ? PaginationMeta.fromJson(meta) : null,
+      // `meta` is not always pagination: `ApiResponse::success` also ships
+      // arbitrary blocks here (e.g. booking cancel returns `{refund: …}`).
+      // Only build PaginationMeta when a pagination block is actually present —
+      // otherwise `PaginationMeta.fromJson` casts a missing `current_page` and
+      // throws a raw TypeError instead of a typed ApiException.
+      meta:
+          meta is Map<String, dynamic> &&
+              (meta['pagination'] != null || meta['current_page'] != null)
+          ? PaginationMeta.fromJson(meta)
+          : null,
     );
   }
 
