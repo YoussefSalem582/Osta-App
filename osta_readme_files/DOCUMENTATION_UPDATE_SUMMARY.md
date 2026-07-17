@@ -4,6 +4,18 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-17 — Business Services & Pricing (#56) backend connection and ServicesCubit integration
+
+Connected `BusinessServicesPage` (`Feature #56`, `/business/services`) to backend services and promotions (`GET/POST /business/services`, `PUT /business/services/{id}`, `GET/POST /business/promotions`) following `Business Catalog (#23)` pattern without modifying any layout or widget hierarchy. Created `ServiceItem`, `ServicesModel`, `PromotionItem`, and `PromotionsModel` plain `Equatable` classes with hand-written `fromJson`/`toJson` in `lib/features/business/services/data/models/`. Created `BusinessServicesRepo` (`lib/features/business/services/data/repo/`) using `DioProvider` and `ServicesCubit` (`lib/features/business/services/presentation/cubit/`) managing `ServicesLoadingState`, `ServicesSuccessState`, and `ServicesErrorState`. Wrapped `BusinessServicesPage` in `BlocProvider(create: (_) => ServicesCubit()..loadServices())` and wired `_showAddServiceSheet` and `_showAddPromotionSheet` to `addService()` and `addPromotion()`.
+
+> ‏**ربط شاشة الكتالوج والأسعار (#56) بالخادم وتكامل ServicesCubit** (2026-07-17) — تم ربط شاشة `BusinessServicesPage` (`Feature #56`) بخدمات وعروض النشاط التجاري عبر نقاط النهاية (`/business/services` و`/business/promotions`) باتباع نمط الكتالوج المبدئي (#23) دون تغيير أي تصميم أو هيكل ودجات. أُنشئت النماذج `ServiceItem` و`ServicesModel` و`PromotionItem` و`PromotionsModel` في `data/models/`، وتم إنشاء `BusinessServicesRepo` مع `ServicesCubit` لإدارة حالات التحميل والنجاح والخطأ، وربط أزرار الإضافة والتفعيل بدوال الكيوبت المناسبة.
+
+## 2026-07-17 — Role Chooser (#33) backend connection and secure storage persistence
+
+Connected Role Chooser (`Feature #33`) to secure storage and authentication backend flow. Added `readActiveRole`, `writeActiveRole`, and `deleteActiveRole` to `TokenStorage` (`flutter_secure_storage`) and updated `SessionStore` and `SessionController` so that the chosen role (`activeRole`) is persisted in secure storage alongside `SharedPreferences`. The active role (`account_type`) is sent during both `/auth/register` and `/auth/login`, keeping the role synchronized across first-run selection and authentication.
+
+> ‏**ربط شاشة اختيار الدور (#33) بالخادم وحفظ الدور في التخزين الآمن** (2026-07-17) — تم ربط شاشة اختيار الدور (`Feature #33`) بالتخزين الآمن وتدفق المصادقة. أُضيفت دوال `readActiveRole` و`writeActiveRole` و`deleteActiveRole` إلى `TokenStorage` وتم تحديث `SessionStore` و`SessionController` لحفظ الدور المختار (`activeRole`) في التخزين الآمن بالإضافة إلى `SharedPreferences`. يُرسل الدور المختار كـ `account_type` عند التسجيل (`/auth/register`) والدخول (`/auth/login`)، مما يضمن تزامن الدور المختار عبر عمليات بدء التشغيل والمصادقة.
+
 ## 2026-07-17 — Business catalog route now owns its bloc scope
 
 `BusinessCatalogPage` was being routed directly from `app_router.dart` even though it calls `context.read<CatalogCubit>()` in `initState()`, which caused a `ProviderNotFoundException` on open. Wrapped the route in a `BlocProvider(create: (_) => CatalogCubit())` and imported the cubit in the router so the page can load its initial data immediately.

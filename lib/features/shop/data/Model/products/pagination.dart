@@ -1,11 +1,7 @@
-class Pagination {
-  int? total;
-  int? count;
-  int? perPage;
-  int? currentPage;
-  int? lastPage;
+import 'package:equatable/equatable.dart';
 
-  Pagination({
+class Pagination extends Equatable {
+  const Pagination({
     this.total,
     this.count,
     this.perPage,
@@ -21,6 +17,12 @@ class Pagination {
     lastPage: json['last_page'] as int?,
   );
 
+  final int? total;
+  final int? count;
+  final int? perPage;
+  final int? currentPage;
+  final int? lastPage;
+
   Map<String, dynamic> toJson() => {
     'total': total,
     'count': count,
@@ -28,4 +30,7 @@ class Pagination {
     'current_page': currentPage,
     'last_page': lastPage,
   };
+
+  @override
+  List<Object?> get props => [total, count, perPage, currentPage, lastPage];
 }

@@ -12,7 +12,7 @@ The business shell's control surface for the services catalog and time-bound pro
 
 | Issue | Title | State | Milestone | Priority | Owner | Backend |
 |---|---|---|---|---|---|---|
-| [app #56](https://github.com/YoussefSalem582/Osta-App/issues/56) | Business catalog & pricing management | OPEN | M5 | p1 | haidy | ready — [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) ✅ |
+| [app #56](https://github.com/YoussefSalem582/Osta-App/issues/56) | Business catalog & pricing management | COMPLETE | M5 | p1 | haidy | ready — [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) ✅ |
 
 The backend catalog + promotions CRUD ([backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57)) is shipped, so this epic is unblocked. The initial catalog seed (≥1 preset) happens earlier during business onboarding — see [business-onboarding.md](business-onboarding.md) and [backend #56](https://github.com/YoussefSalem582/osta_backend/issues/56).
 
@@ -56,15 +56,15 @@ The endpoints below are the backend contract for the catalog and promotions.
 
 | Method | Path | Purpose | Source | App status |
 |---|---|---|---|---|
-| GET | `/api/v1/business/services` | List the center's services | [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Planned |
-| POST | `/api/v1/business/services` | Create a service | [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Planned |
-| PUT | `/api/v1/business/services/{id}` | Update a service | [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Planned |
-| DELETE | `/api/v1/business/services/{id}` | Soft-delete a service | [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Planned |
-| GET | `/api/v1/business/promotions` | List promotions | [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Planned |
-| POST | `/api/v1/business/promotions` | Create a promotion | [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Planned |
-| PUT | `/api/v1/business/promotions/{id}` | Update a promotion | [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Planned |
-| DELETE | `/api/v1/business/promotions/{id}` | Delete a promotion | [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Planned |
-| GET | `/api/v1/centers/{id}/services` | Public reflection (active only) | [backend #42](https://github.com/YoussefSalem582/osta_backend/issues/42) | Planned |
+| GET | `/api/v1/business/services` | List the center's services | [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Shipped |
+| POST | `/api/v1/business/services` | Create a service | [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Shipped |
+| PUT | `/api/v1/business/services/{id}` | Update a service | [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Shipped |
+| DELETE | `/api/v1/business/services/{id}` | Soft-delete a service | [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Shipped |
+| GET | `/api/v1/business/promotions` | List promotions | [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Shipped |
+| POST | `/api/v1/business/promotions` | Create a promotion | [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Shipped |
+| PUT | `/api/v1/business/promotions/{id}` | Update a promotion | [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Shipped |
+| DELETE | `/api/v1/business/promotions/{id}` | Delete a promotion | [backend #57](https://github.com/YoussefSalem582/osta_backend/issues/57) | Shipped |
+| GET | `/api/v1/centers/{id}/services` | Public reflection (active only) | [backend #42](https://github.com/YoussefSalem582/osta_backend/issues/42) | Shipped |
 
 Field reference: service = `{ name, price (EGP decimal), price_type, duration_minutes, is_active }`; promotion = `{ title, description, discount_type, discount_value, starts_at, ends_at, is_active }`. Full catalogue: [../guides/09_api_endpoints.md](../guides/09_api_endpoints.md).
 

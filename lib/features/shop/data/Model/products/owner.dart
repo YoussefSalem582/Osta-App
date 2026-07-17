@@ -1,9 +1,7 @@
-class Owner {
-  String? type;
-  String? id;
-  String? name;
+import 'package:equatable/equatable.dart';
 
-  Owner({this.type, this.id, this.name});
+class Owner extends Equatable {
+  const Owner({this.type, this.id, this.name});
 
   factory Owner.fromJson(Map<String, dynamic> json) => Owner(
     type: json['type'] as String?,
@@ -11,9 +9,16 @@ class Owner {
     name: json['name'] as String?,
   );
 
+  final String? type;
+  final String? id;
+  final String? name;
+
   Map<String, dynamic> toJson() => {
     'type': type,
     'id': id,
     'name': name,
   };
+
+  @override
+  List<Object?> get props => [type, id, name];
 }

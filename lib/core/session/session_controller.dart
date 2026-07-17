@@ -35,7 +35,7 @@ class SessionController extends Cubit<SessionState> {
       SessionState(
         bootstrapped: true,
         locale: code == null ? null : Locale(code),
-        activeRole: _store.activeRole,
+        activeRole: await _store.readActiveRole(),
         hasToken: await _store.hasToken(),
       ),
     );

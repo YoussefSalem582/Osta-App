@@ -29,12 +29,23 @@ class SessionStore {
   /// The persisted active role, or `null` when the chooser still owes a pick.
   AppRole? get activeRole => AppRole.fromWire(_prefs.getString(_activeRoleKey));
 
-  Future<void> writeActiveRole(AppRole role) =>
-      _prefs.setString(_activeRoleKey, role.wireName);
+  /// Reads the active role from secure storage, falling back to SharedPreferences.
+  Future<AppRole?> readActiveRole() async {
+    final secureWire = await _tokens.readActiveRole();
+    return AppRole.fromWire(secureWire) ?? activeRole;
+  }
+
+  Future<void> writeActiveRole(AppRole role) async {
+    await _prefs.setString(_activeRoleKey, role.wireName);
+    await _tokens.writeActiveRole(role.wireName);
+  }
 
   /// Clears the active role only — keeps the token — so "switch role" returns
   /// the user to the chooser without logging them out.
-  Future<void> clearActiveRole() => _prefs.remove(_activeRoleKey);
+  Future<void> clearActiveRole() async {
+    await _prefs.remove(_activeRoleKey);
+    await _tokens.deleteActiveRole();
+  }
 
   /// Whether a Sanctum access token is held in secure storage.
   Future<bool> hasToken() async => await _tokens.readAccessToken() != null;

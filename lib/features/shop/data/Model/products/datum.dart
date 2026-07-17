@@ -1,17 +1,8 @@
-import 'owner.dart';
+import 'package:equatable/equatable.dart';
+import 'package:osta/features/shop/data/Model/products/owner.dart';
 
-class Datum {
-  String? id;
-  String? name;
-  String? description;
-  String? category;
-  int? price;
-  List<dynamic>? images;
-  String? status;
-  Owner? owner;
-  String? createdAt;
-
-  Datum({
+class Datum extends Equatable {
+  const Datum({
     this.id,
     this.name,
     this.description,
@@ -37,6 +28,16 @@ class Datum {
     createdAt: json['created_at'] as String?,
   );
 
+  final String? id;
+  final String? name;
+  final String? description;
+  final String? category;
+  final int? price;
+  final List<dynamic>? images;
+  final String? status;
+  final Owner? owner;
+  final String? createdAt;
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
@@ -48,4 +49,17 @@ class Datum {
     'owner': owner?.toJson(),
     'created_at': createdAt,
   };
+
+  @override
+  List<Object?> get props => [
+    id,
+    name,
+    description,
+    category,
+    price,
+    images,
+    status,
+    owner,
+    createdAt,
+  ];
 }
