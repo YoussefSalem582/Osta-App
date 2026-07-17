@@ -108,6 +108,7 @@ String? resolveRedirect({
 
   const inAppScreens = {
     AppRoutes.profile,
+    AppRoutes.editProfile,
     AppRoutes.garage,
     AppRoutes.addCar,
     AppRoutes.bookingStatus,

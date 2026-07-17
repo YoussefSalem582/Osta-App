@@ -11,10 +11,10 @@ class VehicleCard extends StatelessWidget {
     required this.model,
     required this.mileageKm,
     required this.isPrimary,
-    required this.onEdit,
     required this.onDelete,
     required this.onSetPrimary,
     this.year,
+    this.isActionLoading = false,
     this.icon = Icons.directions_car_rounded,
     super.key,
   });
@@ -24,7 +24,7 @@ class VehicleCard extends StatelessWidget {
   final int mileageKm;
   final String plateNumber;
   final bool isPrimary;
-  final VoidCallback onEdit;
+  final bool isActionLoading;
   final VoidCallback onDelete;
   final VoidCallback onSetPrimary;
   final int? year;
@@ -123,6 +123,25 @@ class VehicleCard extends StatelessWidget {
               ),
 
               if (isPrimary) const PrimaryBadge(),
+
+              const SizedBox(width: AppSpacing.xs),
+              SizedBox(
+                width: 32,
+                height: 32,
+                child: IconButton.filledTonal(
+                  onPressed: isActionLoading ? null : onDelete,
+                  padding: EdgeInsets.zero,
+                  style: IconButton.styleFrom(
+                    backgroundColor:
+                        colorScheme.errorContainer.withValues(alpha: 0.5),
+                    foregroundColor: colorScheme.error,
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  icon: const Icon(Icons.delete_outline_rounded, size: 16),
+                  tooltip: context.l10n.deleteVehicleDialogTitle,
+                ),
+              ),
             ],
           ),
 

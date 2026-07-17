@@ -46,4 +46,26 @@ class GarageCubit extends Cubit<GarageState> {
       emit(GarageAddError(e.toString()));
     }
   }
+
+  Future<void> setPrimary(Object vehicleId) async {
+    emit(const GarageSetPrimaryLoading());
+    try {
+      await GarageRepo.setPrimary(vehicleId);
+      emit(const GarageSetPrimarySuccess());
+    } on Object catch (e, s) {
+      log('Error in GarageCubit.setPrimary', error: e, stackTrace: s);
+      emit(GarageSetPrimaryError(e.toString()));
+    }
+  }
+
+  Future<void> deleteVehicle(Object vehicleId) async {
+    emit(const GarageDeleteLoading());
+    try {
+      await GarageRepo.deleteVehicle(vehicleId);
+      emit(const GarageDeleteSuccess());
+    } on Object catch (e, s) {
+      log('Error in GarageCubit.deleteVehicle', error: e, stackTrace: s);
+      emit(GarageDeleteError(e.toString()));
+    }
+  }
 }

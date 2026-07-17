@@ -4,7 +4,6 @@ import 'package:osta/features/customer/booking/presentation/booking_fixtures.dar
 import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/booking_list.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/tab_pill.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
-import 'package:osta/shared/ui/app_top_bar.dart';
 
 class MyBookingsScreen extends StatelessWidget {
   const MyBookingsScreen({super.key});
@@ -12,7 +11,6 @@ class MyBookingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-    appBar: AppTopBar(centerTitle: false, title: context.l10n.navBookings),
     body: const MyBookingsView(),
   );
 }

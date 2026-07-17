@@ -52,3 +52,41 @@ class GarageAddError extends GarageState {
   @override
   List<Object?> get props => [message];
 }
+
+// ── Set-primary sub-states ───────────────────────────────────────────────────
+
+class GarageSetPrimaryLoading extends GarageState {
+  const GarageSetPrimaryLoading();
+}
+
+class GarageSetPrimarySuccess extends GarageState {
+  const GarageSetPrimarySuccess();
+}
+
+class GarageSetPrimaryError extends GarageState {
+  const GarageSetPrimaryError(this.message);
+
+  final String message;
+
+  @override
+  List<Object?> get props => [message];
+}
+
+// ── Delete-vehicle sub-states ────────────────────────────────────────────────
+
+class GarageDeleteLoading extends GarageState {
+  const GarageDeleteLoading();
+}
+
+class GarageDeleteSuccess extends GarageState {
+  const GarageDeleteSuccess();
+}
+
+class GarageDeleteError extends GarageState {
+  const GarageDeleteError(this.message);
+
+  final String message;
+
+  @override
+  List<Object?> get props => [message];
+}

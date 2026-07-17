@@ -19,6 +19,9 @@ import 'package:osta/features/customer/garage/presentation/pages/add_car_screen.
 import 'package:osta/features/customer/garage/presentation/pages/my_garage_screen.dart';
 import 'package:osta/features/customer/home/presentation/pages/home_page.dart';
 import 'package:osta/features/customer/onboarding/presentation/pages/onboarding_page.dart';
+import 'package:osta/features/customer/profile/data/model/profile_response/data.dart'
+    as profile_data;
+import 'package:osta/features/customer/profile/presentation/pages/edit_profile_screen.dart';
 import 'package:osta/features/customer/profile/presentation/pages/profile_screen.dart';
 import 'package:osta/features/customer/shell/presentation/customer_shell_page.dart';
 import 'package:osta/features/shared/auth/presentation/choose/auth_choose_page.dart';
@@ -162,6 +165,14 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.profile,
         builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.editProfile,
+        builder: (context, state) {
+          final data = state.extra as profile_data.Data?;
+          if (data == null) return const ProfileScreen();
+          return EditProfileScreen(profileData: data);
+        },
       ),
       GoRoute(
         path: AppRoutes.myBookings,
