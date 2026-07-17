@@ -205,6 +205,8 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
                           const SizedBox(height: AppSpacing.lg),
                           LocationPickerCard(
                             hasLocation: state.hasLocation,
+                            latitude: state.latitude,
+                            longitude: state.longitude,
                             hasError: _showLocationError,
                             onTap: () => unawaited(_pickLocation()),
                           ),

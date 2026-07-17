@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_card.dart';
 
-/// Location picker card with a map-grid placeholder and pin-selection CTA.
+/// Location picker card. Shows a live map preview centered on the picked pin,
+/// or a grid placeholder before one is set.
 ///
 /// The card carries its own state: the border and label go primary once a pin
 /// is set ([hasLocation]), or error-colored when [hasError] and still unset —
@@ -12,12 +14,16 @@ import 'package:osta/shared/ui/app_card.dart';
 class LocationPickerCard extends StatelessWidget {
   const LocationPickerCard({
     this.onTap,
+    this.latitude,
+    this.longitude,
     this.hasLocation = false,
     this.hasError = false,
     super.key,
   });
 
   final VoidCallback? onTap;
+  final double? latitude;
+  final double? longitude;
   final bool hasLocation;
   final bool hasError;
 
@@ -29,6 +35,8 @@ class LocationPickerCard extends StatelessWidget {
     final accent = showError
         ? theme.colorScheme.error
         : theme.colorScheme.primary;
+    final showMap =
+        hasLocation && latitude != null && longitude != null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,57 +51,64 @@ class LocationPickerCard extends StatelessWidget {
           border: hasLocation || showError
               ? BorderSide(color: accent, width: 2)
               : null,
-          child: SizedBox(
-            height: 180,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: CustomPaint(
-                    painter: _GridPainter(
-                      color: theme.colorScheme.onSurfaceVariant.withValues(
-                        alpha: 0.15,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadii.lg),
+            child: SizedBox(
+              height: 180,
+              child: Stack(
+                children: [
+                  if (showMap)
+                    _MapPreview(target: LatLng(latitude!, longitude!))
+                  else ...[
+                    Positioned.fill(
+                      child: CustomPaint(
+                        painter: _GridPainter(
+                          color: theme.colorScheme.onSurfaceVariant.withValues(
+                            alpha: 0.15,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Icon(
+                        Icons.location_on,
+                        size: 40,
+                        color: accent,
+                      ),
+                    ),
+                  ],
+                  PositionedDirectional(
+                    bottom: AppSpacing.md,
+                    start: AppSpacing.md,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.sm,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface,
+                        borderRadius: BorderRadius.circular(AppRadii.pill),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.location_on, size: 16, color: accent),
+                          const SizedBox(width: AppSpacing.xs),
+                          Text(
+                            hasLocation
+                                ? l10n.businessOnboardingLocationSelected
+                                : l10n.businessOnboardingSelectLocation,
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: theme.colorScheme.onSurface,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ),
-                Center(
-                  child: Icon(
-                    hasLocation ? Icons.check_circle : Icons.location_on,
-                    size: 40,
-                    color: accent,
-                  ),
-                ),
-                PositionedDirectional(
-                  bottom: AppSpacing.md,
-                  start: AppSpacing.md,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: AppSpacing.sm,
-                    ),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.surface,
-                      borderRadius: BorderRadius.circular(AppRadii.pill),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.location_on, size: 16, color: accent),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text(
-                          hasLocation
-                              ? l10n.businessOnboardingLocationSelected
-                              : l10n.businessOnboardingSelectLocation,
-                          style: theme.textTheme.labelMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: theme.colorScheme.onSurface,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -107,6 +122,39 @@ class LocationPickerCard extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+/// Non-interactive map thumbnail with a fixed pin over the picked point.
+///
+/// Gestures are disabled and a transparent catcher sits on top so the whole
+/// card still opens the full-screen picker on tap instead of panning here.
+class _MapPreview extends StatelessWidget {
+  const _MapPreview({required this.target});
+  final LatLng target;
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          GoogleMap(
+            initialCameraPosition: CameraPosition(target: target, zoom: 15),
+            markers: {
+              Marker(markerId: const MarkerId('picked'), position: target),
+            },
+            zoomControlsEnabled: false,
+            zoomGesturesEnabled: false,
+            scrollGesturesEnabled: false,
+            rotateGesturesEnabled: false,
+            tiltGesturesEnabled: false,
+            myLocationButtonEnabled: false,
+            liteModeEnabled: true,
+          ),
+        ],
+      ),
     );
   }
 }
