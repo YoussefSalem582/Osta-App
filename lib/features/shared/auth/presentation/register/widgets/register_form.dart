@@ -56,6 +56,19 @@ class _RegisterFormState extends State<RegisterForm> {
   /// Shortest username worth a round-trip (also the server min).
   static const _minUsername = 3;
 
+  /// The 422 keys this form renders inline. `RegisterRequest` can also reject
+  /// `account_type`, `language_preference` and `avatar`, none of which have a
+  /// field here — so anything outside this set has to reach the user as a toast
+  /// or it is swallowed and submit looks like it did nothing.
+  static const _renderedFieldErrors = {
+    'first_name',
+    'last_name',
+    'username',
+    'email',
+    'phone',
+    'password',
+  };
+
   @override
   void dispose() {
     _usernameDebounce?.cancel();
@@ -145,7 +158,8 @@ class _RegisterFormState extends State<RegisterForm> {
     final l10n = context.l10n;
     return BlocConsumer<RegisterBloc, RegisterState>(
       listenWhen: (prev, curr) =>
-          curr.status == RegisterStatus.failure && curr.fieldErrors.isEmpty,
+          curr.status == RegisterStatus.failure &&
+          !curr.fieldErrors.keys.any(_renderedFieldErrors.contains),
       listener: (context, state) => AppToaster.showError(
         state.networkError
             ? context.l10n.errorNetwork
@@ -227,6 +241,7 @@ class _RegisterFormState extends State<RegisterForm> {
             textCapitalization: TextCapitalization.words,
             textInputAction: TextInputAction.next,
             autofillHints: const [AutofillHints.givenName],
+            errorText: state.fieldErrors['first_name']?.first,
             validator: (v) => AuthValidators.requiredField(context, v),
           ),
         ),
@@ -239,6 +254,7 @@ class _RegisterFormState extends State<RegisterForm> {
             textCapitalization: TextCapitalization.words,
             textInputAction: TextInputAction.next,
             autofillHints: const [AutofillHints.familyName],
+            errorText: state.fieldErrors['last_name']?.first,
             validator: (v) => AuthValidators.requiredField(context, v),
           ),
         ),

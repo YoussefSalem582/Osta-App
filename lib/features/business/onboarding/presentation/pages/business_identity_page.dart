@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_catalog_page.dart';
@@ -23,7 +24,7 @@ import 'package:osta/shared/ui/app_top_bar.dart';
 class BusinessIdentityPage extends StatefulWidget {
   const BusinessIdentityPage({super.key});
 
-  static const path = '/business-identity';
+  static const String path = AppRoutes.businessIdentity;
 
   @override
   State<BusinessIdentityPage> createState() => _BusinessIdentityPageState();
@@ -36,7 +37,7 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
   final _phone = TextEditingController();
   final _city = TextEditingController();
   final _address = TextEditingController();
-  String? _locationError;
+  bool _showLocationError = false;
 
   static const _businessTypes = [
     'workshop',
@@ -45,6 +46,12 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
     'tire_shop',
     'car_wash',
   ];
+
+  /// Newest first — a workshop founded last year is a likelier pick than 1900.
+  static List<int> get _foundingYears {
+    final now = DateTime.now().year;
+    return [for (var y = now; y >= 1900; y--) y];
+  }
 
   @override
   void initState() {
@@ -98,15 +105,13 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
     final point = await MapPinPickerSheet.show(context, initial: initial);
     if (point != null && mounted) {
       cubit.setLocation(point);
-      setState(() => _locationError = null);
+      setState(() => _showLocationError = false);
     }
   }
 
   void _submit() {
-    final cubit = context.read<BusinessOnboardingCubit>();
-    final l10n = context.l10n;
     // Sync controllers → cubit before submit.
-    cubit
+    final cubit = context.read<BusinessOnboardingCubit>()
       ..updateTradeName(_tradeName.text)
       ..updateLegalName(_legalName.text)
       ..updatePhone(_phone.text)
@@ -114,10 +119,10 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
       ..updateAddressLine(_address.text);
 
     final formOk = _formKey.currentState?.validate() ?? false;
-    if (!cubit.state.hasLocation) {
-      setState(() => _locationError = l10n.businessOnboardingLocationRequired);
-    }
-    if (!formOk || !cubit.state.hasLocation) return;
+    final hasLocation = cubit.state.hasLocation;
+    // Re-derive every submit so a fixed location clears the card error too.
+    setState(() => _showLocationError = !hasLocation);
+    if (!formOk || !hasLocation) return;
     unawaited(cubit.submitProfile());
   }
 
@@ -141,7 +146,10 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
       },
       builder: (context, state) {
         return Scaffold(
-          appBar: AppTopBar(title: l10n.businessOnboardingTitle),
+          appBar: AppTopBar(
+            title: l10n.businessOnboardingTitle,
+            subtitle: l10n.businessOnboardingLiveInstantly,
+          ),
           body: SafeArea(
             child: Column(
               children: [
@@ -197,18 +205,9 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
                           const SizedBox(height: AppSpacing.lg),
                           LocationPickerCard(
                             hasLocation: state.hasLocation,
+                            hasError: _showLocationError,
                             onTap: () => unawaited(_pickLocation()),
                           ),
-                          if (_locationError != null) ...[
-                            const SizedBox(height: AppSpacing.sm),
-                            Text(
-                              _locationError!,
-                              style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(
-                                    color: Theme.of(context).colorScheme.error,
-                                  ),
-                            ),
-                          ],
                           const SizedBox(height: AppSpacing.lg),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -260,6 +259,34 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
                             controller: _address,
                             textInputAction: TextInputAction.done,
                             errorText: state.fieldErrors['address_line']?.first,
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          // Optional, like the backend's `sometimes` rule; the
+                          // range mirrors `integer|min:1900|max:{this year}`.
+                          DropdownButtonFormField<int>(
+                            initialValue: state.yearFounded,
+                            decoration: InputDecoration(
+                              labelText:
+                                  l10n.businessOnboardingYearFoundedLabel,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(
+                                  AppRadii.md,
+                                ),
+                              ),
+                              errorText:
+                                  state.fieldErrors['year_founded']?.first,
+                            ),
+                            items: [
+                              for (final y in _foundingYears)
+                                DropdownMenuItem(value: y, child: Text('$y')),
+                            ],
+                            onChanged: (v) {
+                              if (v != null) {
+                                context
+                                    .read<BusinessOnboardingCubit>()
+                                    .updateYearFounded(v);
+                              }
+                            },
                           ),
                           const SizedBox(height: AppSpacing.xl),
                         ],

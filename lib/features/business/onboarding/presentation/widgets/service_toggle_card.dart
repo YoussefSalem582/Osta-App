@@ -1,47 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
+import 'package:osta/shared/extensions/context_ext.dart';
+import 'package:osta/shared/ui/app_card.dart';
+import 'package:osta/shared/ui/app_pill.dart';
 
-/// Card representing a toggleable catalog service item with price.
+/// A catalog service row with a price.
+///
+/// Two modes:
+/// - **Toggle** (presets): pass [onChanged]; the whole card and a trailing
+///   [Switch] flip [isSelected].
+/// - **Removable** (custom services): pass [onRemove]; the row is always in the
+///   catalog and carries a "Custom" badge plus a delete button. There is no
+///   switch, because a custom service isn't selected — it's staged, and the
+///   only action is to drop it. (A switch that deleted on "off" was the old
+///   data-loss trap this replaces.)
 class ServiceToggleCard extends StatelessWidget {
   const ServiceToggleCard({
     required this.title,
     required this.subtitle,
     required this.price,
-    required this.isSelected,
-    required this.onChanged,
+    this.isSelected = false,
+    this.onChanged,
+    this.onRemove,
     super.key,
-  });
+  }) : assert(
+         (onChanged == null) != (onRemove == null),
+         'Provide exactly one of onChanged (toggle) or onRemove (removable).',
+       );
 
   final String title;
   final String subtitle;
   final String price;
   final bool isSelected;
-  final ValueChanged<bool> onChanged;
+  final ValueChanged<bool>? onChanged;
+  final VoidCallback? onRemove;
+
+  bool get _removable => onRemove != null;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
+    // Removable (custom) rows always read as "in"; presets follow selection.
+    final active = _removable || isSelected;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.md,
-      ),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppRadii.lg),
-        border: Border.all(
-          color: isSelected
-              ? theme.colorScheme.primary.withValues(alpha: 0.3)
-              : theme.colorScheme.outlineVariant,
-        ),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
+    return AppCard(
+      onTap: _removable ? null : () => onChanged!(!isSelected),
+      elevation: AppElevation.low,
+      border: BorderSide(
+        color: active
+            ? theme.colorScheme.primary.withValues(alpha: 0.3)
+            : theme.colorScheme.outlineVariant,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,12 +59,26 @@ class ServiceToggleCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: theme.colorScheme.onSurface,
-                  ),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        title,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ),
+                    if (_removable) ...[
+                      const SizedBox(width: AppSpacing.sm),
+                      AppPill(
+                        label: l10n.businessCatalogCustomBadge,
+                        background: theme.colorScheme.primaryContainer,
+                        foreground: theme.colorScheme.primary,
+                      ),
+                    ],
+                  ],
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
@@ -78,34 +101,30 @@ class ServiceToggleCard extends StatelessWidget {
                   color: theme.colorScheme.primary,
                 ),
               ),
-              const SizedBox(width: AppSpacing.md),
-              Switch(
-                value: isSelected,
-                onChanged: onChanged,
-
-                // لون الدائرة
-                thumbColor: WidgetStateProperty.resolveWith((states) {
-                  return theme.colorScheme.onPrimary;
-                }),
-
-                // لون الخلفية
-                trackColor: WidgetStateProperty.resolveWith((states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return theme.colorScheme.primary;
-                  }
-                  return theme.colorScheme.outlineVariant;
-                }),
-
-                // لون البوردر
-                trackOutlineColor: WidgetStateProperty.resolveWith((states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return theme.colorScheme.primary;
-                  }
-                  return Colors.transparent;
-                }),
-
-                trackOutlineWidth: WidgetStateProperty.all(0),
-              ),
+              const SizedBox(width: AppSpacing.sm),
+              if (_removable)
+                IconButton(
+                  onPressed: onRemove,
+                  icon: const Icon(Icons.delete_outline),
+                  color: theme.colorScheme.error,
+                  tooltip: l10n.businessCatalogRemoveService,
+                )
+              else
+                Switch(
+                  value: isSelected,
+                  onChanged: onChanged,
+                  thumbColor: WidgetStateProperty.all(
+                    theme.colorScheme.onPrimary,
+                  ),
+                  trackColor: WidgetStateProperty.resolveWith(
+                    (states) => states.contains(WidgetState.selected)
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.outlineVariant,
+                  ),
+                  trackOutlineColor: WidgetStateProperty.all(
+                    Colors.transparent,
+                  ),
+                ),
             ],
           ),
         ],

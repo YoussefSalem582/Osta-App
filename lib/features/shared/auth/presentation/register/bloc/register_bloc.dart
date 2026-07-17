@@ -82,6 +82,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         password: event.password,
         phone: event.phone,
         accountType: role,
+        languagePreference: _session.state.locale?.languageCode,
       );
       // Register already stored the token, so this authenticated upload works.
       // Must run before onAuthenticated — that hands off to the router, which

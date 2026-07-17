@@ -1,103 +1,112 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
+import 'package:osta/shared/ui/app_card.dart';
 
-/// Location picker card with map grid placeholder and pin selection CTA.
+/// Location picker card with a map-grid placeholder and pin-selection CTA.
 ///
-/// When [hasLocation] is true, the CTA label switches to the "selected" copy.
+/// The card carries its own state: the border and label go primary once a pin
+/// is set ([hasLocation]), or error-colored when [hasError] and still unset —
+/// so the required-location message lives on the control instead of floating
+/// beneath it.
 class LocationPickerCard extends StatelessWidget {
   const LocationPickerCard({
     this.onTap,
     this.hasLocation = false,
+    this.hasError = false,
     super.key,
   });
 
   final VoidCallback? onTap;
   final bool hasLocation;
+  final bool hasError;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = context.l10n;
+    final showError = hasError && !hasLocation;
+    final accent = showError
+        ? theme.colorScheme.error
+        : theme.colorScheme.primary;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 180,
-        decoration: BoxDecoration(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AppCard(
+          onTap: onTap,
+          padding: EdgeInsets.zero,
+          elevation: AppElevation.none,
           color: theme.colorScheme.surfaceContainerHighest.withValues(
             alpha: 0.6,
           ),
-          borderRadius: BorderRadius.circular(AppRadii.lg),
-          border: hasLocation
-              ? Border.all(color: theme.colorScheme.primary, width: 2)
+          border: hasLocation || showError
+              ? BorderSide(color: accent, width: 2)
               : null,
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: CustomPaint(
-                painter: _GridPainter(
-                  color: theme.colorScheme.onSurfaceVariant.withValues(
-                    alpha: 0.15,
-                  ),
-                ),
-              ),
-            ),
-            Center(
-              child: Icon(
-                hasLocation ? Icons.check_circle : Icons.location_on,
-                size: 40,
-                color: theme.colorScheme.primary,
-              ),
-            ),
-            PositionedDirectional(
-              bottom: AppSpacing.md,
-              start: AppSpacing.md,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.sm,
-                ),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surface,
-                  borderRadius: BorderRadius.circular(AppRadii.pill),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 6,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.location_on,
-                      size: 16,
-                      color: hasLocation
-                          ? theme.colorScheme.primary
-                          : theme.colorScheme.error,
-                    ),
-                    const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      hasLocation
-                          ? l10n.businessOnboardingLocationSelected
-                          : l10n.businessOnboardingSelectLocation,
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: theme.colorScheme.onSurface,
+          child: SizedBox(
+            height: 180,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: CustomPaint(
+                    painter: _GridPainter(
+                      color: theme.colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.15,
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
+                Center(
+                  child: Icon(
+                    hasLocation ? Icons.check_circle : Icons.location_on,
+                    size: 40,
+                    color: accent,
+                  ),
+                ),
+                PositionedDirectional(
+                  bottom: AppSpacing.md,
+                  start: AppSpacing.md,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.sm,
+                    ),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface,
+                      borderRadius: BorderRadius.circular(AppRadii.pill),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.location_on, size: 16, color: accent),
+                        const SizedBox(width: AppSpacing.xs),
+                        Text(
+                          hasLocation
+                              ? l10n.businessOnboardingLocationSelected
+                              : l10n.businessOnboardingSelectLocation,
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+        if (showError) ...[
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            l10n.businessOnboardingLocationRequired,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.error,
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

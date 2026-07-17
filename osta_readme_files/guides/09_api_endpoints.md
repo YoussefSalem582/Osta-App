@@ -51,13 +51,19 @@ Login, refresh, and social exchange are the only endpoints the app calls today; 
 | POST | `/auth/register` | Register (`account_type`, optional multipart `avatar`) | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37)/[#40](https://github.com/YoussefSalem582/osta_backend/issues/40) | **Connected** (`AuthRepositoryImpl.register`) |
 | GET | `/auth/check-username?username=` | Live username availability → `{available: bool}` (public) | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37)/[#40](https://github.com/YoussefSalem582/osta_backend/issues/40) | **Connected** (`isUsernameAvailable`) |
 | POST | `/auth/login` | Email+password login (`account_type`; bad creds → **422**) | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37)/[#40](https://github.com/YoussefSalem582/osta_backend/issues/40) | **Connected** |
-| POST | `/auth/refresh` | Exchange refresh → new token pair | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37) | **Connected** (interceptor) |
+| POST | `/auth/refresh` | Rotate the token pair. **Auth: the refresh token as `Bearer`, empty body** | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37) | **Connected** (interceptor) |
 | POST | `/auth/logout` | Revoke current token | [#37](https://github.com/YoussefSalem582/osta_backend/issues/37) | Planned |
 | POST | `/auth/social/{google\|apple}` | Server-side Socialite token exchange | [#38](https://github.com/YoussefSalem582/osta_backend/issues/38) | **Connected** (`SocialTokenExchange`) |
-| POST | `/auth/password/forgot` | Send reset email (public) | [#39](https://github.com/YoussefSalem582/osta_backend/issues/39) | **Shipped** (backend) — ⚠️ app calls the wrong path |
-| POST | `/auth/password/reset` | Reset with token (public) | [#39](https://github.com/YoussefSalem582/osta_backend/issues/39) | **Shipped** (backend) — ⚠️ app calls the wrong path |
+| POST | `/auth/password/forgot` | Send reset email (public) | [#39](https://github.com/YoussefSalem582/osta_backend/issues/39) | **Connected** |
+| POST | `/auth/password/reset` | Reset with token (public) | [#39](https://github.com/YoussefSalem582/osta_backend/issues/39) | **Connected** |
 
-> ⚠️ **Mismatch.** `ApiEndpoints.authPasswordForgot` / `authPasswordReset` (`lib/core/network/api_endpoints.dart:16-17`) send `/forgot-password` and `/reset-password`. The backend registers `password/forgot` and `password/reset` inside `Route::prefix('auth')` (`routes/api/v1/auth.php:26-30`), under `Route::prefix('v1')` — so the real paths are `/api/v1/auth/password/{forgot,reset}`, and the app's calls 404. `git log -S"forgot-password" -- routes/` in the backend returns nothing, so the flat paths never existed there. Not changed here — it is a live auth path that wants verifying against the deployed server, not a drive-by edit inside a refactor.
+### Two contracts that are easy to get wrong
+
+**`/auth/refresh` takes the refresh token as the `Authorization` header, not a body field.** It sits behind `auth:sanctum` + `ability:refresh` (`routes/api/v1/auth.php:32-36`) and the controller only reads `$request->user()` — the refresh token *is* the credential, a Sanctum PAT minted with the `refresh` ability. Presenting the *access* token instead is a deliberate 403. Sending `{refresh_token: …}` with no header 401s, and the interceptor treats a failed refresh as a dead session, so this logs every user out at access-token expiry.
+
+**Multipart only works on POST.** PHP does not parse `multipart/form-data` on PUT, so a real PUT with a file leaves `$_POST` *and* `$_FILES` empty. Where the rules are `sometimes` (as on `PUT /business/profile`) that validates clean and saves nothing — 200 OK, whole payload discarded, no 422. Send `POST` with `_method: 'PUT'` in the form data; Laravel resolves the override before routing, so the existing `Route::put` still matches.
+
+> Neither is catchable from the backend test suite: `$this->put(['logo' => UploadedFile::fake()])` injects straight into Symfony's file bag and never builds a multipart body, so it passes while real HTTP fails. `test/core/network/wire_contract_test.dart` pins both from the client side.
 
 ---
 

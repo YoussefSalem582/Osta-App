@@ -45,8 +45,16 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<ThemeModeController>(
       () => ThemeModeController(getIt()),
     )
+    // `localeCode` resolves SessionStore lazily (it is registered below, and
+    // the closure only runs once a request is in flight), which both breaks the
+    // cycle and keeps the header live when the language screen changes it.
     ..registerLazySingleton<Dio>(
-      () => buildAppDio(getIt(), getIt(), getIt()),
+      () => buildAppDio(
+        getIt(),
+        getIt(),
+        getIt(),
+        localeCode: () => getIt<SessionStore>().localeCode,
+      ),
     )
     ..registerLazySingleton<ApiClient>(() => ApiClient(getIt()))
     ..registerLazySingleton<SocialTokenExchange>(
@@ -61,7 +69,7 @@ Future<void> configureDependencies() async {
       () => AuthRepositoryImpl(getIt(), getIt()),
     )
     ..registerLazySingleton<SessionController>(
-      () => SessionController(getIt(), getIt(), getIt()),
+      () => SessionController(getIt(), getIt(), getIt(), getIt()),
     )
     ..registerLazySingleton<CentersRepository>(
       () => CentersRepository(getIt()),
@@ -78,7 +86,7 @@ Future<void> configureDependencies() async {
       () => PasswordRecoveryBloc(getIt()),
     )
     ..registerFactory<BusinessOnboardingCubit>(
-      () => BusinessOnboardingCubit(getIt()),
+      () => BusinessOnboardingCubit(getIt(), getIt()),
     )
     ..registerLazySingleton<AppRouter>(() => AppRouter(getIt()));
 }

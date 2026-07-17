@@ -2,9 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
+import 'package:osta/features/business/onboarding/presentation/widgets/activation_review_sheet.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/add_custom_service_button.dart';
+import 'package:osta/features/business/onboarding/presentation/widgets/add_custom_service_sheet.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/add_preset_card.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/preset_services_banner.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/service_category_chips.dart';
@@ -21,10 +25,10 @@ import 'package:osta/shared/ui/status_states.dart';
 class BusinessCatalogPage extends StatefulWidget {
   const BusinessCatalogPage({this.onActivated, super.key});
 
-  static const path = '/business-catalog';
+  static const String path = AppRoutes.businessCatalog;
 
   /// Called after a successful `POST /business/catalog` so the router can
-  /// persist the onboarded flag and land in the business shell.
+  /// release the onboarding gate and land in the business shell.
   final VoidCallback? onActivated;
 
   @override
@@ -57,7 +61,38 @@ class _BusinessCatalogPageState extends State<BusinessCatalogPage> {
     };
   }
 
-  void _comingSoon() => AppToaster.showMessage(context.l10n.comingSoon);
+  Future<void> _addCustomService() async {
+    final cubit = context.read<BusinessOnboardingCubit>();
+    final service = await AddCustomServiceSheet.show(context);
+    if (service != null) cubit.addCustomService(service);
+  }
+
+  String _typeLabel(BuildContext context, String wire) {
+    final l10n = context.l10n;
+    return switch (wire) {
+      'dealership' => l10n.businessTypeDealership,
+      'mobile' => l10n.businessTypeMobile,
+      'tire_shop' => l10n.businessTypeTireShop,
+      'car_wash' => l10n.businessTypeCarWash,
+      _ => l10n.businessTypeWorkshop,
+    };
+  }
+
+  /// Last-look review before the center goes live, then activate on confirm.
+  Future<void> _confirmAndActivate(
+    BuildContext context,
+    BusinessOnboardingState state,
+  ) async {
+    final cubit = context.read<BusinessOnboardingCubit>();
+    final confirmed = await ActivationReviewSheet.show(
+      context,
+      tradeName: state.tradeName,
+      typeLabel: _typeLabel(context, state.businessType),
+      hasLocation: state.hasLocation,
+      serviceCount: state.selectedServiceCount,
+    );
+    if (confirmed ?? false) unawaited(cubit.activate());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,12 +168,17 @@ class _BusinessCatalogPageState extends State<BusinessCatalogPage> {
                                       );
                                 },
                               ),
-                              const SizedBox(height: AppSpacing.lg),
-                              AddPresetCard(
-                                onTap: () => context
-                                    .read<BusinessOnboardingCubit>()
-                                    .selectAllPresets(),
-                              ),
+                              // Hidden once every visible preset is already in
+                              // — the shortcut has nothing left to add.
+                              if (!state.allFilteredSelected) ...[
+                                const SizedBox(height: AppSpacing.lg),
+                                AddPresetCard(
+                                  count: state.filteredPresets.length,
+                                  onTap: () => context
+                                      .read<BusinessOnboardingCubit>()
+                                      .selectFilteredPresets(),
+                                ),
+                              ],
                               const SizedBox(height: AppSpacing.md),
                               for (final preset in state.filteredPresets) ...[
                                 ServiceToggleCard(
@@ -158,8 +198,28 @@ class _BusinessCatalogPageState extends State<BusinessCatalogPage> {
                                 ),
                                 const SizedBox(height: AppSpacing.sm),
                               ],
+                              // Staged locally; Activate posts each to
+                              // /business/services, which is a different
+                              // endpoint from the preset catalog above.
+                              for (final (i, service)
+                                  in state.customServices.indexed) ...[
+                                ServiceToggleCard(
+                                  title: service.name,
+                                  subtitle:
+                                      service.category ??
+                                      l10n.businessCustomServiceTitle,
+                                  price: EgpFormatter.format(
+                                    service.price,
+                                    locale: locale,
+                                  ),
+                                  onRemove: () => context
+                                      .read<BusinessOnboardingCubit>()
+                                      .removeCustomService(i),
+                                ),
+                                const SizedBox(height: AppSpacing.sm),
+                              ],
                               const SizedBox(height: AppSpacing.md),
-                              AddCustomServiceButton(onTap: _comingSoon),
+                              AddCustomServiceButton(onTap: _addCustomService),
                               const SizedBox(height: AppSpacing.xl),
                             ],
                           ),
@@ -184,16 +244,35 @@ class _BusinessCatalogPageState extends State<BusinessCatalogPage> {
                                 ),
                           ),
                         ),
-                      AppButton(
-                        label: l10n.businessCatalogCreateAndActivate,
-                        loading: state.isActivating,
-                        onPressed: state.canActivate
-                            ? () => unawaited(
-                                context
-                                    .read<BusinessOnboardingCubit>()
-                                    .activate(),
-                              )
-                            : null,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: AppButton(
+                              label: l10n.commonBack,
+                              variant: AppButtonVariant.secondary,
+                              onPressed: state.isActivating
+                                  ? null
+                                  : () => context.pop(),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            flex: 2,
+                            child: AppButton(
+                              label: state.selectedServiceCount > 0
+                                  ? l10n.businessCatalogActivateWithCount(
+                                      state.selectedServiceCount,
+                                    )
+                                  : l10n.businessCatalogCreateAndActivate,
+                              loading: state.isActivating,
+                              onPressed: state.canActivate
+                                  ? () => unawaited(
+                                      _confirmAndActivate(context, state),
+                                    )
+                                  : null,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 790" font-family="-apple-system, 'Segoe UI', Roboto, system-ui, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888780"/>
+    </marker>
+    <marker id="arrow-err" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b04a3f"/>
+    </marker>
+  </defs>
+  <style>
+    .title  { font-weight: 700; font-size: 16px; }
+    .sub    { font-size: 12.5px; }
+    .node   { stroke-width: 2; }
+    .shared     { fill: #f1efe8; stroke: #e2e0d9; }
+    .shared-t   { fill: #444441; }
+    .gate       { fill: #faeeda; stroke: #854f0b; }
+    .gate-t     { fill: #854f0b; }
+    .req      { stroke: #888780; stroke-width: 2; fill: none; }
+    .ret      { stroke: #888780; stroke-width: 2; fill: none; stroke-dasharray: 6 4; }
+    .err-t    { fill: #b04a3f; }
+    .edge-lbl { fill: #6b6a63; font-size: 12px; }
+    .heading  { fill: #2b2b28; font-weight: 700; font-size: 22px; }
+    .panel    { fill: #6b6a63; font-weight: 700; font-size: 15px; }
+  </style>
+
+  <rect x="0" y="0" width="1080" height="790" fill="#ffffff"/>
+
+  <text x="40" y="42" class="heading">Clean Architecture + BLoC</text>
+  <text x="40" y="66" class="shared-t sub">guides/02_architecture.md · three layers per feature, one event → one state, ApiException caught at the repository</text>
+
+  <!-- ===== Panel A : the dependency rule ===== -->
+  <text x="40" y="102" class="panel">Layers — the dependency rule</text>
+
+  <!-- Presentation -->
+  <rect x="60" y="120" width="300" height="190" rx="12" class="node shared"/>
+  <text x="210" y="148" text-anchor="middle" class="title shared-t">Presentation</text>
+  <text x="210" y="180" text-anchor="middle" class="sub shared-t">BLoC / Cubit  (events → states)</text>
+  <text x="210" y="204" text-anchor="middle" class="sub shared-t">Pages · feature Widgets</text>
+  <text x="210" y="228" text-anchor="middle" class="sub shared-t">BlocBuilder · BlocListener · Consumer</text>
+  <text x="210" y="286" text-anchor="middle" class="sub shared-t" font-style="italic">reads only the Domain layer</text>
+
+  <!-- Domain -->
+  <rect x="390" y="120" width="300" height="190" rx="12" class="node gate"/>
+  <text x="540" y="148" text-anchor="middle" class="title gate-t">Domain</text>
+  <text x="540" y="180" text-anchor="middle" class="sub gate-t">Entities (Equatable)</text>
+  <text x="540" y="204" text-anchor="middle" class="sub gate-t">Repository contracts (abstract)</text>
+  <text x="540" y="228" text-anchor="middle" class="sub gate-t">UseCases — one operation each</text>
+  <text x="540" y="286" text-anchor="middle" class="sub gate-t" font-style="italic">pure Dart · zero Flutter · depends on nothing</text>
+
+  <!-- Data -->
+  <rect x="720" y="120" width="300" height="190" rx="12" class="node shared"/>
+  <text x="870" y="148" text-anchor="middle" class="title shared-t">Data</text>
+  <text x="870" y="180" text-anchor="middle" class="sub shared-t">Models — hand fromJson / toJson</text>
+  <text x="870" y="204" text-anchor="middle" class="sub shared-t">RemoteDataSource → ApiClient</text>
+  <text x="870" y="228" text-anchor="middle" class="sub shared-t">Repository impl</text>
+  <text x="870" y="286" text-anchor="middle" class="sub shared-t" font-style="italic">implements Domain contracts</text>
+
+  <!-- dependency arrows point INTO Domain -->
+  <path class="req" d="M360,250 H390" marker-end="url(#arrow)"/>
+  <text x="375" y="242" text-anchor="middle" class="edge-lbl">depends on</text>
+  <path class="req" d="M720,250 H690" marker-end="url(#arrow)"/>
+  <text x="705" y="242" text-anchor="middle" class="edge-lbl">depends on</text>
+
+  <text x="540" y="342" text-anchor="middle" class="title shared-t">Presentation  →  Domain  ←  Data</text>
+
+  <!-- divider -->
+  <line x1="40" y1="374" x2="1040" y2="374" class="req" stroke-dasharray="2 6"/>
+
+  <!-- ===== Panel B : runtime cycle ===== -->
+  <text x="40" y="410" class="panel">Runtime — one event → one state</text>
+
+  <!-- loop: emit(state) → rebuild (Bloc top → UI top) -->
+  <path class="ret" d="M240,468 V440 H98 V468" marker-end="url(#arrow)"/>
+  <text x="169" y="432" text-anchor="middle" class="edge-lbl">emit(state) → BlocBuilder rebuilds UI</text>
+
+  <!-- row of 7 boxes : x = 40,182,324,466,608,750,892 ; w=116 ; y=468 h=64 ; center 500 -->
+  <g>
+    <rect x="40"  y="468" width="116" height="64" rx="12" class="node shared"/>
+    <text x="98"  y="496" text-anchor="middle" class="title shared-t">UI</text>
+    <text x="98"  y="516" text-anchor="middle" class="sub shared-t">Page / Builder</text>
+
+    <rect x="182" y="468" width="116" height="64" rx="12" class="node shared"/>
+    <text x="240" y="496" text-anchor="middle" class="title shared-t">Bloc</text>
+    <text x="240" y="516" text-anchor="middle" class="sub shared-t">events → states</text>
+
+    <rect x="324" y="468" width="116" height="64" rx="12" class="node shared"/>
+    <text x="382" y="496" text-anchor="middle" class="title shared-t">UseCase</text>
+    <text x="382" y="516" text-anchor="middle" class="sub shared-t">one op</text>
+
+    <rect x="466" y="468" width="116" height="64" rx="12" class="node gate"/>
+    <text x="524" y="492" text-anchor="middle" class="title gate-t">Repository</text>
+    <text x="524" y="512" text-anchor="middle" class="sub gate-t">error</text>
+    <text x="524" y="526" text-anchor="middle" class="sub gate-t">boundary</text>
+
+    <rect x="608" y="468" width="116" height="64" rx="12" class="node shared"/>
+    <text x="666" y="492" text-anchor="middle" class="title shared-t">DataSource</text>
+    <text x="666" y="514" text-anchor="middle" class="sub shared-t">Remote</text>
+
+    <rect x="750" y="468" width="116" height="64" rx="12" class="node shared"/>
+    <text x="808" y="492" text-anchor="middle" class="title shared-t">ApiClient</text>
+    <text x="808" y="512" text-anchor="middle" class="sub shared-t">envelope →</text>
+    <text x="808" y="526" text-anchor="middle" class="sub shared-t">ApiResult&lt;T&gt;</text>
+
+    <rect x="892" y="468" width="116" height="64" rx="12" class="node shared"/>
+    <text x="950" y="496" text-anchor="middle" class="title shared-t">Backend</text>
+    <text x="950" y="516" text-anchor="middle" class="sub shared-t">/api/v1</text>
+  </g>
+
+  <!-- forward arrows (call) -->
+  <g>
+    <path class="req" d="M156,500 H182" marker-end="url(#arrow)"/>
+    <path class="req" d="M298,500 H324" marker-end="url(#arrow)"/>
+    <path class="req" d="M440,500 H466" marker-end="url(#arrow)"/>
+    <path class="req" d="M582,500 H608" marker-end="url(#arrow)"/>
+    <path class="req" d="M724,500 H750" marker-end="url(#arrow)"/>
+    <path class="req" d="M866,500 H892" marker-end="url(#arrow)"/>
+  </g>
+  <text x="524" y="454" text-anchor="middle" class="edge-lbl">add(event)  ·  call(params)  ·  fetch()  →</text>
+
+  <!-- return dashed arrow : ApiClient → Bloc (data) -->
+  <path class="ret" d="M808,532 V576 H240 V532" marker-end="url(#arrow)"/>
+  <text x="524" y="596" text-anchor="middle" class="edge-lbl">ApiResult&lt;T&gt; → Model → Entity → emit(Loaded)</text>
+
+  <!-- error boundary callout -->
+  <rect x="60" y="628" width="960" height="120" rx="12" class="node gate"/>
+  <text x="82" y="654" class="title gate-t">Repository is the error boundary</text>
+  <text x="82" y="680" class="sub gate-t">Data catches typed ApiException in try/catch and rethrows or converts it. Nothing above the repository ever sees Dio or ApiException —</text>
+  <text x="82" y="700" class="sub gate-t">the Bloc catches only domain-level errors and does  emit(Error).  On failure the dashed return carries a thrown ApiException, not data.</text>
+  <text x="82" y="726" class="sub err-t">Note: the old sealed Failure type was deleted 2026-07-10 — the real error type is sealed ApiException (lib/core/network/api_exception.dart).</text>
+</svg>

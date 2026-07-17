@@ -88,14 +88,22 @@ String? resolveRedirect({
   // A freshly-authenticated business user runs the onboarding wizard
   // (identity → catalog) before reaching its shell. Merchants already saw the
   // logged-out carousel before register, so there is no intro step here.
-  // Gated by `businessOnboarded` (persisted after Activate so cold starts
-  // skip a finished wizard).
-  if (role == AppRole.business && !session.businessOnboarded) {
+  // Gates on an explicit `false` only, like the customer's gate below: `null`
+  // means the catalog check never resolved, and re-running a finished wizard
+  // would duplicate the owner's catalog.
+  if (role == AppRole.business && session.businessOnboarded == false) {
     const wizard = {
       AppRoutes.businessIdentity,
       AppRoutes.businessCatalog,
     };
     return wizard.contains(location) ? null : AppRoutes.businessIdentity;
+  }
+
+  // The customer's counterpart to that wizard: no car, no Home (#39). Gates on
+  // an explicit `false` only — `null` means the check never resolved, and a
+  // failed network call must not strand the user outside the app.
+  if (role == AppRole.customer && session.hasVehicle == false) {
+    return location == AppRoutes.addCar ? null : AppRoutes.addCar;
   }
 
   const inAppScreens = {

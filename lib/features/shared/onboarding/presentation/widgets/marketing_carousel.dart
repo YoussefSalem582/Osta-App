@@ -41,6 +41,13 @@ class _MarketingCarouselState extends State<MarketingCarousel> {
   /// Used by both "Get started" and "Skip".
   void _finish() => context.read<SessionController>().acknowledgeOnboarding();
 
+  /// Back to the role chooser. Without this the role pick is a one-way door:
+  /// neither the chooser nor this screen has a back affordance, so a mistaken
+  /// tap sticks until the app is killed. Clearing the role is all it takes —
+  /// the redirect guard forces `/role` whenever `activeRole` is null.
+  void _changeRole() =>
+      unawaited(context.read<SessionController>().switchRole());
+
   void _next() => unawaited(
     controller.nextPage(
       duration: const Duration(milliseconds: 300),
@@ -58,24 +65,29 @@ class _MarketingCarouselState extends State<MarketingCarousel> {
       body: SafeArea(
         child: Column(
           children: [
-            // Skip straight to auth-choose; hidden on the last slide where the
-            // primary button already reads "Get started".
-            Visibility(
-              visible: !isLast,
-              maintainSize: true,
-              maintainAnimation: true,
-              maintainState: true,
-              child: Align(
-                alignment: AlignmentDirectional.centerEnd,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: _changeRole,
+                    icon: const BackButtonIcon(),
+                    tooltip: l10n.onboardingBack,
                   ),
-                  child: TextButton(
-                    onPressed: _finish,
-                    child: Text(l10n.onboardingSkip),
+                  const Spacer(),
+                  // Skip straight to auth-choose; hidden on the last slide
+                  // where the primary button already reads "Get started".
+                  Visibility(
+                    visible: !isLast,
+                    maintainSize: true,
+                    maintainAnimation: true,
+                    maintainState: true,
+                    child: TextButton(
+                      onPressed: _finish,
+                      child: Text(l10n.onboardingSkip),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
             Expanded(

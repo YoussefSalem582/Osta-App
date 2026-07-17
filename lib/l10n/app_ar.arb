@@ -21,6 +21,7 @@
   "onboardingNext": "التالي",
   "onboardingStart": "ابدأ",
   "onboardingSkip": "تخطّي",
+  "onboardingBack": "تغيير الدور",
   "authChooseTitle": "أهلاً بك في أُسطى",
   "authChooseSubtitleCustomer": "تابع كعميل — احجز خدمات قريبة منك",
   "authChooseSubtitleBusiness": "تابع كنشاط تجاري — استقبل حجوزات مركزك",
@@ -72,6 +73,11 @@
   "plateNumber": "رقم اللوحة",
   "plateNumberHint": "ص أ ٢ ٤ ٧",
   "enterPlateNumber": "أدخل رقم اللوحة",
+  "carBrandOther": "أخرى",
+  "carBrandOtherHint": "اكتب ماركة سيارتك",
+  "carModelOtherHint": "اكتب موديل سيارتك",
+  "validationMileage": "أدخل عدد الكيلومترات رقمًا صحيحًا لا يقل عن صفر",
+  "validationPlateLength": "رقم اللوحة طويل جدًا",
   "saveAndProceed": "حفظ",
   "bookingStatus": "حالة الحجز",
   "workingOnYourCar": "جاري الشغل على عربيتك",
@@ -150,7 +156,7 @@
   "comingSoonBody": "هذه التجربة ليست جاهزة بعد.",
   "validationRequired": "مطلوب",
   "validationEmail": "أدخل بريدًا إلكترونيًا صحيحًا",
-  "validationPassword": "٨ أحرف على الأقل تتضمن حرفًا ورقمًا",
+  "validationPassword": "٨ أحرف على الأقل تتضمن حرفًا كبيرًا وحرفًا صغيرًا ورقمًا",
   "validationPasswordMatch": "كلمتا المرور غير متطابقتين",
   "validationPhone": "أدخل رقم هاتف مصري صحيح",
   "passwordStrengthWeak": "ضعيفة",
@@ -184,7 +190,8 @@
   "roleSelectionTowTruckSubtitle": "المساعدة على الطريق قريباً",
   "roleSelectionInfoBanner": "تقدر تبدل الدور لاحقاً من المزيد.",
   "businessOnboardingTitle": "سجّل نشاطك",
-  "businessOnboardingStep1Indicator": "الخطوة ١ من ٢ · الهوية والموقع · بدون توثيق ✓",
+  "businessOnboardingStep1Indicator": "الهوية والموقع",
+  "businessOnboardingLiveInstantly": "يُفعَّل فورًا · بدون توثيق",
   "businessOnboardingLogoTitle": "شعار المركز",
   "businessOnboardingLogoSubtitle": "يظهر للعملاء في الخريطة\nوملف المركز",
   "businessOnboardingTradeNameLabel": "الاسم التجاري (الظاهر للعملاء)",
@@ -194,6 +201,24 @@
   "businessOnboardingPhoneLabel": "رقم تليفون المركز",
   "businessOnboardingPhoneHint": "٥٦٧٨ ٢٤٠١ ٢",
   "businessOnboardingTypeLabel": "النوع",
+  "businessOnboardingYearFoundedLabel": "سنة التأسيس",
+  "setupPercentComplete": "اكتمل {percent}٪",
+  "@setupPercentComplete": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "businessCustomServiceTitle": "إضافة خدمة",
+  "businessCustomServiceName": "اسم الخدمة",
+  "businessCustomServiceNameHint": "تغيير زيت صناعي كامل",
+  "businessCustomServiceCategory": "الفئة (اختياري)",
+  "businessCustomServicePrice": "السعر (ج.م)",
+  "businessCustomServiceDuration": "المدة (دقائق)",
+  "businessCustomServiceSave": "أضف إلى الكتالوج",
+  "validationPrice": "أدخل سعرًا لا يقل عن صفر",
+  "validationDuration": "أدخل مدة بين ١ و١٤٤٠ دقيقة",
   "businessOnboardingCityLabel": "المدينة",
   "businessOnboardingCityValue": "مدينة نصر",
   "businessOnboardingAddressLabel": "العنوان",
@@ -211,16 +236,47 @@
   "businessTypeCarWash": "غسيل سيارات",
   "businessCatalogSelectAtLeastOne": "اختر خدمة واحدة على الأقل للتفعيل",
   "businessCatalogTitle": "كتالوج الخدمات",
-  "businessCatalogStep2Indicator": "الخطوة ٢ من ٢ · مطلوب لتفعيل المركز",
+  "businessCatalogStep2Indicator": "كتالوج الخدمات",
   "businessCatalogBannerText": "ابدأ من خدمات جاهزة وعدّلها وقت ما تحب – لازم خدمة واحدة على الأقل لتفعيل المركز.",
   "businessCatalogFilterAll": "الكل",
   "businessCatalogFilterOils": "زيوت",
   "businessCatalogFilterBrakes": "فرامل",
   "businessCatalogFilterAc": "تكييف",
-  "businessCatalogAddCommonTitle": "أضف ١٢ خدمة شائعة",
+  "businessCatalogAddCommonTitle": "{count, plural, =1{أضف خدمة جاهزة} other{أضف {count} خدمات جاهزة}}",
+  "@businessCatalogAddCommonTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "businessCatalogAddCommonSubtitle": "جاهزة بالأسعار - عدّلها بعدين",
   "businessCatalogAddCustomService": "أضف خدمة مخصصة",
   "businessCatalogCreateAndActivate": "إنشاء المركز وتفعيله",
+  "businessCatalogActivateWithCount": "{count, plural, =1{تفعيل المركز · خدمة واحدة} other{تفعيل المركز · {count} خدمات}}",
+  "@businessCatalogActivateWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "businessCatalogCustomBadge": "مخصّصة",
+  "businessCatalogRemoveService": "إزالة الخدمة",
+  "businessCatalogReviewTitle": "جاهز للتفعيل؟",
+  "businessCatalogReviewLiveNote": "سيظهر مركزك للعملاء فورًا.",
+  "businessCatalogReviewLocationSet": "الموقع محدّد على الخريطة",
+  "businessCatalogReviewServices": "{count, plural, =1{خدمة واحدة} other{{count} خدمات}}",
+  "@businessCatalogReviewServices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "businessCatalogReviewConfirm": "فعّل الآن",
+  "businessCatalogReviewCancel": "متابعة التعديل",
+  "commonBack": "رجوع",
   "shellNavDashboard": "لوحة",
   "shellNavCatalog": "الكتالوج",
   "shellNavStore": "المتجر",
