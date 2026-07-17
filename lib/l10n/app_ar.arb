@@ -372,5 +372,9 @@
   "deleteAccountDialogTitle": "حذف الحساب",
   "deleteAccountDialogMessage": "هل تريد حذف حسابك نهائياً؟ لا يمكن التراجع عن هذا الإجراء.",
   "deleteAccountSuccess": "تم حذف حسابك بنجاح.",
-  "deleteAccountError": "فشل حذف الحساب. حاول مرة أخرى."
+  "deleteAccountError": "فشل حذف الحساب. حاول مرة أخرى.",
+  "deleteVehicleDialogTitle": "حذف السيارة",
+  "deleteVehicleDialogMessage": "هل تريد حذف هذه السيارة؟",
+  "deleteVehicleSuccess": "تم حذف السيارة بنجاح.",
+  "setPrimarySuccess": "تم تعيين السيارة كأساسية."
 }

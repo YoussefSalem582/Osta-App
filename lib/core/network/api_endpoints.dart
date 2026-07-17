@@ -33,6 +33,7 @@ class ApiEndpoints {
   static String bookingCancel(Object id) => '/bookings/$id/cancel';
   static String bookingConfirm(Object id) => '/bookings/$id/confirm';
   static String bookingReschedule(Object id) => '/bookings/$id/reschedule';
+  static String bookingsByStatus(String status) => '/bookings?status=$status';
 
   // --- Business ---
   static const businessBookings = '/business/bookings';

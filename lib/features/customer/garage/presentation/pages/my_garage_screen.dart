@@ -12,6 +12,7 @@ import 'package:osta/features/customer/garage/presentation/cubit/garage_state.da
 import 'package:osta/features/customer/garage/presentation/widgets/empty_garage_view.dart';
 import 'package:osta/features/customer/garage/presentation/widgets/vehicle_card.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
+import 'package:osta/shared/ui/app_confirm_dialog.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
 class MyGarageScreen extends StatefulWidget {
@@ -22,63 +23,31 @@ class MyGarageScreen extends StatefulWidget {
 }
 
 class _MyGarageScreenState extends State<MyGarageScreen> {
-  List<Datum> _vehicles = [];
+  List<Datum> vehicles = [];
 
-  void onEdit(Datum vehicle) {}
-
-  Future<void> onDelete(Datum vehicle) async {
-    final l10n = context.l10n;
-    await showDialog<void>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(l10n.deleteCar),
-        content: Text(
-          l10n.deleteCarConfirm(
-            vehicle.make ?? '',
-            vehicle.model ?? '',
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-              setState(() => _vehicles.removeWhere((v) => v.id == vehicle.id));
-            },
-            child: Text(l10n.delete),
-          ),
-        ],
-      ),
+  Future<void> onDelete(BuildContext ctx, Datum vehicle) async {
+    final currentState = ctx.read<GarageCubit>().state;
+    if (currentState is GarageSetPrimaryLoading ||
+        currentState is GarageDeleteLoading) return;
+    final l10n = ctx.l10n;
+    final confirmed = await AppConfirmDialog.show(
+      context: ctx,
+      title: l10n.deleteVehicleDialogTitle,
+      message: l10n.deleteVehicleDialogMessage,
+      cancelLabel: l10n.cancel,
+      confirmLabel: l10n.delete,
+      isDestructive: true,
     );
+    if (confirmed != true) return;
+    if (!ctx.mounted) return;
+    await ctx.read<GarageCubit>().deleteVehicle(vehicle.id!);
   }
 
-  void onSetPrimary(Datum vehicle) {
-    setState(() {
-      _vehicles = _vehicles.map((v) {
-        return Datum(
-          id: v.id,
-          make: v.make,
-          model: v.model,
-          year: v.year,
-          plateNumber: v.plateNumber,
-          vin: v.vin,
-          color: v.color,
-          fuelType: v.fuelType,
-          transmission: v.transmission,
-          currentMileage: v.currentMileage,
-          isPrimary: v.id == vehicle.id,
-          deletedAt: v.deletedAt,
-          createdAt: v.createdAt,
-          updatedAt: v.updatedAt,
-        );
-      }).toList();
-    });
+  Future<void> onSetPrimary(BuildContext ctx, Datum vehicle) async {
+    final currentState = ctx.read<GarageCubit>().state;
+    if (currentState is GarageSetPrimaryLoading ||
+        currentState is GarageDeleteLoading) return;
+    await ctx.read<GarageCubit>().setPrimary(vehicle.id!);
   }
 
   @override
@@ -93,12 +62,46 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
         listener: (context, state) {
           if (state is GarageSuccess) {
             setState(() {
-              _vehicles = List<Datum>.from(state.response.data ?? []);
+              vehicles = List<Datum>.from(state.response.data ?? []);
             });
+          }
+
+          if (state is GarageSetPrimarySuccess) {
+            unawaited(context.read<GarageCubit>().getVehicles());
+          }
+
+          if (state is GarageSetPrimaryError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ),
+            );
+          }
+
+          if (state is GarageDeleteSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(context.l10n.deleteVehicleSuccess),
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              ),
+            );
+            unawaited(context.read<GarageCubit>().getVehicles());
+          }
+
+          if (state is GarageDeleteError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ),
+            );
           }
         },
         builder: (context, state) {
           final l10n = context.l10n;
+          final isActionBusy =
+              state is GarageSetPrimaryLoading || state is GarageDeleteLoading;
 
           if (state is GarageLoading || state is GarageInitial) {
             return Scaffold(
@@ -164,35 +167,48 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
                 ),
               ],
             ),
-            body: _vehicles.isEmpty
-                ? EmptyGarageView(
-                    onAddVehicle: () =>
-                        unawaited(context.push(AppRoutes.addCar)),
-                  )
-                : ListView.separated(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: AppSpacing.lg,
+            body: Stack(
+              children: [
+                vehicles.isEmpty
+                    ? EmptyGarageView(
+                        onAddVehicle: () =>
+                            unawaited(context.push(AppRoutes.addCar)),
+                      )
+                    : ListView.separated(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                          vertical: AppSpacing.lg,
+                        ),
+                        itemCount: vehicles.length,
+                        separatorBuilder: (_, _) =>
+                            const SizedBox(height: AppSpacing.md),
+                        itemBuilder: (context, index) {
+                          final vehicle = vehicles[index];
+                          return VehicleCard(
+                            brand: vehicle.make ?? '',
+                            model: vehicle.model ?? '',
+                            plateNumber:
+                                vehicle.plateNumber?.toString() ?? '',
+                            year: vehicle.year,
+                            mileageKm:
+                                (vehicle.currentMileage as num?)?.toInt() ?? 0,
+                            isPrimary: vehicle.isPrimary ?? false,
+                            isActionLoading: isActionBusy,
+                            onDelete: () => onDelete(context, vehicle),
+                            onSetPrimary: () =>
+                                onSetPrimary(context, vehicle),
+                          );
+                        },
+                      ),
+                if (isActionBusy)
+                  const Positioned.fill(
+                    child: ColoredBox(
+                      color: Colors.black12,
+                      child: Center(child: CircularProgressIndicator()),
                     ),
-                    itemCount: _vehicles.length,
-                    separatorBuilder: (_, _) =>
-                        const SizedBox(height: AppSpacing.md),
-                    itemBuilder: (context, index) {
-                      final vehicle = _vehicles[index];
-                      return VehicleCard(
-                        brand: vehicle.make ?? '',
-                        model: vehicle.model ?? '',
-                        plateNumber: vehicle.plateNumber?.toString() ?? '',
-                        year: vehicle.year,
-                        mileageKm:
-                            (vehicle.currentMileage as num?)?.toInt() ?? 0,
-                        isPrimary: vehicle.isPrimary ?? false,
-                        onEdit: () => onEdit(vehicle),
-                        onDelete: () => onDelete(vehicle),
-                        onSetPrimary: () => onSetPrimary(vehicle),
-                      );
-                    },
                   ),
+              ],
+            ),
           );
         },
       ),

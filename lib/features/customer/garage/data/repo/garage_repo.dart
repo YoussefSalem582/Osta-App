@@ -43,4 +43,20 @@ class GarageRepo {
       parse: (_) {},
     );
   }
+
+  static Future<void> setPrimary(Object vehicleId) async {
+    final api = GetIt.instance<ApiClient>();
+    await api.post<void>(
+      ApiEndpoints.vehiclePrimary(vehicleId),
+      parse: (_) {},
+    );
+  }
+
+  static Future<void> deleteVehicle(Object vehicleId) async {
+    final api = GetIt.instance<ApiClient>();
+    await api.delete<void>(
+      ApiEndpoints.vehicle(vehicleId),
+      parse: (_) {},
+    );
+  }
 }
