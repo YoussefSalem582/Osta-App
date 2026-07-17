@@ -10,11 +10,11 @@ class ApiEndpoints {
   static const authCheckUsername = '/auth/check-username';
   static const authLogin = '/auth/login';
   static const authLogout = '/auth/logout';
-  // NOTE: the live repo ships these flat paths, not the REST-nested
-  // `/auth/password/{forgot,reset}` this catalogue originally assumed. Kept as
-  // shipped — verify against the Laravel `routes/api/` before changing either.
-  static const authPasswordForgot = '/forgot-password';
-  static const authPasswordReset = '/reset-password';
+  // Registered inside the `Route::prefix('auth')` group, so they are nested —
+  // the flat `/forgot-password` these once pointed at has never existed in the
+  // backend at any commit, and both recovery screens 404'd against it.
+  static const authPasswordForgot = '/auth/password/forgot';
+  static const authPasswordReset = '/auth/password/reset';
   static const authRefresh = '/auth/refresh';
   static const authRegister = '/auth/register';
   static String authSocial(String provider) => '/auth/social/$provider';

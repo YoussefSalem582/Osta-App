@@ -108,8 +108,7 @@ class TechScreen extends StatelessWidget {
                               context.l10n.engine,
                               style: Theme.of(context).textTheme.bodySmall
                                   ?.copyWith(
-                                    // ponytail: no token for this color
-                                    color: const Color(0xFF3A694E),
+                                    color: context.appColors.onSuccess,
                                   ),
                             ),
                           ),
@@ -181,8 +180,7 @@ class TechScreen extends StatelessWidget {
                               context.l10n.engine,
                               style: Theme.of(context).textTheme.bodySmall
                                   ?.copyWith(
-                                    // ponytail: no token for this color
-                                    color: const Color(0xFF3A694E),
+                                    color: context.appColors.onSuccess,
                                   ),
                             ),
                           ),
@@ -254,8 +252,7 @@ class TechScreen extends StatelessWidget {
                               context.l10n.engine,
                               style: Theme.of(context).textTheme.bodySmall
                                   ?.copyWith(
-                                    // ponytail: no token for this color
-                                    color: const Color(0xFF3A694E),
+                                    color: context.appColors.onSuccess,
                                   ),
                             ),
                           ),

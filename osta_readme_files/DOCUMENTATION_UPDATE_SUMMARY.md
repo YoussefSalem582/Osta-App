@@ -4,6 +4,127 @@
 >
 > Dated log of documentation changes, newest first. Add an entry here after every meaningful change (see [`../AGENTS.md`](../AGENTS.md) § Mandatory Documentation).
 
+## 2026-07-17 — Architecture diagram set added (SVG)
+
+`osta_readme_files/diagrams/` held a single `register_flow.png` with **no committed source** — it couldn't be edited or extended. Added four hand-authored SVG diagrams that complement it: `routing_guard.svg` (the `resolveRedirect` decision ladder — splash → gates → shell), `http_auth_refresh.svg` (request path + queued 401 refresh-once + typed `ApiException`), `booking_funnel.svg` (epic #44 funnel: service → slot → 10-min hold → confirm → live status), and `clean_architecture_bloc.svg` (the 3-layer dependency rule + event→state cycle + repository error boundary).
+
+Each is grounded in real source (`lib/core/router/session_redirect.dart`, `guides/02_architecture.md`, `features/booking-funnel.md`) and shares one visual system — the role palette (customer teal / business purple / server-gate orange / shared neutral) was sampled **pixel-exact** from `register_flow.png`. SVG is the source of truth (editable, inline on GitHub, no build step); a white background keeps them readable in a dark README theme.
+
+Two diagrams surface a known doc-vs-code drift: `02_architecture.md` prose still calls the error type a sealed `Failure`, but it was **deleted 2026-07-10** — the diagrams use `sealed ApiException` (`core/network/api_exception.dart`), the real type.
+
+**Docs**
+
+- [`diagrams/README.md`](diagrams/README.md) — new; palette tokens, the diagram set, and how to add one.
+- [`../CHANGELOG.md`](../CHANGELOG.md) and [`CURRENT_STATUS.md`](CURRENT_STATUS.md) — entries.
+
+## 2026-07-17 — Business onboarding wizard UI/UX pass (#53)
+
+A friction + visual pass over the two-step wizard (`business_identity_page` → `business_catalog_page`, one shared `BusinessOnboardingCubit`). Structure unchanged — still two pushed routes, no PageView.
+
+**The data-loss trap** — `ServiceToggleCard` rendered an always-on `Switch` for custom services wired to `removeCustomService`, so a merchant flipping it "off" silently deleted a service they'd typed. The card now has two explicit modes (an `assert` enforces exactly one): presets **toggle** (Switch, tap-anywhere), custom services are **removable** (a `Custom` `AppPill` badge + a delete `IconButton`). Pinned by `test/features/business/onboarding/service_toggle_card_test.dart`.
+
+**Other friction** — the "Add common services" card hardcoded "12" and `selectAllPresets` replaced the whole selection ignoring the active chip; it's now `selectFilteredPresets` (unions the filtered set), the card shows the filtered count via an ICU-plural key, and hides once `allFilteredSelected`. The required-location error moved from a loose `Text` into `LocationPickerCard` itself (`hasError` → red border + inline message, re-derived every submit). The overloaded step-1 indicator string was slimmed to "Identity & location" with the "goes live instantly · no verification" reassurance moved to `AppTopBar(subtitle:)`.
+
+**New** — `selectedServiceCount` on the state drives an ICU-plural Activate label ("Activate center · N services"); a footer `Back` button (`AppButtonVariant.secondary` → `context.pop`); and `activation_review_sheet.dart` (mirrors `add_custom_service_sheet.dart`), a `Future<bool?>` bottom sheet shown before `activate()` — trade name, type, location ✓, service count, "goes live immediately," *Activate now* / *Keep editing*.
+
+**Visual refresh** — `ServiceToggleCard`, `LocationPickerCard`, `AddPresetCard` moved onto `AppCard` + `AppElevation` tokens, dropping the hand-rolled `Colors.black12` shadows and the stray Arabic-only comments.
+
+**Deliberately skipped** — the plan floated an `EmptyState` for "presets loaded but empty"; dropped as YAGNI (the seeded catalog always has all four categories, and a body-replacing empty state would trap the still-valid custom-service path).
+
+**Tests** — 8 new: the delete-trap regression + mode assert (`service_toggle_card_test`), `selectFilteredPresets` union / `allFilteredSelected` / `selectedServiceCount` (`business_onboarding_cubit_test`), and a page-level drive of the real `BusinessCatalogPage` — select → count label → review sheet → cancel-then-confirm (`business_catalog_page_test`). Suite 122 → 130, analyze clean.
+
+**Docs** — [`features/business-onboarding.md`](features/business-onboarding.md) (wizard UX), [`../CHANGELOG.md`](../CHANGELOG.md), [`CURRENT_STATUS.md`](CURRENT_STATUS.md).
+
+## 2026-07-17 — Register flow: onboarding completion moved to server state (#53, #32)
+
+A second pass over the register flow, this time following the two role branches all the way through rather than auditing contracts field by field. **The flow's shape needed no change** — `resolveRedirect` already encodes both branches exactly as epic [#53](https://github.com/YoussefSalem582/Osta-App/issues/53) specifies, and #53 explicitly defines the two-step post-register wizard, so nothing moved or merged. Three bugs sat underneath it.
+
+**Business onboarding re-ran on every sign-in and duplicated the catalog** — completion was a device-local `session_business_onboarded` preference that `clearSession()` wiped on sign-out. Nothing could restore it: `_AuthData.fromEnvelope` reads only `user.type` and dropped the `user.service_center` the backend does send (`service_center` had zero matches in `lib/`), and the backend had no completion signal at all — no column, none on `GET /me`'s `UserResource`, and no `GET /business/profile` (only `PUT`, `routes/api/v1/business.php:30`). Sign-out, reinstall or a second device each re-ran a finished wizard, and `AttachCatalogPresetsAction` blind-inserted every preset — no dedupe, no unique index on `services` — so 12 services became 24, then 36.
+
+`SessionState.businessOnboarded` now derives from `GET /business/services` being non-empty, mirroring the customer add-car gate that already worked: same tri-state (`null` = unknown, only `false` gates), same 4s cap, same fail-open. The catalog **is** the completion record — the wizard can't finish without ≥1 service. The preference was deleted rather than kept as a cache, so server state can't drift out of sync with itself.
+
+**Two more from the same audit** — `LoginWithSocialAction::createUser()` had no `UserType::Business` branch, so a social business signup got the role but no `ServiceCenter` and `ownerCenterOrFail` 403'd every `/business/*` endpoint; this became load-bearing once the gate started failing open, and `provisionCenter()` is now a `ProvisionsOwnerCenter` trait shared with `RegisterUserAction`. And the pre-auth role pick was a one-way door (no back affordance on the chooser or either carousel; auth-choose's back returned to the carousel) — the carousel now reuses `switchRole()`, which the guard's existing `role == null` branch already handles.
+
+**Backend** — `AttachCatalogPresetsAction` uses `updateOrCreate` keyed on the preset name within the center, so an Activate retry after a timeout the server had already applied re-prices instead of duplicating.
+
+**Tests** — 7 new across both repos (`test/core/session/session_gates_test.dart` + redirect and backend feature cases), each **verified to fail on the pre-fix source**. App 122/122, backend 14/14.
+
+**Docs**
+
+- [`features/business-onboarding.md`](features/business-onboarding.md) — the architecture and routing lines documented completion as persisted in `SessionStore`; both now describe the server-derived gate.
+- [`../CHANGELOG.md`](../CHANGELOG.md) and [`CURRENT_STATUS.md`](CURRENT_STATUS.md) — full entries.
+
+## 2026-07-16 — Register feature audited against the backend (#35, #37, #39, #53)
+
+Every request **and response** contract in the register flow was checked against the Laravel source. The register form itself was already sound — it collects every field #35 asks for, and the auth envelope, token-pair keys, `data.user.type`, `CatalogPreset`, `GET /me` and all `BusinessProfileInput` keys match exactly. **Five wire bugs sat either side of it**, none of them loud.
+
+**API drift resolved** — [`guides/09_api_endpoints.md`](guides/09_api_endpoints.md)
+
+- The ⚠️ on `/auth/password/{forgot,reset}` is **gone: the code is fixed**. The previous entry flagged the mismatch but left the code alone pending verification against the deployed server; that verification is done (the flat paths exist at no backend commit), so `ApiEndpoints` now sends the nested paths and both recovery screens resolve.
+- Added the two contracts that are easy to get wrong, because both are invisible from the backend suite:
+  - **`/auth/refresh` takes the refresh token as `Bearer`, with an empty body.** It is behind `auth:sanctum` + `ability:refresh` and reads `$request->user()`; the token *is* the credential. The app sent it as a body field with no header, so every user was logged out at access-token expiry.
+  - **Multipart only parses on POST.** A real `PUT` with a file leaves `$_POST` and `$_FILES` empty; where rules are `sometimes` that validates clean and saves nothing. `PUT /business/profile` therefore discarded the whole step-1 profile whenever a logo was attached.
+- Marked `/auth/refresh`'s auth requirement inline in the table.
+
+**Why the backend suite is green on all of this** — `$this->put(['logo' => UploadedFile::fake()])` injects into Symfony's file bag and never builds a multipart body. The test cannot see the bug. `test/core/network/wire_contract_test.dart` pins these from the client side instead, and the refresh + multipart cases are mutation-checked.
+
+**Issue prose that contradicts the code** — noted so nobody "fixes" the code toward it: #39 names `{brand, model, model_year, plate, kilometers}` and a Riverpod provider (the backend is `{make, model, year, plate_number, current_mileage}`; this app is bloc/get_it); #53 names three business types the backend enum doesn't have.
+
+**Mandatory**
+
+- [`../CHANGELOG.md`](../CHANGELOG.md) and [`CURRENT_STATUS.md`](CURRENT_STATUS.md) — full entries.
+
+## 2026-07-16 — `lib/features/` reorganised into business / customer / shared
+
+Docs updated for the role-bucket refactor and the dead-code sweep that rode with it.
+
+**Structure**
+
+- [`../AGENTS.md`](../AGENTS.md) § Feature Architecture — replaced "customer/business sub-areas nested" with the three-bucket table, the no-cross-role-imports rule and the test that enforces it, the `features/shop/` exception, and the `lib/shared/` vs `lib/features/shared/` distinction.
+- [`guides/01_folder_structure.md`](guides/01_folder_structure.md) — the `features/` tree was **badly stale**: it claimed `business/` and `customer/` had "no dart files" while both held ~60. Rewritten to the real tree with epic links per folder. The `test/` row claimed 11 files naming ones that don't exist; now 16, matching reality.
+- [`INDEX.md`](INDEX.md) — feature map repointed at the buckets.
+
+**Corrections found while editing** (stale on a different axis than the refactor)
+
+- [`../CLAUDE.md`](../CLAUDE.md) and [`../AGENTS.md`](../AGENTS.md) both described errors as a `sealed Failure`. **There is no `Failure` type** — it was deleted 2026-07-10. The real type is `sealed ApiException` (`core/network/api_exception.dart`). CLAUDE.md's own tool-use rules were instructing agents to use a class that doesn't exist.
+- `AGENTS.md` § Shared UI listed `AppBottomSheet` and `LoadingState`, both deleted 2026-07-10, and missed `AppToaster`, `BrandScaffold` and `OrDivider`. Now lists what `lib/shared/ui/` actually exports, plus the new `AppPill` and `AppSegmentedToggle`.
+- Both files said "no `build_runner` step"; true, but the codegen packages were still declared. They are now removed, and the docs say so.
+- `AGENTS.md` referenced `test/core/theme/contrast_test.dart`, which did not exist. It does now.
+
+**API drift** — [`guides/09_api_endpoints.md`](guides/09_api_endpoints.md)
+
+- `POST /forgot-password` / `/reset-password` were documented and **are what the app sends**. The backend registers `password/forgot` and `password/reset` inside `Route::prefix('auth')` under `Route::prefix('v1')` — real paths `/api/v1/auth/password/{forgot,reset}`. `git log -S"forgot-password" -- routes/` in the backend returns nothing, so the flat paths never existed. Documented with a ⚠️; **the code was not changed** — a live auth path deserves verification against the deployed server rather than a drive-by edit inside a refactor.
+- Marked `/legal/*` as having no route or controller (it read "Backend route shipped").
+- Added the undocumented-but-live `POST /telemetry/broadcast-latency`, `PATCH /business/bookings/{id}/assign-roster-mechanic`, and the `POST` halves of the reviews endpoints.
+
+**Mandatory**
+
+- [`../CHANGELOG.md`](../CHANGELOG.md) and [`CURRENT_STATUS.md`](CURRENT_STATUS.md) — full entries.
+
+## 2026-07-16 — Map empty state when GPS is outside Egypt
+
+iOS Simulator defaults to San Francisco; `GET /centers/nearby` returns `200` with an empty list when no centers exist in range. `CentersRepository.fetchNearby` sends `radius=25000` (25 km). Map empty overlay uses one friendly user-facing message (removed simulator/coordinate hints).
+
+## 2026-07-16 — Post-auth wizard skips provider intro
+
+After business register/login, `resolveRedirect` now opens `/business-identity` directly instead of `/provider-onboarding`. Merchants already saw the logged-out carousel; the intro screen stays routable but is no longer forced.
+
+## 2026-07-16 — Merchant onboarding carousel under `lib/features/onboarding`
+
+Added `MerchantOnboardingPage` (`/onboarding/business`) as the business twin of the customer `OnboardingPage` (`/onboarding`). Guard routes by role: customer → `/onboarding`, business → `/onboarding/business`, then auth. Post-auth center setup remains the provider wizard. Auth-choose back returns to the matching carousel via `resetOnboarding()`.
+
+## 2026-07-16 — Role-split first-run + role-aware auth titles
+
+Customer and business first-run paths split; login/register titles distinguish the chosen role.
+
+## 2026-07-16 — Business onboarding & registration wired (app #53)
+
+Wired the post-auth business wizard to the live B2B endpoints. Before: presentation-only screens; Activate only flipped an in-memory `businessOnboarded` flag; Skip jumped straight to catalog; wizard re-showed every cold start.
+
+**What landed** — `BusinessOnboardingRepository` (`PUT /business/profile` multipart, `GET /business/catalog/presets`, `POST /business/catalog`) + `BusinessOnboardingCubit` shared via a `ShellRoute` across intro → identity → catalog. Identity step: form validation, `image_picker` logo, full-screen `MapPinPickerSheet` (Google Map + center pin, reuses `LocationService`). Catalog step: 12 API presets, category chips, ≥1 required, Activate persists completion. `SessionStore` now persists `business_onboarded` (cleared on sign-out). Skip → identity. Docs + endpoint catalogue updated. 15 new tests; suite **42/42**.
+
+Touched: `lib/features/business/onboarding/**`, `lib/core/{session,router,di}`, ARB keys, `CHANGELOG.md`, `features/business-onboarding.md`, `guides/09_api_endpoints.md`, `CURRENT_STATUS.md`.
+
 ## 2026-07-16 — Bottom nav FAB white gap removed
 
 `AppBottomNavBar` no longer pads the stack taller for the center FAB (that reserved strip painted the scaffold surface white behind the button). The FAB now overlaps upward with a negative top offset; `RoleShell` sets `extendBody: true` so full-bleed bodies (map) paint behind the protrusion.

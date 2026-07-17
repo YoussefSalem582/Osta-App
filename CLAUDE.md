@@ -18,7 +18,7 @@
 
 - **Platform**: macOS (zsh) — Unix shell syntax; quote paths (repo lives under `/Volumes/files/...`).
 - **Flutter**: SDK on PATH; CI pins Flutter 3.44.1.
-- **No codegen**: the project uses **no `build_runner`** — models are plain `Equatable`, DI is manual `get_it`, errors are a `sealed Failure` (see [`docs/ROADMAP.md`](docs/ROADMAP.md) for the deferred codegen plan). Only l10n is generated, and `flutter gen-l10n` runs automatically on `flutter run`/`build`.
+- **No codegen**: the project uses **no `build_runner`**, and the codegen packages are not dependencies at all — models are plain `Equatable`, DI is manual `get_it`, errors are a `sealed ApiException` (`core/network/api_exception.dart`); see [`docs/ROADMAP.md`](docs/ROADMAP.md) for the deferred codegen plan. Only l10n is generated, and `flutter gen-l10n` runs automatically on `flutter run`/`build`.
 - **Approved commands** (no prompt needed): `flutter pub get`, `flutter gen-l10n`, `flutter analyze`, `flutter test`, `dart format .`
 - **Run the app**: `flutter run --dart-define=BASE_URL=https://osta.technology92.com/api/v1` (single `BASE_URL`; no `--flavor`).
 
@@ -29,7 +29,8 @@
 - **Never hardcode user-facing strings** — `context.l10n.<key>` + both ARB files + `flutter gen-l10n`.
 - **Never store tokens in SharedPreferences** — use `TokenStorage`.
 - **Never call Dio directly** — go through `ApiClient`.
-- **Errors are thrown, not returned** — `sealed Failure` + `try`/`catch`; there is no `Either`/`Result<T>`/`.fold()`.
+- **Errors are thrown, not returned** — `sealed ApiException` + `try`/`catch`; there is no `Either`/`Result<T>`/`.fold()`. (There is no `Failure` type — older docs said so; it was deleted.)
+- **Respect the role buckets** — `lib/features/` is `business/` · `customer/` · `shared/`. The first two must never import each other; `test/structure/role_boundary_test.dart` enforces it.
 - **No codegen** — do not add `freezed`/`injectable`/`json_serializable`/`build_runner` without following a [`docs/ROADMAP.md`](docs/ROADMAP.md) phase; models are hand-written, DI is registered by hand.
 - **Never edit generated l10n** (`lib/core/l10n/`) — regenerate instead.
 - **Before building a feature**: read its epic + feature doc (`osta_readme_files/features/`) — most features are stubs specified by open GitHub epics; don't invent scope.

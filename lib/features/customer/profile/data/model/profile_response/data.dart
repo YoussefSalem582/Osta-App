@@ -1,21 +1,4 @@
 class Data {
-  String? id;
-  String? firstName;
-  String? lastName;
-  String? fullName;
-  String? username;
-  String? supportId;
-  String? email;
-  String? phone;
-  String? type;
-  String? languagePreference;
-  dynamic avatarUrl;
-  bool? isActive;
-  bool? emailVerified;
-  dynamic oauthProvider;
-  List<String>? roles;
-  String? createdAt;
-
   Data({
     this.id,
     this.firstName,
@@ -55,6 +38,22 @@ class Data {
         : List<String>.from(json['roles'] as List),
     createdAt: json['created_at'] as String?,
   );
+  String? id;
+  String? firstName;
+  String? lastName;
+  String? fullName;
+  String? username;
+  String? supportId;
+  String? email;
+  String? phone;
+  String? type;
+  String? languagePreference;
+  dynamic avatarUrl;
+  bool? isActive;
+  bool? emailVerified;
+  dynamic oauthProvider;
+  List<String>? roles;
+  String? createdAt;
 
   Map<String, dynamic> toJson() => {
     'id': id,

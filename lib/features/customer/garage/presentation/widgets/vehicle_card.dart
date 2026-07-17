@@ -132,8 +132,9 @@ class VehicleCard extends StatelessWidget {
                   onPressed: isActionLoading ? null : onDelete,
                   padding: EdgeInsets.zero,
                   style: IconButton.styleFrom(
-                    backgroundColor:
-                        colorScheme.errorContainer.withValues(alpha: 0.5),
+                    backgroundColor: colorScheme.errorContainer.withValues(
+                      alpha: 0.5,
+                    ),
                     foregroundColor: colorScheme.error,
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,

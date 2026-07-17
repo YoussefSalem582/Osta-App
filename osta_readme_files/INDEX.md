@@ -142,9 +142,10 @@ flowchart TD
     Index --> Feats
     subgraph Feats [Feature docs - epic mirrors]
         FeatIdx[features/README.md]
-        FeatIdx --> B2C["Customer: home, map, booking, garage, payments, ..."]
-        FeatIdx --> B2B["Business: onboarding, dashboard, bookings, catalog, ..."]
-        FeatIdx --> Shared["Shared: auth, role, shop, notifications, legal"]
+        FeatIdx --> B2C["lib/features/customer/ — home, map, booking, garage, profile, wallet, onboarding, shell"]
+        FeatIdx --> B2B["lib/features/business/ — onboarding, intro, dashboard, bookings, services, team, wallet, shell"]
+        FeatIdx --> Shared["lib/features/shared/ — auth, splash, role, onboarding, shell, notifications"]
+        FeatIdx --> Unbucketed["lib/features/shop/ — unbucketed: #48 two-sided vs #57 business-only"]
     end
 
     Index --> ADR

@@ -3,7 +3,7 @@ import 'package:osta/features/business/bookings/presentation/screens/bookings.da
 import 'package:osta/features/business/dashboard/presentation/screens/board_screen.dart';
 import 'package:osta/features/business/dashboard/presentation/screens/more_screen.dart';
 import 'package:osta/features/business/services/presentation/pages/business_services_page.dart';
-import 'package:osta/features/shell/presentation/role_shell.dart';
+import 'package:osta/features/shared/shell/presentation/role_shell.dart';
 import 'package:osta/features/shop/presentation/pages/business_shop_page.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_bottom_nav_bar.dart';

@@ -23,11 +23,15 @@ class GarageRepo {
     }
   }
 
+  /// Keys must match `StoreVehicleRequest` exactly. Every optional rule there
+  /// is `nullable`, so a misspelt key is not a 422 — it is a silent drop that
+  /// still returns 201. `plate` was sent here and discarded on every save.
   static Future<void> addVehicle({
     required String make,
     required String model,
     required int year,
-    required String plate,
+    required String plateNumber,
+    int? currentMileage,
     String? color,
   }) async {
     final api = GetIt.instance<ApiClient>();
@@ -37,8 +41,9 @@ class GarageRepo {
         'make': make,
         'model': model,
         'year': year,
-        'plate': plate,
-        'color': color ?? '',
+        'plate_number': plateNumber,
+        'current_mileage': ?currentMileage,
+        if (color != null && color.isNotEmpty) 'color': color,
       },
       parse: (_) {},
     );

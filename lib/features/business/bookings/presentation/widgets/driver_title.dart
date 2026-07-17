@@ -39,7 +39,9 @@ class DriverTitle extends StatelessWidget {
         SelectedType(
           textColor: context.appColors.warning,
           text: context.l10n.waiting,
-          // ponytail: no token for this decorative color
+          // ponytail: peach container paired with appColors.warning above.
+          // Not warningContainer — no such token exists yet; add one if a
+          // second surface needs the same pairing.
           conColor: const Color(0xFFFAD6B8),
         ),
       ],

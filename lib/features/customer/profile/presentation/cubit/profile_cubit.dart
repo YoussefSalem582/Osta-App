@@ -24,7 +24,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
- // Future<void> fetchProfile() => getProfile();
+  // Future<void> fetchProfile() => getProfile();
 
   Future<void> updateProfile({
     required String firstName,
@@ -55,7 +55,6 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-
   Future<void> uploadAvatar(String filePath) async {
     emit(const ProfileAvatarUploading());
     try {
@@ -72,7 +71,6 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(ProfileAvatarError(e.toString()));
     }
   }
-
 
   Future<void> deleteAccount() async {
     emit(const ProfileDeleteLoading());

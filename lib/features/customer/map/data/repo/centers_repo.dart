@@ -24,7 +24,14 @@ class CentersRepository {
   }) async {
     final result = await _api.get<List<CenterSummary>>(
       ApiEndpoints.centersNearby,
-      query: {'lat': lat, 'lng': lng, 'service': ?category},
+      query: {
+        'lat': lat,
+        'lng': lng,
+        // 25 km default — backend PostGIS radius in metres; widens discovery
+        // within Egypt without changing the contract when omitted server-side.
+        'radius': 25000,
+        'service': ?category,
+      },
       parse: _parseList,
     );
     return result.data;

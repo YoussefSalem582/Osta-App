@@ -72,6 +72,14 @@ class ProfileListItem extends StatelessWidget {
   }
 }
 
+/// Rounded icon chip for a profile row: the icon at full strength on a 12%
+/// wash of itself.
+///
+/// ponytail: [color] is a decorative category tint, not a semantic role — it
+/// distinguishes rows at a glance and carries no success/warning/error meaning,
+/// which is why callers pass raw Material colours rather than AppColors. Any
+/// saturated hue reads at 12% on both themes. Give it a token only if these
+/// tints ever need to mean something.
 class ProfileItemIcon extends StatelessWidget {
   const ProfileItemIcon({required this.icon, required this.color, super.key});
 

@@ -25,27 +25,28 @@ class AppConfirmDialog extends StatelessWidget {
     required String cancelLabel,
     required String confirmLabel,
     bool isDestructive = false,
-  }) =>
-      showDialog<bool>(
-        context: context,
-        builder: (_) => AppConfirmDialog(
-          title: title,
-          message: message,
-          cancelLabel: cancelLabel,
-          confirmLabel: confirmLabel,
-          isDestructive: isDestructive,
-        ),
-      );
+  }) => showDialog<bool>(
+    context: context,
+    builder: (_) => AppConfirmDialog(
+      title: title,
+      message: message,
+      cancelLabel: cancelLabel,
+      confirmLabel: confirmLabel,
+      isDestructive: isDestructive,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    final confirmColor =
-        isDestructive ? colorScheme.error : colorScheme.primary;
-    final confirmForeground =
-        isDestructive ? colorScheme.onError : colorScheme.onPrimary;
+    final confirmColor = isDestructive
+        ? colorScheme.error
+        : colorScheme.primary;
+    final confirmForeground = isDestructive
+        ? colorScheme.onError
+        : colorScheme.onPrimary;
 
     return AlertDialog(
       shape: RoundedRectangleBorder(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
+import 'package:osta/features/business/onboarding/presentation/widgets/dashed_rect_painter.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 /// Dashed button CTA to add a custom catalog service.
@@ -20,7 +21,7 @@ class AddCustomServiceButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadii.lg),
       child: CustomPaint(
-        painter: _DashedRectPainter(
+        painter: DashedRectPainter(
           color: theme.colorScheme.primary.withValues(alpha: 0.5),
           radius: AppRadii.lg,
         ),
@@ -42,40 +43,4 @@ class AddCustomServiceButton extends StatelessWidget {
       ),
     );
   }
-}
-
-class _DashedRectPainter extends CustomPainter {
-  _DashedRectPainter({required this.color, required this.radius});
-  final Color color;
-  final double radius;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1.5
-      ..style = PaintingStyle.stroke;
-    final rrect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      Radius.circular(radius),
-    );
-    final path = Path()..addRRect(rrect);
-    final pathMetrics = path.computeMetrics();
-    for (final metric in pathMetrics) {
-      double distance = 0;
-      while (distance < metric.length) {
-        const length = 6.0;
-        const gap = 4.0;
-        canvas.drawPath(
-          metric.extractPath(distance, distance + length),
-          paint,
-        );
-        distance += length + gap;
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(_DashedRectPainter oldDelegate) =>
-      oldDelegate.color != color || oldDelegate.radius != radius;
 }

@@ -140,9 +140,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     pickedImage: pickedImage,
                     isUploading: isUploadingAvatar,
                     profileData: widget.profileData,
-                    onTap: isUploadingAvatar
-                        ? null
-                        : pickAndUploadAvatar,
+                    onTap: isUploadingAvatar ? null : pickAndUploadAvatar,
                   ),
 
                   const SizedBox(height: AppSpacing.xl),
@@ -152,10 +150,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                     controller: firstNameController,
                     textCapitalization: TextCapitalization.words,
                     prefixIcon: Icons.person_outline_rounded,
-                    validator: (v) =>
-                        (v == null || v.trim().isEmpty)
-                            ? l10n.validationRequired
-                            : null,
+                    validator: (v) => (v == null || v.trim().isEmpty)
+                        ? l10n.validationRequired
+                        : null,
                   ),
                   const SizedBox(height: AppSpacing.md),
 
@@ -164,10 +161,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                     controller: lastNameController,
                     textCapitalization: TextCapitalization.words,
                     prefixIcon: Icons.person_outline_rounded,
-                    validator: (v) =>
-                        (v == null || v.trim().isEmpty)
-                            ? l10n.validationRequired
-                            : null,
+                    validator: (v) => (v == null || v.trim().isEmpty)
+                        ? l10n.validationRequired
+                        : null,
                   ),
                   const SizedBox(height: AppSpacing.md),
 
@@ -175,10 +171,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                     label: l10n.editProfileUsername,
                     controller: usernameController,
                     prefixIcon: Icons.alternate_email_rounded,
-                    validator: (v) =>
-                        (v == null || v.trim().isEmpty)
-                            ? l10n.validationRequired
-                            : null,
+                    validator: (v) => (v == null || v.trim().isEmpty)
+                        ? l10n.validationRequired
+                        : null,
                   ),
                   const SizedBox(height: AppSpacing.md),
 
@@ -202,10 +197,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                     controller: phoneController,
                     keyboardType: TextInputType.phone,
                     prefixIcon: Icons.phone_outlined,
-                    validator: (v) =>
-                        (v == null || v.trim().isEmpty)
-                            ? l10n.validationRequired
-                            : null,
+                    validator: (v) => (v == null || v.trim().isEmpty)
+                        ? l10n.validationRequired
+                        : null,
                   ),
 
                   const SizedBox(height: AppSpacing.xl),

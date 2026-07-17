@@ -1,39 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/booking/data/model.dart/booking_item.dart';
+import 'package:osta/features/customer/booking/presentation/booking_fixtures.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/booking_list.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/tab_pill.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
-
-const upcoming = [
-  BookingItem(
-    id: 'OSTA-B2046',
-    centerName: 'مركز النصر للصيانة',
-    address: 'شبرا زيد وفلر',
-    date: 'النهاردة ١٢:٠٠',
-    price: 'ج٣٦٠',
-    status: BookingStatus.pending,
-  ),
-  BookingItem(
-    id: 'OSTA-B2047',
-    centerName: 'ورشة الأمانة',
-    address: 'مكمش قوارص الداخلية',
-    date: 'بكرة ١٠:٣٠',
-    price: 'ج٤٢٠',
-    status: BookingStatus.confirmed,
-  ),
-];
-
-const past = [
-  BookingItem(
-    id: 'OSTA-B2040',
-    centerName: 'مركز النصر للصيانة',
-    address: 'مواتير وطزارب',
-    date: '٢ يناير',
-    price: 'ج١٨٠',
-    status: BookingStatus.completed,
-  ),
-];
 
 class MyBookingsScreen extends StatelessWidget {
   const MyBookingsScreen({super.key});
@@ -84,7 +54,9 @@ class _MyBookingsViewState extends State<MyBookingsView> {
               child: Row(
                 children: [
                   TabPill(
-                    label: l10n.bookingUpcomingCount(upcoming.length),
+                    label: l10n.bookingUpcomingCount(
+                      BookingFixtures.upcoming.length,
+                    ),
                     selected: selectedTab == 0,
                     onTap: () => setState(() => selectedTab = 0),
                   ),
@@ -100,12 +72,12 @@ class _MyBookingsViewState extends State<MyBookingsView> {
           Expanded(
             child: selectedTab == 0
                 ? BookingList(
-                    bookings: upcoming,
+                    bookings: BookingFixtures.upcoming,
                     colorScheme: colorScheme,
                     textTheme: textTheme,
                   )
                 : BookingList(
-                    bookings: past,
+                    bookings: BookingFixtures.past,
                     colorScheme: colorScheme,
                     textTheme: textTheme,
                   ),

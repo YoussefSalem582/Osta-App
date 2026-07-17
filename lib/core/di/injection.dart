@@ -7,16 +7,18 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/dio_client.dart';
 import 'package:osta/core/network/dio_provider.dart';
 import 'package:osta/core/router/app_router.dart';
+import 'package:osta/core/services/location_service.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/session/session_store.dart';
 import 'package:osta/core/theme/theme_mode_controller.dart';
-import 'package:osta/features/auth/login/presentation/bloc/login_bloc.dart';
-import 'package:osta/features/auth/password_recovery/presentation/bloc/password_recovery_bloc.dart';
-import 'package:osta/features/auth/register/presentation/bloc/register_bloc.dart';
-import 'package:osta/features/auth/shared/data/auth_repository_impl.dart';
-import 'package:osta/features/auth/shared/domain/auth_repository.dart';
-import 'package:osta/features/customer/map/data/location_service.dart';
+import 'package:osta/features/business/onboarding/data/business_onboarding_repository.dart';
+import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
 import 'package:osta/features/customer/map/data/repo/centers_repo.dart';
+import 'package:osta/features/shared/auth/data/auth_repository_impl.dart';
+import 'package:osta/features/shared/auth/domain/auth_repository.dart';
+import 'package:osta/features/shared/auth/presentation/login/bloc/login_bloc.dart';
+import 'package:osta/features/shared/auth/presentation/password_recovery/bloc/password_recovery_bloc.dart';
+import 'package:osta/features/shared/auth/presentation/register/bloc/register_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Global service locator.
@@ -44,12 +46,19 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<ThemeModeController>(
       () => ThemeModeController(getIt()),
     )
+    // `localeCode` resolves SessionStore lazily (it is registered below, and
+    // the closure only runs once a request is in flight), which both breaks the
+    // cycle and keeps the header live when the language screen changes it.
     ..registerLazySingleton<Dio>(
-      () => buildAppDio(getIt(), getIt(), getIt()),
+      () => buildAppDio(
+        getIt(),
+        getIt(),
+        getIt(),
+        localeCode: () => getIt<SessionStore>().localeCode,
+      ),
     )
     // Ensure the static DioProvider helpers use the same app-level Dio.
-    ..registerLazySingleton<ApiClient>(() => ApiClient(getIt()))
-    ;
+    ..registerLazySingleton<ApiClient>(() => ApiClient(getIt()));
   // Wire the static DioProvider to the resolved Dio instance.
   DioProvider.dio = getIt<Dio>();
   getIt
@@ -65,7 +74,7 @@ Future<void> configureDependencies() async {
       () => AuthRepositoryImpl(getIt(), getIt()),
     )
     ..registerLazySingleton<SessionController>(
-      () => SessionController(getIt(), getIt(), getIt()),
+      () => SessionController(getIt(), getIt(), getIt(), getIt()),
     )
     ..registerLazySingleton<CentersRepository>(
       () => CentersRepository(getIt()),
@@ -73,10 +82,16 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<LocationService>(
       GeolocatorLocationService.new,
     )
+    ..registerLazySingleton<BusinessOnboardingRepository>(
+      () => BusinessOnboardingRepository(getIt()),
+    )
     ..registerFactory<LoginBloc>(() => LoginBloc(getIt(), getIt()))
     ..registerFactory<RegisterBloc>(() => RegisterBloc(getIt(), getIt()))
     ..registerFactory<PasswordRecoveryBloc>(
       () => PasswordRecoveryBloc(getIt()),
+    )
+    ..registerFactory<BusinessOnboardingCubit>(
+      () => BusinessOnboardingCubit(getIt(), getIt()),
     )
     ..registerLazySingleton<AppRouter>(() => AppRouter(getIt()));
 }

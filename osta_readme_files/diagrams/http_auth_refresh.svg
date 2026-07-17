@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1120" font-family="-apple-system, 'Segoe UI', Roboto, system-ui, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888780"/>
+    </marker>
+    <marker id="arrow-err" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b04a3f"/>
+    </marker>
+  </defs>
+  <style>
+    .title  { font-weight: 700; font-size: 14px; }
+    .sub    { font-size: 12px; }
+    .node   { stroke-width: 2; }
+    .shared     { fill: #f1efe8; stroke: #e2e0d9; }
+    .shared-t   { fill: #444441; }
+    .gate       { fill: #faeeda; stroke: #854f0b; }
+    .gate-t     { fill: #854f0b; }
+    .life     { stroke: #cfccc3; stroke-width: 1.5; stroke-dasharray: 3 5; }
+    .req      { stroke: #888780; stroke-width: 2; fill: none; }
+    .ret      { stroke: #888780; stroke-width: 2; fill: none; stroke-dasharray: 6 4; }
+    .err      { stroke: #b04a3f; stroke-width: 2; fill: none; }
+    .msg      { fill: #4a4a44; font-size: 12.5px; }
+    .msg-err  { fill: #b04a3f; font-size: 12.5px; }
+    .edge-lbl { fill: #6b6a63; font-size: 12px; }
+    .heading  { fill: #2b2b28; font-weight: 700; font-size: 22px; }
+    .branch   { fill: none; stroke: #cfccc3; stroke-width: 1.5; }
+    .branch-tag { fill: #6b6a63; font-size: 12px; font-weight: 700; }
+  </style>
+
+  <rect x="0" y="0" width="1500" height="1120" fill="#ffffff"/>
+
+  <text x="40" y="42" class="heading">HTTP request + auth-refresh lifecycle</text>
+  <text x="40" y="66" class="shared-t sub">guides/02_architecture.md · every call goes through ApiClient (envelope-aware) and AuthInterceptor (QueuedInterceptor)</text>
+
+  <!-- lifelines + headers : centers 100 285 470 655 840 1025 1210 1395 -->
+  <g>
+    <!-- Widget -->
+    <rect x="30"  y="86" width="140" height="44" rx="10" class="node shared"/>
+    <text x="100" y="108" text-anchor="middle" class="title shared-t">Widget</text>
+    <text x="100" y="124" text-anchor="middle" class="sub shared-t">BlocBuilder</text>
+    <line x1="100" y1="130" x2="100" y2="1060" class="life"/>
+    <!-- Bloc -->
+    <rect x="225" y="86" width="120" height="44" rx="10" class="node shared"/>
+    <text x="285" y="112" text-anchor="middle" class="title shared-t">Bloc</text>
+    <line x1="285" y1="130" x2="285" y2="1060" class="life"/>
+    <!-- UseCase -->
+    <rect x="410" y="86" width="120" height="44" rx="10" class="node shared"/>
+    <text x="470" y="112" text-anchor="middle" class="title shared-t">UseCase</text>
+    <line x1="470" y1="130" x2="470" y2="1060" class="life"/>
+    <!-- Repository (boundary) -->
+    <rect x="585" y="86" width="140" height="44" rx="10" class="node gate"/>
+    <text x="655" y="108" text-anchor="middle" class="title gate-t">Repository</text>
+    <text x="655" y="124" text-anchor="middle" class="sub gate-t">error boundary</text>
+    <line x1="655" y1="130" x2="655" y2="1060" class="life"/>
+    <!-- RemoteDataSource -->
+    <rect x="765" y="86" width="150" height="44" rx="10" class="node shared"/>
+    <text x="840" y="112" text-anchor="middle" class="title shared-t">RemoteDataSource</text>
+    <line x1="840" y1="130" x2="840" y2="1060" class="life"/>
+    <!-- ApiClient -->
+    <rect x="955" y="86" width="140" height="44" rx="10" class="node shared"/>
+    <text x="1025" y="108" text-anchor="middle" class="title shared-t">ApiClient</text>
+    <text x="1025" y="124" text-anchor="middle" class="sub shared-t">envelope → ApiResult</text>
+    <line x1="1025" y1="130" x2="1025" y2="1060" class="life"/>
+    <!-- AuthInterceptor -->
+    <rect x="1135" y="86" width="150" height="44" rx="10" class="node shared"/>
+    <text x="1210" y="108" text-anchor="middle" class="title shared-t">AuthInterceptor</text>
+    <text x="1210" y="124" text-anchor="middle" class="sub shared-t">QueuedInterceptor</text>
+    <line x1="1210" y1="130" x2="1210" y2="1060" class="life"/>
+    <!-- Backend -->
+    <rect x="1325" y="86" width="140" height="44" rx="10" class="node shared"/>
+    <text x="1395" y="108" text-anchor="middle" class="title shared-t">Backend</text>
+    <text x="1395" y="124" text-anchor="middle" class="sub shared-t">/api/v1</text>
+    <line x1="1395" y1="130" x2="1395" y2="1060" class="life"/>
+  </g>
+
+  <!-- ===== request phase (stepping down-right) ===== -->
+  <g class="msg">
+    <path class="req" d="M100,180 H285" marker-end="url(#arrow)"/>
+    <text x="192" y="174" text-anchor="middle">add(LoadX)</text>
+    <!-- self emit(Loading) -->
+    <path class="req" d="M285,205 h34 v20 h-34" marker-end="url(#arrow)"/>
+    <text x="326" y="221">emit(Loading)</text>
+    <path class="req" d="M285,250 H470" marker-end="url(#arrow)"/>
+    <text x="377" y="244" text-anchor="middle">call(params)</text>
+    <path class="req" d="M470,285 H655" marker-end="url(#arrow)"/>
+    <text x="562" y="279" text-anchor="middle">getX()</text>
+    <path class="req" d="M655,320 H840" marker-end="url(#arrow)"/>
+    <text x="747" y="314" text-anchor="middle">fetch()</text>
+    <path class="req" d="M840,355 H1025" marker-end="url(#arrow)"/>
+    <text x="932" y="349" text-anchor="middle">get&lt;T&gt;('/centers/nearby')</text>
+    <path class="req" d="M1025,390 H1210" marker-end="url(#arrow)"/>
+    <text x="1117" y="384" text-anchor="middle">request (attach Bearer)</text>
+    <path class="req" d="M1210,425 H1395" marker-end="url(#arrow)"/>
+    <text x="1302" y="419" text-anchor="middle">GET + token</text>
+  </g>
+
+  <!-- ===== branch A : 200 success ===== -->
+  <g>
+    <rect x="60" y="470" width="1410" height="130" rx="10" class="branch"/>
+    <rect x="60" y="470" width="120" height="24" rx="10" class="node shared"/>
+    <text x="120" y="487" text-anchor="middle" class="branch-tag">alt · 200</text>
+    <g class="msg">
+      <path class="ret" d="M1395,520 H1025" marker-end="url(#arrow)"/>
+      <text x="1210" y="514" text-anchor="middle">{ success:true, data, meta }</text>
+      <path class="ret" d="M1025,550 H840" marker-end="url(#arrow)"/>
+      <text x="932" y="544" text-anchor="middle">ApiResult&lt;T&gt;</text>
+      <path class="ret" d="M840,550 H655" marker-end="url(#arrow)"/>
+      <text x="747" y="544" text-anchor="middle">Model</text>
+      <path class="ret" d="M655,580 H285" marker-end="url(#arrow)"/>
+      <text x="470" y="574" text-anchor="middle">return Entity</text>
+      <path class="req" d="M285,565 h34 v20 h-34" marker-end="url(#arrow)"/>
+      <text x="326" y="581">emit(Loaded)</text>
+    </g>
+  </g>
+
+  <!-- ===== branch B : 401 once ===== -->
+  <g>
+    <rect x="60" y="620" width="1410" height="150" rx="10" class="branch"/>
+    <rect x="60" y="620" width="140" height="24" rx="10" class="node gate"/>
+    <text x="130" y="637" text-anchor="middle" class="branch-tag">alt · 401 once</text>
+    <g class="msg">
+      <path class="err" d="M1395,670 H1210" marker-end="url(#arrow-err)"/>
+      <text x="1302" y="664" text-anchor="middle" class="msg-err">401</text>
+      <path class="req" d="M1210,700 H1395" marker-end="url(#arrow)"/>
+      <text x="1302" y="694" text-anchor="middle">POST /auth/refresh · Bearer refresh · empty body · queued</text>
+      <path class="req" d="M1210,730 H1395" marker-end="url(#arrow)"/>
+      <text x="1302" y="724" text-anchor="middle">retry original once</text>
+      <path class="ret" d="M1395,758 H1025" marker-end="url(#arrow)"/>
+      <text x="1210" y="752" text-anchor="middle">200, or final error →</text>
+    </g>
+    <text x="210" y="690" class="msg-err">Concurrent 401s queue behind one refresh (no storms). Failed refresh → AuthEvents.onSessionExpired → /auth.</text>
+  </g>
+
+  <!-- ===== branch C : other 4xx / 5xx ===== -->
+  <g>
+    <rect x="60" y="790" width="1410" height="150" rx="10" class="branch"/>
+    <rect x="60" y="790" width="170" height="24" rx="10" class="node shared"/>
+    <text x="145" y="807" text-anchor="middle" class="branch-tag">alt · other 4xx / 5xx</text>
+    <g class="msg">
+      <path class="err" d="M1395,840 H1025" marker-end="url(#arrow-err)"/>
+      <text x="1210" y="834" text-anchor="middle" class="msg-err">{ success:false, error:{code,message,details} }</text>
+      <path class="err" d="M1025,870 H840" marker-end="url(#arrow-err)"/>
+      <text x="932" y="864" text-anchor="middle" class="msg-err">throw ApiException</text>
+      <path class="err" d="M840,870 H655" marker-end="url(#arrow-err)"/>
+      <text x="747" y="864" text-anchor="middle" class="msg-err">throw</text>
+      <path class="err" d="M655,900 H285" marker-end="url(#arrow-err)"/>
+      <text x="545" y="894" text-anchor="middle" class="msg-err">rethrow / convert (typed ApiException)</text>
+      <path class="err" d="M285,885 h34 v20 h-34" marker-end="url(#arrow-err)"/>
+      <text x="326" y="901" class="msg-err">emit(Error)</text>
+    </g>
+    <text x="655" y="925" class="edge-lbl">Boundary: nothing above the Repository ever sees Dio or ApiException.</text>
+  </g>
+
+  <!-- exception legend -->
+  <g>
+    <rect x="60" y="965" width="1410" height="120" rx="12" class="node shared"/>
+    <text x="82" y="990" class="title shared-t">Typed ApiException (core/network/api_exception.dart)</text>
+    <text x="82"  y="1014" class="sub shared-t">ValidationException · 422 — carries fieldErrors; bad login is 422, not 401</text>
+    <text x="82"  y="1034" class="sub shared-t">UnauthenticatedException · 401 — normally caught by the interceptor first</text>
+    <text x="82"  y="1054" class="sub shared-t">ForbiddenException · 403 — cross-tenant / policy denial</text>
+    <text x="82"  y="1074" class="sub shared-t">NotFoundException · 404</text>
+    <text x="760" y="1014" class="sub shared-t">RateLimitException · 429 — may carry Retry-After</text>
+    <text x="760" y="1034" class="sub shared-t">ServerException · 5xx — also malformed envelopes</text>
+    <text x="760" y="1054" class="sub shared-t">NetworkException · — transport (timeout, DNS, refused)</text>
+    <text x="760" y="1074" class="sub gate-t">The old sealed Failure was deleted 2026-07-10; errors are ApiException.</text>
+  </g>
+</svg>

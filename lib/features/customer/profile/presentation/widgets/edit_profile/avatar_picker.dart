@@ -11,7 +11,7 @@ class AvatarPicker extends StatelessWidget {
     required this.isUploading,
     required this.profileData,
     required this.onTap,
-    super.key
+    super.key,
   });
 
   final String? avatarUrl;
@@ -54,8 +54,7 @@ class AvatarPicker extends StatelessWidget {
       );
     } else {
       final name = profileData.fullName ?? '';
-      final firstChar =
-          name.isNotEmpty ? name.characters.first : '؟';
+      final firstChar = name.isNotEmpty ? name.characters.first : '؟';
       avatar = CircleAvatar(
         radius: 52,
         backgroundColor: AppColors.brandLime,
