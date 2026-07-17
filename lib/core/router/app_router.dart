@@ -19,10 +19,10 @@ import 'package:osta/features/customer/garage/presentation/pages/add_car_screen.
 import 'package:osta/features/customer/garage/presentation/pages/my_garage_screen.dart';
 import 'package:osta/features/customer/home/presentation/pages/home_page.dart';
 import 'package:osta/features/customer/onboarding/presentation/pages/onboarding_page.dart';
-import 'package:osta/features/customer/profile/data/model/profile_response/data.dart'
+import 'package:osta/features/shared/profile/data/model/profile_response/data.dart'
     as profile_data;
-import 'package:osta/features/customer/profile/presentation/pages/edit_profile_screen.dart';
-import 'package:osta/features/customer/profile/presentation/pages/profile_screen.dart';
+import 'package:osta/features/shared/profile/presentation/pages/edit_profile_screen.dart';
+import 'package:osta/features/shared/profile/presentation/pages/profile_screen.dart';
 import 'package:osta/features/customer/shell/presentation/customer_shell_page.dart';
 import 'package:osta/features/shared/auth/presentation/choose/auth_choose_page.dart';
 import 'package:osta/features/shared/auth/presentation/login/login_page.dart';
@@ -34,6 +34,12 @@ import 'package:osta/features/shared/onboarding/presentation/language_page.dart'
 import 'package:osta/features/shared/role/presentation/coming_soon_page.dart';
 import 'package:osta/features/shared/role/presentation/page/role_selection_page.dart';
 import 'package:osta/features/shared/splash/presentation/splash_page.dart';
+import 'package:osta/features/shop/data/models/product.dart';
+import 'package:osta/features/shop/presentation/pages/my_products_page.dart';
+import 'package:osta/features/shop/presentation/pages/product_detail_page.dart';
+import 'package:osta/features/shop/presentation/pages/product_form_page.dart';
+import 'package:osta/features/shop/presentation/pages/seller_catalog_page.dart';
+import 'package:osta/features/shop/presentation/pages/shop_browse_page.dart';
 
 /// Declarative app router. Boots at the splash and defers all navigation to a
 /// single [resolveRedirect] guard keyed on the [SessionController] state, so
@@ -181,6 +187,35 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.home,
         builder: (context, state) => const HomePage(),
+      ),
+
+      // Shop (#48) — pushable routes; the browse + my-products bodies also live
+      // inside the role shells as the Store tab.
+      GoRoute(
+        path: AppRoutes.shopBrowse,
+        builder: (context, state) => const ShopBrowsePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.productDetail,
+        builder: (context, state) =>
+            ProductDetailPage(productId: (state.extra as String?) ?? ''),
+      ),
+      GoRoute(
+        path: AppRoutes.sellerCatalog,
+        builder: (context, state) {
+          final args = state.extra as SellerCatalogArgs?;
+          if (args == null) return const ShopBrowsePage();
+          return SellerCatalogPage(args: args);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.myProducts,
+        builder: (context, state) => const MyProductsPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.productForm,
+        builder: (context, state) =>
+            ProductFormPage(product: state.extra as Product?),
       ),
     ],
   );

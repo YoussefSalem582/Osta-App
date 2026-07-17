@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/profile/presentation/cubit/profile_cubit.dart';
-import 'package:osta/features/customer/profile/presentation/cubit/profile_state.dart';
-import 'package:osta/features/customer/profile/presentation/widgets/profile/profile_card.dart';
+import 'package:osta/features/shared/profile/presentation/cubit/profile_cubit.dart';
+import 'package:osta/features/shared/profile/presentation/cubit/profile_state.dart';
+import 'package:osta/features/shared/profile/presentation/widgets/profile/profile_card.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_confirm_dialog.dart';
 

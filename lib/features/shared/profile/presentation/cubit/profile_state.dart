@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:osta/features/customer/profile/data/model/profile_response/profile_response.dart';
+import 'package:osta/features/shared/profile/data/model/profile_response/profile_response.dart';
 
 abstract class ProfileState extends Equatable {
   const ProfileState();
@@ -17,12 +17,19 @@ class ProfileLoading extends ProfileState {
 }
 
 class ProfileSuccess extends ProfileState {
-  const ProfileSuccess(this.profile);
+  const ProfileSuccess(this.profile, {this.fromCache = false, this.fetchedAt});
 
   final ProfileResponse profile;
 
+  /// True when [profile] came from the local cache (offline / instant paint)
+  /// rather than a fresh network response — drives the "saved data" chip.
+  final bool fromCache;
+
+  /// When the cached copy was stored, for the "last updated" affordance.
+  final DateTime? fetchedAt;
+
   @override
-  List<Object?> get props => [profile];
+  List<Object?> get props => [profile, fromCache, fetchedAt];
 }
 
 class ProfileError extends ProfileState {

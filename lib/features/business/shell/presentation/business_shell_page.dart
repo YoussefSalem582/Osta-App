@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:osta/features/business/bookings/presentation/screens/bookings.dart';
 import 'package:osta/features/business/dashboard/presentation/screens/board_screen.dart';
-import 'package:osta/features/business/dashboard/presentation/screens/more_screen.dart';
 import 'package:osta/features/business/services/presentation/pages/business_services_page.dart';
+import 'package:osta/features/shared/profile/presentation/pages/profile_screen.dart';
 import 'package:osta/features/shared/shell/presentation/role_shell.dart';
 import 'package:osta/features/shop/presentation/pages/business_shop_page.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
@@ -38,17 +38,17 @@ class BusinessShellPage extends StatelessWidget {
           label: l10n.shellNavCatalog,
           body: const BusinessServicesPage(),
         ),
-        // Store — the business's own shop screen.
+        // Store — the business's own shop (متجري): manage listings + browse.
         AppBottomNavItem(
           icon: Icons.shopping_bag_outlined,
           label: l10n.shellNavStore,
           body: const BusinessShopPage(),
         ),
-        // More — the provider profile, management links and account actions.
+        // More — the shared account/profile surface (same as customer).
         AppBottomNavItem(
           icon: Icons.more_horiz,
           label: l10n.shellNavMore,
-          body: const MoreScreen(),
+          body: const ProfileView(),
         ),
       ],
     );

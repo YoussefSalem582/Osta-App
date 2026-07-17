@@ -1,30 +1,53 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:osta/features/customer/profile/data/repo/profile_repo.dart';
-import 'package:osta/features/customer/profile/presentation/cubit/profile_state.dart';
+import 'package:get_it/get_it.dart';
+import 'package:osta/core/network/api_exception.dart';
+import 'package:osta/features/shared/profile/data/model/profile_response/profile_response.dart';
+import 'package:osta/features/shared/profile/data/repo/profile_repo.dart';
+import 'package:osta/features/shared/profile/presentation/cubit/profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
-  ProfileCubit() : super(const ProfileInitial());
+  ProfileCubit({ProfileRepo? repo})
+    : _repo = repo ?? GetIt.instance<ProfileRepo>(),
+      super(const ProfileInitial());
 
+  final ProfileRepo _repo;
+
+  /// Cache-then-network: paint the cached profile instantly (if any), then
+  /// refresh from `GET /me`. Offline with a cache keeps showing it; offline
+  /// with no cache surfaces the error.
   Future<void> getProfile() async {
-    emit(const ProfileLoading());
+    final cached = _repo.cachedProfile;
+    if (cached != null) {
+      emit(
+        ProfileSuccess(
+          ProfileResponse(success: true, data: cached),
+          fromCache: true,
+          fetchedAt: _repo.cachedAt,
+        ),
+      );
+    } else {
+      emit(const ProfileLoading());
+    }
+
     try {
-      final response = await ProfileRepo.getProfile();
-      if (response != null &&
-          response.success == true &&
-          response.data != null) {
+      final response = await _repo.getProfile();
+      if (response.success == true && response.data != null) {
         emit(ProfileSuccess(response));
-      } else {
+      } else if (cached == null) {
         emit(const ProfileError('Failed to load profile data'));
       }
+      // else: server gave nothing usable but we already showed the cache.
+    } on NetworkException catch (e, s) {
+      log('Offline in ProfileCubit.getProfile', error: e, stackTrace: s);
+      // Keep the cached copy on screen; only error out with nothing to show.
+      if (cached == null) emit(ProfileError(e.message));
     } on Object catch (e, s) {
       log('Error in ProfileCubit.getProfile', error: e, stackTrace: s);
-      emit(ProfileError(e.toString()));
+      if (cached == null) emit(ProfileError(e.toString()));
     }
   }
-
-  // Future<void> fetchProfile() => getProfile();
 
   Future<void> updateProfile({
     required String firstName,
@@ -35,7 +58,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   }) async {
     emit(const ProfileUpdateLoading());
     try {
-      final response = await ProfileRepo.updateProfile(
+      final response = await _repo.updateProfile(
         firstName: firstName,
         lastName: lastName,
         username: username,
@@ -58,7 +81,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> uploadAvatar(String filePath) async {
     emit(const ProfileAvatarUploading());
     try {
-      final response = await ProfileRepo.uploadAvatar(filePath);
+      final response = await _repo.uploadAvatar(filePath);
       if (response != null &&
           response.success == true &&
           response.data != null) {
@@ -75,7 +98,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> deleteAccount() async {
     emit(const ProfileDeleteLoading());
     try {
-      await ProfileRepo.deleteAccount();
+      await _repo.deleteAccount();
       emit(const ProfileDeleteSuccess());
     } on Object catch (e, s) {
       log('Error in ProfileCubit.deleteAccount', error: e, stackTrace: s);

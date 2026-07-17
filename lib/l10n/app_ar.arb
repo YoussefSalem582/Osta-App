@@ -416,5 +416,67 @@
   "deleteVehicleDialogTitle": "حذف السيارة",
   "deleteVehicleDialogMessage": "هل تريد حذف هذه السيارة؟",
   "deleteVehicleSuccess": "تم حذف السيارة بنجاح.",
-  "setPrimarySuccess": "تم تعيين السيارة كأساسية."
+  "setPrimarySuccess": "تم تعيين السيارة كأساسية.",
+  "profileOfflineSaved": "يتم عرض ملف محفوظ",
+  "profileLastUpdated": "آخر تحديث {time}",
+  "@profileLastUpdated": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "shopPriceEgp": "{price} ج.م",
+  "@shopPriceEgp": {
+    "placeholders": {
+      "price": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "shopCategoryAll": "الكل",
+  "shopSearchHint": "ابحث عن منتجات",
+  "shopSellerLabel": "البائع",
+  "shopSellerFallback": "متجر البائع",
+  "shopViewShop": "عرض المتجر",
+  "shopSellerEmptyMessage": "لا توجد منتجات لهذا البائع بعد.",
+  "shopEnquire": "استفسار",
+  "shopEnquireTitle": "التواصل مع البائع",
+  "shopEnquireSubtitle": "اسأل عن التوفّر أو الحالة أو السعر.",
+  "shopEnquireMessageLabel": "رسالتك",
+  "shopEnquireMessageHint": "مثال: هل ما زال متوفرًا؟",
+  "shopEnquireSend": "إرسال الاستفسار",
+  "shopEnquireSuccess": "تم إرسال الاستفسار إلى البائع.",
+  "shopEnquireEmptyError": "من فضلك اكتب رسالة قصيرة.",
+  "shopErrorTitle": "تعذّر تحميل المنتجات",
+  "shopEmptyTitle": "لا توجد منتجات بعد",
+  "shopEmptyMessage": "عد قريبًا لرؤية منتجات جديدة.",
+  "shopProductTitle": "المنتج",
+  "shopBrowseMarketplace": "تصفّح السوق",
+  "myProductsTitle": "متجري",
+  "myProductsEmptyTitle": "لا توجد منتجات بعد",
+  "myProductsEmptyMessage": "أضف أول منتج لبدء البيع.",
+  "addProduct": "إضافة منتج",
+  "editProduct": "تعديل المنتج",
+  "edit": "تعديل",
+  "deleteProductDialogTitle": "حذف المنتج",
+  "deleteProductDialogMessage": "هل أنت متأكد من حذف هذا المنتج؟",
+  "deleteProductSuccess": "تم حذف المنتج.",
+  "productSaved": "تم حفظ المنتج.",
+  "productFormName": "اسم المنتج",
+  "productFormNameRequired": "أدخل اسم المنتج",
+  "productFormPrice": "السعر (ج.م)",
+  "productFormPriceRequired": "أدخل سعرًا صحيحًا",
+  "productFormCategory": "التصنيف (اختياري)",
+  "productFormDescription": "الوصف (اختياري)",
+  "productFormStatus": "الحالة",
+  "productStatusActive": "نشط",
+  "productStatusInactive": "غير نشط",
+  "productStatusDiscontinued": "موقوف",
+  "productFormSave": "حفظ المنتج",
+  "productFormImages": "الصور (اختياري)",
+  "productFormImagesHint": "الصق روابط الصور — لا يوجد رفع صور بعد.",
+  "productFormImageUrl": "رابط الصورة",
+  "productFormAddImage": "إضافة صورة"
 }
