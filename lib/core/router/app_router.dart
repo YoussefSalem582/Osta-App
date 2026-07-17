@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:osta/core/di/injection.dart';
@@ -34,6 +35,12 @@ import 'package:osta/features/shared/onboarding/presentation/language_page.dart'
 import 'package:osta/features/shared/role/presentation/coming_soon_page.dart';
 import 'package:osta/features/shared/role/presentation/page/role_selection_page.dart';
 import 'package:osta/features/shared/splash/presentation/splash_page.dart';
+import 'package:osta/features/shop/data/models/product.dart';
+import 'package:osta/features/shop/presentation/pages/my_products_page.dart';
+import 'package:osta/features/shop/presentation/pages/product_detail_page.dart';
+import 'package:osta/features/shop/presentation/pages/product_form_page.dart';
+import 'package:osta/features/shop/presentation/pages/seller_catalog_page.dart';
+import 'package:osta/features/shop/presentation/pages/shop_browse_page.dart';
 
 /// Declarative app router. Boots at the splash and defers all navigation to a
 /// single [resolveRedirect] guard keyed on the [SessionController] state, so
@@ -181,6 +188,41 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.home,
         builder: (context, state) => const HomePage(),
+      ),
+
+      // Shop (#48). ShopBrowsePage + MyProductsPage are chrome-less Store-tab
+      // bodies (the RoleShell supplies their Scaffold/Material), so when pushed
+      // as their own route they must be wrapped in a Scaffold — otherwise they
+      // render with no Material ancestor and overflow.
+      GoRoute(
+        path: AppRoutes.shopBrowse,
+        builder: (context, state) =>
+            const Scaffold(body: SafeArea(child: ShopBrowsePage())),
+      ),
+      GoRoute(
+        path: AppRoutes.productDetail,
+        builder: (context, state) =>
+            ProductDetailPage(productId: (state.extra as String?) ?? ''),
+      ),
+      GoRoute(
+        path: AppRoutes.sellerCatalog,
+        builder: (context, state) {
+          final args = state.extra as SellerCatalogArgs?;
+          if (args == null) {
+            return const Scaffold(body: SafeArea(child: ShopBrowsePage()));
+          }
+          return SellerCatalogPage(args: args);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.myProducts,
+        builder: (context, state) =>
+            const Scaffold(body: SafeArea(child: MyProductsPage())),
+      ),
+      GoRoute(
+        path: AppRoutes.productForm,
+        builder: (context, state) =>
+            ProductFormPage(product: state.extra as Product?),
       ),
     ],
   );

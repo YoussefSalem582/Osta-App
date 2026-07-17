@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 /// Brand text field — thin wrapper over [TextFormField]; visual styling
@@ -33,6 +34,9 @@ class AppTextField extends StatefulWidget {
     this.validator,
     this.onChanged,
     this.enabled = true,
+    this.inputFormatters,
+    this.minLines,
+    this.maxLines = 1,
     super.key,
   });
 
@@ -67,6 +71,14 @@ class AppTextField extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final bool enabled;
 
+  /// Live input filters/formatters (e.g. digits-only, thousands grouping).
+  final List<TextInputFormatter>? inputFormatters;
+
+  /// Multi-line sizing. Leave [maxLines] at 1 for a single-line field; set
+  /// [minLines] with a larger/`null` [maxLines] for a growing text area.
+  final int? minLines;
+  final int? maxLines;
+
   @override
   State<AppTextField> createState() => _AppTextFieldState();
 }
@@ -90,6 +102,10 @@ class _AppTextFieldState extends State<AppTextField> {
       validator: widget.validator,
       onChanged: widget.onChanged,
       enabled: widget.enabled,
+      inputFormatters: widget.inputFormatters,
+      minLines: widget.minLines,
+      // A password field must stay single-line; otherwise honor the caller.
+      maxLines: widget.obscureText ? 1 : widget.maxLines,
       decoration: InputDecoration(
         labelText: widget.label,
         hintText: widget.hint,

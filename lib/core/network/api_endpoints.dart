@@ -25,6 +25,7 @@ class ApiEndpoints {
   static const meAddresses = '/me/addresses';
   static String meAddress(Object address) => '/me/addresses/$address';
   static const meProducts = '/me/products';
+  static const meProductImages = '/me/products/images';
   static String meProduct(Object product) => '/me/products/$product';
 
   // --- Bookings (customer) ---
