@@ -364,5 +364,20 @@
   "mapLocationDisabledBody": "Turn on location services to find centers near you.",
   "mapEmptyTitle": "No centers found",
   "mapEmptyBody": "Try a different search or category.",
-  "mapErrorTitle": "Couldn't load centers"
+  "mapErrorTitle": "Couldn't load centers",
+  "editProfileTitle": "Edit Profile",
+  "editProfileFirstName": "First Name",
+  "editProfileLastName": "Last Name",
+  "editProfileUsername": "Username",
+  "editProfileEmail": "Email",
+  "editProfilePhone": "Phone Number",
+  "editProfileSave": "Save Changes",
+  "editProfileSuccess": "Profile updated successfully",
+  "editProfileAvatarSuccess": "Photo updated successfully",
+  "editProfileAvatarError": "Failed to upload photo",
+  "deleteAccount": "Delete Account",
+  "deleteAccountDialogTitle": "Delete Account",
+  "deleteAccountDialogMessage": "Are you sure you want to delete your account? This action cannot be undone.",
+  "deleteAccountSuccess": "Your account has been deleted.",
+  "deleteAccountError": "Failed to delete account. Please try again."
 }

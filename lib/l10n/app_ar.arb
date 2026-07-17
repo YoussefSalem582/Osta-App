@@ -357,5 +357,20 @@
   "mapLocationDisabledBody": "شغّل خدمة الموقع للعثور على المراكز القريبة منك.",
   "mapEmptyTitle": "لا توجد مراكز",
   "mapEmptyBody": "جرّب بحثًا أو فئة أخرى.",
-  "mapErrorTitle": "تعذّر تحميل المراكز"
+  "mapErrorTitle": "تعذّر تحميل المراكز",
+  "editProfileTitle": "تعديل الملف الشخصي",
+  "editProfileFirstName": "الاسم الأول",
+  "editProfileLastName": "اسم العائلة",
+  "editProfileUsername": "اسم المستخدم",
+  "editProfileEmail": "البريد الإلكتروني",
+  "editProfilePhone": "رقم الهاتف",
+  "editProfileSave": "حفظ التغييرات",
+  "editProfileSuccess": "تم تحديث الملف الشخصي بنجاح",
+  "editProfileAvatarSuccess": "تم تحديث الصورة بنجاح",
+  "editProfileAvatarError": "فشل رفع الصورة",
+  "deleteAccount": "حذف الحساب",
+  "deleteAccountDialogTitle": "حذف الحساب",
+  "deleteAccountDialogMessage": "هل تريد حذف حسابك نهائياً؟ لا يمكن التراجع عن هذا الإجراء.",
+  "deleteAccountSuccess": "تم حذف حسابك بنجاح.",
+  "deleteAccountError": "فشل حذف الحساب. حاول مرة أخرى."
 }

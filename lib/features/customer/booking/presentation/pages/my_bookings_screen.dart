@@ -42,7 +42,6 @@ class MyBookingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-    appBar: AppTopBar(centerTitle: false, title: context.l10n.navBookings),
     body: const MyBookingsView(),
   );
 }
