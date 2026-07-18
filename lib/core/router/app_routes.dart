@@ -29,6 +29,9 @@ abstract final class AppRoutes {
   static const comingSoon = '/coming-soon';
   static const garage = '/garage';
   static const addCar = '/add-car';
+
+  /// One vehicle's maintenance history; `extra` is the vehicle id (`String`).
+  static const maintenance = '/maintenance';
   static const bookingStatus = '/booking-status';
   static const profile = '/profile';
   static const editProfile = '/edit-profile';

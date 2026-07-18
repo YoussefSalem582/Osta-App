@@ -20,6 +20,7 @@ import 'package:osta/features/customer/booking/presentation/pages/booking_create
 import 'package:osta/features/customer/booking/presentation/pages/live_booking_screen.dart';
 import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
 import 'package:osta/features/customer/garage/presentation/pages/add_car_screen.dart';
+import 'package:osta/features/customer/garage/presentation/pages/maintenance_screen.dart';
 import 'package:osta/features/customer/garage/presentation/pages/my_garage_screen.dart';
 import 'package:osta/features/customer/home/presentation/pages/home_page.dart';
 import 'package:osta/features/customer/map/presentation/pages/center_detail_page.dart';
@@ -170,6 +171,11 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.addCar,
         builder: (context, state) => const AddCarScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.maintenance,
+        builder: (context, state) =>
+            MaintenanceScreen(vehicleId: (state.extra as String?) ?? ''),
       ),
       GoRoute(
         path: AppRoutes.bookingStatus,

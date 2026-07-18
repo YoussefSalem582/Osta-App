@@ -111,6 +111,7 @@ String? resolveRedirect({
     AppRoutes.editProfile,
     AppRoutes.garage,
     AppRoutes.addCar,
+    AppRoutes.maintenance,
     AppRoutes.bookingStatus,
     AppRoutes.myBookings,
     AppRoutes.home,
