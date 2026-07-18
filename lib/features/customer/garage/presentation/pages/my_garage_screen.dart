@@ -28,8 +28,9 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
   Future<void> onDelete(BuildContext ctx, Datum vehicle) async {
     final currentState = ctx.read<GarageCubit>().state;
     if (currentState is GarageSetPrimaryLoading ||
-        currentState is GarageDeleteLoading)
+        currentState is GarageDeleteLoading) {
       return;
+    }
     final l10n = ctx.l10n;
     final confirmed = await AppConfirmDialog.show(
       context: ctx,
@@ -47,9 +48,17 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
   Future<void> onSetPrimary(BuildContext ctx, Datum vehicle) async {
     final currentState = ctx.read<GarageCubit>().state;
     if (currentState is GarageSetPrimaryLoading ||
-        currentState is GarageDeleteLoading)
+        currentState is GarageDeleteLoading) {
       return;
+    }
     await ctx.read<GarageCubit>().setPrimary(vehicle.id!);
+  }
+
+  Future<void> onEdit(BuildContext ctx, Datum vehicle) async {
+    final saved = await ctx.push<bool>(AppRoutes.addCar, extra: vehicle);
+    if (saved == true && ctx.mounted) {
+      unawaited(ctx.read<GarageCubit>().getVehicles());
+    }
   }
 
   @override
@@ -112,7 +121,7 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
                 title: l10n.myGarage,
                 subtitle: l10n.garageSubtitle,
               ),
-              body: const Center(child: CircularProgressIndicator()),
+              body: const Center(child: CircularProgressIndicator.adaptive()),
             );
           }
 
@@ -146,7 +155,12 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
                     horizontal: AppSpacing.md,
                   ),
                   child: IconButton(
-                    onPressed: () => unawaited(context.push(AppRoutes.addCar)),
+                    onPressed: () => unawaited(
+                      context.push(
+                        AppRoutes.addCar,
+                        extra: context.read<GarageCubit>(),
+                      ),
+                    ),
                     style: FilledButton.styleFrom(
                       backgroundColor: AppColors.brandGreen,
                       foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -171,40 +185,54 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
             ),
             body: Stack(
               children: [
-                vehicles.isEmpty
-                    ? EmptyGarageView(
-                        onAddVehicle: () =>
-                            unawaited(context.push(AppRoutes.addCar)),
-                      )
-                    : ListView.separated(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.lg,
-                        ),
-                        itemCount: vehicles.length,
-                        separatorBuilder: (_, _) =>
-                            const SizedBox(height: AppSpacing.md),
-                        itemBuilder: (context, index) {
-                          final vehicle = vehicles[index];
-                          return VehicleCard(
-                            brand: vehicle.make ?? '',
-                            model: vehicle.model ?? '',
-                            plateNumber: vehicle.plateNumber?.toString() ?? '',
-                            year: vehicle.year,
-                            mileageKm:
-                                (vehicle.currentMileage as num?)?.toInt() ?? 0,
-                            isPrimary: vehicle.isPrimary ?? false,
-                            isActionLoading: isActionBusy,
-                            onDelete: () => onDelete(context, vehicle),
-                            onSetPrimary: () => onSetPrimary(context, vehicle),
-                          );
-                        },
+                if (vehicles.isEmpty)
+                  EmptyGarageView(
+                    onAddVehicle: () => unawaited(
+                      context.push(
+                        AppRoutes.addCar,
+                        extra: context.read<GarageCubit>(),
                       ),
+                    ),
+                  )
+                else
+                  ListView.separated(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.lg,
+                    ),
+                    itemCount: vehicles.length,
+                    separatorBuilder: (_, _) =>
+                        const SizedBox(height: AppSpacing.md),
+                    itemBuilder: (context, index) {
+                      final vehicle = vehicles[index];
+                      return VehicleCard(
+                        brand: vehicle.make ?? '',
+                        model: vehicle.model ?? '',
+                        plateNumber: vehicle.plateNumber?.toString() ?? '',
+                        year: vehicle.year,
+                        mileageKm:
+                            (vehicle.currentMileage as num?)?.toInt() ?? 0,
+                        isPrimary: vehicle.isPrimary ?? false,
+                        isActionLoading: isActionBusy,
+                        onDelete: () => onDelete(context, vehicle),
+                        onSetPrimary: () => onSetPrimary(context, vehicle),
+                        onEdit: () => unawaited(onEdit(context, vehicle)),
+                        onTap: () => unawaited(
+                          context.push(
+                            AppRoutes.maintenance,
+                            extra: vehicle.id,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 if (isActionBusy)
                   const Positioned.fill(
                     child: ColoredBox(
                       color: Colors.black12,
-                      child: Center(child: CircularProgressIndicator()),
+                      child: Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      ),
                     ),
                   ),
               ],

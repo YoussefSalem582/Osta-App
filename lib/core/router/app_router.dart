@@ -8,22 +8,26 @@ import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/router/go_router_refresh_stream.dart';
 import 'package:osta/core/router/session_redirect.dart';
 import 'package:osta/core/session/session_controller.dart';
+import 'package:osta/features/business/dashboard/presentation/screens/capacity_screen.dart';
 import 'package:osta/features/business/dashboard/presentation/screens/tech_screen.dart';
 import 'package:osta/features/business/intro/presentation/pages/merchant_onboarding_page.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
+import 'package:osta/features/business/onboarding/presentation/pages/business_address_screen.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_catalog_page.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_identity_page.dart';
+import 'package:osta/features/business/onboarding/presentation/pages/business_profile_screen.dart';
 import 'package:osta/features/business/shell/presentation/business_shell_page.dart';
+import 'package:osta/features/customer/booking/presentation/pages/booking_create_screen.dart';
 import 'package:osta/features/customer/booking/presentation/pages/live_booking_screen.dart';
 import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
+import 'package:osta/features/customer/garage/data/model/garage_response/datum.dart';
+import 'package:osta/features/customer/garage/presentation/cubit/garage_cubit.dart';
 import 'package:osta/features/customer/garage/presentation/pages/add_car_screen.dart';
+import 'package:osta/features/customer/garage/presentation/pages/maintenance_screen.dart';
 import 'package:osta/features/customer/garage/presentation/pages/my_garage_screen.dart';
 import 'package:osta/features/customer/home/presentation/pages/home_page.dart';
+import 'package:osta/features/customer/map/presentation/pages/center_detail_page.dart';
 import 'package:osta/features/customer/onboarding/presentation/pages/onboarding_page.dart';
-import 'package:osta/features/shared/profile/data/model/profile_response/data.dart'
-    as profile_data;
-import 'package:osta/features/shared/profile/presentation/pages/edit_profile_screen.dart';
-import 'package:osta/features/shared/profile/presentation/pages/profile_screen.dart';
 import 'package:osta/features/customer/shell/presentation/customer_shell_page.dart';
 import 'package:osta/features/shared/auth/presentation/choose/auth_choose_page.dart';
 import 'package:osta/features/shared/auth/presentation/login/login_page.dart';
@@ -31,7 +35,13 @@ import 'package:osta/features/shared/auth/presentation/password_recovery/forgot_
 import 'package:osta/features/shared/auth/presentation/password_recovery/reset_password_page.dart';
 import 'package:osta/features/shared/auth/presentation/register/pages/business_register_page.dart';
 import 'package:osta/features/shared/auth/presentation/register/pages/customer_register_page.dart';
+import 'package:osta/features/shared/notifications/presentation/pages/notifications_page.dart';
 import 'package:osta/features/shared/onboarding/presentation/language_page.dart';
+import 'package:osta/features/shared/profile/data/model/profile_response/data.dart'
+    as profile_data;
+import 'package:osta/features/shared/profile/presentation/pages/addresses_screen.dart';
+import 'package:osta/features/shared/profile/presentation/pages/edit_profile_screen.dart';
+import 'package:osta/features/shared/profile/presentation/pages/profile_screen.dart';
 import 'package:osta/features/shared/role/presentation/coming_soon_page.dart';
 import 'package:osta/features/shared/role/presentation/page/role_selection_page.dart';
 import 'package:osta/features/shared/splash/presentation/splash_page.dart';
@@ -163,11 +173,25 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.addCar,
-        builder: (context, state) => const AddCarScreen(),
+        // `extra` is a Datum in edit mode (from My Garage's edit button) or a
+        // GarageCubit in add mode (so the new car refreshes the caller's list).
+        builder: (context, state) {
+          final extra = state.extra;
+          return AddCarScreen(
+            vehicle: extra is Datum ? extra : null,
+            parentCubit: extra is GarageCubit ? extra : null,
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.maintenance,
+        builder: (context, state) =>
+            MaintenanceScreen(vehicleId: (state.extra as String?) ?? ''),
       ),
       GoRoute(
         path: AppRoutes.bookingStatus,
-        builder: (context, state) => const LiveBookingScreen(),
+        builder: (context, state) =>
+            LiveBookingScreen(bookingId: (state.extra as String?) ?? ''),
       ),
       GoRoute(
         path: AppRoutes.profile,
@@ -184,6 +208,39 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.myBookings,
         builder: (context, state) => const MyBookingsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.centerDetail,
+        builder: (context, state) =>
+            CenterDetailPage(centerId: (state.extra as String?) ?? ''),
+      ),
+      GoRoute(
+        path: AppRoutes.bookingCreate,
+        builder: (context, state) {
+          final args = state.extra as BookingCreateArgs?;
+          if (args == null) return const MyBookingsScreen();
+          return BookingCreateScreen(args: args);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.notifications,
+        builder: (context, state) => const NotificationsPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.addresses,
+        builder: (context, state) => const AddressesScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.businessProfile,
+        builder: (context, state) => const BusinessProfileScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.businessAddress,
+        builder: (context, state) => const BusinessAddressScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.businessCapacity,
+        builder: (context, state) => const CapacityScreen(),
       ),
       GoRoute(
         path: AppRoutes.home,

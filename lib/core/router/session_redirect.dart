@@ -111,9 +111,21 @@ String? resolveRedirect({
     AppRoutes.editProfile,
     AppRoutes.garage,
     AppRoutes.addCar,
+    AppRoutes.maintenance,
     AppRoutes.bookingStatus,
+    AppRoutes.myBookings,
     AppRoutes.home,
     AppRoutes.technicians,
+    // Shared account screens pushed off the More/profile tab.
+    AppRoutes.notifications,
+    AppRoutes.addresses,
+    AppRoutes.businessProfile,
+    AppRoutes.businessAddress,
+    AppRoutes.businessCapacity,
+    // Customer booking funnel: center profile → slot picker, pushed over the
+    // map/shell so they keep a back button.
+    AppRoutes.centerDetail,
+    AppRoutes.bookingCreate,
     // Shop (#48) — pushed over either shell, so they keep a back button.
     AppRoutes.shopBrowse,
     AppRoutes.productDetail,

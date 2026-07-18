@@ -1,155 +1,104 @@
 import 'package:flutter/material.dart';
-import 'package:osta/core/theme/app_colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/business/bookings/presentation/widgets/custom_row.dart';
-import 'package:osta/features/business/bookings/presentation/widgets/driver_title.dart';
-import 'package:osta/features/business/bookings/presentation/widgets/selected_type.dart';
+import 'package:osta/features/business/bookings/presentation/bloc/business_bookings_bloc.dart';
+import 'package:osta/features/business/bookings/presentation/widgets/booking_card.dart';
+import 'package:osta/features/business/bookings/presentation/widgets/booking_filter_row.dart';
 import 'package:osta/features/business/dashboard/presentation/widgets/appbar.dart';
-import 'package:osta/features/business/dashboard/presentation/widgets/confirm_or_decline.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
+import 'package:osta/shared/ui/app_toaster.dart';
+import 'package:osta/shared/ui/status_states.dart';
 
+/// The provider booking queue — a live feed over `GET /business/bookings` with
+/// per-card accept / reject / advance-status / assign-mechanic actions. Shown as
+/// the business shell's center calendar action.
 class Bookings extends StatelessWidget {
   const Bookings({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.sm,
-      ),
-      child: Column(
-        children: [
-          const AppBarWidget(),
-          const SizedBox(
-            height: AppSpacing.md,
-          ),
-          Row(
-            children: [
-              SelectedType(
-                textColor: Theme.of(context).colorScheme.onPrimary,
-                text: context.l10n.all,
-                conColor: Theme.of(context).colorScheme.onSurface,
-              ),
-              const SizedBox(
-                width: AppSpacing.sm,
-              ),
-              SelectedType(
-                textColor: Theme.of(context).colorScheme.onSurface,
-                text: context.l10n.waiting,
-                conColor: Theme.of(context).colorScheme.surface,
-              ),
-              const SizedBox(
-                width: AppSpacing.sm,
-              ),
-              SelectedType(
-                textColor: Theme.of(context).colorScheme.onSurface,
+  Widget build(BuildContext context) => BlocProvider(
+    create: (_) =>
+        BusinessBookingsBloc()..add(const BusinessBookingsLoadRequested()),
+    child: const _BookingsView(),
+  );
+}
 
-                text: context.l10n.sure,
-                conColor: Theme.of(context).colorScheme.surface,
+class _BookingsView extends StatelessWidget {
+  const _BookingsView();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<BusinessBookingsBloc, BusinessBookingsState>(
+      listenWhen: (previous, current) => current.actionError != null,
+      listener: (context, state) => AppToaster.showError(state.actionError!),
+      builder: (context, state) {
+        return Stack(
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
               ),
-              const SizedBox(
-                width: AppSpacing.sm,
-              ),
-              SelectedType(
-                textColor: Theme.of(context).colorScheme.onSurface,
-                text: context.l10n.underImplementation,
-                conColor: Theme.of(context).colorScheme.surface,
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: AppSpacing.sm,
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: const BorderRadius.all(
-                Radius.circular(AppRadii.lg),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.sm),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const DriverTitle(),
-                  const SizedBox(
-                    height: AppSpacing.sm,
-                  ),
-                  Divider(
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                    endIndent: 8,
-                    indent: 8,
-                  ),
-                  const SizedBox(
-                    height: AppSpacing.sm,
-                  ),
-                  CustomRow(
-                    text1: context.l10n.exchangeOilAndFilter,
-                    text2: '250 EGP',
-                  ),
-                  const SizedBox(
-                    height: AppSpacing.sm,
-                  ),
-                  CustomRow(
-                    text1: context.l10n.appointment,
-                    text2: '12:00 Today',
-                  ),
-                  const SizedBox(
-                    height: AppSpacing.md,
-                  ),
-                  Row(
-                    children: [
-                      ConfirmOrDecline(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        bgColor: AppColors.brandGreen,
-                        text: context.l10n.confirm,
-                      ),
-                      const SizedBox(
-                        width: AppSpacing.sm,
-                      ),
-                      ConfirmOrDecline(
-                        color: Theme.of(context).colorScheme.error,
-                        bgColor: Theme.of(context).colorScheme.errorContainer,
-                        text: context.l10n.decline,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: AppSpacing.sm,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.build,
-                          size: 18,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(
-                          width: AppSpacing.sm,
-                        ),
-                        Text(
-                          context.l10n.mechanicalSupport,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                                fontWeight: FontWeight.w700,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  const AppBarWidget(),
+                  const SizedBox(height: AppSpacing.md),
+                  BookingFilterRow(active: state.statusFilter),
+                  const SizedBox(height: AppSpacing.md),
+                  _body(context, state),
                 ],
               ),
             ),
+            if (state.acting)
+              const Positioned.fill(
+                child: ColoredBox(
+                  color: Colors.black12,
+                  child: Center(child: CircularProgressIndicator.adaptive()),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _body(BuildContext context, BusinessBookingsState state) {
+    final l10n = context.l10n;
+    if (state.status == BusinessBookingsStatus.loading) {
+      return const Padding(
+        padding: EdgeInsets.all(AppSpacing.xl),
+        child: Center(child: CircularProgressIndicator.adaptive()),
+      );
+    }
+    if (state.status == BusinessBookingsStatus.error) {
+      return Padding(
+        padding: const EdgeInsets.only(top: AppSpacing.xl),
+        child: ErrorState(
+          title: l10n.businessBookingsErrorTitle,
+          message: state.error,
+          onRetry: () => context.read<BusinessBookingsBloc>().add(
+            const BusinessBookingsLoadRequested(),
           ),
+        ),
+      );
+    }
+    if (state.bookings.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.only(top: AppSpacing.xl),
+        child: EmptyState(
+          icon: Icons.calendar_today_outlined,
+          title: l10n.businessBookingsEmpty,
+        ),
+      );
+    }
+    return Column(
+      children: [
+        for (final booking in state.bookings) ...[
+          BusinessBookingCard(booking: booking),
+          const SizedBox(height: AppSpacing.sm),
         ],
-      ),
+      ],
     );
   }
 }

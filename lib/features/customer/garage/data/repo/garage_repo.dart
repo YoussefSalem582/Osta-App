@@ -49,6 +49,49 @@ class GarageRepo {
     );
   }
 
+  /// Single-vehicle detail (`GET /vehicles/{id}` → `VehicleController@show`).
+  /// Returns null on any error, like [getVehicles].
+  static Future<Datum?> getVehicle(Object vehicleId) async {
+    try {
+      final api = GetIt.instance<ApiClient>();
+      final result = await api.get<Datum>(
+        ApiEndpoints.vehicle(vehicleId),
+        parse: (data) => Datum.fromJson(data! as Map<String, dynamic>),
+      );
+      return result.data;
+    } on Object catch (e, s) {
+      log('Error in GarageRepo.getVehicle', error: e, stackTrace: s);
+      return null;
+    }
+  }
+
+  /// Edit a car (`PUT /vehicles/{id}`). Keys match `UpdateVehicleRequest`,
+  /// which shares `StoreVehicleRequest`'s rules — see [addVehicle] on the
+  /// silent-drop trap for misspelt keys.
+  static Future<void> updateVehicle({
+    required Object vehicleId,
+    required String make,
+    required String model,
+    required int year,
+    required String plateNumber,
+    int? currentMileage,
+    String? color,
+  }) async {
+    final api = GetIt.instance<ApiClient>();
+    await api.put<void>(
+      ApiEndpoints.vehicle(vehicleId),
+      body: {
+        'make': make,
+        'model': model,
+        'year': year,
+        'plate_number': plateNumber,
+        'current_mileage': ?currentMileage,
+        if (color != null && color.isNotEmpty) 'color': color,
+      },
+      parse: (_) {},
+    );
+  }
+
   static Future<void> setPrimary(Object vehicleId) async {
     final api = GetIt.instance<ApiClient>();
     await api.post<void>(

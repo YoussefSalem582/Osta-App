@@ -20,7 +20,7 @@ class BookingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.push(AppRoutes.bookingStatus),
+      onTap: () => context.push(AppRoutes.bookingStatus, extra: booking.id),
       child: Container(
         decoration: BoxDecoration(
           color: colorScheme.surface,

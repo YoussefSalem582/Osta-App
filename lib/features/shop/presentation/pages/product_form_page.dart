@@ -101,32 +101,10 @@ class _ProductFormPageState extends State<ProductFormPage> {
   /// Paste-a-link alternative to the device picker. A bad URL renders the
   /// placeholder, never a crash.
   Future<void> _addUrl() async {
-    final controller = TextEditingController();
     final url = await showDialog<String>(
       context: context,
-      builder: (ctx) {
-        final l10n = ctx.l10n;
-        return AlertDialog(
-          title: Text(l10n.productFormAddUrl),
-          content: AppTextField(
-            controller: controller,
-            label: l10n.productFormImageUrl,
-            keyboardType: TextInputType.url,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(l10n.cancel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, controller.text.trim()),
-              child: Text(l10n.add),
-            ),
-          ],
-        );
-      },
+      builder: (_) => const _AddUrlDialog(),
     );
-    controller.dispose();
     if (url != null && url.isNotEmpty && mounted) {
       setState(() => _imageUrls.add(url));
     }
@@ -303,6 +281,49 @@ class _PriceInputFormatter extends TextInputFormatter {
   }
 }
 
+/// Paste-a-URL dialog. Owns its `TextEditingController` so it's disposed only
+/// when the dialog route is fully gone — disposing it right after `showDialog`
+/// returns crashes the exit animation, which still rebuilds the field.
+class _AddUrlDialog extends StatefulWidget {
+  const _AddUrlDialog();
+
+  @override
+  State<_AddUrlDialog> createState() => _AddUrlDialogState();
+}
+
+class _AddUrlDialogState extends State<_AddUrlDialog> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AlertDialog(
+      title: Text(l10n.productFormAddUrl),
+      content: AppTextField(
+        controller: _controller,
+        label: l10n.productFormImageUrl,
+        keyboardType: TextInputType.url,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.cancel),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, _controller.text.trim()),
+          child: Text(l10n.add),
+        ),
+      ],
+    );
+  }
+}
+
 /// Photo grid: existing/uploaded thumbnails (each removable) plus an "add photo"
 /// tile that picks from the device and shows a spinner while uploading.
 class _ImagesEditor extends StatelessWidget {
@@ -450,7 +471,7 @@ class _AddTile extends StatelessWidget {
             ? const Center(
                 child: SizedBox.square(
                   dimension: 22,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  child: CircularProgressIndicator.adaptive(strokeWidth: 2),
                 ),
               )
             : Column(

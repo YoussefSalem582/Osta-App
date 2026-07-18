@@ -37,3 +37,13 @@ class CategorySelected extends MapEvent {
 class RetryRequested extends MapEvent {
   const RetryRequested();
 }
+
+/// Filter-sheet switch: on = radius-bounded nearby, off = every active center.
+class NearbyOnlyToggled extends MapEvent {
+  const NearbyOnlyToggled({required this.value});
+
+  final bool value;
+
+  @override
+  List<Object?> get props => [value];
+}

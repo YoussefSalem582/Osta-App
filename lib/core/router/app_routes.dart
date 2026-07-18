@@ -29,10 +29,33 @@ abstract final class AppRoutes {
   static const comingSoon = '/coming-soon';
   static const garage = '/garage';
   static const addCar = '/add-car';
+
+  /// One vehicle's maintenance history; `extra` is the vehicle id (`String`).
+  static const maintenance = '/maintenance';
   static const bookingStatus = '/booking-status';
   static const profile = '/profile';
   static const editProfile = '/edit-profile';
+  static const notifications = '/notifications';
+  static const addresses = '/addresses';
+
+  /// Business center profile editor (info + address + map pin), read/prefilled
+  /// from `GET /business/profile`.
+  static const businessProfile = '/business/profile-edit';
+
+  /// Address-only editor for the business center (map pin + city/street/
+  /// district), a focused subset of [businessProfile] over the same
+  /// `GET`/`PUT /business/profile`.
+  static const businessAddress = '/business/address';
+
+  /// Weekly hours + holidays editor over `GET`/`PUT /business/capacity`.
+  static const businessCapacity = '/business/capacity';
   static const myBookings = '/my-bookings';
+
+  /// Service-center profile; `extra` is the center id (`String`).
+  static const centerDetail = '/center-detail';
+
+  /// Booking-create flow; `extra` is a `BookingCreateArgs`.
+  static const bookingCreate = '/booking-create';
   static const home = '/home';
 
   // Shop (#48) — two-sided marketplace, shared by both roles.

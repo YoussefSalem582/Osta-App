@@ -110,7 +110,7 @@ class ServiceToggleCard extends StatelessWidget {
                   tooltip: l10n.businessCatalogRemoveService,
                 )
               else
-                Switch(
+                Switch.adaptive(
                   value: isSelected,
                   onChanged: onChanged,
                   thumbColor: WidgetStateProperty.all(
