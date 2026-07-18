@@ -16,6 +16,7 @@ class VehicleCard extends StatelessWidget {
     this.year,
     this.isActionLoading = false,
     this.icon = Icons.directions_car_rounded,
+    this.onTap,
     super.key,
   });
 
@@ -30,12 +31,16 @@ class VehicleCard extends StatelessWidget {
   final int? year;
   final IconData icon;
 
+  /// Opens the vehicle's maintenance history; null keeps the card inert.
+  final VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
     return AppCard(
+      onTap: onTap,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

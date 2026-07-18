@@ -197,6 +197,12 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
                             isActionLoading: isActionBusy,
                             onDelete: () => onDelete(context, vehicle),
                             onSetPrimary: () => onSetPrimary(context, vehicle),
+                            onTap: () => unawaited(
+                              context.push(
+                                AppRoutes.maintenance,
+                                extra: vehicle.id,
+                              ),
+                            ),
                           );
                         },
                       ),
