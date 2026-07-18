@@ -5,12 +5,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:osta/core/router/app_routes.dart';
+import 'package:osta/core/services/location_service.dart';
 import 'package:osta/core/theme/app_tokens.dart';
+import 'package:osta/features/business/onboarding/presentation/business_location_picker_mixin.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_catalog_page.dart';
+import 'package:osta/features/business/onboarding/presentation/widgets/business_type_dropdown.dart';
+import 'package:osta/features/business/onboarding/presentation/widgets/founding_year_dropdown.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/location_picker_card.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/logo_upload_box.dart';
-import 'package:osta/features/business/onboarding/presentation/widgets/map_pin_picker_sheet.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/step_header.dart';
 import 'package:osta/features/shared/auth/presentation/validators/auth_validators.dart';
 import 'package:osta/features/shared/auth/presentation/widgets/dial_prefix.dart';
@@ -30,7 +33,8 @@ class BusinessIdentityPage extends StatefulWidget {
   State<BusinessIdentityPage> createState() => _BusinessIdentityPageState();
 }
 
-class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
+class _BusinessIdentityPageState extends State<BusinessIdentityPage>
+    with BusinessLocationPickerMixin<BusinessIdentityPage> {
   final _formKey = GlobalKey<FormState>();
   final _tradeName = TextEditingController();
   final _legalName = TextEditingController();
@@ -38,20 +42,6 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
   final _city = TextEditingController();
   final _address = TextEditingController();
   bool _showLocationError = false;
-
-  static const _businessTypes = [
-    'workshop',
-    'dealership',
-    'mobile',
-    'tire_shop',
-    'car_wash',
-  ];
-
-  /// Newest first — a workshop founded last year is a likelier pick than 1900.
-  static List<int> get _foundingYears {
-    final now = DateTime.now().year;
-    return [for (var y = now; y >= 1900; y--) y];
-  }
 
   @override
   void initState() {
@@ -74,17 +64,6 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
     super.dispose();
   }
 
-  String _typeLabel(BuildContext context, String wire) {
-    final l10n = context.l10n;
-    return switch (wire) {
-      'dealership' => l10n.businessTypeDealership,
-      'mobile' => l10n.businessTypeMobile,
-      'tire_shop' => l10n.businessTypeTireShop,
-      'car_wash' => l10n.businessTypeCarWash,
-      _ => l10n.businessTypeWorkshop,
-    };
-  }
-
   Future<void> _pickLogo() async {
     final picked = await ImagePicker().pickImage(
       source: ImageSource.gallery,
@@ -96,18 +75,31 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
     }
   }
 
-  Future<void> _pickLocation() async {
-    final cubit = context.read<BusinessOnboardingCubit>();
-    final state = cubit.state;
-    final initial = state.hasLocation
+  @override
+  GeoPoint? get pickerLocation {
+    final state = context.read<BusinessOnboardingCubit>().state;
+    return state.hasLocation
         ? (lat: state.latitude!, lng: state.longitude!)
         : null;
-    final point = await MapPinPickerSheet.show(context, initial: initial);
-    if (point != null && mounted) {
-      cubit.setLocation(point);
-      setState(() => _showLocationError = false);
-    }
   }
+
+  @override
+  TextEditingController get cityController => _city;
+
+  @override
+  TextEditingController get addressController => _address;
+
+  @override
+  void onLocationPicked(GeoPoint point) {
+    context.read<BusinessOnboardingCubit>().setLocation(point);
+    setState(() => _showLocationError = false);
+  }
+
+  void _onBusinessTypeChanged(String value) =>
+      context.read<BusinessOnboardingCubit>().updateBusinessType(value);
+
+  void _onYearFoundedChanged(int value) =>
+      context.read<BusinessOnboardingCubit>().updateYearFounded(value);
 
   void _submit() {
     // Sync controllers → cubit before submit.
@@ -154,146 +146,19 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
             child: Column(
               children: [
                 Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
-                    child: Form(
-                      key: _formKey,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          StepHeader(
-                            currentStep: 1,
-                            totalSteps: 2,
-                            stepText: l10n.businessOnboardingStep1Indicator,
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-                          LogoUploadBox(
-                            onTap: () => unawaited(_pickLogo()),
-                            imagePath: state.logoPath,
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-                          AppTextField(
-                            label: l10n.businessOnboardingTradeNameLabel,
-                            hint: l10n.businessOnboardingTradeNameHint,
-                            controller: _tradeName,
-                            textInputAction: TextInputAction.next,
-                            errorText: state.fieldErrors['trade_name']?.first,
-                            validator: (v) =>
-                                AuthValidators.requiredField(context, v),
-                          ),
-                          const SizedBox(height: AppSpacing.md),
-                          AppTextField(
-                            label: l10n.businessOnboardingLegalNameLabel,
-                            hint: l10n.businessOnboardingLegalNameHint,
-                            controller: _legalName,
-                            textInputAction: TextInputAction.next,
-                            errorText: state.fieldErrors['legal_name']?.first,
-                          ),
-                          const SizedBox(height: AppSpacing.md),
-                          AppTextField(
-                            label: l10n.businessOnboardingPhoneLabel,
-                            hint: l10n.businessOnboardingPhoneHint,
-                            controller: _phone,
-                            prefix: const DialPrefix(),
-                            keyboardType: TextInputType.phone,
-                            textInputAction: TextInputAction.next,
-                            errorText: state.fieldErrors['phone']?.first,
-                            validator: (v) =>
-                                AuthValidators.egyptPhone(context, v),
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-                          LocationPickerCard(
-                            hasLocation: state.hasLocation,
-                            latitude: state.latitude,
-                            longitude: state.longitude,
-                            hasError: _showLocationError,
-                            onTap: () => unawaited(_pickLocation()),
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: DropdownButtonFormField<String>(
-                                  key: ValueKey(state.businessType),
-                                  initialValue: state.businessType,
-                                  decoration: InputDecoration(
-                                    labelText: l10n.businessOnboardingTypeLabel,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(
-                                        AppRadii.md,
-                                      ),
-                                    ),
-                                  ),
-                                  items: [
-                                    for (final type in _businessTypes)
-                                      DropdownMenuItem(
-                                        value: type,
-                                        child: Text(_typeLabel(context, type)),
-                                      ),
-                                  ],
-                                  onChanged: (v) {
-                                    if (v != null) {
-                                      context
-                                          .read<BusinessOnboardingCubit>()
-                                          .updateBusinessType(v);
-                                    }
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: AppSpacing.md),
-                              Expanded(
-                                child: AppTextField(
-                                  label: l10n.businessOnboardingCityLabel,
-                                  hint: l10n.businessOnboardingCityValue,
-                                  controller: _city,
-                                  textInputAction: TextInputAction.next,
-                                  errorText: state.fieldErrors['city']?.first,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: AppSpacing.md),
-                          AppTextField(
-                            label: l10n.businessOnboardingAddressLabel,
-                            hint: l10n.businessOnboardingAddressHint,
-                            controller: _address,
-                            textInputAction: TextInputAction.done,
-                            errorText: state.fieldErrors['address_line']?.first,
-                          ),
-                          const SizedBox(height: AppSpacing.md),
-                          // Optional, like the backend's `sometimes` rule; the
-                          // range mirrors `integer|min:1900|max:{this year}`.
-                          DropdownButtonFormField<int>(
-                            initialValue: state.yearFounded,
-                            decoration: InputDecoration(
-                              labelText:
-                                  l10n.businessOnboardingYearFoundedLabel,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(
-                                  AppRadii.md,
-                                ),
-                              ),
-                              errorText:
-                                  state.fieldErrors['year_founded']?.first,
-                            ),
-                            items: [
-                              for (final y in _foundingYears)
-                                DropdownMenuItem(value: y, child: Text('$y')),
-                            ],
-                            onChanged: (v) {
-                              if (v != null) {
-                                context
-                                    .read<BusinessOnboardingCubit>()
-                                    .updateYearFounded(v);
-                              }
-                            },
-                          ),
-                          const SizedBox(height: AppSpacing.xl),
-                        ],
-                      ),
-                    ),
+                  child: _BusinessIdentityForm(
+                    formKey: _formKey,
+                    state: state,
+                    tradeNameController: _tradeName,
+                    legalNameController: _legalName,
+                    phoneController: _phone,
+                    cityController: _city,
+                    addressController: _address,
+                    showLocationError: _showLocationError,
+                    onPickLogo: () => unawaited(_pickLogo()),
+                    onPickLocation: () => unawaited(pickLocation()),
+                    onBusinessTypeChanged: _onBusinessTypeChanged,
+                    onYearFoundedChanged: _onYearFoundedChanged,
                   ),
                 ),
                 Padding(
@@ -309,6 +174,137 @@ class _BusinessIdentityPageState extends State<BusinessIdentityPage> {
           ),
         );
       },
+    );
+  }
+}
+
+/// The scrollable form body — trade/legal name, phone, location, business
+/// type and year founded. Split out of [_BusinessIdentityPageState.build] so
+/// that method stays scaffold + BlocConsumer wiring only.
+class _BusinessIdentityForm extends StatelessWidget {
+  const _BusinessIdentityForm({
+    required this.formKey,
+    required this.state,
+    required this.tradeNameController,
+    required this.legalNameController,
+    required this.phoneController,
+    required this.cityController,
+    required this.addressController,
+    required this.showLocationError,
+    required this.onPickLogo,
+    required this.onPickLocation,
+    required this.onBusinessTypeChanged,
+    required this.onYearFoundedChanged,
+  });
+
+  final GlobalKey<FormState> formKey;
+  final BusinessOnboardingState state;
+  final TextEditingController tradeNameController;
+  final TextEditingController legalNameController;
+  final TextEditingController phoneController;
+  final TextEditingController cityController;
+  final TextEditingController addressController;
+  final bool showLocationError;
+  final VoidCallback onPickLogo;
+  final VoidCallback onPickLocation;
+  final ValueChanged<String> onBusinessTypeChanged;
+  final ValueChanged<int> onYearFoundedChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Form(
+        key: formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            StepHeader(
+              currentStep: 1,
+              totalSteps: 2,
+              stepText: l10n.businessOnboardingStep1Indicator,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            LogoUploadBox(onTap: onPickLogo, imagePath: state.logoPath),
+            const SizedBox(height: AppSpacing.lg),
+            AppTextField(
+              label: l10n.businessOnboardingTradeNameLabel,
+              hint: l10n.businessOnboardingTradeNameHint,
+              controller: tradeNameController,
+              textInputAction: TextInputAction.next,
+              errorText: state.fieldErrors['trade_name']?.first,
+              validator: (v) => AuthValidators.requiredField(context, v),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            AppTextField(
+              label: l10n.businessOnboardingLegalNameLabel,
+              hint: l10n.businessOnboardingLegalNameHint,
+              controller: legalNameController,
+              textInputAction: TextInputAction.next,
+              errorText: state.fieldErrors['legal_name']?.first,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            AppTextField(
+              label: l10n.businessOnboardingPhoneLabel,
+              hint: l10n.businessOnboardingPhoneHint,
+              controller: phoneController,
+              prefix: const DialPrefix(),
+              keyboardType: TextInputType.phone,
+              textInputAction: TextInputAction.next,
+              errorText: state.fieldErrors['phone']?.first,
+              validator: (v) => AuthValidators.egyptPhone(context, v),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            LocationPickerCard(
+              hasLocation: state.hasLocation,
+              latitude: state.latitude,
+              longitude: state.longitude,
+              hasError: showLocationError,
+              onTap: onPickLocation,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: BusinessTypeDropdown(
+                    key: ValueKey(state.businessType),
+                    value: state.businessType,
+                    onChanged: onBusinessTypeChanged,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: AppTextField(
+                    label: l10n.businessOnboardingCityLabel,
+                    hint: l10n.businessOnboardingCityValue,
+                    controller: cityController,
+                    textInputAction: TextInputAction.next,
+                    errorText: state.fieldErrors['city']?.first,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            AppTextField(
+              label: l10n.businessOnboardingAddressLabel,
+              hint: l10n.businessOnboardingAddressHint,
+              controller: addressController,
+              textInputAction: TextInputAction.done,
+              errorText: state.fieldErrors['address_line']?.first,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            FoundingYearDropdown(
+              value: state.yearFounded,
+              errorText: state.fieldErrors['year_founded']?.first,
+              onChanged: onYearFoundedChanged,
+            ),
+            const SizedBox(height: AppSpacing.xl),
+          ],
+        ),
+      ),
     );
   }
 }

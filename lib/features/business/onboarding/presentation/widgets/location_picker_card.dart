@@ -35,8 +35,7 @@ class LocationPickerCard extends StatelessWidget {
     final accent = showError
         ? theme.colorScheme.error
         : theme.colorScheme.primary;
-    final showMap =
-        hasLocation && latitude != null && longitude != null;
+    final showMap = hasLocation && latitude != null && longitude != null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
