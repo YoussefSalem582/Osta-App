@@ -7,13 +7,16 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/services/location_service.dart';
+import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/customer/map/data/model/center_summary.dart';
 import 'package:osta/features/customer/map/presentation/bloc/map_bloc.dart';
+import 'package:osta/features/customer/map/presentation/widgets/map_centers_list_sheet.dart';
 import 'package:osta/features/customer/map/presentation/widgets/map_filter_sheet.dart';
 import 'package:osta/features/customer/map/presentation/widgets/map_recenter_button.dart';
 import 'package:osta/features/customer/map/presentation/widgets/map_status_overlay.dart';
 import 'package:osta/features/customer/map/presentation/widgets/map_top_controls.dart';
 import 'package:osta/features/customer/map/presentation/widgets/place_dialog.dart';
+import 'package:osta/shared/extensions/context_ext.dart';
 
 /// Full-screen discovery map, shown by the customer shell's center FAB.
 class MapScreen extends StatelessWidget {
@@ -57,7 +60,7 @@ class _MapViewState extends State<_MapView> {
     builder: (context, state) => Stack(
       children: [
         _buildMap(state),
-        if (state.isBusy) const Center(child: CircularProgressIndicator()),
+        if (state.isBusy) const Center(child: CircularProgressIndicator.adaptive()),
         MapStatusOverlay(state: state),
         MapTopControls(
           searchController: _searchController,
@@ -70,9 +73,42 @@ class _MapViewState extends State<_MapView> {
               context.read<MapBloc>().add(CategorySelected(category)),
         ),
         MapRecenterButton(onPressed: () => _onRecenter(context, state)),
+        if (state.centers.isNotEmpty && !state.isBusy)
+          SafeArea(
+            child: Align(
+              alignment: AlignmentDirectional.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: FloatingActionButton.extended(
+                  heroTag: 'map_centers_list',
+                  icon: const Icon(Icons.format_list_bulleted),
+                  label: Text(
+                    context.l10n.mapCentersCount(state.centers.length),
+                  ),
+                  onPressed: () => _openCentersList(context, state),
+                ),
+              ),
+            ),
+          ),
       ],
     ),
   );
+
+  void _openCentersList(BuildContext context, MapState state) {
+    final navigator = Navigator.of(context);
+    unawaited(
+      showCentersListSheet(
+        context,
+        centers: state.centers,
+        onCenterTap: (center) {
+          // Close the sheet, then open the profile — same destination a marker
+          // tap reaches, so the pushed page owns the stack cleanly.
+          navigator.pop();
+          unawaited(context.push(AppRoutes.centerDetail, extra: center.id));
+        },
+      ),
+    );
+  }
 
   Widget _buildMap(MapState state) {
     final position = state.position;
