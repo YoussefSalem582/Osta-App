@@ -16,14 +16,11 @@ import 'package:osta/features/business/onboarding/presentation/pages/business_id
 import 'package:osta/features/business/shell/presentation/business_shell_page.dart';
 import 'package:osta/features/customer/booking/presentation/pages/live_booking_screen.dart';
 import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
+import 'package:osta/features/customer/garage/presentation/cubit/garage_cubit.dart';
 import 'package:osta/features/customer/garage/presentation/pages/add_car_screen.dart';
 import 'package:osta/features/customer/garage/presentation/pages/my_garage_screen.dart';
 import 'package:osta/features/customer/home/presentation/pages/home_page.dart';
 import 'package:osta/features/customer/onboarding/presentation/pages/onboarding_page.dart';
-import 'package:osta/features/shared/profile/data/model/profile_response/data.dart'
-    as profile_data;
-import 'package:osta/features/shared/profile/presentation/pages/edit_profile_screen.dart';
-import 'package:osta/features/shared/profile/presentation/pages/profile_screen.dart';
 import 'package:osta/features/customer/shell/presentation/customer_shell_page.dart';
 import 'package:osta/features/shared/auth/presentation/choose/auth_choose_page.dart';
 import 'package:osta/features/shared/auth/presentation/login/login_page.dart';
@@ -32,6 +29,10 @@ import 'package:osta/features/shared/auth/presentation/password_recovery/reset_p
 import 'package:osta/features/shared/auth/presentation/register/pages/business_register_page.dart';
 import 'package:osta/features/shared/auth/presentation/register/pages/customer_register_page.dart';
 import 'package:osta/features/shared/onboarding/presentation/language_page.dart';
+import 'package:osta/features/shared/profile/data/model/profile_response/data.dart'
+    as profile_data;
+import 'package:osta/features/shared/profile/presentation/pages/edit_profile_screen.dart';
+import 'package:osta/features/shared/profile/presentation/pages/profile_screen.dart';
 import 'package:osta/features/shared/role/presentation/coming_soon_page.dart';
 import 'package:osta/features/shared/role/presentation/page/role_selection_page.dart';
 import 'package:osta/features/shared/splash/presentation/splash_page.dart';
@@ -163,7 +164,10 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.addCar,
-        builder: (context, state) => const AddCarScreen(),
+        builder: (context, state) {
+          final parentCubit = state.extra as GarageCubit?;
+          return AddCarScreen(parentCubit: parentCubit);
+        },
       ),
       GoRoute(
         path: AppRoutes.bookingStatus,

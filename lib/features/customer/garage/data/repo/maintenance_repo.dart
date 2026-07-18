@@ -4,13 +4,6 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/features/customer/garage/data/model/maintenance_record.dart';
 
-/// Data layer over the vehicle maintenance endpoints (backend
-/// `Api/B2C/MaintenanceController` + `MaintenanceRecordResource`). Static
-/// methods like the sibling `GarageRepo`; errors bubble up as the typed
-/// `ApiException`.
-///
-/// Ownership is server-enforced: a vehicle the caller doesn't own returns 404
-/// (indistinguishable from missing) — nothing special to handle here.
 abstract final class MaintenanceRepo {
   static ApiClient get _api => GetIt.instance<ApiClient>();
 
@@ -22,9 +15,6 @@ abstract final class MaintenanceRepo {
   static MaintenanceRecord _parseOne(Object? data) =>
       MaintenanceRecord.fromJson(data! as Map<String, dynamic>);
 
-  /// GET `vehicles/{id}/maintenance` — paginated history, newest first
-  /// (fixed server ordering). [perPage] is clamped to [1, 50] server-side.
-  /// Returns the whole [ApiResult] so callers keep `.meta`.
   static Future<ApiResult<List<MaintenanceRecord>>> history(
     Object vehicleId, {
     int page = 1,
@@ -35,10 +25,6 @@ abstract final class MaintenanceRepo {
     query: {'page': page, 'per_page': perPage},
   );
 
-  /// POST `vehicles/{id}/maintenance` — add a manual record (201).
-  /// Multipart because of the optional [receiptPath] file. [type] must be an
-  /// `ExpenseCategory` value; [performedAt] is sent date-only and must be
-  /// today-or-earlier server-side. Keys match `StoreMaintenanceRecordRequest`.
   static Future<MaintenanceRecord> addRecord(
     Object vehicleId, {
     required String type,
@@ -65,13 +51,6 @@ abstract final class MaintenanceRepo {
     return result.data;
   }
 
-  /// GET `vehicles/{id}/maintenance/export` — raw PDF bytes (attachment).
-  /// ponytail: bypasses [ApiClient] on purpose — its `_send` always parses the
-  /// JSON envelope, and this route streams a binary PDF, not JSON. Reuses the
-  /// same GetIt-registered authenticated [Dio], so the bearer token is still
-  /// attached. Upgrade path: add a `download`/bytes method to ApiClient if
-  /// another endpoint needs binary. Raw `DioException` bubbles (not mapped to
-  /// `ApiException`) since we skip the envelope client.
   static Future<List<int>> exportPdf(Object vehicleId) async {
     final dio = GetIt.instance<Dio>();
     final response = await dio.get<List<int>>(

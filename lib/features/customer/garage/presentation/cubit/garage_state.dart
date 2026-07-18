@@ -34,8 +34,6 @@ class GarageError extends GarageState {
   List<Object?> get props => [message];
 }
 
-// ── Add-vehicle sub-states ───────────────────────────────────────────────────
-
 class GarageAddLoading extends GarageState {
   const GarageAddLoading();
 }
@@ -53,7 +51,6 @@ class GarageAddError extends GarageState {
   List<Object?> get props => [message];
 }
 
-// ── Set-primary sub-states ───────────────────────────────────────────────────
 
 class GarageSetPrimaryLoading extends GarageState {
   const GarageSetPrimaryLoading();
@@ -72,7 +69,6 @@ class GarageSetPrimaryError extends GarageState {
   List<Object?> get props => [message];
 }
 
-// ── Delete-vehicle sub-states ────────────────────────────────────────────────
 
 class GarageDeleteLoading extends GarageState {
   const GarageDeleteLoading();
