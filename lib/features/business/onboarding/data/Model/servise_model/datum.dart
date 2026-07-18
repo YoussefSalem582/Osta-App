@@ -27,11 +27,11 @@ class Datum {
     description: json['description'],
     category: json['category'],
     price: json['price'] is String
-        ? int.tryParse(json['price'])
+        ? int.tryParse(json['price'] as String)
         : (json['price'] as num?)?.toInt(),
     priceType: json['price_type']?.toString(),
     durationMinutes: json['duration_minutes'] is String
-        ? int.tryParse(json['duration_minutes'])
+        ? int.tryParse(json['duration_minutes'] as String)
         : (json['duration_minutes'] as num?)?.toInt(),
     isActive:
         json['is_active'] == 1 ||
