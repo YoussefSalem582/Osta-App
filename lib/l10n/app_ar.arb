@@ -608,6 +608,8 @@
   "servicePriceFixed": "ثابت",
   "servicePriceStartingFrom": "يبدأ من",
   "servicePriceHourly": "بالساعة",
+  "serviceCategoryLabel": "التصنيف",
+  "serviceCategoryOther": "أخرى",
   "serviceCategory": "التصنيف (اختياري)",
   "serviceDuration": "المدة بالدقائق (اختياري)",
   "serviceDescription": "الوصف (اختياري)",

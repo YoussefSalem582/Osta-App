@@ -629,6 +629,8 @@
   "servicePriceFixed": "Fixed",
   "servicePriceStartingFrom": "From",
   "servicePriceHourly": "Hourly",
+  "serviceCategoryLabel": "Category",
+  "serviceCategoryOther": "Other",
   "serviceCategory": "Category (optional)",
   "serviceDuration": "Duration in minutes (optional)",
   "serviceDescription": "Description (optional)",
