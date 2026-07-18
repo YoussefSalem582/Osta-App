@@ -9,6 +9,7 @@ import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/customer/garage/presentation/cubit/maintenance_cubit.dart';
 import 'package:osta/features/customer/garage/presentation/cubit/maintenance_state.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
+import 'package:osta/shared/ui/adaptive_pickers.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
 import 'package:osta/shared/ui/app_toaster.dart';
@@ -57,7 +58,7 @@ class _AddMaintenanceRecordSheetState extends State<AddMaintenanceRecordSheet> {
 
   Future<void> _pickDate() async {
     final now = DateTime.now();
-    final date = await showDatePicker(
+    final date = await showAdaptiveDatePicker(
       context: context,
       // performed_at must be today-or-earlier server-side.
       firstDate: DateTime(now.year - 15),

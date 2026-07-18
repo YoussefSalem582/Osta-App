@@ -7,6 +7,7 @@ import 'package:osta/features/customer/booking/presentation/bloc/booking_detail_
 import 'package:osta/features/customer/booking/presentation/widgets/live_booking/booking_timeline.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/live_booking/status_card.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
+import 'package:osta/shared/ui/adaptive_pickers.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_confirm_dialog.dart';
@@ -40,14 +41,14 @@ class _LiveBookingViewState extends State<_LiveBookingView> {
   Future<void> _reschedule(BuildContext context) async {
     final now = DateTime.now();
     final base = _booking?.scheduledAt ?? now;
-    final date = await showDatePicker(
+    final date = await showAdaptiveDatePicker(
       context: context,
       firstDate: now,
       lastDate: now.add(const Duration(days: 90)),
       initialDate: base.isBefore(now) ? now : base,
     );
     if (date == null || !context.mounted) return;
-    final time = await showTimePicker(
+    final time = await showAdaptiveTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(base),
     );
@@ -109,7 +110,7 @@ class _LiveBookingViewState extends State<_LiveBookingView> {
                 ),
               );
             }
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator.adaptive());
           }
           return Stack(
             children: [
@@ -118,7 +119,7 @@ class _LiveBookingViewState extends State<_LiveBookingView> {
                 const Positioned.fill(
                   child: ColoredBox(
                     color: Colors.black12,
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(child: CircularProgressIndicator.adaptive()),
                   ),
                 ),
             ],

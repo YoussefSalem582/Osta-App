@@ -6,6 +6,7 @@ import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/business/services/data/model/promotion.dart';
 import 'package:osta/features/business/services/data/repo/promotion_repo.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
+import 'package:osta/shared/ui/adaptive_pickers.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_segmented_toggle.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
@@ -73,7 +74,7 @@ class _PromotionFormScreenState extends State<PromotionFormScreen> {
   Future<void> _pickDate({required bool isStart}) async {
     final now = DateTime.now();
     final initial = (isStart ? _startsAt : _endsAt) ?? now;
-    final date = await showDatePicker(
+    final date = await showAdaptiveDatePicker(
       context: context,
       firstDate: DateTime(now.year - 1),
       lastDate: DateTime(now.year + 5),
