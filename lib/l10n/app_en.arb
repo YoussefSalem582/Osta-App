@@ -352,6 +352,7 @@
   "confirm": "Confirm",
   "decline": "Decline",
   "technicians": "Technicians",
+  "techniciansSubtitle": "Manage your mechanic roster",
   "engine": "Engine",
   "addTechnician": "Add technician",
   "evaluation": "Rating",
@@ -639,5 +640,99 @@
   "servicesEmptyMessage": "Add your first service to start taking bookings.",
   "deleteServiceDialogTitle": "Delete service",
   "deleteServiceDialogMessage": "Are you sure you want to remove this service?",
-  "serviceDeleted": "Service removed"
+  "serviceDeleted": "Service removed",
+  "promotionAddTitle": "Add promotion",
+  "promotionEditTitle": "Edit promotion",
+  "promotionTitle": "Promotion title",
+  "promotionTitleRequired": "Promotion title is required",
+  "promotionDiscountType": "Discount type",
+  "promotionDiscountPercent": "Percent",
+  "promotionDiscountFixed": "Fixed amount",
+  "promotionDiscountValue": "Discount value",
+  "promotionDiscountValueRequired": "Enter a valid discount value",
+  "promotionStartsAt": "Starts on",
+  "promotionStartsAtRequired": "Pick a start date",
+  "promotionEndsAt": "Ends on (optional)",
+  "promotionSelectDate": "Select a date",
+  "promotionCode": "Promo code (optional)",
+  "promotionMaxRedemptions": "Max redemptions (optional)",
+  "promotionDescription": "Description (optional)",
+  "promotionActive": "Active",
+  "promotionSaved": "Promotion saved",
+  "promotionSaveError": "Couldn't save promotion",
+  "promotionsErrorTitle": "Couldn't load promotions",
+  "promotionsEmptyTitle": "No promotions yet",
+  "promotionsEmptyMessage": "Add your first promotion to attract customers.",
+  "deletePromotionDialogTitle": "Delete promotion",
+  "deletePromotionDialogMessage": "Are you sure you want to remove this promotion?",
+  "promotionDeleted": "Promotion removed",
+  "promotionDiscountPercentOff": "{value}% off",
+  "@promotionDiscountPercentOff": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "promotionDiscountFixedOff": "{amount} off",
+  "@promotionDiscountFixedOff": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "promotionRedeemedCount": "{count} redeemed",
+  "@promotionRedeemedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "technicianAddTitle": "Add technician",
+  "technicianEditTitle": "Edit technician",
+  "technicianName": "Name",
+  "technicianNameRequired": "Name is required",
+  "technicianSpecialty": "Specialty",
+  "technicianSpecialtyRequired": "Specialty is required",
+  "technicianPhone": "Phone (optional)",
+  "technicianActive": "Active",
+  "technicianSaved": "Technician saved",
+  "technicianSaveError": "Couldn't save technician",
+  "techniciansErrorTitle": "Couldn't load technicians",
+  "techniciansEmptyTitle": "No technicians yet",
+  "techniciansEmptyMessage": "Add your first technician to build your team.",
+  "deleteTechnicianDialogTitle": "Delete technician",
+  "deleteTechnicianDialogMessage": "Are you sure you want to remove this technician?",
+  "technicianDeleted": "Technician removed",
+  "maintenanceHistoryTitle": "Maintenance History",
+  "maintenanceAddRecordTooltip": "Add record",
+  "maintenanceEmptyTitle": "No maintenance records yet",
+  "maintenanceEmptySubtitle": "Add a service record to start tracking this car's history.",
+  "maintenanceCostEgp": "{cost} EGP",
+  "@maintenanceCostEgp": {
+    "placeholders": {
+      "cost": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "maintenanceAddRecordTitle": "Add Maintenance Record",
+  "maintenanceType": "Type",
+  "maintenanceTypeFuel": "Fuel",
+  "maintenanceTypeParts": "Parts",
+  "maintenanceTypeSalary": "Salary",
+  "maintenanceTypeRent": "Rent",
+  "maintenanceTypeUtilities": "Utilities",
+  "maintenanceTypeOther": "Other",
+  "maintenanceSelectType": "Select a type",
+  "maintenanceDate": "Date",
+  "maintenanceSelectDate": "Select date",
+  "maintenanceDescription": "Description (optional)",
+  "maintenanceMileage": "Mileage (optional)",
+  "maintenanceCost": "Cost (optional)",
+  "maintenanceValidationNumber": "Enter a valid number",
+  "maintenanceAddSuccess": "Record added successfully."
 }
