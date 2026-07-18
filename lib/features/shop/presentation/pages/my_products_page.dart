@@ -170,6 +170,7 @@ class _MyProductsViewState extends State<_MyProductsView> {
         return ShopProductCard(
           title: product.name,
           price: context.l10n.shopPriceEgp(product.price),
+          imageUrl: product.images.isNotEmpty ? product.images.first : null,
           isActive: product.isActive,
           activeText: context.l10n.businessShopBadgeActive,
           pausedText: context.l10n.businessShopBadgePaused,

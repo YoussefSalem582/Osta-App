@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
+import 'package:osta/features/shop/presentation/widgets/product_image.dart';
 
-/// متجري
+/// متجري — one product tile in the owner's store (photo, status, price).
 
 class ShopProductCard extends StatelessWidget {
   const ShopProductCard({
@@ -10,6 +11,7 @@ class ShopProductCard extends StatelessWidget {
     required this.isActive,
     required this.activeText,
     required this.pausedText,
+    this.imageUrl,
     this.onTap,
     this.onMoreTap,
     super.key,
@@ -20,6 +22,9 @@ class ShopProductCard extends StatelessWidget {
   final bool isActive;
   final String activeText;
   final String pausedText;
+
+  /// Product photo; null/empty falls back to the tinted placeholder box.
+  final String? imageUrl;
   final VoidCallback? onTap;
   final VoidCallback? onMoreTap;
 
@@ -50,6 +55,7 @@ class ShopProductCard extends StatelessWidget {
             Expanded(
               child: Container(
                 margin: const EdgeInsets.all(AppSpacing.xs),
+                clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surfaceContainerHighest.withValues(
                     alpha: 0.4,
@@ -57,7 +63,9 @@ class ShopProductCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppRadii.md),
                 ),
                 child: Stack(
+                  fit: StackFit.expand,
                   children: [
+                    ProductImage(url: imageUrl),
                     PositionedDirectional(
                       top: AppSpacing.sm,
                       start: AppSpacing.sm,
@@ -69,9 +77,9 @@ class ShopProductCard extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: isActive
                               ? theme.colorScheme.primaryContainer.withValues(
-                                  alpha: 0.25,
+                                  alpha: 0.85,
                                 )
-                              : Colors.black.withValues(alpha: 0.06),
+                              : Colors.black.withValues(alpha: 0.55),
                           borderRadius: BorderRadius.circular(AppRadii.pill),
                         ),
                         child: Text(
@@ -79,18 +87,9 @@ class ShopProductCard extends StatelessWidget {
                           style: theme.textTheme.labelSmall?.copyWith(
                             fontWeight: FontWeight.w700,
                             color: isActive
-                                ? theme.colorScheme.primary
-                                : theme.colorScheme.onSurfaceVariant,
+                                ? theme.colorScheme.onPrimaryContainer
+                                : Colors.white,
                           ),
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: Icon(
-                        Icons.inventory_2_outlined,
-                        size: 36,
-                        color: theme.colorScheme.onSurfaceVariant.withValues(
-                          alpha: 0.3,
                         ),
                       ),
                     ),
