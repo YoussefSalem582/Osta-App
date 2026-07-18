@@ -63,7 +63,7 @@ class _AssignMechanicSheetState extends State<_AssignMechanicSheet> {
                 if (snapshot.connectionState != ConnectionState.done) {
                   return const Padding(
                     padding: EdgeInsets.all(AppSpacing.lg),
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(child: CircularProgressIndicator.adaptive()),
                   );
                 }
                 if (snapshot.hasError) {

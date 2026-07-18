@@ -43,7 +43,7 @@ class AvatarPicker extends StatelessWidget {
             height: 104,
             fit: BoxFit.cover,
             placeholder: (_, _) =>
-                const CircularProgressIndicator(strokeWidth: 2),
+                const CircularProgressIndicator.adaptive(strokeWidth: 2),
             errorWidget: (_, _, _) => Icon(
               Icons.person_rounded,
               size: 48,
@@ -92,9 +92,11 @@ class AvatarPicker extends StatelessWidget {
                 child: isUploading
                     ? Padding(
                         padding: const EdgeInsets.all(6),
-                        child: CircularProgressIndicator(
+                        child: CircularProgressIndicator.adaptive(
                           strokeWidth: 2,
-                          color: colorScheme.onPrimary,
+                          valueColor: AlwaysStoppedAnimation(
+                            colorScheme.onPrimary,
+                          ),
                         ),
                       )
                     : Icon(

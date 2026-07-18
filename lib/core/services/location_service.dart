@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:geolocator/geolocator.dart';
 
 /// A resolved GPS fix. A record rather than a new class, matching the
@@ -52,8 +54,23 @@ class GeolocatorLocationService implements LocationService {
     if (permission == LocationPermission.denied) {
       throw const LocationUnavailable(LocationDenial.permissionDenied);
     }
-    final position = await Geolocator.getCurrentPosition();
-    return (lat: position.latitude, lng: position.longitude);
+    try {
+      // Without a limit getCurrentPosition waits forever for a fix — on
+      // emulators and cold GPS that never lands, so the map's "locating"
+      // spinner hangs and the camera never leaves the fallback target.
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          timeLimit: Duration(seconds: 10),
+        ),
+      );
+      return (lat: position.latitude, lng: position.longitude);
+    } on TimeoutException {
+      // Fresh fix timed out — use the last cached one so the map still centers
+      // instead of spinning. If none either, let it surface as an error.
+      final last = await Geolocator.getLastKnownPosition();
+      if (last == null) rethrow;
+      return (lat: last.latitude, lng: last.longitude);
+    }
   }
 
   @override

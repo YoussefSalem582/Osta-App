@@ -23,6 +23,12 @@ class ServiceFormScreen extends StatefulWidget {
 class _ServiceFormScreenState extends State<ServiceFormScreen> {
   static const _priceTypes = ['fixed', 'starting_from', 'hourly'];
 
+  // Same wire values as the onboarding wizard's category filter
+  // (`business_catalog_page.dart`'s `_categoryForChip`) — index 3 is "Other",
+  // which reveals the free-text field below for anything outside this preset
+  // set (the backend has no enum for `category`, so custom values are valid).
+  static const _presetCategories = ['oil', 'brakes', 'ac'];
+
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _name;
   late final TextEditingController _price;
@@ -30,6 +36,7 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
   late final TextEditingController _duration;
   late final TextEditingController _description;
   late String _priceType;
+  late int _categorySelection;
   late bool _isActive;
   bool _saving = false;
 
@@ -41,7 +48,17 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
     _price = TextEditingController(
       text: s == null ? '' : s.price.toStringAsFixed(0),
     );
-    _category = TextEditingController(text: s?.category ?? '');
+    final existingCategory = s?.category;
+    _categorySelection =
+        existingCategory != null &&
+            _presetCategories.contains(existingCategory)
+        ? _presetCategories.indexOf(existingCategory)
+        : _presetCategories.length;
+    _category = TextEditingController(
+      text: _categorySelection == _presetCategories.length
+          ? (existingCategory ?? '')
+          : '',
+    );
     _duration = TextEditingController(
       text: s?.durationMinutes == null ? '' : '${s!.durationMinutes}',
     );
@@ -66,7 +83,9 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
     final l10n = context.l10n;
     final price = num.tryParse(_price.text.trim()) ?? 0;
     final duration = int.tryParse(_duration.text.trim());
-    final category = _category.text.trim();
+    final category = _categorySelection < _presetCategories.length
+        ? _presetCategories[_categorySelection]
+        : _category.text.trim();
     final description = _description.text.trim();
     try {
       final existing = widget.service;
@@ -154,7 +173,31 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
                 expand: true,
               ),
               const SizedBox(height: AppSpacing.md),
-              AppTextField(controller: _category, label: l10n.serviceCategory),
+              Text(
+                l10n.serviceCategoryLabel,
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: AppSegmentedToggle(
+                  options: [
+                    l10n.businessCatalogFilterOils,
+                    l10n.businessCatalogFilterBrakes,
+                    l10n.businessCatalogFilterAc,
+                    l10n.serviceCategoryOther,
+                  ],
+                  selectedIndex: _categorySelection,
+                  onSelect: (i) => setState(() => _categorySelection = i),
+                ),
+              ),
+              if (_categorySelection == _presetCategories.length) ...[
+                const SizedBox(height: AppSpacing.md),
+                AppTextField(
+                  controller: _category,
+                  label: l10n.serviceCategory,
+                ),
+              ],
               const SizedBox(height: AppSpacing.md),
               AppTextField(
                 controller: _duration,

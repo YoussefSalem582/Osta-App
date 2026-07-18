@@ -54,6 +54,13 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
     await ctx.read<GarageCubit>().setPrimary(vehicle.id!);
   }
 
+  Future<void> onEdit(BuildContext ctx, Datum vehicle) async {
+    final saved = await ctx.push<bool>(AppRoutes.addCar, extra: vehicle);
+    if (saved == true && ctx.mounted) {
+      unawaited(ctx.read<GarageCubit>().getVehicles());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -114,7 +121,7 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
                 title: l10n.myGarage,
                 subtitle: l10n.garageSubtitle,
               ),
-              body: const Center(child: CircularProgressIndicator()),
+              body: const Center(child: CircularProgressIndicator.adaptive()),
             );
           }
 
@@ -206,6 +213,13 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
                             isActionLoading: isActionBusy,
                             onDelete: () => onDelete(context, vehicle),
                             onSetPrimary: () => onSetPrimary(context, vehicle),
+                            onEdit: () => unawaited(onEdit(context, vehicle)),
+                            onTap: () => unawaited(
+                              context.push(
+                                AppRoutes.maintenance,
+                                extra: vehicle.id,
+                              ),
+                            ),
                           );
                         },
                       ),
@@ -213,7 +227,7 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
                   const Positioned.fill(
                     child: ColoredBox(
                       color: Colors.black12,
-                      child: Center(child: CircularProgressIndicator()),
+                      child: Center(child: CircularProgressIndicator.adaptive()),
                     ),
                   ),
               ],

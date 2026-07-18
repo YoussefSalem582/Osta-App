@@ -89,7 +89,7 @@ class _AddressesViewState extends State<_AddressesView> {
                 const Positioned.fill(
                   child: ColoredBox(
                     color: Colors.black12,
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(child: CircularProgressIndicator.adaptive()),
                   ),
                 ),
             ],
@@ -102,7 +102,7 @@ class _AddressesViewState extends State<_AddressesView> {
   Widget _body(BuildContext context, AddressState state) {
     final l10n = context.l10n;
     if (state is AddressLoading || state is AddressInitial) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator.adaptive());
     }
     if (state is AddressError) {
       return ErrorState(

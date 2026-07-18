@@ -8,6 +8,7 @@ import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/customer/garage/data/car_catalog.dart';
+import 'package:osta/features/customer/garage/data/model/garage_response/datum.dart';
 import 'package:osta/features/customer/garage/presentation/cubit/garage_cubit.dart';
 import 'package:osta/features/customer/garage/presentation/cubit/garage_state.dart';
 import 'package:osta/features/shared/auth/presentation/validators/auth_validators.dart';
@@ -18,11 +19,14 @@ import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
 class AddCarScreen extends StatefulWidget {
-  const AddCarScreen({
-    this.parentCubit,
-    super.key,
-  });
+  const AddCarScreen({this.vehicle, this.parentCubit, super.key});
 
+  /// Non-null in edit mode; prefills the form and switches the submit call
+  /// from `addVehicle` to `updateVehicle`.
+  final Datum? vehicle;
+
+  /// The caller's garage cubit (add mode), refreshed after a successful add so
+  /// the list updates without relying on the pop return value.
   final GarageCubit? parentCubit;
 
   @override
@@ -50,6 +54,36 @@ class _AddCarScreenState extends State<AddCarScreen> {
   List<int> get _years {
     final latest = DateTime.now().year + 1;
     return [for (var y = latest; y >= _earliestYear; y--) y];
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final vehicle = widget.vehicle;
+    if (vehicle == null) return;
+
+    _plateController.text = vehicle.plateNumber?.toString() ?? '';
+    _mileageController.text = vehicle.currentMileage == null
+        ? ''
+        : '${(vehicle.currentMileage as num).toInt()}';
+    _colorController.text = vehicle.color ?? '';
+    _year = vehicle.year;
+
+    final make = vehicle.make;
+    if (make != null && carBrands.contains(make)) {
+      _brand = make;
+    } else {
+      _brand = otherOption;
+      _brandController.text = make ?? '';
+    }
+
+    final model = vehicle.model;
+    if (!_brandIsOther && model != null && modelsFor(_brand).contains(model)) {
+      _model = model;
+    } else {
+      _model = otherOption;
+      _modelController.text = model ?? '';
+    }
   }
 
   @override
@@ -88,18 +122,43 @@ class _AddCarScreenState extends State<AddCarScreen> {
     final year = _year;
     if (year == null) return; 
 
-    unawaited(context.read<GarageCubit>().addVehicle(
-      make: _brandIsOther ? _brandController.text.trim() : _brand!,
-      model: (_brandIsOther || _modelIsOther)
-          ? _modelController.text.trim()
-          : _model!,
-      year: year,
-      plateNumber: _plateController.text.trim(),
-      currentMileage: int.tryParse(_mileageController.text.trim()),
-      color: _colorController.text.trim().isEmpty
-          ? null
-          : _colorController.text.trim(),
-    ));
+    final make = _brandIsOther ? _brandController.text.trim() : _brand!;
+    // An "Other" brand hides the model dropdown entirely, so _model is null
+    // there and the free-text field is the only source.
+    final model = (_brandIsOther || _modelIsOther)
+        ? _modelController.text.trim()
+        : _model!;
+    final plateNumber = _plateController.text.trim();
+    final currentMileage = int.tryParse(_mileageController.text.trim());
+    final color = _colorController.text.trim().isEmpty
+        ? null
+        : _colorController.text.trim();
+
+    final vehicle = widget.vehicle;
+    if (vehicle == null) {
+      unawaited(
+        context.read<GarageCubit>().addVehicle(
+          make: make,
+          model: model,
+          year: year,
+          plateNumber: plateNumber,
+          currentMileage: currentMileage,
+          color: color,
+        ),
+      );
+    } else {
+      unawaited(
+        context.read<GarageCubit>().updateVehicle(
+          vehicleId: vehicle.id!,
+          make: make,
+          model: model,
+          year: year,
+          plateNumber: plateNumber,
+          currentMileage: currentMileage,
+          color: color,
+        ),
+      );
+    }
   }
 
   @override
@@ -108,7 +167,10 @@ class _AddCarScreenState extends State<AddCarScreen> {
       create: (_) => GarageCubit(),
       child: BlocConsumer<GarageCubit, GarageState>(
         listenWhen: (_, current) =>
-            current is GarageAddSuccess || current is GarageAddError,
+            current is GarageAddSuccess ||
+            current is GarageAddError ||
+            current is GarageUpdateSuccess ||
+            current is GarageUpdateError,
         listener: (context, state) async {
           if (state is GarageAddSuccess) {
             AppToaster.showMessage(context.l10n.saveAndProceed);
@@ -123,13 +185,21 @@ class _AddCarScreenState extends State<AddCarScreen> {
                 context.go(AppRoutes.customerShell);
               }
             }
+          } else if (state is GarageUpdateSuccess) {
+            AppToaster.showMessage(context.l10n.vehicleUpdated);
+            context.pop(true);
           } else if (state is GarageAddError) {
+            AppToaster.showError(state.message);
+          } else if (state is GarageUpdateError) {
             AppToaster.showError(state.message);
           }
         },
         builder: (context, state) {
           final isLoading =
-              state is GarageAddLoading || state is GarageAddSuccess;
+              state is GarageAddLoading ||
+              state is GarageAddSuccess ||
+              state is GarageUpdateLoading ||
+              state is GarageUpdateSuccess;
           final colorScheme = Theme.of(context).colorScheme;
           final textTheme = Theme.of(context).textTheme;
           final l10n = context.l10n;
@@ -139,44 +209,48 @@ class _AddCarScreenState extends State<AddCarScreen> {
           return Scaffold(
             appBar: AppTopBar(
               centerTitle: false,
-              title: isGating ? l10n.addYourFirstCar : l10n.addCar,
+              title: widget.vehicle != null
+                  ? l10n.editCarTitle
+                  : (isGating ? l10n.addYourFirstCar : l10n.addCar),
             ),
             body: Form(
               key: _formKey,
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: AppSpacing.lg,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.all(AppSpacing.md),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primaryContainer.withValues(
-                          alpha: 0.5,
-                        ),
-                        borderRadius: BorderRadius.circular(AppRadii.md),
+                  if (widget.vehicle == null) ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.lg,
                       ),
-                      child: Row(
-                        children: [
-                          const Text('🚗', style: TextStyle(fontSize: 20)),
-                          const SizedBox(width: AppSpacing.sm),
-                          Expanded(
-                            child: Text(
-                              l10n.carDetailsPrompt,
-                              style: textTheme.bodySmall?.copyWith(
-                                color: colorScheme.onPrimaryContainer,
-                                height: 1.5,
+                      child: Container(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primaryContainer.withValues(
+                            alpha: 0.5,
+                          ),
+                          borderRadius: BorderRadius.circular(AppRadii.md),
+                        ),
+                        child: Row(
+                          children: [
+                            const Text('🚗', style: TextStyle(fontSize: 20)),
+                            const SizedBox(width: AppSpacing.sm),
+                            Expanded(
+                              child: Text(
+                                l10n.carDetailsPrompt,
+                                style: textTheme.bodySmall?.copyWith(
+                                  color: colorScheme.onPrimaryContainer,
+                                  height: 1.5,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-
-                  const SizedBox(height: AppSpacing.sm),
+                    const SizedBox(height: AppSpacing.sm),
+                  ] else
+                    const SizedBox(height: AppSpacing.lg),
 
                   Expanded(
                     child: SingleChildScrollView(

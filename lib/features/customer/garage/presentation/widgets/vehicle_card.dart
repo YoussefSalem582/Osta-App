@@ -13,9 +13,11 @@ class VehicleCard extends StatelessWidget {
     required this.isPrimary,
     required this.onDelete,
     required this.onSetPrimary,
+    required this.onEdit,
     this.year,
     this.isActionLoading = false,
     this.icon = Icons.directions_car_rounded,
+    this.onTap,
     super.key,
   });
 
@@ -27,8 +29,12 @@ class VehicleCard extends StatelessWidget {
   final bool isActionLoading;
   final VoidCallback onDelete;
   final VoidCallback onSetPrimary;
+  final VoidCallback onEdit;
   final int? year;
   final IconData icon;
+
+  /// Opens the vehicle's maintenance history; null keeps the card inert.
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +42,7 @@ class VehicleCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return AppCard(
+      onTap: onTap,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -124,6 +131,24 @@ class VehicleCard extends StatelessWidget {
 
               if (isPrimary) const PrimaryBadge(),
 
+              const SizedBox(width: AppSpacing.xs),
+              SizedBox(
+                width: 32,
+                height: 32,
+                child: IconButton.filledTonal(
+                  onPressed: isActionLoading ? null : onEdit,
+                  padding: EdgeInsets.zero,
+                  style: IconButton.styleFrom(
+                    backgroundColor: colorScheme.surfaceContainerHighest
+                        .withValues(alpha: 0.5),
+                    foregroundColor: colorScheme.onSurfaceVariant,
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  icon: const Icon(Icons.edit_outlined, size: 16),
+                  tooltip: context.l10n.editCarTitle,
+                ),
+              ),
               const SizedBox(width: AppSpacing.xs),
               SizedBox(
                 width: 32,

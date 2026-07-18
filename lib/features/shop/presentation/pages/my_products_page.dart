@@ -129,7 +129,7 @@ class _MyProductsViewState extends State<_MyProductsView> {
               const Positioned.fill(
                 child: ColoredBox(
                   color: Colors.black12,
-                  child: Center(child: CircularProgressIndicator()),
+                  child: Center(child: CircularProgressIndicator.adaptive()),
                 ),
               ),
           ],
@@ -140,7 +140,7 @@ class _MyProductsViewState extends State<_MyProductsView> {
 
   Widget _body(BuildContext context, MyProductsState state) {
     if (state is MyProductsLoading || state is MyProductsInitial) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator.adaptive());
     }
     if (state is MyProductsError) {
       return ErrorState(
