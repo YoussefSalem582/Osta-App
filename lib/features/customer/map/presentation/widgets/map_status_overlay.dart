@@ -42,10 +42,8 @@ class MapStatusOverlay extends StatelessWidget {
           AppSpacing.lg,
           AppSpacing.lg,
         ),
-        // EmptyState/ErrorState centre themselves into whatever they are given,
-        // which is correct as a Scaffold body but here would stretch the card
-        // over the whole map and swallow every pan/zoom. The min-size Column
-        // hands them an unbounded height so they shrink-wrap instead.
+        // Min-size Column shrink-wraps the card instead of stretching it over
+        // the whole map and blocking pan/zoom.
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [AppCard(child: overlay)],

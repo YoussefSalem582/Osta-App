@@ -1,10 +1,5 @@
 /// The role a user is currently acting as — OSTA's "one download, then split"
-/// model. `customer` + `business` are live; `mechanic` + `tow` are shown as
-/// "coming soon" and cannot be selected yet.
-///
-/// The [wireName] doubles as the `account_type` sent to the auth endpoints and
-/// is matched against the `type` returned by `GET /me`, so the persisted
-/// `activeRole` and the server's source of truth stay in lock-step.
+/// model; `customer`/`business` are live, `mechanic`/`tow` are "coming soon".
 enum AppRole {
   customer,
   business,

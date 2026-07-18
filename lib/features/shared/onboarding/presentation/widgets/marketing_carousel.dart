@@ -11,13 +11,9 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 /// One slide of a [MarketingCarousel].
 typedef MarketingSlide = ({String image, String title, String body});
 
-/// The logged-out marketing carousel, shared by both roles.
-///
-/// Chrome (skip, pager, dots, next/start) is identical for customers and
-/// merchants — only the slides differ — so each role supplies its own
-/// [slides] and nothing else. Tapping through calls
-/// [SessionController.acknowledgeOnboarding]; the redirect guard advances to
-/// auth-choose from there (role and language are already chosen by this point).
+/// The logged-out marketing carousel, shared by both roles — only [slides]
+/// differs. Finishing calls [SessionController.acknowledgeOnboarding]; the
+/// redirect guard takes it from there.
 class MarketingCarousel extends StatefulWidget {
   const MarketingCarousel({required this.slides, super.key});
 
@@ -41,10 +37,8 @@ class _MarketingCarouselState extends State<MarketingCarousel> {
   /// Used by both "Get started" and "Skip".
   void _finish() => context.read<SessionController>().acknowledgeOnboarding();
 
-  /// Back to the role chooser. Without this the role pick is a one-way door:
-  /// neither the chooser nor this screen has a back affordance, so a mistaken
-  /// tap sticks until the app is killed. Clearing the role is all it takes —
-  /// the redirect guard forces `/role` whenever `activeRole` is null.
+  /// Back to the role chooser — without it the role pick is a one-way door.
+  /// Clearing the role is enough; the redirect guard forces `/role` whenever `activeRole` is null.
   void _changeRole() =>
       unawaited(context.read<SessionController>().switchRole());
 

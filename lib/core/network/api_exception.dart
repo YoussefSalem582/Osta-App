@@ -1,8 +1,5 @@
-/// Typed exceptions mapped from the backend `ApiResponse` error envelope
-/// (`{success:false, error:{code, message, details}}`).
-///
-/// One subclass per backend `error.code`; [NetworkException] covers transport
-/// failures that never reached the server.
+/// Typed exceptions mapped from the backend error envelope
+/// (`{success:false, error:{code, message, details}}`), one per `error.code`.
 sealed class ApiException implements Exception {
   const ApiException(this.message);
 

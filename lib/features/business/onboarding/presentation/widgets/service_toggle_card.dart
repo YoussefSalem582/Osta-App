@@ -4,16 +4,8 @@ import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_pill.dart';
 
-/// A catalog service row with a price.
-///
-/// Two modes:
-/// - **Toggle** (presets): pass [onChanged]; the whole card and a trailing
-///   [Switch] flip [isSelected].
-/// - **Removable** (custom services): pass [onRemove]; the row is always in the
-///   catalog and carries a "Custom" badge plus a delete button. There is no
-///   switch, because a custom service isn't selected — it's staged, and the
-///   only action is to drop it. (A switch that deleted on "off" was the old
-///   data-loss trap this replaces.)
+/// A catalog service row: pass [onChanged] for a toggleable preset, or
+/// [onRemove] for a removable custom service (no switch — deleting on "off" was a data-loss trap).
 class ServiceToggleCard extends StatelessWidget {
   const ServiceToggleCard({
     required this.title,

@@ -7,10 +7,9 @@ import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/brand_scaffold.dart';
 
-/// Language pick (Arabic / English). Shown every logged-out launch —
-/// [SessionController] persists the choice and the redirect guard advances to
-/// the role chooser. Arabic is offered first (RTL-first product); the currently
-/// saved language reads as selected.
+/// Language pick (Arabic / English), shown every logged-out launch. Arabic is
+/// offered first (RTL-first product); the redirect guard advances to the
+/// role chooser next.
 class LanguagePage extends StatelessWidget {
   const LanguagePage({super.key});
 

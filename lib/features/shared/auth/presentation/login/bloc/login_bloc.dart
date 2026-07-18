@@ -9,11 +9,8 @@ import 'package:osta/features/shared/auth/presentation/auth_failure.dart';
 part 'login_event.dart';
 part 'login_state.dart';
 
-/// Drives the login screen. Sends `account_type = activeRole` and, on success,
-/// hands the authoritative role back to [SessionController] (which self-heals a
-/// wrong-shell choice); the router then leaves this screen.
-///
-/// Registered as a factory by hand in `configureDependencies()`.
+/// Drives the login screen; on success hands the resolved role back to
+/// [SessionController], which self-heals a wrong-shell choice.
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc(this._repo, this._session) : super(const LoginState()) {
     on<LoginSubmitted>(_onSubmitted);

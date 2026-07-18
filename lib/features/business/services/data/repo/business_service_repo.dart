@@ -3,12 +3,9 @@ import 'package:get_it/get_it.dart';
 import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 
-/// A service on a business owner's service center (B2B). Plain immutable model;
-/// hand-written JSON mapping mirrors `Api/B2C/ServiceResource` (`toArray`).
-/// Note: this resource does **not** expose `service_center_id`.
-///
-// ponytail: co-located because the services list/create area (which would own
-// `model/service.dart`) isn't built yet; move it there when that lands.
+/// A B2B service; mirrors `Api/B2C/ServiceResource`. Unlike Promotion, this
+/// model does not expose `service_center_id`.
+// ponytail: co-located until services/model/service.dart exists; move then.
 class Service extends Equatable {
   const Service({
     required this.id,
@@ -71,12 +68,8 @@ class Service extends Equatable {
   ];
 }
 
-/// Data layer over the B2B services endpoints. Static methods like the other
-/// repos; errors bubble up as the typed `ApiException`. Mirrors
-/// `BusinessServiceController` + `Api/B2C/ServiceResource`.
-///
-/// index/update/delete live here; create is owned by the onboarding repo
-/// (`BusinessOnboardingRepository.createCustomService`).
+/// Data layer over the B2B services endpoints; index/update/delete live here,
+/// create is owned by `BusinessOnboardingRepository.createCustomService`.
 abstract final class BusinessServiceRepo {
   static ApiClient get _api => GetIt.instance<ApiClient>();
 

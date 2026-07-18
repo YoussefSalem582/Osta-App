@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
-/// Year-founded picker shared by the onboarding identity step and the
-/// post-onboarding profile editor.
-///
-/// Optional, like the backend's `sometimes` rule; the range mirrors
-/// `integer|min:1900|max:{this year}`.
+/// Year-founded picker; optional, range mirrors backend's
+/// `integer|min:1900|max:{this year}` rule.
 class FoundingYearDropdown extends StatelessWidget {
   const FoundingYearDropdown({
     required this.value,

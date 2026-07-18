@@ -1,10 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-/// Form DTO for `PUT /business/profile` (Step 1 of business onboarding).
-///
-/// Sent as JSON when [logoPath] is null, or as multipart `FormData` when a
-/// logo file is attached. Field names match the Laravel request
-/// (`UpdateBusinessProfileRequest`).
+/// Form DTO for `PUT /business/profile`. JSON when [logoPath] is null, multipart otherwise.
 class BusinessProfileInput extends Equatable {
   const BusinessProfileInput({
     this.tradeName,

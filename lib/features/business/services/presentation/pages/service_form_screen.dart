@@ -23,10 +23,9 @@ class ServiceFormScreen extends StatefulWidget {
 class _ServiceFormScreenState extends State<ServiceFormScreen> {
   static const _priceTypes = ['fixed', 'starting_from', 'hourly'];
 
-  // Same wire values as the onboarding wizard's category filter
-  // (`business_catalog_page.dart`'s `_categoryForChip`) — index 3 is "Other",
-  // which reveals the free-text field below for anything outside this preset
-  // set (the backend has no enum for `category`, so custom values are valid).
+  // Same wire values as the onboarding wizard's category filter; index 3
+  // ("Other") reveals the free-text field since the backend has no category
+  // enum.
   static const _presetCategories = ['oil', 'brakes', 'ac'];
 
   final _formKey = GlobalKey<FormState>();

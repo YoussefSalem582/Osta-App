@@ -116,14 +116,10 @@ class BusinessOnboardingState extends Equatable {
         filtered.every((p) => selectedPresetIds.contains(p.id));
   }
 
-  /// The identity draft, for [SessionStore.writeBusinessDraft].
-  ///
-  /// Persists the typed answers only — not [presets]/[selectedPresetIds]
-  /// (re-fetched on entering step 2) and not [logoPath].
-  ///
-  /// ponytail: logoPath is an image_picker cache path, which the OS may reap
-  /// between launches; a restored one can point at nothing. Re-picking a logo
-  /// is one tap, so it is not worth copying the file somewhere durable.
+  /// Identity draft for [SessionStore.writeBusinessDraft] — excludes
+  /// [presets]/[selectedPresetIds] (re-fetched) and [logoPath].
+  /// ponytail: logoPath is an ephemeral image_picker cache path, not worth
+  /// persisting since re-picking is one tap.
   Map<String, dynamic> toDraftJson() => {
     'trade_name': tradeName,
     'legal_name': legalName,

@@ -1,13 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-/// Full profile of one service center — mirrors `ServiceCenterResource`
-/// (osta_backend `CenterController::center`, GET `/centers/{center}`).
-///
-/// Richer than `CenterSummary` (used for map pins): this is the detail sheet.
-/// `services_count` / `reviews_count` come from `loadCount`, so they are
-/// present on `show`; the `services` relation itself is NOT loaded there
-/// (`whenLoaded`) — hence [services] defaults to empty. `distance_meters` is
-/// omitted outside nearby results, so it has no field here.
+/// Full center profile — mirrors `ServiceCenterResource` (GET
+/// `/centers/{center}`). [services] defaults to empty since that relation
+/// isn't eager-loaded on `show`.
 class CenterDetail extends Equatable {
   const CenterDetail({
     required this.id,
@@ -213,10 +208,9 @@ class CenterService extends Equatable {
   ];
 }
 
-/// A center's bookable slots for one day — mirrors
-/// `App\Domain\Center\Data\CenterAvailability` (GET
-/// `/centers/{center}/availability?date=Y-m-d`). Closed/overnight/degenerate
-/// days come back with `is_open: false` and empty [slots].
+/// A center's bookable slots for one day (GET
+/// `/centers/{center}/availability?date=Y-m-d`); closed days come back with
+/// `is_open: false` and empty [slots].
 class CenterAvailability extends Equatable {
   const CenterAvailability({
     required this.date,

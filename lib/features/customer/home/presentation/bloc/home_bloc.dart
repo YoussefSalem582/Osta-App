@@ -12,10 +12,8 @@ import 'package:osta/features/shop/data/repo/shop_repo.dart';
 part 'home_event.dart';
 part 'home_state.dart';
 
-/// Loads the customer Home feed from four independent endpoints — `GET /me`,
-/// `GET /bookings`, `GET /centers/nearby`, `GET /products` — concurrently, and
-/// degrades per-section: a failed rail (e.g. location denied → no nearby
-/// centers) empties just that rail, never blanking the whole page.
+/// Loads the Home feed from four endpoints concurrently; a failed rail
+/// degrades to empty instead of blanking the whole page.
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc(this._centers, this._location, this._profile)
     // Seed the name from cache for an instant header while /me is in flight.

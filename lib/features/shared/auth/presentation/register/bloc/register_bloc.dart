@@ -8,12 +8,8 @@ import 'package:osta/features/shared/auth/presentation/auth_failure.dart';
 part 'register_event.dart';
 part 'register_state.dart';
 
-/// Drives the register screen. Sends `account_type = activeRole` and, on
-/// success, hands the authoritative role back to [SessionController]; the
-/// router then leaves this screen. Also runs the live username-availability
-/// check that backs the field's ✓/✗ marker.
-///
-/// Registered as a factory by hand in `configureDependencies()`.
+/// Drives the register screen; on success hands the resolved role
+/// (`account_type = activeRole`) back to [SessionController].
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   RegisterBloc(this._repo, this._session) : super(const RegisterState()) {
     on<UsernameChanged>(_onUsernameChanged);
@@ -84,11 +80,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         accountType: role,
         languagePreference: _session.state.locale?.languageCode,
       );
-      // Register already stored the token, so this authenticated upload works.
-      // Must run before onAuthenticated — that hands off to the router, which
-      // tears this page (and bloc) down. Best-effort: the account exists either
-      // way, so a failed photo shouldn't strand the user; they can set it later
-      // from their profile.
+      // Must run before onAuthenticated, which tears this page down.
+      // Best-effort — a failed upload shouldn't block registration.
       if (event.photoPath != null) {
         try {
           await _repo.uploadAvatar(filePath: event.photoPath!);

@@ -14,12 +14,8 @@ import 'package:osta/features/customer/map/data/model/center_summary.dart';
 import 'package:osta/features/shop/data/models/product.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-/// Customer Home tab content: header, active booking, quick book, nearby
-/// centers, and the shop strip. Rendered as index 0 of the customer shell.
-///
-/// Each section is fed by [HomeBloc], which loads `/me`, `/bookings`,
-/// `/centers/nearby` and `/products` concurrently and degrades per-section, so
-/// a missing rail (no nearby centers, empty shop) just drops out of the feed.
+/// Customer Home tab: header, active booking, quick book, nearby centers and
+/// shop strip, fed by [HomeBloc] which degrades per-section on failure.
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 

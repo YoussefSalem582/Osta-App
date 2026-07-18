@@ -4,10 +4,8 @@ import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_card.dart';
 
-/// Bulk-add shortcut for the presets currently in view.
-///
-/// [count] is how many the tap will add (the filtered set), so the label never
-/// claims a number the list doesn't show.
+/// Bulk-add shortcut for the presets currently in view; [count] is the
+/// filtered-set size so the label matches what's shown.
 class AddPresetCard extends StatelessWidget {
   const AddPresetCard({
     required this.onTap,

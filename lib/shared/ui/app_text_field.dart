@@ -2,20 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
-/// Brand text field — thin wrapper over [TextFormField]; visual styling
-/// comes from the shared [InputDecorationTheme] (flat fill, brand focus ring,
-/// error ring, focus-tinted icons).
-///
-/// [label] is a Material **floating label**: it sits inside the field as the
-/// placeholder when empty, then floats to the border (in the brand colour) once
-/// focused or filled — so the placeholder always reads as the field's name and
-/// stays visually distinct from typed text. [hint] is an optional example shown
-/// only while focused (e.g. a phone format).
-///
-/// Set [obscureToggle] on a password field to render a show/hide eye button
-/// that flips [obscureText] locally (state lives in the field, not the caller).
-/// Pass a [prefix] widget (e.g. a `+20` dial code) for an always-visible
-/// leading element, or [prefixIcon] for a leading icon.
+/// Brand text field — thin wrapper over [TextFormField], styled via the shared
+/// [InputDecorationTheme].
 class AppTextField extends StatefulWidget {
   const AppTextField({
     this.label,

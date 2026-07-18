@@ -3,11 +3,8 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/features/business/bookings/data/model/business_booking.dart';
 
-/// Data layer over the B2B booking endpoints — mirrors `BookingController`
-/// (app/Http/Controllers/Api/B2B/BookingController.php) and its
-/// `BookingResource`. Static methods like the other repos; errors bubble as the
-/// typed `ApiException`. All routes are `auth:sanctum` + `ability:access` and
-/// scoped to the caller's service center (`BookingPolicy::operate`).
+/// Data layer over the B2B booking endpoints; errors bubble as `ApiException`.
+/// All routes are scoped to the caller's service center.
 abstract final class BusinessBookingRepo {
   static ApiClient get _api => GetIt.instance<ApiClient>();
 

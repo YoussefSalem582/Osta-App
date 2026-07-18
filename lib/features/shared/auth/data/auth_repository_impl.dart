@@ -7,11 +7,8 @@ import 'package:osta/core/network/dio_client.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:osta/features/shared/auth/domain/auth_repository.dart';
 
-/// Talks to `/auth/*`, stores the Sanctum token pair on success, and reads the
-/// authoritative role from the embedded `user.type` — the same value
-/// `GET /me` returns.
-///
-/// Registered by hand in `configureDependencies()` — no injectable codegen.
+/// Talks to `/auth/*`; stores the token pair and returns the role read from
+/// `user.type` (the same value `GET /me` returns).
 class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._api, this._tokens);
 

@@ -9,10 +9,9 @@ import 'package:osta/features/business/bookings/data/repo/business_booking_repo.
 part 'business_bookings_event.dart';
 part 'business_bookings_state.dart';
 
-/// Drives the provider booking queue (`GET /business/bookings`) plus the B2B
-/// transitions: accept, reject, advance status, assign a roster mechanic. Each
-/// action reloads the list so the active status filter stays correct (a booking
-/// that leaves the filtered status drops out).
+/// Drives the provider booking queue plus B2B transitions
+/// (accept/reject/advance/assign); each action reloads the list, so a
+/// booking that leaves the filtered status drops out.
 class BusinessBookingsBloc
     extends Bloc<BusinessBookingsEvent, BusinessBookingsState> {
   BusinessBookingsBloc() : super(const BusinessBookingsState()) {

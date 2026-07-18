@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 
-/// Brand segmented control — a pill track holding animated pill tabs.
-///
-/// [expand] picks the layout: `false` sizes each tab to its label (a compact
-/// inline filter), `true` splits the width evenly (a full-width tab bar).
+/// Brand segmented control — a pill track of animated tabs. [expand] picks
+/// compact (label-sized) vs full-width (evenly split) layout.
 class AppSegmentedToggle extends StatelessWidget {
   const AppSegmentedToggle({
     required this.options,

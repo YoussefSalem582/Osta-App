@@ -26,10 +26,7 @@ final class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> _bootstrap() async {
-    // Branding hold, then read persisted {token, activeRole, locale}. The
-    // router's redirect (keyed on SessionController state via the refresh
-    // listenable) reacts to the emitted state and leaves the splash on its
-    // own — no manual navigation.
+    // Branding hold, then bootstrap; router redirect handles navigation from here.
     await Future<void>.delayed(const Duration(seconds: 2));
     await getIt<SessionController>().bootstrap();
   }

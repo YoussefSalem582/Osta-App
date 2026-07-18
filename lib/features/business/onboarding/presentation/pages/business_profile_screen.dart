@@ -24,10 +24,8 @@ import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 import 'package:osta/shared/ui/status_states.dart';
 
-/// The provider's own center profile — reads `GET /business/profile` to prefill,
-/// then edits via `PUT /business/profile` (partial). Mirrors the onboarding
-/// identity step (logo, business info, map pin), but stands alone off the
-/// business More tab so the owner can update details after onboarding.
+/// Center profile editor — prefills from `GET` and saves via partial
+/// `PUT /business/profile`; mirrors onboarding's identity step but lives under the business More tab.
 class BusinessProfileScreen extends StatefulWidget {
   const BusinessProfileScreen({super.key});
 

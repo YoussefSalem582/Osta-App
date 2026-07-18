@@ -18,11 +18,9 @@ import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 import 'package:osta/shared/ui/status_states.dart';
 
-/// Address-only editor for the provider's center: map pin + city / street /
-/// district. A focused subset of `BusinessProfileScreen` over the same
-/// `GET`/`PUT /business/profile` — the PUT omits nulls and every backend rule
-/// is `sometimes`, so saving just these fields leaves the rest of the profile
-/// (trade name, logo, type…) untouched.
+/// Address-only editor (map pin + city/street/district) — a subset of
+/// `BusinessProfileScreen`; the partial PUT leaves the rest of the profile
+/// untouched.
 class BusinessAddressScreen extends StatefulWidget {
   const BusinessAddressScreen({super.key});
 

@@ -3,9 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:osta/core/network/api_exception.dart';
 
 /// Pagination block from the `meta` field of list responses.
-///
-/// Plain immutable model with hand-written JSON mapping — no codegen. Reused by
-/// every list feature (bookings, shop, notifications, …).
 class PaginationMeta extends Equatable {
   const PaginationMeta({
     required this.currentPage,
@@ -51,11 +48,8 @@ class ApiResult<T> {
   final PaginationMeta? meta;
 }
 
-/// Envelope-aware HTTP client — the single entry point features use.
-///
-/// Every call hits the env-configured `/api/v1` base (see `buildAppDio`),
-/// parses the backend `ApiResponse` envelope into a typed [ApiResult], and
-/// throws a typed [ApiException] on failure so screens never touch raw JSON.
+/// Envelope-aware HTTP client: parses the backend `ApiResponse` envelope into
+/// a typed [ApiResult] and throws a typed [ApiException] on failure.
 class ApiClient {
   ApiClient(this._dio);
 
@@ -149,10 +143,8 @@ class ApiClient {
       throw _envelopeException(body);
     }
     final meta = body['meta'];
-    // A 200 whose `data` shape doesn't match what this feature's `parse`
-    // expects (e.g. a nested pagination wrapper) throws a raw TypeError here
-    // — without this, callers see it as some untyped Object and every screen
-    // that switches on ApiException/NetworkException mislabels it.
+    // Wrap a shape-mismatch TypeError from `parse` so callers still get a
+    // typed ApiException instead of an untyped Object.
     final T data;
     try {
       data = parse(body['data']);
@@ -163,11 +155,8 @@ class ApiClient {
     }
     return ApiResult(
       data,
-      // `meta` is not always pagination: `ApiResponse::success` also ships
-      // arbitrary blocks here (e.g. booking cancel returns `{refund: …}`).
-      // Only build PaginationMeta when a pagination block is actually present —
-      // otherwise `PaginationMeta.fromJson` casts a missing `current_page` and
-      // throws a raw TypeError instead of a typed ApiException.
+      // `meta` isn't always pagination (e.g. booking cancel ships
+      // `{refund: …}`), so only parse it when a pagination block is present.
       meta:
           meta is Map<String, dynamic> &&
               (meta['pagination'] != null || meta['current_page'] != null)

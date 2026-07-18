@@ -7,9 +7,7 @@ part 'password_recovery_event.dart';
 part 'password_recovery_state.dart';
 
 /// Drives both password-recovery steps: request a reset link, then set a new
-/// password with the emailed code. One bloc, provided fresh per screen.
-///
-/// Registered as a factory by hand in `configureDependencies()`.
+/// password with the emailed code.
 class PasswordRecoveryBloc
     extends Bloc<PasswordRecoveryEvent, PasswordRecoveryState> {
   PasswordRecoveryBloc(this._repo) : super(const PasswordRecoveryState()) {

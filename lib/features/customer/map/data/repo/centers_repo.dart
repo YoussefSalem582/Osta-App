@@ -2,21 +2,16 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/features/customer/map/data/model/center_summary.dart';
 
-/// Discovery reads for the customer map.
-///
-/// [ApiClient] already throws a typed `ApiException` on failure, so nothing is
-/// caught here — `MapBloc` owns the try/catch and turns it into a state.
+/// Discovery reads for the customer map; errors aren't caught here since
+/// [ApiClient] already throws typed `ApiException` — `MapBloc` owns try/catch.
 class CentersRepository {
   const CentersRepository(this._api);
 
   final ApiClient _api;
 
-  /// Nearest-first centers around a point (PostGIS-ordered by the backend).
-  ///
-  /// [category] maps to the backend's `service` query param — it matches
-  /// against each center's offered `services.category` (see
-  /// `FiltersDiscoveryQuery::applyServiceFilter` in osta_backend), not a
-  /// `category` field on the center itself, which doesn't exist.
+  /// Nearest-first centers around a point. [category] maps to the backend's
+  /// `service` query param (matches `services.category`, not a field on the
+  /// center itself).
   Future<List<CenterSummary>> nearby({
     required double lat,
     required double lng,

@@ -4,13 +4,8 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/features/shop/data/models/product.dart';
 
-/// Thin data layer over the polymorphic Shop endpoints (#48). Static methods
-/// like the other customer features (`GarageRepo`); errors bubble up as the
-/// typed `ApiException` so cubits can surface `.message`.
-///
-/// Products carry image **URLs** (`images.*` is a string list on the backend —
-/// there is no product-image upload endpoint), so create/edit send URLs, not
-/// files.
+/// Thin data layer over the polymorphic Shop endpoints; errors bubble up as
+/// `ApiException`. Products store image URLs, not files.
 abstract final class ShopRepo {
   static ApiClient get _api => GetIt.instance<ApiClient>();
 

@@ -14,10 +14,8 @@ import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 import 'package:osta/shared/ui/status_states.dart';
 
-/// One vehicle's maintenance/expense history (`vehicles/{id}/maintenance`).
-/// Add-only — the repo exposes no update/delete endpoint, so there is no
-/// edit or delete UI here. PDF export (`MaintenanceRepo.exportPdf`) is a
-/// deliberate scope cut for this pass.
+/// One vehicle's maintenance/expense history. Add-only — no update/delete
+/// endpoint exists; PDF export is a deliberate scope cut for this pass.
 class MaintenanceScreen extends StatefulWidget {
   const MaintenanceScreen({required this.vehicleId, super.key});
 

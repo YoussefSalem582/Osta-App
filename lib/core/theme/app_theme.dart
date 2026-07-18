@@ -3,10 +3,8 @@ import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/core/theme/app_typography.dart';
 
-/// Osta Material 3 themes — the single source every screen renders from.
-///
-/// Both shells (customer + provider) use these; no hardcoded colors outside
-/// the token layer ([AppColors], [AppSpacing], [AppRadii], [AppElevation]).
+/// Osta Material 3 themes — the single source every screen renders from; no
+/// hardcoded colors outside the token layer.
 abstract final class AppTheme {
   static ThemeData light() => _build(Brightness.light, AppColors.light);
 

@@ -3,12 +3,8 @@ import 'package:get_it/get_it.dart';
 import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 
-/// A registered push device for the authenticated user. Mirrors the backend
-/// `DeviceResource` (`DeviceController@store`).
-///
-/// `platform` is one of `ios` / `android` / `web`; `app` is `b2c` / `b2b`
-/// (defaults to `b2c` server-side). Kept as plain strings to match house style
-/// — validation lives in the backend `RegisterDeviceRequest` enums.
+/// A registered push device (mirrors backend `DeviceResource`). `platform` is
+/// `ios`/`android`/`web`; `app` is `b2c`/`b2b` — kept as plain strings, validated server-side.
 class Device extends Equatable {
   const Device({
     required this.id,

@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/ui/app_card.dart';
 
-/// Fixed-width tile for the nearby-centers rail: thumbnail, title, then
-/// whatever [footer] the caller needs (a distance + rating). `CenterCard` is
-/// the sole caller — the shop rail reuses the Store screen's `ProductGridCard`
-/// instead, so a product reads identically in both places.
+/// Fixed-width tile for the nearby-centers rail (thumbnail, title, [footer]);
+/// the shop rail uses a separate `ProductGridCard` instead.
 class HomeTile extends StatelessWidget {
   const HomeTile({
     required this.title,

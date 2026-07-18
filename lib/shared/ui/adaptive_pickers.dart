@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-/// Date/time pickers that show the platform-native control — Cupertino wheel
-/// on iOS, the Material dialog everywhere else — mirroring the `.adaptive`
-/// convention already used for `SwitchListTile`/`RefreshIndicator` elsewhere
-/// in this app.
+/// Platform-native date/time pickers — Cupertino wheel on iOS, Material dialog elsewhere.
 Future<DateTime?> showAdaptiveDatePicker({
   required BuildContext context,
   required DateTime initialDate,

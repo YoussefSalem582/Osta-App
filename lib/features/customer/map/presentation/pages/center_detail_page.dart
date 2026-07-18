@@ -18,13 +18,8 @@ import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 import 'package:osta/shared/ui/status_states.dart';
 
-/// A single service center's profile — collapsing cover hero, overview,
-/// details/hours, services and reviews — with a Book CTA that opens the
-/// booking-create flow. Reached from the map marker sheet's "Details" / "Book"
-/// buttons. `extra` is the center id (`String`).
-///
-/// Backed by [CenterDetailBloc]: `GET /centers/{id}` (+ `/services`, `/reviews`)
-/// on open, `POST /centers/{id}/reviews` when a review is submitted.
+/// A center's profile page (hero, overview, services, reviews) with a Book
+/// CTA; `extra` is the center id. Backed by [CenterDetailBloc].
 class CenterDetailPage extends StatelessWidget {
   const CenterDetailPage({required this.centerId, super.key});
 

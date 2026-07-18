@@ -13,10 +13,9 @@ import 'package:osta/features/business/onboarding/data/business_onboarding_repos
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';
 
-/// Drives the provider board. On load it fetches three feeds concurrently and
-/// degrades per-feed (the counts/revenue snapshot is required; the center name
-/// and the pending-orders preview are best-effort). Accept/reject act on a
-/// single pending order, then silently re-fetch so the counts stay honest.
+/// Drives the provider board: fetches three feeds concurrently, degrading
+/// per-feed (only the counts/revenue snapshot is required); accept/reject
+/// silently re-fetch after.
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   DashboardBloc() : super(const DashboardState()) {
     on<DashboardLoadRequested>(_onLoadRequested);

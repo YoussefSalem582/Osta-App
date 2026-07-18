@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 
-/// Brand pill — a rounded label chip. The shape every badge in the app was
-/// hand-rolling: `Container` + `BoxDecoration(AppRadii.pill)` + a weighted
-/// `Text`.
-///
-/// Callers keep their own semantic wrappers (a booking status, a payment tag)
-/// and hand this the resolved colours.
+/// Brand pill — a rounded label chip, replacing the `Container` +
+/// `BoxDecoration` + `Text` every badge used to hand-roll.
 class AppPill extends StatelessWidget {
   const AppPill({
     required this.label,

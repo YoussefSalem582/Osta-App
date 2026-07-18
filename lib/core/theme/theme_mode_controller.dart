@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Holds the user's theme choice (light / dark / system) and persists it
-/// locally — not synced to the backend in M0.
-///
-/// The More screen (#40) surfaces the toggle.
+/// Holds the user's theme choice (light/dark/system) and persists it locally
+/// — not synced to the backend.
 class ThemeModeController extends Cubit<ThemeMode> {
   ThemeModeController(this._prefs) : super(_load(_prefs));
 

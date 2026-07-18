@@ -4,10 +4,9 @@ import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/features/shared/onboarding/presentation/widgets/marketing_carousel.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
-/// Logged-out **customer** marketing carousel. Shown after the customer role is
-/// chosen until the user taps through. Merchants get `MerchantOnboardingPage`
-/// at `/onboarding/business` instead; both render a [MarketingCarousel] and
-/// differ only in slides.
+/// Logged-out customer marketing carousel. Merchants get
+/// `MerchantOnboardingPage` at `/onboarding/business` instead — both share
+/// [MarketingCarousel], differing only in slides.
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({super.key});
 

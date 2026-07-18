@@ -3,10 +3,8 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/features/business/dashboard/data/model/business_dashboard.dart';
 
-/// Data layer for the business dashboard + capacity endpoints
-/// (`DashboardController@index`, `BusinessCapacityController@update`). Static
-/// like the other repos; the center is resolved server-side from the
-/// authenticated user, so no ids are passed. Errors bubble as `ApiException`.
+/// Dashboard + capacity endpoints; center is resolved server-side, so no ids
+/// are passed.
 abstract final class DashboardRepo {
   static ApiClient get _api => GetIt.instance<ApiClient>();
 
@@ -20,10 +18,9 @@ abstract final class DashboardRepo {
     return result.data;
   }
 
-  /// Partial capacity update. Semantics per field: **null → leave unchanged**,
-  /// **`[]` → clear**. Omitting a param sends nothing for it. `slots` maps a
-  /// 3-letter day to `[open, close]`; `breaks` maps a day to `[[start, end]]`;
-  /// `holidays` is `Y-m-d` strings. Returns the refreshed profile.
+  /// Partial update: null field = unchanged, `[]` = clear. `slots` maps day to
+  /// `[open, close]`; `breaks` maps day to `[[start, end]]`; `holidays` are
+  /// `Y-m-d`.
   static Future<BusinessProfile> updateCapacity({
     Map<String, List<String>>? slots,
     Map<String, List<List<String>>>? breaks,

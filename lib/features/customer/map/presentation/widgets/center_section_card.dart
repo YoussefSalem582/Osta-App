@@ -4,12 +4,8 @@ import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_pill.dart';
 import 'package:osta/shared/ui/app_section_title.dart';
 
-/// A titled section on the center detail page: a header (title, optional count
-/// pill and trailing action) over a body of [children] separated by hairlines,
-/// or a muted [emptyLabel] when there are none.
-///
-/// Shared by About, Services and Reviews so all three read as one system —
-/// built on the common [AppCard] / [AppPill] / [AppSectionTitle].
+/// Titled section card (header + count pill + optional action) over
+/// [children], or a muted [emptyLabel] when empty. Shared by About/Services/Reviews.
 class CenterSectionCard extends StatelessWidget {
   const CenterSectionCard({
     required this.title,

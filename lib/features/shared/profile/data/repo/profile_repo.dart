@@ -7,11 +7,8 @@ import 'package:osta/features/shared/profile/data/model/profile_response/data.da
 import 'package:osta/features/shared/profile/data/model/profile_response/profile_response.dart';
 import 'package:osta/features/shared/profile/data/profile_cache.dart';
 
-/// Profile data source for `GET/PUT /me` + avatar/delete.
-///
-/// Reads are cache-then-network (the cubit serves [cachedProfile] instantly,
-/// then calls [getProfile] to refresh). Writes are online-only and write
-/// through to the cache on success so it never goes stale behind a live edit.
+/// Profile data source for `GET/PUT /me` + avatar/delete. Reads are
+/// cache-then-network; writes are online-only and write through to the cache.
 class ProfileRepo {
   ProfileRepo(this._api, this._cache);
 

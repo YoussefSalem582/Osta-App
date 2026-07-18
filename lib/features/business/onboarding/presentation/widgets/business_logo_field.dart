@@ -5,10 +5,8 @@ import 'package:osta/features/business/onboarding/presentation/widgets/logo_uplo
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 
-/// Business logo picker — previews the stored remote logo (with a
-/// change-logo button) once one exists, else falls back to the empty
-/// [LogoUploadBox]. A freshly-picked local file always wins over the remote
-/// preview.
+/// Business logo picker — shows the stored remote logo (with a change button)
+/// if present, else [LogoUploadBox]; a freshly-picked local file always wins.
 class BusinessLogoField extends StatelessWidget {
   const BusinessLogoField({
     required this.existingLogoUrl,

@@ -1,13 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-/// One service center as returned by `/centers/nearby` and `/centers/search`.
-///
-/// The epic documents the fields (name, rating, distance, open-now, coords)
-/// but not the JSON spelling, and the endpoints need a bearer token so the
-/// contract could not be verified against the live backend. Every field past
-/// `id`/`name` therefore stays nullable and accepts the plausible key
-/// spellings; the UI null-coalesces at the boundary. Tighten this once a real
-/// payload is captured.
+/// One service center from `/centers/nearby` and `/centers/search`. Fields
+/// past `id`/`name` are nullable and accept multiple key spellings since the
+/// JSON contract wasn't verified against the live backend.
 class CenterSummary extends Equatable {
   const CenterSummary({
     required this.id,

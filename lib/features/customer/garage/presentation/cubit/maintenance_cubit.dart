@@ -4,10 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/features/customer/garage/data/repo/maintenance_repo.dart';
 import 'package:osta/features/customer/garage/presentation/cubit/maintenance_state.dart';
 
-/// One instance per vehicle (unlike `GarageCubit`, which takes the vehicle id
-/// per-method) — a maintenance screen only ever shows one vehicle's history,
-/// so binding it once at construction keeps every call site below from having
-/// to thread the id through again.
+/// One instance per vehicle, unlike `GarageCubit` which takes the vehicle id
+/// per-method.
 class MaintenanceCubit extends Cubit<MaintenanceState> {
   MaintenanceCubit(this.vehicleId) : super(const MaintenanceInitial());
 

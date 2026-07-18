@@ -24,14 +24,9 @@ const _dayKeys = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 /// key set purely to re-derive a name `intl` already knows how to localize.
 DateTime _dayAnchor(int index) => DateTime(2024, 1, 1 + index);
 
-/// Weekly hours + holidays editor over `GET /business/profile` (prefill) and
-/// `PUT /business/capacity` (save). Structural twin of `BusinessAddressScreen`
-/// — same load/error/blank-form branches, same save/toast/pop pattern.
-///
-/// Breaks are a deliberate scope cut: the `breaks` param is simply omitted
-/// from the save call, which per `DashboardRepo.updateCapacity`'s
-/// null-leaves-unchanged semantics is safe — it will not clear anyone's
-/// existing break windows.
+/// Weekly hours + holidays editor over `GET/PUT business/profile|capacity`.
+/// `breaks` is omitted from saves (scope cut); null-unchanged semantics keep
+/// this safe.
 class CapacityScreen extends StatefulWidget {
   const CapacityScreen({super.key});
 
@@ -158,11 +153,8 @@ class _CapacityScreenState extends State<CapacityScreen> {
     setState(() => _saving = true);
     try {
       await DashboardRepo.updateCapacity(
-        // The backend validates a present day as exactly 2 items
-        // (`slots.*` => size:2) — there is no "closed" shape, so a closed day
-        // is represented by omitting its key entirely, not by `[]`. `slots`
-        // fully replaces `working_hours` server-side, so an omitted key
-        // correctly clears any hours a day previously had.
+        // Closed days are omitted (no "closed" shape); slots fully replaces
+        // working_hours server-side, so omission clears them.
         slots: {
           for (final day in _dayKeys)
             if (_isOpen[day]!)

@@ -1,9 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-/// A discount promotion on a business owner's service center (B2B). Plain
-/// immutable model; hand-written JSON mapping mirrors `PromotionResource`
-/// (`toArray`) on the backend — flat, no nested objects. Unlike most B2B
-/// resources this one **does** expose `service_center_id`.
+/// A B2B discount promotion; mirrors `PromotionResource`. Unlike most B2B
+/// resources, this one exposes `service_center_id`.
 class Promotion extends Equatable {
   const Promotion({
     required this.id,
