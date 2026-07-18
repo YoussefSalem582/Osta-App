@@ -46,6 +46,9 @@ abstract final class AppRoutes {
   /// district), a focused subset of [businessProfile] over the same
   /// `GET`/`PUT /business/profile`.
   static const businessAddress = '/business/address';
+
+  /// Weekly hours + holidays editor over `GET`/`PUT /business/capacity`.
+  static const businessCapacity = '/business/capacity';
   static const myBookings = '/my-bookings';
 
   /// Service-center profile; `extra` is the center id (`String`).

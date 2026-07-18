@@ -198,6 +198,23 @@ class ProfileViewContent extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
           ],
 
+          // Business hours — capacity/holidays editor, business-only.
+          if (role == AppRole.business) ...[
+            ProfileCard(
+              child: ProfileListItem(
+                title: l10n.businessHours,
+                subtitle: l10n.businessHoursSubtitle,
+                leading: const ProfileItemIcon(
+                  icon: Icons.schedule_outlined,
+                  color: Colors.deepOrange,
+                ),
+                onTap: () =>
+                    unawaited(context.push(AppRoutes.businessCapacity)),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+          ],
+
           // Technicians — business-only quick link to the mechanic roster.
           if (role == AppRole.business) ...[
             ProfileCard(
@@ -240,7 +257,7 @@ class ProfileViewContent extends StatelessWidget {
                   icon: Icons.storefront_outlined,
                   color: Colors.purple,
                 ),
-                onTap: () {},
+                onTap: () => unawaited(context.push(AppRoutes.myProducts)),
               ),
             ),
 

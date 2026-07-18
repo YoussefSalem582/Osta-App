@@ -121,6 +121,7 @@ String? resolveRedirect({
     AppRoutes.addresses,
     AppRoutes.businessProfile,
     AppRoutes.businessAddress,
+    AppRoutes.businessCapacity,
     // Customer booking funnel: center profile → slot picker, pushed over the
     // map/shell so they keep a back button.
     AppRoutes.centerDetail,

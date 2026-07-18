@@ -8,6 +8,7 @@ import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/router/go_router_refresh_stream.dart';
 import 'package:osta/core/router/session_redirect.dart';
 import 'package:osta/core/session/session_controller.dart';
+import 'package:osta/features/business/dashboard/presentation/screens/capacity_screen.dart';
 import 'package:osta/features/business/dashboard/presentation/screens/tech_screen.dart';
 import 'package:osta/features/business/intro/presentation/pages/merchant_onboarding_page.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
@@ -228,6 +229,10 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.businessAddress,
         builder: (context, state) => const BusinessAddressScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.businessCapacity,
+        builder: (context, state) => const CapacityScreen(),
       ),
       GoRoute(
         path: AppRoutes.home,
