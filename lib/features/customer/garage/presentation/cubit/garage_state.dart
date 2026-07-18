@@ -89,7 +89,6 @@ class GarageSetPrimaryError extends GarageState {
   List<Object?> get props => [message];
 }
 
-
 class GarageDeleteLoading extends GarageState {
   const GarageDeleteLoading();
 }

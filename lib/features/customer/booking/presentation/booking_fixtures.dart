@@ -32,5 +32,4 @@ abstract final class BookingFixtures {
   ];
 
   static const totalPrice = '٢٥٠ ج';
-
 }

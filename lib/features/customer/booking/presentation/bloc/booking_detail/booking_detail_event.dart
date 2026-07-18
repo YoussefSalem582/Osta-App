@@ -10,6 +10,7 @@ sealed class BookingDetailEvent extends Equatable {
 class BookingDetailLoadRequested extends BookingDetailEvent {
   const BookingDetailLoadRequested();
 }
+
 class BookingDetailConfirmRequested extends BookingDetailEvent {
   const BookingDetailConfirmRequested();
 }

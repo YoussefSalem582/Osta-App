@@ -120,7 +120,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
   void _onSave(BuildContext context) {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     final year = _year;
-    if (year == null) return; 
+    if (year == null) return;
 
     final make = _brandIsOther ? _brandController.text.trim() : _brand!;
     // An "Other" brand hides the model dropdown entirely, so _model is null

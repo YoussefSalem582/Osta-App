@@ -50,8 +50,7 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
     );
     final existingCategory = s?.category;
     _categorySelection =
-        existingCategory != null &&
-            _presetCategories.contains(existingCategory)
+        existingCategory != null && _presetCategories.contains(existingCategory)
         ? _presetCategories.indexOf(existingCategory)
         : _presetCategories.length;
     _category = TextEditingController(

@@ -122,7 +122,6 @@ class _MyBookingsBodyState extends State<_MyBookingsBody> {
   }
 }
 
-
 BookingItem _toItem(Booking b) {
   final scheduled = b.scheduledAt;
   final date = scheduled == null

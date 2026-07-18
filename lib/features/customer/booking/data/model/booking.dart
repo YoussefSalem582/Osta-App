@@ -68,6 +68,7 @@ class BookingMechanic extends Equatable {
   @override
   List<Object?> get props => [id, name, specialty];
 }
+
 class Booking extends Equatable {
   const Booking({
     required this.id,

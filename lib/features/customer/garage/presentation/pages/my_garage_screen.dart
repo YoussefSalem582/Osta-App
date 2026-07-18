@@ -185,49 +185,54 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
             ),
             body: Stack(
               children: [
-                if (vehicles.isEmpty) EmptyGarageView(
-                        onAddVehicle: () => unawaited(
+                if (vehicles.isEmpty)
+                  EmptyGarageView(
+                    onAddVehicle: () => unawaited(
+                      context.push(
+                        AppRoutes.addCar,
+                        extra: context.read<GarageCubit>(),
+                      ),
+                    ),
+                  )
+                else
+                  ListView.separated(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.lg,
+                    ),
+                    itemCount: vehicles.length,
+                    separatorBuilder: (_, _) =>
+                        const SizedBox(height: AppSpacing.md),
+                    itemBuilder: (context, index) {
+                      final vehicle = vehicles[index];
+                      return VehicleCard(
+                        brand: vehicle.make ?? '',
+                        model: vehicle.model ?? '',
+                        plateNumber: vehicle.plateNumber?.toString() ?? '',
+                        year: vehicle.year,
+                        mileageKm:
+                            (vehicle.currentMileage as num?)?.toInt() ?? 0,
+                        isPrimary: vehicle.isPrimary ?? false,
+                        isActionLoading: isActionBusy,
+                        onDelete: () => onDelete(context, vehicle),
+                        onSetPrimary: () => onSetPrimary(context, vehicle),
+                        onEdit: () => unawaited(onEdit(context, vehicle)),
+                        onTap: () => unawaited(
                           context.push(
-                            AppRoutes.addCar,
-                            extra: context.read<GarageCubit>(),
+                            AppRoutes.maintenance,
+                            extra: vehicle.id,
                           ),
                         ),
-                      ) else ListView.separated(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.lg,
-                        ),
-                        itemCount: vehicles.length,
-                        separatorBuilder: (_, _) =>
-                            const SizedBox(height: AppSpacing.md),
-                        itemBuilder: (context, index) {
-                          final vehicle = vehicles[index];
-                          return VehicleCard(
-                            brand: vehicle.make ?? '',
-                            model: vehicle.model ?? '',
-                            plateNumber: vehicle.plateNumber?.toString() ?? '',
-                            year: vehicle.year,
-                            mileageKm:
-                                (vehicle.currentMileage as num?)?.toInt() ?? 0,
-                            isPrimary: vehicle.isPrimary ?? false,
-                            isActionLoading: isActionBusy,
-                            onDelete: () => onDelete(context, vehicle),
-                            onSetPrimary: () => onSetPrimary(context, vehicle),
-                            onEdit: () => unawaited(onEdit(context, vehicle)),
-                            onTap: () => unawaited(
-                              context.push(
-                                AppRoutes.maintenance,
-                                extra: vehicle.id,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                      );
+                    },
+                  ),
                 if (isActionBusy)
                   const Positioned.fill(
                     child: ColoredBox(
                       color: Colors.black12,
-                      child: Center(child: CircularProgressIndicator.adaptive()),
+                      child: Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      ),
                     ),
                   ),
               ],

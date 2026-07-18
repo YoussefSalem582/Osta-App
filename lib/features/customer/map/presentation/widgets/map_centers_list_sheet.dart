@@ -18,8 +18,7 @@ Future<void> showCentersListSheet(
   context: context,
   showDragHandle: true,
   isScrollControlled: true,
-  builder: (_) =>
-      _CentersListSheet(centers: centers, onCenterTap: onCenterTap),
+  builder: (_) => _CentersListSheet(centers: centers, onCenterTap: onCenterTap),
 );
 
 class _CentersListSheet extends StatelessWidget {

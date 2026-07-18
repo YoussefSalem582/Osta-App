@@ -60,7 +60,8 @@ class _MapViewState extends State<_MapView> {
     builder: (context, state) => Stack(
       children: [
         _buildMap(state),
-        if (state.isBusy) const Center(child: CircularProgressIndicator.adaptive()),
+        if (state.isBusy)
+          const Center(child: CircularProgressIndicator.adaptive()),
         MapStatusOverlay(state: state),
         MapTopControls(
           searchController: _searchController,
