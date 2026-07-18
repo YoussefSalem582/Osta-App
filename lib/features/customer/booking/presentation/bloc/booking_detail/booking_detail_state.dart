@@ -33,14 +33,10 @@ class BookingDetailError extends BookingDetailState {
   List<Object?> get props => [message];
 }
 
-/// A confirm / reschedule / cancel call is in flight — render the last booking
-/// under a blocking overlay.
 class BookingDetailActing extends BookingDetailState {
   const BookingDetailActing();
 }
 
-/// One-shot action failure for the listener to toast; the builder keeps showing
-/// the last loaded booking.
 class BookingDetailActionError extends BookingDetailState {
   const BookingDetailActionError(this.message);
 

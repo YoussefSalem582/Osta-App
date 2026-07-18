@@ -28,8 +28,9 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
   Future<void> onDelete(BuildContext ctx, Datum vehicle) async {
     final currentState = ctx.read<GarageCubit>().state;
     if (currentState is GarageSetPrimaryLoading ||
-        currentState is GarageDeleteLoading)
+        currentState is GarageDeleteLoading) {
       return;
+    }
     final l10n = ctx.l10n;
     final confirmed = await AppConfirmDialog.show(
       context: ctx,
@@ -47,8 +48,9 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
   Future<void> onSetPrimary(BuildContext ctx, Datum vehicle) async {
     final currentState = ctx.read<GarageCubit>().state;
     if (currentState is GarageSetPrimaryLoading ||
-        currentState is GarageDeleteLoading)
+        currentState is GarageDeleteLoading) {
       return;
+    }
     await ctx.read<GarageCubit>().setPrimary(vehicle.id!);
   }
 
@@ -153,7 +155,12 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
                     horizontal: AppSpacing.md,
                   ),
                   child: IconButton(
-                    onPressed: () => unawaited(context.push(AppRoutes.addCar)),
+                    onPressed: () => unawaited(
+                      context.push(
+                        AppRoutes.addCar,
+                        extra: context.read<GarageCubit>(),
+                      ),
+                    ),
                     style: FilledButton.styleFrom(
                       backgroundColor: AppColors.brandGreen,
                       foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -178,12 +185,14 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
             ),
             body: Stack(
               children: [
-                vehicles.isEmpty
-                    ? EmptyGarageView(
-                        onAddVehicle: () =>
-                            unawaited(context.push(AppRoutes.addCar)),
-                      )
-                    : ListView.separated(
+                if (vehicles.isEmpty) EmptyGarageView(
+                        onAddVehicle: () => unawaited(
+                          context.push(
+                            AppRoutes.addCar,
+                            extra: context.read<GarageCubit>(),
+                          ),
+                        ),
+                      ) else ListView.separated(
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppSpacing.md,
                           vertical: AppSpacing.lg,

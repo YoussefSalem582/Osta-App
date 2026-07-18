@@ -14,9 +14,6 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   final ProfileRepo _repo;
 
-  /// Cache-then-network: paint the cached profile instantly (if any), then
-  /// refresh from `GET /me`. Offline with a cache keeps showing it; offline
-  /// with no cache surfaces the error.
   Future<void> getProfile() async {
     final cached = _repo.cachedProfile;
     if (cached != null) {
@@ -38,10 +35,8 @@ class ProfileCubit extends Cubit<ProfileState> {
       } else if (cached == null) {
         emit(const ProfileError('Failed to load profile data'));
       }
-      // else: server gave nothing usable but we already showed the cache.
     } on NetworkException catch (e, s) {
       log('Offline in ProfileCubit.getProfile', error: e, stackTrace: s);
-      // Keep the cached copy on screen; only error out with nothing to show.
       if (cached == null) emit(ProfileError(e.message));
     } on Object catch (e, s) {
       log('Error in ProfileCubit.getProfile', error: e, stackTrace: s);

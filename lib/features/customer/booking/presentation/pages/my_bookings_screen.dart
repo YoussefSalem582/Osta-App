@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/customer/booking/data/model/booking.dart';
 import 'package:osta/features/customer/booking/data/model/booking_item.dart';
-import 'package:osta/features/customer/booking/presentation/bloc/bookings_bloc.dart';
+import 'package:osta/features/customer/booking/presentation/bloc/bookings/bookings_bloc.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/booking_list.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/tab_pill.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
@@ -122,9 +122,7 @@ class _MyBookingsBodyState extends State<_MyBookingsBody> {
   }
 }
 
-/// Maps an API [Booking] onto the presentational [BookingItem] the existing
-/// cards render. On the list endpoint `center`/`items` aren't eager-loaded, so
-/// the reference stands in for the (absent) center name.
+
 BookingItem _toItem(Booking b) {
   final scheduled = b.scheduledAt;
   final date = scheduled == null

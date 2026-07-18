@@ -9,8 +9,6 @@ import 'package:osta/features/customer/booking/data/repo/booking_repo.dart';
 part 'bookings_event.dart';
 part 'bookings_state.dart';
 
-/// The customer's booking list (`GET /bookings`). Loads the `upcoming` and
-/// `past` filters together so the two tabs switch instantly without a reload.
 class BookingsBloc extends Bloc<BookingsEvent, BookingsState> {
   BookingsBloc() : super(const BookingsInitial()) {
     on<BookingsLoadRequested>(_onLoadRequested);

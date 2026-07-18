@@ -19,11 +19,15 @@ import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
 class AddCarScreen extends StatefulWidget {
-  const AddCarScreen({this.vehicle, super.key});
+  const AddCarScreen({this.vehicle, this.parentCubit, super.key});
 
   /// Non-null in edit mode; prefills the form and switches the submit call
   /// from `addVehicle` to `updateVehicle`.
   final Datum? vehicle;
+
+  /// The caller's garage cubit (add mode), refreshed after a successful add so
+  /// the list updates without relying on the pop return value.
+  final GarageCubit? parentCubit;
 
   @override
   State<AddCarScreen> createState() => _AddCarScreenState();
@@ -32,7 +36,6 @@ class AddCarScreen extends StatefulWidget {
 class _AddCarScreenState extends State<AddCarScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  /// Free-text fallbacks, used only when the picker is on [otherOption].
   final _brandController = TextEditingController();
   final _modelController = TextEditingController();
   final _mileageController = TextEditingController();
@@ -43,9 +46,6 @@ class _AddCarScreenState extends State<AddCarScreen> {
   String? _model;
   int? _year;
 
-  /// #39 asks for 1980+; the backend allows back to 1900. Narrower on purpose —
-  /// a dropdown of 120 years is worse than one of 40, and the server stays the
-  /// real bound for anything older.
   static const _earliestYear = 1980;
 
   bool get _brandIsOther => _brand == otherOption;
@@ -96,7 +96,6 @@ class _AddCarScreenState extends State<AddCarScreen> {
     super.dispose();
   }
 
-  /// Mirrors `current_mileage`'s `integer|min:0`.
   String? _validateMileage(String? value, AppLocalizations l10n) {
     final required = AuthValidators.requiredField(
       context,
@@ -108,13 +107,6 @@ class _AddCarScreenState extends State<AddCarScreen> {
     return (km == null || km < 0) ? l10n.validationMileage : null;
   }
 
-  /// Present, and within the backend's `max:20`.
-  ///
-  /// ponytail: deliberately no format regex. Egyptian plates vary by
-  /// governorate and vintage (Arabic letters, Latin transliterations, differing
-  /// digit counts), and this screen gates entry to the app — a false reject
-  /// here locks a real customer out of Home with no way past. The server is the
-  /// real guard; this only catches empty and absurd.
   String? _validatePlate(String? value, AppLocalizations l10n) {
     final required = AuthValidators.requiredField(
       context,
@@ -128,7 +120,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
   void _onSave(BuildContext context) {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     final year = _year;
-    if (year == null) return; // validator covers it; guard anyway
+    if (year == null) return; 
 
     final make = _brandIsOther ? _brandController.text.trim() : _brand!;
     // An "Other" brand hides the model dropdown entirely, so _model is null
@@ -179,20 +171,19 @@ class _AddCarScreenState extends State<AddCarScreen> {
             current is GarageAddError ||
             current is GarageUpdateSuccess ||
             current is GarageUpdateError,
-        listener: (context, state) {
-          if (state is GarageAddSuccess && widget.vehicle == null) {
+        listener: (context, state) async {
+          if (state is GarageAddSuccess) {
             AppToaster.showMessage(context.l10n.saveAndProceed);
             unawaited(context.read<SessionController>().markVehicleAdded());
-            // Pushed from the garage → pop back to it. Forced by the #39 gate →
-            // the router replaced the location, so there is nothing to pop and
-            // the user must be sent on explicitly. Releasing the gate is not
-            // enough on its own: once hasVehicle is true, resolveRedirect
-            // allows /add-car (the garage pushes it to add an Nth car), so it
-            // returns null and would leave the user sitting here.
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go(AppRoutes.customerShell);
+            if (widget.parentCubit != null) {
+              await widget.parentCubit!.getVehicles();
+            }
+            if (context.mounted) {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go(AppRoutes.customerShell);
+              }
             }
           } else if (state is GarageUpdateSuccess) {
             AppToaster.showMessage(context.l10n.vehicleUpdated);
@@ -204,8 +195,6 @@ class _AddCarScreenState extends State<AddCarScreen> {
           }
         },
         builder: (context, state) {
-          // Stays locked after success, not just during flight: navigation is a
-          // frame away, and a second tap in that window posts a second car.
           final isLoading =
               state is GarageAddLoading ||
               state is GarageAddSuccess ||
@@ -214,7 +203,6 @@ class _AddCarScreenState extends State<AddCarScreen> {
           final colorScheme = Theme.of(context).colorScheme;
           final textTheme = Theme.of(context).textTheme;
           final l10n = context.l10n;
-          // Only the gate is the *first* car; the garage's "+" adds an Nth.
           final isGating =
               context.read<SessionController>().state.hasVehicle == false;
 
@@ -287,8 +275,6 @@ class _AddCarScreenState extends State<AddCarScreen> {
                             ],
                             onChanged: (v) => setState(() {
                               _brand = v;
-                              // The model list is derived from the brand, so a
-                              // stale pick would submit a mismatched pair.
                               _model = null;
                               _modelController.clear();
                             }),
@@ -313,8 +299,6 @@ class _AddCarScreenState extends State<AddCarScreen> {
 
                           const SizedBox(height: AppSpacing.md),
 
-                          // Depends on the brand; "Other" brand has no model
-                          // list, so it goes straight to free text.
                           if (!_brandIsOther)
                             DropdownButtonFormField<String>(
                               initialValue: _model,

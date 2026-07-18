@@ -3,9 +3,6 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/features/customer/booking/data/model/booking.dart';
 
-/// Thin data layer over the customer `BookingController` (B2C). Static methods
-/// like the other customer repos (`ShopRepo`); errors bubble up as the typed
-/// `ApiException`. Mirrors `BookingResource` / `BookingServiceResource`.
 abstract final class BookingRepo {
   static ApiClient get _api => GetIt.instance<ApiClient>();
 
@@ -16,9 +13,6 @@ abstract final class BookingRepo {
   static Booking _parseOne(Object? data) =>
       Booking.fromJson(data! as Map<String, dynamic>);
 
-  /// The booking list. [status] is the `upcoming` / `past` filter (a query
-  /// param, not a distinct route); omit for all. Pagination lives on the
-  /// returned `ApiResult.meta`.
   static Future<ApiResult<List<Booking>>> list({
     String? status,
     int? perPage,
@@ -31,7 +25,6 @@ abstract final class BookingRepo {
     },
   );
 
-  /// The only endpoint that eager-loads `items` / `center` / `assignedMechanic`.
   static Future<Booking> show(Object id) async {
     final result = await _api.get<Booking>(
       ApiEndpoints.booking(id),
@@ -78,9 +71,6 @@ abstract final class BookingRepo {
     return result.data;
   }
 
-  // ponytail: cancel returns `meta.refund` (informational, cash MVP moves no
-  // money). ApiClient only surfaces pagination meta, so the refund decision is
-  // dropped here — wire it through only if a screen needs it.
   static Future<Booking> cancel(Object id, {String? reason}) async {
     final result = await _api.post<Booking>(
       ApiEndpoints.bookingCancel(id),

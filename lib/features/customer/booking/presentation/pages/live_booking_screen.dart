@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/customer/booking/data/model/booking.dart';
-import 'package:osta/features/customer/booking/presentation/bloc/booking_detail_bloc.dart';
+import 'package:osta/features/customer/booking/presentation/bloc/booking_detail/booking_detail_bloc.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/live_booking/booking_timeline.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/live_booking/status_card.dart';
 import 'package:osta/shared/extensions/context_ext.dart';

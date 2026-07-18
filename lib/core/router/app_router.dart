@@ -21,6 +21,7 @@ import 'package:osta/features/customer/booking/presentation/pages/booking_create
 import 'package:osta/features/customer/booking/presentation/pages/live_booking_screen.dart';
 import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
 import 'package:osta/features/customer/garage/data/model/garage_response/datum.dart';
+import 'package:osta/features/customer/garage/presentation/cubit/garage_cubit.dart';
 import 'package:osta/features/customer/garage/presentation/pages/add_car_screen.dart';
 import 'package:osta/features/customer/garage/presentation/pages/maintenance_screen.dart';
 import 'package:osta/features/customer/garage/presentation/pages/my_garage_screen.dart';
@@ -172,8 +173,15 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.addCar,
-        builder: (context, state) =>
-            AddCarScreen(vehicle: state.extra as Datum?),
+        // `extra` is a Datum in edit mode (from My Garage's edit button) or a
+        // GarageCubit in add mode (so the new car refreshes the caller's list).
+        builder: (context, state) {
+          final extra = state.extra;
+          return AddCarScreen(
+            vehicle: extra is Datum ? extra : null,
+            parentCubit: extra is GarageCubit ? extra : null,
+          );
+        },
       ),
       GoRoute(
         path: AppRoutes.maintenance,
