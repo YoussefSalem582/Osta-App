@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/booking/presentation/bloc/booking_create_bloc.dart';
+import 'package:osta/features/customer/booking/presentation/bloc/booking_create/booking_create_bloc.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/booking_date/booking_bottom_bar.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/booking_date/day_selector.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/booking_slots.dart';
@@ -14,7 +14,6 @@ import 'package:osta/shared/ui/app_section_title.dart';
 import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
-/// Route args for the booking-create flow (`extra`).
 class BookingCreateArgs {
   const BookingCreateArgs({
     required this.centerId,
@@ -27,8 +26,6 @@ class BookingCreateArgs {
   final List<CenterService> services;
 }
 
-/// Pick services → day → slot → `POST /bookings`. On success it replaces itself
-/// with the new booking's live status screen.
 class BookingCreateScreen extends StatelessWidget {
   const BookingCreateScreen({required this.args, super.key});
 
@@ -61,7 +58,6 @@ class _BookingCreateView extends StatelessWidget {
         listener: (context, state) {
           final booking = state.createdBooking;
           if (booking != null) {
-            // Replace so Back returns to the center, not the half-filled form.
             context.pushReplacement(
               AppRoutes.bookingStatus,
               extra: booking.id,

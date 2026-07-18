@@ -9,9 +9,6 @@ import 'package:osta/features/customer/booking/data/repo/booking_repo.dart';
 part 'booking_detail_event.dart';
 part 'booking_detail_state.dart';
 
-/// One booking's detail (`GET /bookings/{id}`) plus its lifecycle actions —
-/// confirm, reschedule, cancel. Keeps the last loaded booking so an action
-/// failure can fall back to it instead of blanking the screen.
 class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
   BookingDetailBloc(this.bookingId) : super(const BookingDetailInitial()) {
     on<BookingDetailLoadRequested>(_onLoadRequested);

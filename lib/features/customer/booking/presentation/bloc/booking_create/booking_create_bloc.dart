@@ -11,9 +11,6 @@ import 'package:osta/features/customer/map/data/repo/center_detail_repo.dart';
 part 'booking_create_event.dart';
 part 'booking_create_state.dart';
 
-/// Drives the booking-create flow for one center: pick services, pick a day
-/// (loads that day's slots via `GET /centers/{id}/availability`), pick a slot,
-/// then `POST /bookings`.
 class BookingCreateBloc extends Bloc<BookingCreateEvent, BookingCreateState> {
   BookingCreateBloc(this.centerId) : super(BookingCreateState(date: _today())) {
     on<BookingCreateStarted>(_onStarted);
@@ -102,10 +99,6 @@ class BookingCreateBloc extends Bloc<BookingCreateEvent, BookingCreateState> {
     }
   }
 
-  /// Creates the booking. On success the created [Booking] lands in
-  /// [BookingCreateState.createdBooking] (the view navigates to its live
-  /// status); on failure [BookingCreateState.submitFailed] flips (the view
-  /// toasts).
   Future<void> _onSubmitted(
     BookingCreateSubmitted event,
     Emitter<BookingCreateState> emit,

@@ -2,9 +2,6 @@ part of 'booking_create_bloc.dart';
 
 enum AvailabilityStatus { loading, loaded, error }
 
-/// Rich single-object state for the booking-create flow: which services are
-/// picked, which day, the fetched slots for that day, the chosen slot, and the
-/// in-flight submit. One object keeps the interacting fields consistent.
 class BookingCreateState extends Equatable {
   const BookingCreateState({
     required this.date,
@@ -26,12 +23,8 @@ class BookingCreateState extends Equatable {
   final bool submitting;
   final String? availabilityError;
 
-  /// One-shot: set when `POST /bookings` succeeds so the view can navigate to
-  /// the live status screen. Reset on every other emit.
   final Booking? createdBooking;
 
-  /// One-shot: flips when the submit fails so the view can toast. Reset on
-  /// every other emit.
   final bool submitFailed;
 
   bool get canSubmit =>

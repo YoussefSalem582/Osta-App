@@ -1,8 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-/// A line item on a [Booking] — mirrors `BookingServiceResource` on the
-/// backend. Only present when the `items` relation is eager-loaded (reliably
-/// on `show`).
 class BookingService extends Equatable {
   const BookingService({
     required this.serviceId,
@@ -27,8 +24,6 @@ class BookingService extends Equatable {
   List<Object?> get props => [serviceId, name, price, quantity];
 }
 
-/// The service center a booking belongs to. Nested in the `center` key, only
-/// present when the `serviceCenter` relation is loaded (reliably on `show`).
 class BookingCenter extends Equatable {
   const BookingCenter({
     required this.id,
@@ -56,9 +51,6 @@ class BookingCenter extends Equatable {
   List<Object?> get props => [id, name, city, phone, logoUrl];
 }
 
-/// The mechanic assigned to a booking. Nested in `assigned_mechanic`, only
-/// present (and non-null) when the `assignedMechanic` relation is loaded and a
-/// mechanic is actually assigned.
 class BookingMechanic extends Equatable {
   const BookingMechanic({required this.id, required this.name, this.specialty});
 
@@ -76,13 +68,6 @@ class BookingMechanic extends Equatable {
   @override
   List<Object?> get props => [id, name, specialty];
 }
-
-/// A customer service booking — mirrors `BookingResource` on the backend
-/// (`BookingController`). Plain immutable model, hand-written JSON mapping.
-///
-/// `items` / `center` / `assignedMechanic` come through `whenLoaded`, so they
-/// are reliably populated only on `show`; on index/store/confirm/reschedule/
-/// cancel the keys are typically omitted — all three stay nullable here.
 class Booking extends Equatable {
   const Booking({
     required this.id,
@@ -139,13 +124,10 @@ class Booking extends Equatable {
   final String id;
   final String reference;
 
-  /// One of `pending`, `confirmed`, `in_progress`, `completed`, `cancelled`,
-  /// `invoiced`.
   final String status;
   final DateTime? scheduledAt;
   final DateTime? scheduledEndAt;
 
-  /// Expiry of the 10-minute slot hold.
   final DateTime? holdExpiresAt;
   final DateTime? confirmedAt;
   final DateTime? cancelledAt;
@@ -181,8 +163,6 @@ class Booking extends Equatable {
   ];
 }
 
-/// Envelope sends floats as JSON numbers, but tolerate string/int too; null
-/// when the key is absent or unparseable.
 double? _toDoubleOrNull(Object? value) => switch (value) {
   final num n => n.toDouble(),
   final String s => double.tryParse(s),
