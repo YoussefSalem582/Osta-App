@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:osta/core/network/api_exception.dart';
 import 'package:osta/features/business/onboarding/data/repo/business_catalog_repo.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/catalog_state.dart';
 
@@ -12,13 +13,16 @@ class CatalogCubit extends Cubit<CatalogState> {
       final result = await BusinessCatalogRepo.listServices();
 
       emit(
-        CatalogSuccessState(
-          result.data ?? [],
-        ),
+        CatalogSuccessState(result),
       );
+    } on ValidationException catch (e) {
+      print(e.fieldErrors);
+      emit(CatalogErrorState());
+    } on ApiException catch (e) {
+      print(e.message);
+      emit(CatalogErrorState());
     } catch (e) {
-      print(e);
-
+      print(e.toString());
       emit(CatalogErrorState());
     }
   }
@@ -36,6 +40,12 @@ class CatalogCubit extends Cubit<CatalogState> {
         durationMinutes: duration,
       );
       await loadInitData();
+    } on ValidationException catch (e) {
+      print(e.fieldErrors);
+      emit(CatalogErrorState());
+    } on ApiException catch (e) {
+      print(e.message);
+      emit(CatalogErrorState());
     } catch (e) {
       emit(CatalogErrorState());
     }
@@ -55,6 +65,12 @@ class CatalogCubit extends Cubit<CatalogState> {
       );
 
       await loadInitData();
+    } on ValidationException catch (e) {
+      print(e.fieldErrors);
+      emit(CatalogErrorState());
+    } on ApiException catch (e) {
+      print(e.message);
+      emit(CatalogErrorState());
     } catch (e) {
       emit(CatalogErrorState());
     }

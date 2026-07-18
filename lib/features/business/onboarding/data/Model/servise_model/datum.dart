@@ -22,15 +22,23 @@ class Datum {
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    id: json['id'] as String?,
-    name: json['name'] as String?,
-    description: json['description'] as dynamic,
-    category: json['category'] as dynamic,
-    price: json['price'] as int?,
-    priceType: json['price_type'] as String?,
-    durationMinutes: json['duration_minutes'] as int?,
-    isActive: json['is_active'] as bool?,
-    createdAt: json['created_at'] as String?,
+    id: json['id']?.toString(),
+    name: json['name']?.toString(),
+    description: json['description'],
+    category: json['category'],
+    price: json['price'] is String
+        ? int.tryParse(json['price'])
+        : (json['price'] as num?)?.toInt(),
+    priceType: json['price_type']?.toString(),
+    durationMinutes: json['duration_minutes'] is String
+        ? int.tryParse(json['duration_minutes'])
+        : (json['duration_minutes'] as num?)?.toInt(),
+    isActive:
+        json['is_active'] == 1 ||
+        json['is_active'] == true ||
+        json['is_active'] == '1' ||
+        json['is_active'] == 'true',
+    createdAt: json['created_at']?.toString(),
   );
 
   Map<String, dynamic> toJson() => {

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:osta/core/di/injection.dart';
+import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
-import 'package:osta/core/network/dio_provider.dart';
 
 class BusinessIdentityRepo {
   static Future<void> updateBusinessProfile({
@@ -35,15 +36,10 @@ class BusinessIdentityRepo {
       data = formData;
     }
 
-    final response = await DioProvider.put(
-      endpoint: ApiEndpoints.businessProfile,
-      data: data,
+    await getIt<ApiClient>().put<void>(
+      ApiEndpoints.businessProfile,
+      body: data,
+      parse: (_) {},
     );
-
-    if (response.statusCode != 200 &&
-        response.statusCode != 201 &&
-        response.statusCode != 204) {
-      throw Exception('Failed to update business profile');
-    }
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
-/// Dashed button CTA to add a custom catalog service.
+/// Dashed button to add a custom catalog service.
 class AddCustomServiceButton extends StatelessWidget {
   const AddCustomServiceButton({
     required this.onTap,

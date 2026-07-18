@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/catalog_cubit.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/catalog_state.dart';
+import 'package:osta/features/business/onboarding/presentation/widgets/add_custom_service_bottom_sheet.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/add_custom_service_button.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/add_preset_card.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/preset_services_banner.dart';
@@ -134,7 +135,7 @@ class _BusinessCatalogPageState extends State<BusinessCatalogPage> {
                     const SizedBox(height: AppSpacing.md),
                     AddCustomServiceButton(
                       onTap: () {
-                        _showAddCustomServiceSheet(context);
+                        AddCustomServiceBottomSheet.show(context);
                       },
                     ),
                     const SizedBox(height: AppSpacing.xl),
@@ -156,83 +157,4 @@ class _BusinessCatalogPageState extends State<BusinessCatalogPage> {
       ),
     );
   }
-}
-
-void _showAddCustomServiceSheet(BuildContext context) {
-  final nameController = TextEditingController();
-  final priceController = TextEditingController();
-  final durationController = TextEditingController();
-
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    builder: (context) {
-      return Padding(
-        padding: EdgeInsets.only(
-          left: 20,
-          right: 20,
-          top: 20,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "إضافة خدمة مخصصة",
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-
-            const SizedBox(height: 20),
-
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: "اسم الخدمة",
-              ),
-            ),
-
-            const SizedBox(height: 16),
-
-            TextField(
-              controller: priceController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: "السعر",
-              ),
-            ),
-
-            const SizedBox(height: 16),
-
-            TextField(
-              controller: durationController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: "المدة بالدقائق",
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  await context.read<CatalogCubit>().addCustomService(
-                    name: nameController.text,
-                    price: int.parse(priceController.text),
-                    duration: int.parse(durationController.text),
-                  );
-
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text("إضافة الخدمة"),
-              ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
 }

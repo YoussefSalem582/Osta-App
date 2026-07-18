@@ -3,7 +3,7 @@ import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 
 /// Promotion banner displaying active discount offers
-/// (e.g. 15% discount on oil).
+/// (15% discount on oil).
 class DiscountPromotionBanner extends StatelessWidget {
   const DiscountPromotionBanner({
     required this.title,

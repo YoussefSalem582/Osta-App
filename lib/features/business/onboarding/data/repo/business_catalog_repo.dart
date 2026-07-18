@@ -1,20 +1,22 @@
+import 'package:osta/core/di/injection.dart';
+import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
-import 'package:osta/core/network/dio_provider.dart';
-import 'package:osta/features/business/onboarding/data/Model/servise_model/servise_model.dart';
+import 'package:osta/features/business/onboarding/data/Model/servise_model/datum.dart';
 
 class BusinessCatalogRepo {
-  static Future<ServiseModel> listServices() async {
-    final response = await DioProvider.get(
-      endpoint: ApiEndpoints.businessServices,
-      authenticated: false,
+  static Future<List<Datum>> listServices() async {
+    final result = await getIt<ApiClient>().get<List<Datum>>(
+      ApiEndpoints.businessServices,
+      parse: (dynamic json) {
+        if (json is List) {
+          return json
+              .map((e) => Datum.fromJson(e as Map<String, dynamic>))
+              .toList();
+        }
+        return [];
+      },
     );
-    // --------العظيمه اللي  حلت المشكلة-------
-    // print(response.statusCode);
-    // print(response.data);
-    if (response.statusCode == 200) {
-      return ServiseModel.fromJson(response.data as Map<String, dynamic>);
-    }
-    throw Exception('Failed to load business services: ${response.statusCode}');
+    return result.data;
   }
 
   // ----------------------------------------------------------------
@@ -24,18 +26,15 @@ class BusinessCatalogRepo {
     required int price,
     required int durationMinutes,
   }) async {
-    final response = await DioProvider.post(
-      endpoint: ApiEndpoints.businessServices,
-      data: {
+    await getIt<ApiClient>().post<void>(
+      ApiEndpoints.businessServices,
+      body: {
         "name": name,
         "price": price,
         "duration_minutes": durationMinutes,
       },
+      parse: (_) {},
     );
-
-    if (response.statusCode != 200 && response.statusCode != 201) {
-      throw Exception("Failed to add service");
-    }
   }
 
   // ----------------------------------------------------------------

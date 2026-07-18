@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:osta/core/network/api_exception.dart';
 import 'package:osta/features/business/onboarding/data/repo/business_identity_repo.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_identity_state.dart';
 
@@ -30,6 +31,15 @@ class BusinessIdentityCubit extends Cubit<BusinessIdentityState> {
       );
 
       emit(BusinessIdentitySuccessState());
+    } on ValidationException catch (e) {
+      final messages = e.fieldErrors.values.expand((m) => m).join('\n');
+      emit(
+        BusinessIdentityErrorState(
+          message: messages.isNotEmpty ? messages : e.message,
+        ),
+      );
+    } on ApiException catch (e) {
+      emit(BusinessIdentityErrorState(message: e.message));
     } catch (e) {
       emit(BusinessIdentityErrorState(message: e.toString()));
     }
