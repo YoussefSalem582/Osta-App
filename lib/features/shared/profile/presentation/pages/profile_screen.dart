@@ -198,6 +198,22 @@ class ProfileViewContent extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
           ],
 
+          // Technicians — business-only quick link to the mechanic roster.
+          if (role == AppRole.business) ...[
+            ProfileCard(
+              child: ProfileListItem(
+                title: l10n.technicians,
+                subtitle: l10n.techniciansSubtitle,
+                leading: const ProfileItemIcon(
+                  icon: Icons.engineering_outlined,
+                  color: Colors.indigo,
+                ),
+                onTap: () => unawaited(context.push(AppRoutes.technicians)),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+          ],
+
           // My cars — customer-only quick link to the garage.
           if (role == AppRole.customer) ...[
             ProfileCard(
