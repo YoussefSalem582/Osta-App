@@ -71,11 +71,13 @@ class _RoleShellState extends State<RoleShell> {
     final tab = widget.tabs[_index];
     final showingCenter = _centerActive && widget.centerBody != null;
     final fullBleed = showingCenter && widget.centerFullBleed;
+    // A chrome-less tab (e.g. Home) draws its own header inside the body.
+    final chromeless = !showingCenter && tab.chromeless;
     return Scaffold(
       // Let full-bleed bodies (e.g. the customer map) paint behind the
       // protruding center FAB instead of the scaffold surface.
       extendBody: true,
-      appBar: fullBleed
+      appBar: fullBleed || chromeless
           ? null
           : AppTopBar(
               title: showingCenter

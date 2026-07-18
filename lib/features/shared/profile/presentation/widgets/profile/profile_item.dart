@@ -81,20 +81,28 @@ class ProfileListItem extends StatelessWidget {
 /// saturated hue reads at 12% on both themes. Give it a token only if these
 /// tints ever need to mean something.
 class ProfileItemIcon extends StatelessWidget {
-  const ProfileItemIcon({required this.icon, required this.color, super.key});
+  const ProfileItemIcon({
+    required this.icon,
+    required this.color,
+    this.size = 36,
+    this.radius = AppRadii.sm,
+    super.key,
+  });
 
   final IconData icon;
   final Color color;
+  final double size;
+  final double radius;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 36,
-      height: 36,
+      width: size,
+      height: size,
       margin: const EdgeInsetsDirectional.only(end: AppSpacing.md),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppRadii.sm),
+        borderRadius: BorderRadius.circular(radius),
       ),
       child: Icon(icon, size: 20, color: color),
     );

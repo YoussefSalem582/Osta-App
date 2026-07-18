@@ -17,6 +17,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     on<SearchChanged>(_onSearchChanged);
     on<CategorySelected>(_onCategorySelected);
     on<RetryRequested>(_onRetryRequested);
+    on<NearbyOnlyToggled>(_onNearbyOnlyToggled);
   }
 
   final CentersRepository _repo;
@@ -83,6 +84,15 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       ? _onStarted(const MapStarted(), emit)
       : _load(emit);
 
+  Future<void> _onNearbyOnlyToggled(
+    NearbyOnlyToggled event,
+    Emitter<MapState> emit,
+  ) async {
+    if (event.value == state.nearbyOnly) return;
+    emit(state.copyWith(nearbyOnly: event.value));
+    await _load(emit);
+  }
+
   Future<void> _load(Emitter<MapState> emit) async {
     final position = state.position;
     // No fix yet: _onStarted owns that path and will call back in.
@@ -91,7 +101,10 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     emit(state.copyWith(status: MapStatus.loading, error: null));
     try {
       final query = state.query.trim();
-      final centers = query.isEmpty
+      // Radius-bounded nearby only for a blank search with the toggle on;
+      // otherwise `/centers/search` (empty q = every active center) so far-off
+      // centers still surface.
+      final centers = query.isEmpty && state.nearbyOnly
           ? await _repo.nearby(
               lat: position.lat,
               lng: position.lng,

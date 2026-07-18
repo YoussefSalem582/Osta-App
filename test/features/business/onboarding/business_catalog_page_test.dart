@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
 import 'package:osta/core/session/session_store.dart';
 import 'package:osta/core/theme/app_theme.dart';
+import 'package:osta/features/business/dashboard/data/model/business_dashboard.dart';
 import 'package:osta/features/business/onboarding/data/business_onboarding_repository.dart';
 import 'package:osta/features/business/onboarding/data/models/business_profile_input.dart';
 import 'package:osta/features/business/onboarding/data/models/catalog_preset.dart';
@@ -46,6 +47,9 @@ class _FakeRepo implements BusinessOnboardingRepository {
 
   @override
   Future<void> updateProfile(BusinessProfileInput input) async {}
+
+  @override
+  Future<BusinessProfile> fetchProfile() => throw UnimplementedError();
 }
 
 class _FakeStore implements SessionStore {
