@@ -67,7 +67,7 @@ class PromotionRow extends StatelessWidget {
               ],
             ),
           ),
-          Switch(value: promotion.isActive, onChanged: onToggle),
+          Switch.adaptive(value: promotion.isActive, onChanged: onToggle),
           IconButton(
             onPressed: onDelete,
             icon: const Icon(Icons.delete_outline),

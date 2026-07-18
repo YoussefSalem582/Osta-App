@@ -48,7 +48,7 @@ class _MyBookingsBodyState extends State<_MyBookingsBody> {
     return BlocBuilder<BookingsBloc, BookingsState>(
       builder: (context, state) {
         if (state is BookingsLoading || state is BookingsInitial) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator.adaptive());
         }
         if (state is BookingsError) {
           return ErrorState(

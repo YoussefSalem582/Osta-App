@@ -160,7 +160,7 @@ class _BusinessAddressScreenState extends State<BusinessAddressScreen>
   Widget _body(BuildContext context) {
     final l10n = context.l10n;
     if (_loading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator.adaptive());
     }
     if (_loadError != null) {
       return ErrorState(

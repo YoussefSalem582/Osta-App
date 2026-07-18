@@ -54,7 +54,7 @@ class _ShopProductGridState extends State<ShopProductGrid> {
       builder: (context, state) {
         if (state.status == ShopListStatus.loading ||
             state.status == ShopListStatus.initial) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator.adaptive());
         }
 
         if (state.status == ShopListStatus.error) {
@@ -73,7 +73,7 @@ class _ShopProductGridState extends State<ShopProductGrid> {
           );
         }
 
-        return RefreshIndicator(
+        return RefreshIndicator.adaptive(
           onRefresh: () => context.read<ShopListCubit>().load(),
           child: CustomScrollView(
             controller: _scroll,
@@ -101,7 +101,7 @@ class _ShopProductGridState extends State<ShopProductGrid> {
                 const SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.all(AppSpacing.md),
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(child: CircularProgressIndicator.adaptive()),
                   ),
                 ),
             ],

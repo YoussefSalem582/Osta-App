@@ -43,7 +43,7 @@ class ProductDetailPage extends StatelessWidget {
         ),
         body: switch (state) {
           ProductDetailLoading() || ProductDetailInitial() => const Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator.adaptive(),
           ),
           ProductDetailError(:final message) => ErrorState(
             title: context.l10n.shopErrorTitle,

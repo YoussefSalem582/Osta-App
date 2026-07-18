@@ -63,9 +63,11 @@ class DeleteAccountButton extends StatelessWidget {
                     child: isDeleting
                         ? Padding(
                             padding: const EdgeInsets.all(8),
-                            child: CircularProgressIndicator(
+                            child: CircularProgressIndicator.adaptive(
                               strokeWidth: 2,
-                              color: colorScheme.error,
+                              valueColor: AlwaysStoppedAnimation(
+                                colorScheme.error,
+                              ),
                             ),
                           )
                         : Icon(

@@ -158,7 +158,7 @@ class _BusinessServicesViewState extends State<_BusinessServicesView> {
     return BlocBuilder<ServicesBloc, ServicesState>(
       builder: (context, state) {
         if (state is ServicesLoading || state is ServicesInitial) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator.adaptive());
         }
         if (state is ServicesError) {
           return ErrorState(
@@ -198,7 +198,7 @@ class _BusinessServicesViewState extends State<_BusinessServicesView> {
               const Positioned.fill(
                 child: ColoredBox(
                   color: Colors.black12,
-                  child: Center(child: CircularProgressIndicator()),
+                  child: Center(child: CircularProgressIndicator.adaptive()),
                 ),
               ),
           ],
@@ -212,7 +212,7 @@ class _BusinessServicesViewState extends State<_BusinessServicesView> {
     return BlocBuilder<PromotionsBloc, PromotionsState>(
       builder: (context, state) {
         if (state is PromotionsLoading || state is PromotionsInitial) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator.adaptive());
         }
         if (state is PromotionsError) {
           return ErrorState(
@@ -253,7 +253,7 @@ class _BusinessServicesViewState extends State<_BusinessServicesView> {
               const Positioned.fill(
                 child: ColoredBox(
                   color: Colors.black12,
-                  child: Center(child: CircularProgressIndicator()),
+                  child: Center(child: CircularProgressIndicator.adaptive()),
                 ),
               ),
           ],

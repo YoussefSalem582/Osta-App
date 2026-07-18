@@ -138,7 +138,7 @@ class _RegisterFormState extends State<RegisterForm> {
         child: SizedBox(
           width: 16,
           height: 16,
-          child: CircularProgressIndicator(strokeWidth: 2),
+          child: CircularProgressIndicator.adaptive(strokeWidth: 2),
         ),
       ),
       UsernameStatus.available => Tooltip(

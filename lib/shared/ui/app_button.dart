@@ -28,7 +28,7 @@ class AppButton extends StatelessWidget {
     final child = loading
         ? const SizedBox.square(
             dimension: 20,
-            child: CircularProgressIndicator(strokeWidth: 2),
+            child: CircularProgressIndicator.adaptive(strokeWidth: 2),
           )
         : _label();
     final effectiveOnPressed = loading ? null : onPressed;

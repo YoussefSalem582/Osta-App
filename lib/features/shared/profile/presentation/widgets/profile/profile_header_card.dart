@@ -63,7 +63,7 @@ class ProfileHeaderCard extends StatelessWidget {
                           height: 52,
                           fit: BoxFit.cover,
                           placeholder: (_, _) =>
-                              const CircularProgressIndicator(strokeWidth: 2),
+                              const CircularProgressIndicator.adaptive(strokeWidth: 2),
                           errorWidget: (_, _, _) => Text(
                             firstChar,
                             style: textTheme.titleLarge?.copyWith(

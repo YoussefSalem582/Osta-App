@@ -130,7 +130,7 @@ class _BusinessCatalogPageState extends State<BusinessCatalogPage> {
               children: [
                 Expanded(
                   child: state.isLoadingPresets && state.presets.isEmpty
-                      ? const Center(child: CircularProgressIndicator())
+                      ? const Center(child: CircularProgressIndicator.adaptive())
                       : state.presets.isEmpty &&
                             state.status == BusinessOnboardingStatus.failure
                       ? ErrorState(

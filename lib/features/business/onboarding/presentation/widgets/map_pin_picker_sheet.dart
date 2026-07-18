@@ -92,7 +92,7 @@ class _MapPinPickerSheetState extends State<MapPinPickerSheet> {
     return Scaffold(
       appBar: AppTopBar(title: l10n.businessOnboardingPinTitle),
       body: !_ready
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator.adaptive())
           : Column(
               children: [
                 if (_denialMessage != null)

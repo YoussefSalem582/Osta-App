@@ -54,7 +54,7 @@ class _BookingsView extends StatelessWidget {
               const Positioned.fill(
                 child: ColoredBox(
                   color: Colors.black12,
-                  child: Center(child: CircularProgressIndicator()),
+                  child: Center(child: CircularProgressIndicator.adaptive()),
                 ),
               ),
           ],
@@ -68,7 +68,7 @@ class _BookingsView extends StatelessWidget {
     if (state.status == BusinessBookingsStatus.loading) {
       return const Padding(
         padding: EdgeInsets.all(AppSpacing.xl),
-        child: Center(child: CircularProgressIndicator()),
+        child: Center(child: CircularProgressIndicator.adaptive()),
       );
     }
     if (state.status == BusinessBookingsStatus.error) {

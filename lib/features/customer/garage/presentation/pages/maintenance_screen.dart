@@ -71,7 +71,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                 centerTitle: false,
                 title: l10n.maintenanceHistoryTitle,
               ),
-              body: const Center(child: CircularProgressIndicator()),
+              body: const Center(child: CircularProgressIndicator.adaptive()),
             );
           }
 

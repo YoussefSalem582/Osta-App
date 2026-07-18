@@ -450,7 +450,7 @@ class _AddTile extends StatelessWidget {
             ? const Center(
                 child: SizedBox.square(
                   dimension: 22,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  child: CircularProgressIndicator.adaptive(strokeWidth: 2),
                 ),
               )
             : Column(

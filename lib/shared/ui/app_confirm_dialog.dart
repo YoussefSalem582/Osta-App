@@ -1,6 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 
+/// Confirm/cancel dialog. Renders as a native Cupertino alert on iOS, a
+/// Material alert dialog everywhere else — same convention as
+/// `showAdaptiveDatePicker`/`showAdaptiveTimePicker` in `adaptive_pickers.dart`.
 class AppConfirmDialog extends StatelessWidget {
   const AppConfirmDialog({
     required this.title,
@@ -38,6 +42,24 @@ class AppConfirmDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (Theme.of(context).platform == TargetPlatform.iOS) {
+      return CupertinoAlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          CupertinoDialogAction(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(cancelLabel),
+          ),
+          CupertinoDialogAction(
+            isDestructiveAction: isDestructive,
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(confirmLabel),
+          ),
+        ],
+      );
+    }
+
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 

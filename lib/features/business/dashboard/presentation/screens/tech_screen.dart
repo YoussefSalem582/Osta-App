@@ -129,7 +129,7 @@ class _TechViewState extends State<_TechView> {
                       if (state is MechanicsLoading ||
                           state is MechanicsInitial) {
                         return const Center(
-                          child: CircularProgressIndicator(),
+                          child: CircularProgressIndicator.adaptive(),
                         );
                       }
                       if (state is MechanicsError) {
@@ -172,7 +172,7 @@ class _TechViewState extends State<_TechView> {
                               child: ColoredBox(
                                 color: Colors.black12,
                                 child: Center(
-                                  child: CircularProgressIndicator(),
+                                  child: CircularProgressIndicator.adaptive(),
                                 ),
                               ),
                             ),

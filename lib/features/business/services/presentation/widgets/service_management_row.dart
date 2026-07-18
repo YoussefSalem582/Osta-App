@@ -62,7 +62,7 @@ class ServiceManagementRow extends StatelessWidget {
               ],
             ),
           ),
-          Switch(value: service.isActive, onChanged: onToggle),
+          Switch.adaptive(value: service.isActive, onChanged: onToggle),
           IconButton(
             onPressed: onDelete,
             icon: const Icon(Icons.delete_outline),
