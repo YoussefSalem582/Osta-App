@@ -9,11 +9,15 @@ class CenterCard extends StatelessWidget {
     required this.distance,
     required this.name,
     required this.rate,
+    this.onTap,
+    this.imageUrl,
     super.key,
   });
   final String name;
   final String distance;
   final double rate;
+  final VoidCallback? onTap;
+  final String? imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +26,9 @@ class CenterCard extends StatelessWidget {
 
     return HomeTile(
       title: name,
+      onTap: onTap,
+      imageUrl: imageUrl,
+      placeholderIcon: Icons.store_mall_directory_outlined,
       footer: Row(
         children: [
           Expanded(
@@ -37,10 +44,12 @@ class CenterCard extends StatelessWidget {
           // Matches PlaceDialog: a real icon on the warning token, and digits
           // through NumberFormatter so Arabic renders ٤٫٦ not 4.6.
           Icon(Icons.star_rounded, size: 16, color: context.appColors.warning),
+          const SizedBox(width: 2),
           Text(
             NumberFormatter.decimal(rate, locale: locale),
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurface,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
