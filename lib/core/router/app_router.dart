@@ -19,6 +19,7 @@ import 'package:osta/features/business/shell/presentation/business_shell_page.da
 import 'package:osta/features/customer/booking/presentation/pages/booking_create_screen.dart';
 import 'package:osta/features/customer/booking/presentation/pages/live_booking_screen.dart';
 import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
+import 'package:osta/features/customer/garage/data/model/garage_response/datum.dart';
 import 'package:osta/features/customer/garage/presentation/pages/add_car_screen.dart';
 import 'package:osta/features/customer/garage/presentation/pages/maintenance_screen.dart';
 import 'package:osta/features/customer/garage/presentation/pages/my_garage_screen.dart';
@@ -170,7 +171,8 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.addCar,
-        builder: (context, state) => const AddCarScreen(),
+        builder: (context, state) =>
+            AddCarScreen(vehicle: state.extra as Datum?),
       ),
       GoRoute(
         path: AppRoutes.maintenance,

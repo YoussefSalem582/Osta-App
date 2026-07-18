@@ -13,6 +13,7 @@ class VehicleCard extends StatelessWidget {
     required this.isPrimary,
     required this.onDelete,
     required this.onSetPrimary,
+    required this.onEdit,
     this.year,
     this.isActionLoading = false,
     this.icon = Icons.directions_car_rounded,
@@ -28,6 +29,7 @@ class VehicleCard extends StatelessWidget {
   final bool isActionLoading;
   final VoidCallback onDelete;
   final VoidCallback onSetPrimary;
+  final VoidCallback onEdit;
   final int? year;
   final IconData icon;
 
@@ -129,6 +131,24 @@ class VehicleCard extends StatelessWidget {
 
               if (isPrimary) const PrimaryBadge(),
 
+              const SizedBox(width: AppSpacing.xs),
+              SizedBox(
+                width: 32,
+                height: 32,
+                child: IconButton.filledTonal(
+                  onPressed: isActionLoading ? null : onEdit,
+                  padding: EdgeInsets.zero,
+                  style: IconButton.styleFrom(
+                    backgroundColor: colorScheme.surfaceContainerHighest
+                        .withValues(alpha: 0.5),
+                    foregroundColor: colorScheme.onSurfaceVariant,
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  icon: const Icon(Icons.edit_outlined, size: 16),
+                  tooltip: context.l10n.editCarTitle,
+                ),
+              ),
               const SizedBox(width: AppSpacing.xs),
               SizedBox(
                 width: 32,

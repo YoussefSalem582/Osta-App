@@ -47,6 +47,33 @@ class GarageCubit extends Cubit<GarageState> {
     }
   }
 
+  Future<void> updateVehicle({
+    required Object vehicleId,
+    required String make,
+    required String model,
+    required int year,
+    required String plateNumber,
+    int? currentMileage,
+    String? color,
+  }) async {
+    emit(const GarageUpdateLoading());
+    try {
+      await GarageRepo.updateVehicle(
+        vehicleId: vehicleId,
+        make: make,
+        model: model,
+        year: year,
+        plateNumber: plateNumber,
+        currentMileage: currentMileage,
+        color: color,
+      );
+      emit(const GarageUpdateSuccess());
+    } on Object catch (e, s) {
+      log('Error in GarageCubit.updateVehicle', error: e, stackTrace: s);
+      emit(GarageUpdateError(e.toString()));
+    }
+  }
+
   Future<void> setPrimary(Object vehicleId) async {
     emit(const GarageSetPrimaryLoading());
     try {
