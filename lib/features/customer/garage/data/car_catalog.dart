@@ -6,17 +6,8 @@
 /// constraint — see [otherOption].
 library;
 
-/// Sentinel for "my car isn't listed", which reveals a free-text field.
-///
-/// Load-bearing, not a courtesy: this form gates entry to the app (#39), and
-/// the list below will always be missing somebody's car. Without an escape
-/// hatch an unlisted brand means no vehicle, and no vehicle means no Home —
-/// the user would be locked out permanently by a hardcoded list. Any UI built
-/// on [carCatalog] must offer this.
 const otherOption = '__other__';
 
-/// Brands common on Egyptian roads, with their frequently seen models.
-/// Deliberately not exhaustive — [otherOption] covers the tail.
 const Map<String, List<String>> carCatalog = {
   'Toyota': [
     'Corolla',
@@ -66,8 +57,6 @@ const Map<String, List<String>> carCatalog = {
   'Daewoo': ['Lanos', 'Nubira', 'Juliet'],
 };
 
-/// Brands in display order.
 List<String> get carBrands => carCatalog.keys.toList();
 
-/// Models for [brand], or empty when it is unknown or [otherOption].
 List<String> modelsFor(String? brand) => carCatalog[brand] ?? const [];

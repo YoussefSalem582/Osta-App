@@ -19,6 +19,7 @@ import 'package:osta/features/business/shell/presentation/business_shell_page.da
 import 'package:osta/features/customer/booking/presentation/pages/booking_create_screen.dart';
 import 'package:osta/features/customer/booking/presentation/pages/live_booking_screen.dart';
 import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
+import 'package:osta/features/customer/garage/presentation/cubit/garage_cubit.dart';
 import 'package:osta/features/customer/garage/presentation/pages/add_car_screen.dart';
 import 'package:osta/features/customer/garage/presentation/pages/my_garage_screen.dart';
 import 'package:osta/features/customer/home/presentation/pages/home_page.dart';
@@ -169,7 +170,10 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.addCar,
-        builder: (context, state) => const AddCarScreen(),
+        builder: (context, state) {
+          final parentCubit = state.extra as GarageCubit?;
+          return AddCarScreen(parentCubit: parentCubit);
+        },
       ),
       GoRoute(
         path: AppRoutes.bookingStatus,

@@ -21,11 +21,8 @@ class ProfileSuccess extends ProfileState {
 
   final ProfileResponse profile;
 
-  /// True when [profile] came from the local cache (offline / instant paint)
-  /// rather than a fresh network response — drives the "saved data" chip.
   final bool fromCache;
 
-  /// When the cached copy was stored, for the "last updated" affordance.
   final DateTime? fetchedAt;
 
   @override

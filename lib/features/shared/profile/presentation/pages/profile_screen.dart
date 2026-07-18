@@ -23,8 +23,6 @@ import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-/// Plausible placeholder rendered under the skeleton on the first-ever load
-/// (before any cache exists). Never shown as real data.
 final _fakeData = Data(
   fullName: 'Osta User',
   username: 'osta_user',
@@ -88,16 +86,12 @@ class ProfileViewContent extends StatelessWidget {
 
           final isSkeleton = state is ProfileLoading || state is ProfileInitial;
           final success = state is ProfileSuccess ? state : null;
-          // Transient delete/update states carry no renderable profile — keep
-          // the original blank (delete signs out immediately after).
           if (!isSkeleton && success == null) return const SizedBox.shrink();
 
           if (success != null && success.profile.data == null) {
             return const Center(child: Text('No profile data found'));
           }
 
-          // First-ever load with no cache → skeleton over a fake profile;
-          // §10 fades skeleton → real content through the AnimatedSwitcher.
           return AnimatedSwitcher(
             duration: const Duration(milliseconds: 250),
             child: Skeletonizer(
@@ -132,8 +126,6 @@ class ProfileViewContent extends StatelessWidget {
         context.watch<SessionController>().state.locale?.languageCode == 'ar';
     final role = context.watch<SessionController>().state.activeRole;
 
-    // Pull-to-refresh re-runs cache-then-network. .adaptive → Material spinner
-    // on Android, Cupertino on iOS (§7.5).
     return RefreshIndicator.adaptive(
       onRefresh: () => context.read<ProfileCubit>().getProfile(),
       child: ListView(
@@ -143,7 +135,6 @@ class ProfileViewContent extends StatelessWidget {
           vertical: AppSpacing.sm,
         ),
         children: [
-          // Cached/offline copy → tell the user what they're looking at.
           if (fromCache) ...[
             OfflineSavedChip(fetchedAt: fetchedAt),
             const SizedBox(height: AppSpacing.sm),
@@ -181,8 +172,6 @@ class ProfileViewContent extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
 
-          // Business address — dedicated map-pin/street editor, so the owner can
-          // fix where customers find the center without the full profile form.
           if (role == AppRole.business) ...[
             ProfileCard(
               child: ProfileListItem(
@@ -198,7 +187,6 @@ class ProfileViewContent extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
           ],
 
-          // My cars — customer-only quick link to the garage.
           if (role == AppRole.customer) ...[
             ProfileCard(
               child: ProfileListItem(
@@ -214,7 +202,6 @@ class ProfileViewContent extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
           ],
 
-          // My store — business-only quick link.
           if (role == AppRole.business)
             ProfileCard(
               child: ProfileListItem(
