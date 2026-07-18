@@ -75,13 +75,57 @@ class Service extends Equatable {
 /// repos; errors bubble up as the typed `ApiException`. Mirrors
 /// `BusinessServiceController` + `Api/B2C/ServiceResource`.
 ///
-/// Only the mutation tail (update/delete) lives here; the index/create half of
-/// the services CRUD is owned by the services list/create area.
+/// index/update/delete live here; create is owned by the onboarding repo
+/// (`BusinessOnboardingRepository.createCustomService`).
 abstract final class BusinessServiceRepo {
   static ApiClient get _api => GetIt.instance<ApiClient>();
 
+  static List<Service> _parseList(Object? data) => (data! as List<dynamic>)
+      .map((e) => Service.fromJson(e as Map<String, dynamic>))
+      .toList();
+
   static Service _parseOne(Object? data) =>
       Service.fromJson(data! as Map<String, dynamic>);
+
+  /// Every service on the owner's center, or only active/inactive rows when
+  /// [active] is set. The owner's single center is resolved server-side, so no
+  /// center id is sent. Not paginated (plain array ordered by category, name).
+  static Future<List<Service>> index({bool? active}) async {
+    final result = await _api.get<List<Service>>(
+      ApiEndpoints.businessServices,
+      parse: _parseList,
+      query: {'active': ?active},
+    );
+    return result.data;
+  }
+
+  /// Adds a service to the owner's center (`POST /business/services`). The
+  /// center is resolved server-side. `name`/`price`/`priceType` are required by
+  /// the FormRequest; the rest are optional.
+  static Future<Service> create({
+    required String name,
+    required num price,
+    required String priceType,
+    String? description,
+    String? category,
+    int? durationMinutes,
+    bool isActive = true,
+  }) async {
+    final result = await _api.post<Service>(
+      ApiEndpoints.businessServices,
+      parse: _parseOne,
+      body: {
+        'name': name,
+        'price': price,
+        'price_type': priceType,
+        'description': ?description,
+        'category': ?category,
+        'duration_minutes': ?durationMinutes,
+        'is_active': isActive,
+      },
+    );
+    return result.data;
+  }
 
   /// Partial update — send only the fields being changed. `isActive` toggles
   /// retire/restore. Nullable fields are omitted when null, so this cannot
