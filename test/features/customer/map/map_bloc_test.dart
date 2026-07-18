@@ -363,6 +363,41 @@ void main() {
     });
   });
 
+  group('MapBloc.nearbyOnly', () {
+    test('toggling off loads every center via search, not nearby', () async {
+      final repo = _FakeCentersRepository();
+      final bloc = MapBloc(repo, _FakeLocationService());
+      addTearDown(bloc.close);
+      bloc.add(const MapStarted());
+      await bloc.waitUntil((s) => s.status == MapStatus.ready);
+      expect(repo.nearbyCalls, 1);
+
+      bloc.add(const NearbyOnlyToggled(value: false));
+      await bloc.waitUntil((s) => !s.nearbyOnly && s.status == MapStatus.ready);
+
+      // Empty query with the toggle off must hit search (all centers), not
+      // the radius-bounded nearby again.
+      expect(repo.nearbyCalls, 1);
+      expect(repo.searchCalls, 1);
+      expect(repo.lastQuery, '');
+    });
+
+    test('re-toggling to the same value does not reload', () async {
+      final repo = _FakeCentersRepository();
+      final bloc = MapBloc(repo, _FakeLocationService());
+      addTearDown(bloc.close);
+      bloc.add(const MapStarted());
+      await bloc.waitUntil((s) => s.status == MapStatus.ready);
+
+      bloc.add(const NearbyOnlyToggled(value: true));
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+
+      // Already on by default — no extra fetch.
+      expect(repo.nearbyCalls, 1);
+      expect(repo.searchCalls, 0);
+    });
+  });
+
   group('MapBloc.retry', () {
     test('re-asks for the position when there is still no fix', () async {
       final repo = _FakeCentersRepository();

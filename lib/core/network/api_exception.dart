@@ -36,6 +36,13 @@ class NotFoundException extends ApiException {
   const NotFoundException(super.message);
 }
 
+/// `METHOD_NOT_ALLOWED` (405) — the route exists for other verbs but not this
+/// one. In practice this means a not-yet-deployed endpoint (e.g. a `GET` added
+/// after the server last shipped its `PUT`-only route).
+class MethodNotAllowedException extends ApiException {
+  const MethodNotAllowedException(super.message);
+}
+
 /// `TOO_MANY_REQUESTS` (429).
 class RateLimitException extends ApiException {
   const RateLimitException(super.message);
@@ -60,6 +67,7 @@ ApiException apiExceptionFromEnvelope(Map<String, dynamic> error) {
     'UNAUTHENTICATED' => UnauthenticatedException(message),
     'FORBIDDEN' => ForbiddenException(message),
     'NOT_FOUND' => NotFoundException(message),
+    'METHOD_NOT_ALLOWED' => MethodNotAllowedException(message),
     'TOO_MANY_REQUESTS' => RateLimitException(message),
     // SERVER_ERROR and anything unrecognised.
     _ => ServerException(message),

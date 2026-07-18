@@ -39,10 +39,19 @@ void main() {
       ),
     );
 
-    // n tiles -> n-1 separators. A trailing separator would leave dead space at
-    // the end of the rail.
-    final list = tester.widget<ListView>(find.byType(ListView));
-    expect(list.semanticChildCount, 3);
+    // The rail is a content-sized horizontal scroll (so tiles are never
+    // clipped). n tiles -> n-1 separators with none trailing: the row's last
+    // child must be a tile, not dead space.
+    expect(find.byType(HomeTile), findsNWidgets(3));
+    final row = tester.widget<Row>(
+      find
+          .descendant(
+            of: find.byType(SingleChildScrollView),
+            matching: find.byType(Row),
+          )
+          .first,
+    );
+    expect(row.children.last, isA<HomeTile>());
   });
 
   testWidgets('an empty rail still shows its title', (tester) async {

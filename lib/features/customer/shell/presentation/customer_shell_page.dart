@@ -26,6 +26,8 @@ class CustomerShellPage extends StatelessWidget {
           icon: Icons.home_outlined,
           label: l10n.navHome,
           body: const HomePage(),
+          // Home draws its own greeting header instead of the shell app bar.
+          chromeless: true,
         ),
         AppBottomNavItem(
           icon: Icons.calendar_month_outlined,

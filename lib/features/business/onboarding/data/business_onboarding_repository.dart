@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
+import 'package:osta/features/business/dashboard/data/model/business_dashboard.dart';
 import 'package:osta/features/business/onboarding/data/models/business_profile_input.dart';
 import 'package:osta/features/business/onboarding/data/models/catalog_preset.dart';
 import 'package:osta/features/business/onboarding/data/models/custom_service_input.dart';
@@ -13,6 +14,17 @@ class BusinessOnboardingRepository {
   const BusinessOnboardingRepository(this._api);
 
   final ApiClient _api;
+
+  /// Reads the owner's own center back (`GET /business/profile`) so a post-
+  /// onboarding edit form can prefill. Mirrors `BusinessProfileResource`; the
+  /// `services` relation is eager-loaded server-side.
+  Future<BusinessProfile> fetchProfile() async {
+    final result = await _api.get<BusinessProfile>(
+      ApiEndpoints.businessProfile,
+      parse: (data) => BusinessProfile.fromJson(data! as Map<String, dynamic>),
+    );
+    return result.data;
+  }
 
   /// Step 1 — save business info + optional logo + map pin.
   ///

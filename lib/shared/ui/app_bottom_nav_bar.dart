@@ -17,6 +17,7 @@ class AppBottomNavItem {
     this.badgeCount = 0,
     this.onTap,
     this.body,
+    this.chromeless = false,
   });
 
   final IconData icon;
@@ -31,6 +32,10 @@ class AppBottomNavItem {
   /// When set, selecting the tab shows this as the shell body (bottom nav
   /// stays) instead of the default placeholder.
   final Widget? body;
+
+  /// When true the shell renders no top app bar for this tab — the [body]
+  /// supplies its own header (e.g. the customer Home tab's greeting bar).
+  final bool chromeless;
 }
 
 /// Brand bottom navigation — a rounded, elevated bar with icon + label tabs and

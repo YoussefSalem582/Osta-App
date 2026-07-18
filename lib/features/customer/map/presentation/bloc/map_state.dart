@@ -41,6 +41,7 @@ class MapState extends Equatable {
     this.centers = const [],
     this.query = '',
     this.category,
+    this.nearbyOnly = true,
     this.denial,
     this.error,
   });
@@ -50,6 +51,11 @@ class MapState extends Equatable {
   final List<CenterSummary> centers;
   final String query;
   final MapCategory? category;
+
+  /// When true (default), discovery is the radius-bounded `/centers/nearby`.
+  /// Toggled off in the filter sheet, an empty search falls through to
+  /// `/centers/search` with no `q` — every active center, distance be damned.
+  final bool nearbyOnly;
 
   /// Set only when [status] is [MapStatus.locationDenied].
   final LocationDenial? denial;
@@ -71,6 +77,7 @@ class MapState extends Equatable {
     List<CenterSummary>? centers,
     String? query,
     Object? category = _unset,
+    bool? nearbyOnly,
     Object? denial = _unset,
     Object? error = _unset,
   }) => MapState(
@@ -79,6 +86,7 @@ class MapState extends Equatable {
     centers: centers ?? this.centers,
     query: query ?? this.query,
     category: category == _unset ? this.category : category as MapCategory?,
+    nearbyOnly: nearbyOnly ?? this.nearbyOnly,
     denial: denial == _unset ? this.denial : denial as LocationDenial?,
     error: error == _unset ? this.error : error,
   );
@@ -93,6 +101,7 @@ class MapState extends Equatable {
     centers,
     query,
     category,
+    nearbyOnly,
     denial,
     error,
   ];

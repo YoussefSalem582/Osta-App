@@ -1,0 +1,110 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:osta/core/services/location_service.dart';
+import 'package:osta/features/customer/booking/data/model/booking.dart';
+import 'package:osta/features/customer/booking/data/repo/booking_repo.dart';
+import 'package:osta/features/customer/map/data/model/center_summary.dart';
+import 'package:osta/features/customer/map/data/repo/centers_repo.dart';
+import 'package:osta/features/shared/profile/data/repo/profile_repo.dart';
+import 'package:osta/features/shop/data/models/product.dart';
+import 'package:osta/features/shop/data/repo/shop_repo.dart';
+
+part 'home_event.dart';
+part 'home_state.dart';
+
+/// Loads the customer Home feed from four independent endpoints — `GET /me`,
+/// `GET /bookings`, `GET /centers/nearby`, `GET /products` — concurrently, and
+/// degrades per-section: a failed rail (e.g. location denied → no nearby
+/// centers) empties just that rail, never blanking the whole page.
+class HomeBloc extends Bloc<HomeEvent, HomeState> {
+  HomeBloc(this._centers, this._location, this._profile)
+    // Seed the name from cache for an instant header while /me is in flight.
+    : super(HomeState(customerName: _profile.cachedProfile?.fullName ?? '')) {
+    on<HomeStarted>(_onStarted);
+  }
+
+  final CentersRepository _centers;
+  final LocationService _location;
+  final ProfileRepo _profile;
+
+  /// Non-terminal statuses — the booking still "active" enough to surface on
+  /// the home hero card.
+  static const _terminal = {
+    'completed',
+    'cancelled',
+    'rejected',
+    'expired',
+    'no_show',
+  };
+
+  Future<void> _onStarted(HomeStarted event, Emitter<HomeState> emit) async {
+    emit(state.copyWith(status: HomeStatus.loading));
+    // Start all four before awaiting so they run concurrently.
+    final name = _loadName();
+    final booking = _loadActiveBooking();
+    final centers = _loadCenters();
+    final products = _loadProducts();
+    final nearby = await centers;
+    emit(
+      HomeState(
+        status: HomeStatus.ready,
+        customerName: await name,
+        activeBooking: await booking,
+        centers: nearby.centers,
+        locationDenied: nearby.locationDenied,
+        products: await products,
+      ),
+    );
+  }
+
+  Future<String> _loadName() async {
+    try {
+      final res = await _profile.getProfile();
+      return res.data?.fullName ?? _profile.cachedProfile?.fullName ?? '';
+    } on Object {
+      return _profile.cachedProfile?.fullName ?? '';
+    }
+  }
+
+  Future<Booking?> _loadActiveBooking() async {
+    try {
+      final res = await BookingRepo.list(perPage: 20);
+      // The list endpoint doesn't eager-load center/items, so re-fetch the one
+      // active booking through show() to get the service + center names.
+      Booking? active;
+      for (final b in res.data) {
+        if (!_terminal.contains(b.status)) {
+          active = b;
+          break;
+        }
+      }
+      return active == null ? null : await BookingRepo.show(active.id);
+    } on Object {
+      return null;
+    }
+  }
+
+  Future<({List<CenterSummary> centers, bool locationDenied})>
+  _loadCenters() async {
+    try {
+      final pos = await _location.currentPosition();
+      final list = await _centers.nearby(lat: pos.lat, lng: pos.lng);
+      return (centers: list.take(8).toList(), locationDenied: false);
+    } on LocationUnavailable {
+      // No fix / permission → the home surfaces an "enable location" prompt
+      // instead of a silently empty rail.
+      return (centers: const <CenterSummary>[], locationDenied: true);
+    } on Object {
+      return (centers: const <CenterSummary>[], locationDenied: false);
+    }
+  }
+
+  Future<List<Product>> _loadProducts() async {
+    try {
+      final res = await ShopRepo.browse(perPage: 8);
+      return res.data;
+    } on Object {
+      return const [];
+    }
+  }
+}

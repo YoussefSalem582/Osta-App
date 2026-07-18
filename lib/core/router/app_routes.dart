@@ -32,7 +32,24 @@ abstract final class AppRoutes {
   static const bookingStatus = '/booking-status';
   static const profile = '/profile';
   static const editProfile = '/edit-profile';
+  static const notifications = '/notifications';
+  static const addresses = '/addresses';
+
+  /// Business center profile editor (info + address + map pin), read/prefilled
+  /// from `GET /business/profile`.
+  static const businessProfile = '/business/profile-edit';
+
+  /// Address-only editor for the business center (map pin + city/street/
+  /// district), a focused subset of [businessProfile] over the same
+  /// `GET`/`PUT /business/profile`.
+  static const businessAddress = '/business/address';
   static const myBookings = '/my-bookings';
+
+  /// Service-center profile; `extra` is the center id (`String`).
+  static const centerDetail = '/center-detail';
+
+  /// Booking-create flow; `extra` is a `BookingCreateArgs`.
+  static const bookingCreate = '/booking-create';
   static const home = '/home';
 
   // Shop (#48) — two-sided marketplace, shared by both roles.

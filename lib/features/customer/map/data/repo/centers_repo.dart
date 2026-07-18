@@ -27,9 +27,10 @@ class CentersRepository {
       query: {
         'lat': lat,
         'lng': lng,
-        // 25 km default — backend PostGIS radius in metres; widens discovery
-        // within Egypt without changing the contract when omitted server-side.
-        'radius': 25000,
+        // 50 km — the backend's hard max (`radius|max:50000`); requesting more
+        // 422s. Widest discovery allowed, so sparse/seeded centers still
+        // surface across greater Cairo.
+        'radius': 50000,
         'service': ?category,
       },
       parse: _parseList,
