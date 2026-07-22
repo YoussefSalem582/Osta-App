@@ -4,10 +4,8 @@ import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 
-/// Last look before the center goes live (#53 activates with no verification
-/// queue, so this is the one place a merchant can eyeball the whole thing).
-///
-/// Returns `true` to activate, `false`/`null` to keep editing.
+/// Last look before the center goes live — the merchant's one chance to
+/// eyeball everything. Returns `true` to activate, `false`/`null` to keep editing.
 class ActivationReviewSheet extends StatelessWidget {
   const ActivationReviewSheet({
     required this.tradeName,

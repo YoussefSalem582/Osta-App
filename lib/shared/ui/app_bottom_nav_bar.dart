@@ -38,10 +38,8 @@ class AppBottomNavItem {
   final bool chromeless;
 }
 
-/// Brand bottom navigation — a rounded, elevated bar with icon + label tabs and
-/// an optional raised circular center action (e.g. a map / location button)
-/// that protrudes above the bar. Shared by the customer and provider shells;
-/// RTL ordering is handled by the framework.
+/// Brand bottom navigation — icon+label tabs with an optional raised center
+/// action. Shared by the customer and provider shells.
 class AppBottomNavBar extends StatelessWidget {
   const AppBottomNavBar({
     required this.items,

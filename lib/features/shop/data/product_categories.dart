@@ -1,9 +1,7 @@
 import 'package:osta/core/l10n/app_localizations.dart';
 
-/// Canonical, selectable product categories (#48). The **key** is what's stored
-/// on the backend (`category` is a free-form string there, but the app only
-/// ever writes one of these), so browse filtering and the create form agree.
-/// The display label is localized via [categoryLabel].
+/// Canonical category keys stored on the backend; labels are localized via
+/// [categoryLabel].
 const productCategoryKeys = <String>[
   'oils',
   'filters',

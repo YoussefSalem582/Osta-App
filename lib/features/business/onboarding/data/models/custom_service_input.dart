@@ -1,11 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-/// A service the merchant typed in themselves, for `POST /business/services`.
-///
-/// Deliberately not a catalog preset: `POST /business/catalog` validates
-/// `items.*.preset_id` as `required|uuid|exists:catalog_presets,id`, so a
-/// service with no preset row physically cannot go through the catalog
-/// endpoint. Field names match `StoreServiceRequest`.
+/// Merchant-typed service for `POST /business/services` — can't go through
+/// `/business/catalog`, which requires a valid `preset_id`.
 class CustomServiceInput extends Equatable {
   const CustomServiceInput({
     required this.name,

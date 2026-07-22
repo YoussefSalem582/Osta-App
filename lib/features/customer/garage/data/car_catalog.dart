@@ -1,9 +1,6 @@
-/// Brand → models for the add-car pickers, for the Egyptian market.
-///
-/// Client-side because there is no backend catalogue: `POST /vehicles` takes
-/// `make` and `model` as free `string|max:60`, and no brand/model endpoint
-/// exists to drive a picker from. So this list is a convenience, never a
-/// constraint — see [otherOption].
+/// Brand → models for the add-car pickers (Egyptian market). Client-side
+/// only — no backend catalogue exists, so treat this as a convenience, not
+/// a constraint.
 library;
 
 const otherOption = '__other__';

@@ -14,10 +14,8 @@ import 'package:osta/shared/ui/app_confirm_dialog.dart';
 import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/status_states.dart';
 
-/// The caller's own shop (متجري) — list + create / edit / delete via
-/// `/me/products` (#48). The owner is resolved server-side (a business writes
-/// to its center, everyone else to their personal shop), so this one screen is
-/// the Business store tab and the customer's "my products" push alike.
+/// The caller's own shop — owner is resolved server-side, so this one screen
+/// serves both the Business store tab and the customer's "my products" push.
 class MyProductsPage extends StatelessWidget {
   const MyProductsPage({super.key});
 

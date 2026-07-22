@@ -4,12 +4,8 @@ import 'package:osta/core/services/location_service.dart';
 /// City / district / street resolved from a map pin.
 typedef ResolvedAddress = ({String? city, String? district, String? street});
 
-/// Best-effort reverse geocoding of a dropped map pin, so address forms can
-/// auto-fill city / district / street instead of making the owner type them.
-///
-/// Uses the on-device geocoder (iOS `CLGeocoder`, Android `Geocoder`) — no API
-/// key, no quota. Any failure (offline, no match, platform gap) resolves to
-/// `null`; the form just stays manual, exactly as before.
+/// Best-effort reverse geocoding of a dropped map pin to auto-fill address
+/// fields; uses the on-device geocoder (no API key/quota) and fails to `null`.
 class ReverseGeocoder {
   const ReverseGeocoder();
 

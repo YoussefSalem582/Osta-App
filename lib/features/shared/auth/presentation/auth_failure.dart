@@ -1,12 +1,8 @@
 import 'package:osta/core/network/api_exception.dart';
 
-/// The presentable shape of an auth failure, mapped once from a thrown
-/// exception so the Login / Register / Recovery blocs don't each repeat the
-/// same catch chain.
-///
-/// `networkError` means the request never reached the server; `fieldErrors`
-/// are server 422 messages keyed by field (surfaced inline); `message` is a
-/// general error string for the toast.
+/// Presentable shape of an auth failure, mapped once so blocs share one catch
+/// chain. `networkError`: request never reached server; `fieldErrors`: server
+/// 422s keyed by field; `message`: general text for the toast.
 typedef AuthFailure = ({
   String? message,
   Map<String, List<String>> fieldErrors,

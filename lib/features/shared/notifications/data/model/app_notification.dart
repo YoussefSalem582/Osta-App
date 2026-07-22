@@ -1,11 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-/// A single item in the authenticated user's notification feed. Mirrors the
-/// backend `NotificationResource` (`NotificationController@index` / `@read`).
-///
-/// `data` is an arbitrary deep-link payload map. PHP serializes an *empty*
-/// array as JSON `[]` (not `{}`), so `fromJson` guards the non-map case and
-/// falls back to an empty map.
+/// A single notification feed item (mirrors backend `NotificationResource`).
+/// PHP serializes an empty `data` array as `[]`, so `fromJson` guards the
+/// non-map case.
 class AppNotification extends Equatable {
   const AppNotification({
     required this.id,

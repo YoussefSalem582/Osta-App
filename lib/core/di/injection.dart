@@ -26,10 +26,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Global service locator.
 final GetIt getIt = GetIt.instance;
 
-/// Registers every dependency by hand — no injectable/build_runner codegen.
-///
-/// Order follows the dependency graph: async singletons first, then each
-/// lazy singleton resolving its collaborators via [getIt].
+/// Registers every dependency by hand, in dependency-graph order.
 Future<void> configureDependencies() async {
   // Async singleton resolved up front (SharedPreferences needs getInstance()).
   getIt

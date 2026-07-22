@@ -1,10 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 /// One seeded catalog preset from `GET /business/catalog/presets`.
-///
-/// Backend shape (FLUTTER_API_GUIDE §10c):
-/// `{ id, category, category_label, name, default_price,
-///    default_duration_minutes }`.
 class CatalogPreset extends Equatable {
   const CatalogPreset({
     required this.id,

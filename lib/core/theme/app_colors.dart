@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// Osta brand + semantic color tokens.
-///
-/// The only place hex values may live. [ColorScheme] (seeded from
-/// [brandGreen]) covers primary/surface/error roles; this extension carries
-/// the custom semantic roles the scheme lacks, split per light & dark.
+/// Osta brand + semantic color tokens — the only place hex values may live.
+/// [ColorScheme] covers primary/surface/error; this extension adds the rest.
 @immutable
 class AppColors extends ThemeExtension<AppColors> {
   const AppColors({
@@ -25,10 +22,8 @@ class AppColors extends ThemeExtension<AppColors> {
   static const greyLime = Color(0xFFa3afa7);
 
   // --- Light neutrals & brand tints ---------------------------------------
-  // `ColorScheme.fromSeed` renders the light neutrals flat and the primary a
-  // muted olive; these tuned tokens restore the brand green and give the
-  // surfaces a soft green-grey depth (white cards + tinted input fields on a
-  // slightly darker background).
+  // Tuned to restore brand green over fromSeed's muted olive, with soft
+  // green-grey depth.
   static const lightBackground = Color(0xFFF1F5F2); // scaffold + app bar
   static const lightSurface = Color(0xFFFFFFFF); // cards, sheets
   static const lightSurfaceAlt = Color(0xFFE8EFEA); // input fill, sections

@@ -9,10 +9,8 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-/// Global auth signals emitted by the networking layer.
-///
-/// The router/auth epics listen to [onSessionExpired] to force logout when a
-/// 401 survives the single refresh-and-retry.
+/// Global auth signals; [onSessionExpired] forces logout when a 401 survives
+/// the single refresh-and-retry.
 class AuthEvents {
   final _sessionExpired = StreamController<void>.broadcast();
 
@@ -46,15 +44,9 @@ TokenPair parseTokenPair(Object? data) {
   );
 }
 
-/// Tells the backend which language to answer in.
-///
-/// `SetApiLocale` runs on every API request and resolves `app()->setLocale()`
-/// from this header, falling back to Arabic. Without it an English user gets
-/// every server-side string — validation messages, auth errors — in Arabic, and
-/// register persists `language_preference: 'ar'` for them permanently.
-///
-/// Reads the locale per request rather than baking it into `BaseOptions`,
-/// because the language screen can change it after the client is built.
+/// Sets the `Accept-Language` header per request (not baked into
+/// `BaseOptions`) since the language screen can change locale after the
+/// client is built.
 class LocaleInterceptor extends Interceptor {
   LocaleInterceptor(this._localeCode);
 
@@ -69,13 +61,9 @@ class LocaleInterceptor extends Interceptor {
   }
 }
 
-/// Attaches the Sanctum access token and transparently handles expiry:
-/// on a 401 the refresh endpoint is called once, tokens are rotated, and the
-/// original request is replayed a single time. A second 401 (or a failed
-/// refresh) clears tokens and emits a global session-expired event.
-///
-/// [QueuedInterceptor] serializes callbacks so concurrent 401s cannot run
-/// overlapping refreshes.
+/// Attaches the Sanctum access token; on a 401 refreshes once and replays the
+/// request, or clears tokens and emits session-expired. [QueuedInterceptor]
+/// prevents concurrent refreshes.
 class AuthInterceptor extends QueuedInterceptor {
   AuthInterceptor(
     this._tokens,
@@ -131,12 +119,9 @@ class AuthInterceptor extends QueuedInterceptor {
     }
   }
 
-  /// Returns a valid access token, refreshing at most once.
-  ///
-  /// If another queued request already rotated the tokens while this one was
-  /// in flight, reuse the stored token instead of re-consuming the (rotated,
-  /// single-use) refresh token — a second refresh would fail and force a
-  /// spurious logout.
+  /// Returns a valid access token, refreshing at most once — reuses the
+  /// stored token if another queued request already rotated it, since the
+  /// refresh token is single-use.
   Future<String> _freshAccessToken(RequestOptions failed) async {
     final stored = await _tokens.readAccessToken();
     final sentHeader = failed.headers['Authorization'];
@@ -144,10 +129,8 @@ class AuthInterceptor extends QueuedInterceptor {
 
     final refresh = await _tokens.readRefreshToken();
     if (refresh == null) throw const FormatException('No refresh token');
-    // The refresh token IS the credential: `/auth/refresh` sits behind
-    // `auth:sanctum` + `ability:refresh` and reads `$request->user()`, never a
-    // body field. Sending it as JSON instead of a Bearer header 401s, which the
-    // catch below turns into a forced logout on every access-token expiry.
+    // Sent as a Bearer header, not a JSON body — `/auth/refresh` reads
+    // `$request->user()`, so a body field 401s here.
     final response = await _refreshDio.post<Map<String, dynamic>>(
       ApiEndpoints.authRefresh,
       options: Options(headers: {'Authorization': 'Bearer $refresh'}),
@@ -161,11 +144,8 @@ class AuthInterceptor extends QueuedInterceptor {
   }
 }
 
-/// Builds the shared [Dio] client every feature request flows through.
-///
-/// Configured against [AppConfig.baseUrl] (`/api/v1`) with Sanctum auth,
-/// automatic retries, and a redacted logger. Wired up manually in
-/// `configureDependencies()`.
+/// Builds the shared [Dio] client every feature request flows through:
+/// base URL, Sanctum auth, retries, and a redacted logger.
 Dio buildAppDio(
   AppConfig config,
   TokenStorage tokens,
@@ -184,12 +164,8 @@ Dio buildAppDio(
     ..add(AuthInterceptor(tokens, events, config: config))
     ..add(LocaleInterceptor(localeCode))
     ..add(RetryInterceptor(dio: client))
-    // Headers (incl. Authorization) and bodies are never logged, but the
-    // request URI is — and that carries query params, including the user's GPS
-    // coordinates on /centers/nearby. Debug builds only: PrettyDioLogger prints
-    // to stdout, which is readable on-device in release.
-    // `enabled:` looks redundant only because kDebugMode is a const true while
-    // analyzing; dropping it is what would restore release logging.
+    // Logs the request URI (incl. GPS query params) in debug builds only;
+    // `enabled:` looks redundant but is what gates it off in release.
     // ignore: avoid_redundant_argument_values
     ..add(PrettyDioLogger(responseBody: false, enabled: kDebugMode));
   return client;

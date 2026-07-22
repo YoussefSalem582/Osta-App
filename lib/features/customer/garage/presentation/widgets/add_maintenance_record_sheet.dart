@@ -14,13 +14,9 @@ import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
 import 'package:osta/shared/ui/app_toaster.dart';
 
-/// Add-one-record form, shown as a modal sheet over `MaintenanceScreen` and
-/// sharing that screen's `MaintenanceCubit` instance (same vehicle, no need
-/// for a second one). Pops `true` on a successful save so the caller knows to
-/// reload history; pops nothing (stays open) on error so the user can retry.
-///
-/// Receipt upload is a deliberate scope cut — `MaintenanceRepo.addRecord`
-/// accepts an optional `receiptPath`, but no image/file picker is wired here.
+/// Add-one-record modal sheet; pops `true` on save (caller reloads history)
+/// or stays open on error. Receipt upload is a deliberate scope cut — no
+/// picker wired.
 class AddMaintenanceRecordSheet extends StatefulWidget {
   const AddMaintenanceRecordSheet({super.key});
 

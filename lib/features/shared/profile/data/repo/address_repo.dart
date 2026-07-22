@@ -3,13 +3,8 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/features/shared/profile/data/model/address.dart';
 
-/// Thin data layer over the B2C `/me/addresses` endpoints. Static methods like
-/// the other features (`ShopRepo`); errors bubble as the typed `ApiException`.
-///
-/// Mirrors `AddressController` + `AddressResource`. The list is NOT paginated
-/// (`data` is a plain array). Create/update send the snake_case FormRequest
-/// keys (`label` required; the rest nullable) as a raw body — full-replace on
-/// update (PUT), so omitted optional keys reset to null server-side.
+/// Data layer over `/me/addresses` (mirrors `AddressController`). The list is
+/// NOT paginated; update is PUT full-replace, so omitted keys reset to null.
 abstract final class AddressRepo {
   static ApiClient get _api => GetIt.instance<ApiClient>();
 

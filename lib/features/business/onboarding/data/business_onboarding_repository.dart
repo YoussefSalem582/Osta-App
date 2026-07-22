@@ -6,10 +6,8 @@ import 'package:osta/features/business/onboarding/data/models/business_profile_i
 import 'package:osta/features/business/onboarding/data/models/catalog_preset.dart';
 import 'package:osta/features/business/onboarding/data/models/custom_service_input.dart';
 
-/// Talks to the B2B onboarding endpoints (`/business/profile`, catalog).
-///
-/// [ApiClient] already throws a typed `ApiException` on failure, so nothing is
-/// caught here — the wizard cubit owns the try/catch.
+/// Talks to the B2B onboarding endpoints. [ApiClient] throws `ApiException`;
+/// this repo doesn't catch it — the wizard cubit owns the try/catch.
 class BusinessOnboardingRepository {
   const BusinessOnboardingRepository(this._api);
 
@@ -27,14 +25,9 @@ class BusinessOnboardingRepository {
   }
 
   /// Step 1 — save business info + optional logo + map pin.
-  ///
-  /// Two transports, because PHP only parses `multipart/form-data` on POST —
-  /// never on PUT. A real PUT with a multipart body leaves `$_POST`/`$_FILES`
-  /// empty, and since every rule on `UpdateBusinessProfileRequest` is
-  /// `sometimes`, it validates clean and saves *nothing*: 200 OK, whole profile
-  /// discarded. So the logo path POSTs with `_method: PUT` (Laravel resolves
-  /// the override before routing, matching the same `Route::put`); the
-  /// JSON path can PUT directly, since Laravel parses JSON on any verb.
+  /// Logo path POSTs with `_method: PUT` (PHP only parses multipart on POST;
+  /// a real PUT here would silently validate clean and save nothing); JSON
+  /// path PUTs directly.
   Future<void> updateProfile(BusinessProfileInput input) async {
     final logoPath = input.logoPath;
     if (logoPath == null || logoPath.isEmpty) {
@@ -69,10 +62,8 @@ class BusinessOnboardingRepository {
     return result.data;
   }
 
-  /// Step 2 — bulk-attach selected presets (≥1 required by the backend).
-  ///
-  /// Only for preset-backed services; `items.*.preset_id` must reference a real
-  /// `catalog_presets` row. Custom ones go through [createCustomService].
+  /// Step 2 — bulk-attach selected presets (≥1 required). Only for
+  /// preset-backed services; custom ones go through [createCustomService].
   Future<void> attachCatalog(List<String> presetIds) async {
     await _api.post<Object?>(
       ApiEndpoints.businessCatalog,

@@ -22,13 +22,9 @@ import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/brand_scaffold.dart';
 import 'package:osta/shared/ui/or_divider.dart';
 
-/// The register form itself — identical for every role.
-///
-/// The backend takes only personal fields at `POST /auth/register`
-/// (RegisterRequest: name, username, email, phone, password, avatar); the role
-/// rides along as `account_type`, and business details are a separate
-/// authenticated call. So both roles submit exactly these fields, and the
-/// role-specific screens are thin wrappers over this one form.
+/// The register form itself — identical for every role. `POST /auth/register`
+/// takes only personal fields (name, username, email, phone, password,
+/// avatar) plus `account_type`; business details are a separate authenticated call.
 class RegisterForm extends StatefulWidget {
   const RegisterForm({required this.title, super.key});
 
@@ -56,10 +52,8 @@ class _RegisterFormState extends State<RegisterForm> {
   /// Shortest username worth a round-trip (also the server min).
   static const _minUsername = 3;
 
-  /// The 422 keys this form renders inline. `RegisterRequest` can also reject
-  /// `account_type`, `language_preference` and `avatar`, none of which have a
-  /// field here — so anything outside this set has to reach the user as a toast
-  /// or it is swallowed and submit looks like it did nothing.
+  /// The 422 keys this form renders inline; other rejected fields
+  /// (`account_type`, `language_preference`, `avatar`) surface as a toast instead.
   static const _renderedFieldErrors = {
     'first_name',
     'last_name',

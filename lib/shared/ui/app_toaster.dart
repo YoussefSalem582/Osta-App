@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// App-wide toaster — shows a `SnackBar` over the root [ScaffoldMessenger].
-///
-/// Works from anywhere (including code without a `Scaffold` context) via
-/// [messengerKey], which is wired into `MaterialApp.scaffoldMessengerKey`.
+/// App-wide toaster — shows a `SnackBar` over the root [ScaffoldMessenger], so
+/// it works even without a `Scaffold` in context.
 abstract final class AppToaster {
   /// Wire into `MaterialApp.scaffoldMessengerKey`.
   static final messengerKey = GlobalKey<ScaffoldMessengerState>();

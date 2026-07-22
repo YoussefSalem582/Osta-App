@@ -10,13 +10,9 @@ import 'package:osta/core/session/session_state.dart';
 import 'package:osta/core/session/session_store.dart';
 import 'package:osta/features/shared/auth/domain/auth_repository.dart';
 
-/// Single source of truth for first-run routing. The splash calls [bootstrap];
-/// the language screen, role chooser and auth flow mutate it; the router
-/// redirects on every emitted [SessionState]. Also listens for the networking
-/// layer's session-expired signal and drops the token so the user is routed
-/// back to auth.
-///
-/// Registered by hand in `configureDependencies()` — no injectable codegen.
+/// Single source of truth for first-run routing: [bootstrap] runs on splash,
+/// language/role/auth flows mutate it, and the router redirects off
+/// [SessionState].
 class SessionController extends Cubit<SessionState> {
   SessionController(
     this._store,
@@ -33,54 +29,40 @@ class SessionController extends Cubit<SessionState> {
   final ApiClient _api;
   late final StreamSubscription<void> _expiredSub;
 
-  /// How long a gate check may hold up a launch before it gives up.
-  ///
-  /// [bootstrap] awaits this on the splash, on top of the branding hold, so an
-  /// unbounded call would leave a user on a slow connection staring at the logo
-  /// for Dio's full 15s timeout. Capped well under that and failed open.
+  /// How long a gate check may hold up launch before failing open — capped
+  /// well under Dio's 15s timeout.
   static const _gateTimeout = Duration(seconds: 4);
 
-  /// Both role gates ask the same question — "does this list have anything in
-  /// it?" — so they share one call shape. `null` means "couldn't tell": a
-  /// failure or a timeout never gates, because a flaky connection must not lock
-  /// a user out of the whole app.
+  /// Shared shape for both role gates: `null` means "couldn't tell" (timeout
+  /// or failure), which never gates — a flaky connection must not lock a
+  /// user out.
   ///
-  /// ponytail: calls the endpoints directly rather than reusing `GarageRepo` /
-  /// `BusinessOnboardingRepository`, which live in `features/` — `core/` must
-  /// not depend on a feature. One `isNotEmpty` is not duplication worth
-  /// inverting layers for.
+  /// ponytail: hits the endpoint directly instead of `GarageRepo`/
+  /// `BusinessOnboardingRepository` (`core/` can't depend on `features/`).
   Future<bool?> _gate(String path) => _api
       .get<bool>(path, parse: (data) => (data! as List<dynamic>).isNotEmpty)
       .then<bool?>((r) => r.data)
       .timeout(_gateTimeout, onTimeout: () => null)
       .catchError((_) => null);
 
-  /// Whether an authenticated customer already has a car, for the #39 gate.
-  ///
-  /// The cost of failing open is that a carless customer whose check times out
-  /// skips the gate until their next launch.
+  /// Whether an authenticated customer already has a car (vehicle gate);
+  /// failing open just delays the gate to the next launch.
   Future<bool?> _resolveVehicleGate(AppRole? role, {required bool hasToken}) =>
       role == AppRole.customer && hasToken
       ? _gate(ApiEndpoints.vehicles)
       : Future.value();
 
-  /// Whether an authenticated business owner has finished onboarding (#53).
-  ///
-  /// The catalog *is* the completion record: the wizard cannot finish without
-  /// attaching at least one service, so a non-empty catalog means it ran.
-  /// Asking the server rather than a local flag is what lets a returning owner
-  /// — new device, reinstall, or just a sign-out — skip a wizard they already
-  /// did instead of re-running it and duplicating their catalog.
+  /// Whether an authenticated business owner has finished onboarding — the
+  /// catalog itself is the completion record, so a non-empty catalog means
+  /// the wizard ran.
   Future<bool?> _resolveCatalogGate(AppRole? role, {required bool hasToken}) =>
       role == AppRole.business && hasToken
       ? _gate(ApiEndpoints.businessServices)
       : Future.value();
 
-  /// Reads persisted `{token, activeRole, locale}` and flips `bootstrapped` so
-  /// the router can leave the splash. A valid `{token, activeRole}` lands the
-  /// user straight in their shell — the chooser never reappears. Both role
-  /// gates are re-derived from the server here; they are mutually exclusive by
-  /// role, so only one ever hits the network.
+  /// Reads persisted `{token, activeRole, locale}` and flips `bootstrapped`
+  /// so the router leaves the splash; role gates are re-derived from the
+  /// server here.
   Future<void> bootstrap() async {
     final code = _store.localeCode;
     final role = _store.activeRole;
@@ -121,20 +103,16 @@ class SessionController extends Cubit<SessionState> {
     emit(state.copyWith(onboardingAcknowledged: false));
   }
 
-  /// Records the chooser pick. Persists the role (the default next time) and
-  /// marks the in-memory `roleAcknowledged` flag so the guard advances — the
-  /// chooser still re-shows on the next logged-out cold start. With a live
-  /// token the router lands the shell; otherwise auth sends `account_type`.
+  /// Records the chooser pick and persists the role; with a live token the
+  /// router lands the shell, otherwise auth sends `account_type`.
   Future<void> chooseRole(AppRole role) async {
     await _store.writeActiveRole(role);
     emit(
       state.copyWith(
         activeRole: role,
         roleAcknowledged: true,
-        // "Switch role" keeps the token and clears both gates, so re-derive
-        // them here — otherwise a carless customer could switch away and back
-        // to land in the shell with the gate still null, walking straight past
-        // it.
+        // Re-derive gates here — "switch role" clears them, and a stale null
+        // would bypass the gate.
         businessOnboarded: await _resolveCatalogGate(
           role,
           hasToken: state.hasToken,
@@ -144,10 +122,9 @@ class SessionController extends Cubit<SessionState> {
     );
   }
 
-  /// Called after a successful register/login. [authoritativeRole] is
-  /// `me.type` — the server's source of truth — which overwrites the requested
-  /// role, self-healing a wrong-shell choice. When it differs from [requested]
-  /// a one-shot [SessionState.correctedRole] is set to drive the toast.
+  /// Called after register/login. [authoritativeRole] (`me.type`) overwrites
+  /// [requested] if they differ, self-healing a wrong-shell choice and
+  /// setting [SessionState.correctedRole] to drive the toast.
   Future<void> onAuthenticated(
     AppRole authoritativeRole, {
     required AppRole requested,

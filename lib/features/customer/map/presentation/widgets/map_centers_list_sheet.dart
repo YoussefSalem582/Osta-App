@@ -6,10 +6,8 @@ import 'package:osta/features/customer/map/data/model/center_summary.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/formatters/app_formatters.dart';
 
-/// Bottom-sheet list of the centers currently on the map. It shows whatever
-/// `MapState.centers` holds, so it already respects the search box and the
-/// "nearby only" filter — toggle that off to list every center. Tapping a row
-/// opens that center's profile (same destination as a marker tap).
+/// Bottom-sheet list of centers currently on the map (respects the active
+/// search/filter); tapping a row opens that center's profile.
 Future<void> showCentersListSheet(
   BuildContext context, {
   required List<CenterSummary> centers,

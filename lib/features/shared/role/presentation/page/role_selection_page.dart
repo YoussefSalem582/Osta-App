@@ -7,10 +7,9 @@ import 'package:osta/features/shared/role/presentation/widgets/info_banner.dart'
 import 'package:osta/features/shared/role/presentation/widgets/role_card.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
-/// First-run role split. `customer` + `business` are tappable and route into
-/// their shell (via auth); `mechanic` + `tow` render disabled ("coming soon").
-/// Tapping calls [SessionController.chooseRole]; the router redirect handles
-/// navigation, so no explicit push here.
+/// First-run role split: `customer`/`business` are tappable (route via auth);
+/// `mechanic`/`tow` render disabled ("coming soon"). Tap calls
+/// [SessionController.chooseRole]; the router redirect handles navigation.
 class RoleSelectionPage extends StatelessWidget {
   const RoleSelectionPage({super.key});
 

@@ -30,10 +30,8 @@ enum MapStatus {
   locationDenied,
 }
 
-/// One state class rather than the class-per-state shape used by
-/// `GarageState`: the map's fields (position, centers, query, category) change
-/// together and every status needs to keep the others, which class-per-state
-/// can only do by duplicating them.
+/// Single state class (not class-per-state): the map's fields change together
+/// and every status needs to keep the others.
 class MapState extends Equatable {
   const MapState({
     this.status = MapStatus.initial,

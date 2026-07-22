@@ -52,11 +52,9 @@ import 'package:osta/features/shop/presentation/pages/product_form_page.dart';
 import 'package:osta/features/shop/presentation/pages/seller_catalog_page.dart';
 import 'package:osta/features/shop/presentation/pages/shop_browse_page.dart';
 
-/// Declarative app router. Boots at the splash and defers all navigation to a
-/// single [resolveRedirect] guard keyed on the [SessionController] state, so
-/// the first-run/role-split flow lives in one pure, tested place.
-///
-/// Registered by hand in `configureDependencies()` — no injectable codegen.
+/// Declarative router; all navigation is gated by a single [resolveRedirect]
+/// guard on [SessionController] state. Registered by hand — no injectable
+/// codegen.
 class AppRouter {
   AppRouter(SessionController session) : router = _build(session);
 
@@ -247,10 +245,8 @@ class AppRouter {
         builder: (context, state) => const HomePage(),
       ),
 
-      // Shop (#48). ShopBrowsePage + MyProductsPage are chrome-less Store-tab
-      // bodies (the RoleShell supplies their Scaffold/Material), so when pushed
-      // as their own route they must be wrapped in a Scaffold — otherwise they
-      // render with no Material ancestor and overflow.
+      // Chrome-less Store-tab bodies: wrap in Scaffold when pushed as their own
+      // route, since the RoleShell isn't there to supply one.
       GoRoute(
         path: AppRoutes.shopBrowse,
         builder: (context, state) =>

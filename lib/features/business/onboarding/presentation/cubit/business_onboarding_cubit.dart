@@ -14,10 +14,8 @@ import 'package:osta/features/shared/auth/presentation/validators/auth_validator
 
 part 'business_onboarding_state.dart';
 
-/// Drives the post-auth business onboarding wizard (identity → catalog).
-///
-/// Registered as a factory in `configureDependencies()`; one instance is
-/// provided for the whole wizard stack so identity draft survives into catalog.
+/// Drives the post-auth business onboarding wizard (identity → catalog); one
+/// instance persists across the whole stack so the draft survives.
 class BusinessOnboardingCubit extends Cubit<BusinessOnboardingState> {
   BusinessOnboardingCubit(this._repo, this._store) : super(_restore(_store));
 
@@ -39,12 +37,9 @@ class BusinessOnboardingCubit extends Cubit<BusinessOnboardingState> {
     }
   }
 
-  /// Persists on every change rather than at each step boundary — the wizard is
-  /// mandatory and the app can be killed anywhere in it.
-  ///
-  /// Hooks [onChange] rather than listening to `stream`: onChange runs inside
-  /// emit, so it is ordered against [activate]'s clear. A stream listener
-  /// delivers on a later microtask and would rewrite the draft *after* it.
+  /// Persists the draft on every change since the wizard can be killed
+  /// anywhere. Hooks [onChange] (not `stream`) so this runs before [activate]
+  /// clears it, not after on a later microtask.
   @override
   void onChange(Change<BusinessOnboardingState> change) {
     super.onChange(change);
@@ -94,11 +89,8 @@ class BusinessOnboardingCubit extends Cubit<BusinessOnboardingState> {
     emit(state.copyWith(selectedPresetIds: next));
   }
 
-  /// Selects every preset visible under the current category filter, unioned
-  /// into the existing selection (the "add all" shortcut). Unioning — not
-  /// replacing — respects the active chip and keeps picks from other
-  /// categories, so tapping it while "Oils" is showing adds the oils and
-  /// touches nothing else.
+  /// "Add all" for the current category filter — unions into the existing
+  /// selection so picks from other categories survive.
   void selectFilteredPresets() {
     emit(
       state.copyWith(
@@ -186,10 +178,8 @@ class BusinessOnboardingCubit extends Cubit<BusinessOnboardingState> {
     );
     try {
       final presets = await _repo.fetchPresets();
-      // Nothing pre-selected: #53 requires the merchant to actively add at
-      // least one service, and pre-selecting everything made canActivate true
-      // on arrival, so the guard never fired. The "add all" CTA is still the
-      // one-tap path for anyone who wants the full set.
+      // Nothing pre-selected — canActivate requires the merchant to add at
+      // least one service themselves.
       emit(
         state.copyWith(
           status: BusinessOnboardingStatus.idle,

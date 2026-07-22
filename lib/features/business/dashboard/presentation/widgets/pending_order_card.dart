@@ -7,10 +7,9 @@ import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_card.dart';
 
-/// One real pending order on the board — customer, schedule, total, and live
-/// Accept / Decline actions. [acting] disables the row while its own
-/// accept/reject call is in flight; [onReject] fires before any reason is
-/// collected (the board owns the reason dialog).
+/// Pending order row with Accept/Decline actions. [acting] disables the row
+/// mid-flight; [onReject] fires before a reason is collected (board owns the
+/// dialog).
 class PendingOrderCard extends StatelessWidget {
   const PendingOrderCard({
     required this.booking,

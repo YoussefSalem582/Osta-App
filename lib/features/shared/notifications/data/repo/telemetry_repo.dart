@@ -3,9 +3,8 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 
 /// Data layer over broadcast telemetry
-/// (`TelemetryController@broadcastLatency`). The server only logs; the response
-/// merely echoes `latency_ms`, so there is nothing worth modelling — the call
-/// is fire-and-forget.
+/// (`TelemetryController@broadcastLatency`); fire-and-forget, nothing in the
+/// response worth modelling.
 abstract final class TelemetryRepo {
   static ApiClient get _api => GetIt.instance<ApiClient>();
 

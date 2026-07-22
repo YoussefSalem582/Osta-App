@@ -11,14 +11,9 @@ String shellFor(AppRole role) => switch (role) {
   AppRole.mechanic || AppRole.tow => AppRoutes.comingSoon,
 };
 
-/// Pure first-run/role-split routing. Returns the location to redirect to, or
-/// `null` to stay put. Order encodes the two role flows:
-///
-/// - Customer: language → role → customer onboarding → auth → shell
-/// - Business: language → role → merchant onboarding → auth → wizard → shell
-///
-/// A valid `{token, activeRole}` skips straight to the shell (business
-/// still hits the post-auth wizard until onboarded). No guest path.
+/// Pure first-run/role-split routing: returns the redirect location, or `null`
+/// to stay put. Order: language → role → onboarding → auth → (business:
+/// wizard) → shell.
 String? resolveRedirect({
   required SessionState session,
   required String location,
@@ -57,10 +52,9 @@ String? resolveRedirect({
   // then the auth form (sends `account_type = activeRole`). The
   // password-recovery screens hang off the same unauthenticated surface.
   if (!session.hasToken) {
-    // Each role has its own register screen, like its own carousel. Pin the
-    // location to the active role's: RegisterBloc reads account_type from the
-    // session, so landing on the other role's URL would show one role's
-    // heading while registering as the other.
+    // Pin to the active role's register screen — RegisterBloc reads
+    // account_type from the session, so the other role's URL would show the
+    // wrong heading.
     const registerRoutes = {AppRoutes.register, AppRoutes.registerBusiness};
     if (registerRoutes.contains(location)) {
       final ownRegister = role == AppRole.business
@@ -78,19 +72,12 @@ String? resolveRedirect({
     return authSurface.contains(location) ? null : AppRoutes.authChoose;
   }
 
-  // Authenticated with a role: land in its shell, and allow the in-app screens
-  // that hang off it (pushed over the shell, so they keep a back button).
-  // Everything else — notably the other role's shell — bounces back to the
-  // active shell.
-  // ponytail: flat allow-list, not per-role. A business user could reach a
-  // customer screen by typed URL, but no nav entry leads there; scope per role
-  // if that ever matters.
-  // A freshly-authenticated business user runs the onboarding wizard
-  // (identity → catalog) before reaching its shell. Merchants already saw the
-  // logged-out carousel before register, so there is no intro step here.
-  // Gates on an explicit `false` only, like the customer's gate below: `null`
-  // means the catalog check never resolved, and re-running a finished wizard
-  // would duplicate the owner's catalog.
+  // Authenticated: land in the role's shell, or an in-app screen pushed over
+  // it. ponytail: flat allow-list, not scoped per role — no nav entry reaches
+  // another role's screens.
+
+  // Business runs the onboarding wizard first; gates on explicit `false` (not
+  // `null`) so an unresolved check can't re-trigger a finished wizard.
   if (role == AppRole.business && session.businessOnboarded == false) {
     const wizard = {
       AppRoutes.businessIdentity,

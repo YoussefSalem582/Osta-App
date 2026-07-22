@@ -4,13 +4,8 @@ import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_card.dart';
 
-/// Location picker card. Shows a live map preview centered on the picked pin,
-/// or a grid placeholder before one is set.
-///
-/// The card carries its own state: the border and label go primary once a pin
-/// is set ([hasLocation]), or error-colored when [hasError] and still unset —
-/// so the required-location message lives on the control instead of floating
-/// beneath it.
+/// Location picker card — shows a live map preview once a pin is set, else a
+/// grid placeholder; border/label turn primary when set or error-colored when [hasError] and unset.
 class LocationPickerCard extends StatelessWidget {
   const LocationPickerCard({
     this.onTap,
@@ -125,10 +120,8 @@ class LocationPickerCard extends StatelessWidget {
   }
 }
 
-/// Non-interactive map thumbnail with a fixed pin over the picked point.
-///
-/// Gestures are disabled and a transparent catcher sits on top so the whole
-/// card still opens the full-screen picker on tap instead of panning here.
+/// Non-interactive map thumbnail — gestures are disabled so tapping the card
+/// opens the full-screen picker instead of panning here.
 class _MapPreview extends StatelessWidget {
   const _MapPreview({required this.target});
   final LatLng target;

@@ -18,10 +18,8 @@ import 'package:osta/shared/ui/app_segmented_toggle.dart';
 import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/status_states.dart';
 
-/// الكتالوج والأسعار (الخدمات والعروض) — the Catalog tab body of the business
-/// shell. Both segments are live: Services through `/business/services` and
-/// Offers through `/business/promotions` (list, toggle active, add, edit,
-/// delete).
+/// الكتالوج والأسعار — Catalog tab body: Services (`/business/services`) and
+/// Offers (`/business/promotions`).
 class BusinessServicesPage extends StatelessWidget {
   const BusinessServicesPage({super.key});
 

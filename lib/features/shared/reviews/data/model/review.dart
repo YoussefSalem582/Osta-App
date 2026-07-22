@@ -1,12 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-/// A single review, mirroring the backend `ReviewResource`
-/// (`Api/B2C/ReviewResource.php`). The same shape is returned by all four
-/// review endpoints (user/center × index/store), so one model covers them.
-///
-/// The nested `reviewer` object (`{ "name": ... }`, emitted via
-/// `whenLoaded('user')`) is flattened to [reviewerName]; it tolerates the
-/// object being absent or null.
+/// A single review (mirrors backend `ReviewResource`); same shape across all
+/// four review endpoints. Nested `reviewer.name` is flattened to
+/// [reviewerName], tolerating null.
 class Review extends Equatable {
   const Review({
     required this.id,
@@ -69,14 +65,10 @@ class Review extends Equatable {
   ];
 }
 
-/// The aggregate rating block unique to the **center** reviews index
-/// (`meta.summary` on `GET /centers/{center}/reviews`). The user index has no
-/// summary.
-///
+/// The aggregate rating block for the **center** reviews index
+/// (`meta.summary`); the user index has none.
 /// ponytail: not currently reachable — `ApiClient` only surfaces
-/// `meta.pagination` (as `ApiResult.meta`), never `meta.summary`. Kept as the
-/// typed value object the contract specifies; wire it up when the client grows
-/// a summary channel (an out-of-scope core change).
+/// `meta.pagination`; wire up when needed.
 class ReviewSummary extends Equatable {
   const ReviewSummary({required this.count, this.rating});
 

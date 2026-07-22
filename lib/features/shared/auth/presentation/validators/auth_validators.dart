@@ -80,10 +80,8 @@ abstract final class AuthValidators {
     return '+20$digits';
   }
 
-  /// Scores [value] for the strength meter: anything the server would reject is
-  /// weak, meeting [_meetsPolicy] is medium, and extra length or a symbol on
-  /// top is strong. Shares the gate so the meter can never call a password
-  /// "medium" that submit then rejects. Pure, context-free.
+  /// Weak if [_meetsPolicy] fails, medium if it passes, strong with extra
+  /// length or a symbol — keeps the meter in sync with the actual gate.
   static PasswordStrength strength(String value) {
     if (!_meetsPolicy(value)) return PasswordStrength.weak;
     var bonus = 0;

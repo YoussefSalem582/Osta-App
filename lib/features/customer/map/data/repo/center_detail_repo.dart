@@ -3,12 +3,9 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/features/customer/map/data/model/center_detail.dart';
 
-/// Detail reads for a single service center — mirrors osta_backend
-/// `CenterController` (`show` / `availability` / `services`).
-///
-/// Static like the other customer feature repos; [ApiClient] already throws a
-/// typed `ApiException`, so nothing is caught here — the cubit owns try/catch.
-/// Kept separate from `CentersRepository` (discovery/list reads) on purpose.
+/// Detail reads for a single center (`show` / `availability` / `services`);
+/// errors aren't caught here since [ApiClient] already throws a typed
+/// `ApiException` — the caller owns try/catch.
 abstract final class CenterDetailRepo {
   static ApiClient get _api => GetIt.instance<ApiClient>();
 

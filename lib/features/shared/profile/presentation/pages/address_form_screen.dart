@@ -10,10 +10,8 @@ import 'package:osta/shared/ui/app_text_field.dart';
 import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
-/// Create / edit a saved address. Pops with `true` on a successful save so the
-/// list can reload. PUT is full-replace, so on edit the pre-filled form submits
-/// every field (the map pin — latitude/longitude — is carried through unseen so
-/// it isn't wiped).
+/// Create / edit a saved address; pops `true` on save. PUT is full-replace, so
+/// the map pin (lat/lng) is carried through unseen to avoid wiping it.
 class AddressFormScreen extends StatefulWidget {
   const AddressFormScreen({this.address, super.key});
 

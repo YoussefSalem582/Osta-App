@@ -1,15 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-/// A single vehicle maintenance/expense entry.
-///
-/// Mirrors `MaintenanceRecordResource::toArray` (backend
-/// `Api/B2C/MaintenanceController`). Plain immutable model, hand-written JSON
-/// mapping — no codegen. `type`/`source` are kept as the raw backend enum
-/// strings (`ExpenseCategory` / `MaintenanceSource`); the localized
-/// [typeLabel] comes ready-made from the resource.
-///
-/// `receipt_url` is a short-lived **signed** URL regenerated per response — do
-/// not cache/persist it. `receipt_path` is never exposed.
+/// A single vehicle maintenance/expense entry (mirrors the backend resource).
+/// `receipt_url` is a short-lived signed URL — do not cache/persist it.
 class MaintenanceRecord extends Equatable {
   const MaintenanceRecord({
     required this.id,

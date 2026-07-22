@@ -6,17 +6,10 @@ import 'package:osta/features/shared/auth/presentation/register/bloc/register_bl
 import 'package:osta/features/shared/auth/presentation/register/widgets/register_form.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
-/// Business sign-up. Sends `account_type = business`; success hands the
-/// authoritative role to the session and the router sends the new merchant into
-/// the setup wizard (`features/business/onboarding/`).
-///
-/// This collects the **person**, not the business. Trade name, address, logo and
-/// map pin are gathered after auth, because `POST /auth/register` accepts only
-/// personal fields and `PUT /business/profile` sits behind `auth:sanctum` — the
-/// business half physically needs a token first.
-///
-/// Twin of [CustomerRegisterPage]; both render [RegisterForm]. They exist apart
-/// so the two signups can diverge without a role flag inside the form.
+/// Business sign-up (`account_type = business`); routes into the onboarding
+/// wizard on success. Collects only personal fields — business details need
+/// an authenticated `PUT /business/profile` call after this. Twin of
+/// [CustomerRegisterPage], kept separate so the two can diverge.
 class BusinessRegisterPage extends StatelessWidget {
   const BusinessRegisterPage({super.key});
 

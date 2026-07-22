@@ -9,11 +9,8 @@ import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
-/// Full-screen map pin picker for business onboarding Step 1.
-///
-/// Returns a [GeoPoint] via [Navigator.pop] when the user confirms, or `null`
-/// if they dismiss. Centers on the device location when available, otherwise
-/// downtown Cairo.
+/// Full-screen map pin picker for business onboarding Step 1. Returns a
+/// [GeoPoint] via [Navigator.pop] (`null` if dismissed), centered on the device location or Cairo.
 class MapPinPickerSheet extends StatefulWidget {
   const MapPinPickerSheet({this.initial, super.key});
 

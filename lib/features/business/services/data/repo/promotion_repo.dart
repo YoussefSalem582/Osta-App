@@ -3,11 +3,8 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/features/business/services/data/model/promotion.dart';
 
-/// Data layer over the B2B promotions endpoints. Static methods like the other
-/// repos; errors bubble up as the typed `ApiException`. Mirrors
-/// `BusinessPromotionController` + `PromotionResource` — the owner's single
-/// center is resolved server-side, so no center id is sent. The list is **not**
-/// paginated (returns a plain array ordered by `starts_at` descending).
+/// Data layer over the B2B promotions endpoints; center resolved server-side,
+/// list is not paginated (ordered by `starts_at` desc).
 abstract final class PromotionRepo {
   static ApiClient get _api => GetIt.instance<ApiClient>();
 

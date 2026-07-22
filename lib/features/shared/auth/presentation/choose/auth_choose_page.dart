@@ -12,11 +12,9 @@ import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/brand_scaffold.dart';
 import 'package:osta/shared/ui/or_divider.dart';
 
-/// Unauthenticated landing after the role chooser. Routes into the shared auth
-/// form; `account_type` is taken from the session's active role. Social
-/// sign-in is a stub until implemented.
-///
-/// Back returns to the role-specific marketing carousel (customer or merchant).
+/// Unauthenticated landing after the role chooser; routes into the shared
+/// auth form using the session's active role. Social sign-in is a stub; back
+/// returns to the marketing carousel.
 class AuthChoosePage extends StatelessWidget {
   const AuthChoosePage({super.key});
 

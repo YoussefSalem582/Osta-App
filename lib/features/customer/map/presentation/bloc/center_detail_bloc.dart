@@ -11,10 +11,8 @@ import 'package:osta/features/shared/reviews/data/repo/review_repo.dart';
 part 'center_detail_event.dart';
 part 'center_detail_state.dart';
 
-/// One service center's profile page — the center itself (`GET /centers/{id}`),
-/// its services (`/services`) and its approved reviews (`/reviews`), loaded
-/// together. Posting a review (`POST /centers/{id}/reviews`) comes back pending
-/// so it won't reappear in the approved index; the page just toasts.
+/// Loads a center's profile, services and reviews together; a posted review
+/// comes back pending, so it won't reappear in the approved index yet.
 class CenterDetailBloc extends Bloc<CenterDetailEvent, CenterDetailState> {
   CenterDetailBloc(this.centerId) : super(const CenterDetailInitial()) {
     on<CenterDetailStarted>(_onStarted);

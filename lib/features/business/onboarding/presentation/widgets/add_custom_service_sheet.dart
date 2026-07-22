@@ -6,11 +6,9 @@ import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
 
-/// Bottom sheet for a service the merchant types in themselves (#53).
-///
-/// Returns the [CustomServiceInput] to stage, or null if dismissed. Validation
-/// mirrors `StoreServiceRequest` so the wizard can't stage something Activate
-/// would then 422 on.
+/// Bottom sheet for a merchant-typed service; returns the [CustomServiceInput]
+/// to stage, or null if dismissed. Validation mirrors `StoreServiceRequest` so
+/// Activate can't 422 on it.
 class AddCustomServiceSheet extends StatefulWidget {
   const AddCustomServiceSheet({super.key});
 

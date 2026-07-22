@@ -1,9 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-/// Snapshot for `GET /business/dashboard`
-/// (`DashboardController@index` → `BusinessDashboardAction`, plain array —
-/// no Resource). Counts are center-timezone "today"/status tallies; all three
-/// are non-null ints (server coalesces to 0) and `revenue` is a float.
+/// Snapshot for `GET /business/dashboard`. Counts are non-null ints (server
+/// coalesces to 0); `revenue` is a float.
 class BusinessDashboard extends Equatable {
   const BusinessDashboard({
     required this.today,
@@ -31,10 +29,8 @@ class BusinessDashboard extends Equatable {
   List<Object?> get props => [today, pending, completed, revenue];
 }
 
-/// Business profile returned by `PUT /business/capacity`
-/// (`BusinessCapacityController@update` → `BusinessProfileResource`). Mirrors
-/// the resource's `toArray`; the capacity path does not eager-load `services`,
-/// so that key is omitted here — modelled as optional.
+/// Business profile returned by `PUT /business/capacity`; `services` is optional
+/// since this endpoint doesn't eager-load it.
 class BusinessProfile extends Equatable {
   const BusinessProfile({
     required this.id,

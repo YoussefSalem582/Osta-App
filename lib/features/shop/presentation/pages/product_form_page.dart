@@ -22,12 +22,8 @@ const _statuses = ['active', 'inactive', 'discontinued'];
 /// Max images per product (matches the backend `images|max:10` rule).
 const _maxImages = 10;
 
-/// Create or edit an own product (#48). Pass a [product] to edit, or null to
-/// create. Pops `true` on success so `MyProductsPage` reloads.
-///
-/// Photos are picked from the device and uploaded to `POST /me/products/images`,
-/// which returns a URL stored in the product's `images` array. Category is a
-/// fixed selectable list (see [productCategoryKeys]).
+/// Create or edit an own product. Pass [product] to edit, null to create;
+/// pops `true` on success so `MyProductsPage` reloads.
 class ProductFormPage extends StatefulWidget {
   const ProductFormPage({this.product, super.key});
 

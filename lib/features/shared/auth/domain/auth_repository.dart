@@ -17,13 +17,9 @@ abstract interface class AuthRepository {
     required AppRole accountType,
   });
 
-  /// `POST /auth/register`. Persists the returned token pair and returns
-  /// `me.type`.
-  ///
-  /// [languagePreference] (`ar`/`en`) is stored on the user and drives mail the
-  /// server sends outside a request — a password-reset email has no
-  /// `Accept-Language` header to read. Omitted, the server defaults it to
-  /// Arabic for everyone.
+  /// `POST /auth/register`. Persists the token pair and returns `me.type`.
+  /// [languagePreference] drives server-sent mail (no request to read
+  /// `Accept-Language` from); defaults to Arabic if omitted.
   Future<AppRole> register({
     required String firstName,
     required String lastName,

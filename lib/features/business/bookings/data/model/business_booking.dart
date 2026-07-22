@@ -1,14 +1,9 @@
 import 'package:equatable/equatable.dart';
 
-/// A booking as seen by the center owner (B2B). Mirrors the backend
-/// `BookingResource` (app/Http/Resources/Api/B2B/BookingResource.php), shared by
-/// all six `BookingController` endpoints.
-///
-/// `whenLoaded` relations — [customer], [mechanic], [assignedMechanic], [items]
-/// — are **conditionally present**: the key is entirely absent unless that
-/// endpoint eager-loaded the relation, so all four map to `null` here. Do not
-/// read a missing relation as "unassigned"; only an explicit JSON `null` means
-/// that (relevant for [mechanic]/[assignedMechanic]).
+/// A booking as seen by the center owner (B2B); mirrors backend
+/// `BookingResource`. [customer]/[mechanic]/[assignedMechanic]/[items] are
+/// `null` both when not eager-loaded and when genuinely absent — only trust
+/// "unassigned" if the endpoint loaded the relation.
 class BusinessBooking extends Equatable {
   const BusinessBooking({
     required this.id,

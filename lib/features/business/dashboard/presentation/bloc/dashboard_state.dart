@@ -2,12 +2,8 @@ part of 'dashboard_bloc.dart';
 
 enum DashboardStatus { loading, loaded, error }
 
-/// Board state. [data] (counts + revenue) is the primary content — its load
-/// failing is what flips [status] to `error`. [centerName] and [pendingOrders]
-/// are best-effort enhancements that degrade to null / empty without failing
-/// the whole board. [actingId] is the id of the order whose accept/reject is
-/// in flight (disables just that row's buttons); [actionError] is a one-shot
-/// message the view toasts then the next emit clears.
+/// Board state. [data] failing flips [status] to `error`; [centerName]/[pendingOrders]
+/// degrade silently. [actionError] is one-shot, cleared by the next emit.
 class DashboardState extends Equatable {
   const DashboardState({
     this.status = DashboardStatus.loading,

@@ -3,12 +3,9 @@ import 'package:osta/core/services/location_service.dart';
 import 'package:osta/core/services/reverse_geocoder.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/map_pin_picker_sheet.dart';
 
-/// Map-pin picking + reverse-geocode autofill shared by the 3 business
-/// onboarding/profile screens that embed a `LocationPickerCard`.
-///
-/// Implementers own their own location storage (cubit vs. local field) and
-/// decide which text controllers exist — the identity step has no district
-/// field, so [districtController] stays `null` there.
+/// Map-pin picking + reverse-geocode autofill shared by screens embedding
+/// `LocationPickerCard`; implementers own their own location storage and
+/// controllers.
 mixin BusinessLocationPickerMixin<T extends StatefulWidget> on State<T> {
   /// Current pin, if any — seeds the picker sheet re-opened on an existing
   /// pick.

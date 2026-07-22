@@ -4,10 +4,8 @@ import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/features/shared/onboarding/presentation/widgets/marketing_carousel.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
-/// Logged-out merchant marketing carousel, shown after the business role is
-/// chosen until the user taps through. Parallel to the customer
-/// `OnboardingPage` — both render a [MarketingCarousel] and differ only in
-/// slides. Post-auth center setup is a separate flow in
+/// Logged-out merchant marketing carousel; parallel to `OnboardingPage`
+/// (differs only in slides). Post-auth center setup is a separate flow in
 /// `features/business/onboarding/`.
 class MerchantOnboardingPage extends StatelessWidget {
   const MerchantOnboardingPage({super.key});

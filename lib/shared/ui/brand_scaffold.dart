@@ -2,16 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 
-/// Branded scaffold for the pre-auth / auth flow (language, role, auth-choose,
-/// login/register, password recovery): a collapsing brand-green [SliverAppBar]
-/// whose hero band holds the white logo (back button pinned over it, if any),
-/// then a bold centered title, an optional subtitle, and the screen body on the
-/// normal surface. The logo shrinks but stays visible as the body scrolls, and
-/// the bar gains a subtle shadow once content passes under it.
-///
-/// The logo assets are white, so they read on [AppColors.brandGreen] (the same
-/// green + white pairing the splash uses) but not on the light scaffold — hence
-/// the coloured band.
+/// Branded scaffold for the pre-auth/auth flow: collapsing brand-green
+/// [SliverAppBar] (white logo assets need the green band) plus title/subtitle/body.
 class BrandScaffold extends StatelessWidget {
   const BrandScaffold({
     required this.logo,

@@ -2,12 +2,9 @@ import 'package:osta/core/auth/token_storage.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Persists the first-run flags that drive routing: the chosen UI language and
-/// the [AppRole] the user last acted as. Tokens live in [TokenStorage] (secure
-/// storage); the role/locale flags live in [SharedPreferences] — together they
-/// form the `{token, activeRole}` the splash reads on boot.
-///
-/// Registered by hand in `configureDependencies()` — no injectable codegen.
+/// Persists the first-run routing flags: UI language and last-acted
+/// [AppRole]. Tokens live in [TokenStorage]; these live in
+/// [SharedPreferences].
 class SessionStore {
   SessionStore(this._prefs, this._tokens);
 
@@ -43,11 +40,8 @@ class SessionStore {
   /// the user to the chooser without logging them out.
   Future<void> clearActiveRole() => _prefs.remove(_activeRoleKey);
 
-  /// The in-progress business onboarding wizard, as a JSON string.
-  ///
-  /// The wizard is mandatory and multi-step, so without this a merchant who
-  /// closes the app mid-setup returns to an empty step 1. Plain preferences,
-  /// not [TokenStorage] — a trade name and a map pin are not secrets.
+  /// The in-progress business onboarding wizard, as a JSON string — plain
+  /// preferences (not [TokenStorage]) since a trade name/map pin aren't secrets.
   String? get businessDraft => _prefs.getString(_businessDraftKey);
 
   Future<void> writeBusinessDraft(String json) =>

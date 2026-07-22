@@ -3,15 +3,9 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/features/shared/reviews/data/model/review.dart';
 
-/// Data layer over the four review routes (`routes/api/v1/reviews.php`), which
-/// all return `ReviewResource`:
-/// - `ReviewController@userIndex` / `@storeForUser` (`/users/{user}/reviews`)
-/// - `CenterController@reviews` / `ReviewController@storeForCenter`
-///   (`/centers/{center}/reviews`)
-///
-/// Static methods like the other features (`ShopRepo`); errors bubble up as the
-/// typed `ApiException`. Indexes are server-filtered to visible + approved
-/// reviews, newest first — no client-side filter params.
+/// Data layer over the four review routes (user/center × index/store), all
+/// returning `ReviewResource`. Indexes are server-filtered to visible +
+/// approved reviews, newest first.
 abstract final class ReviewRepo {
   static ApiClient get _api => GetIt.instance<ApiClient>();
 

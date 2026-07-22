@@ -1,8 +1,5 @@
-/// API endpoint paths, relative to the `/api/v1` base URL configured in
-/// `AppConfig`. Do not prefix with `/api/v1` — `ApiClient`'s base URL already
-/// carries it. Mirrors the Laravel backend `routes/api/` definitions.
-///
-/// Fixed paths are `const` strings; paths with route params are functions.
+/// API endpoint paths, relative to the `/api/v1` base URL — do not re-prefix
+/// it. Fixed paths are `const` strings; paths with route params are functions.
 class ApiEndpoints {
   const ApiEndpoints._();
   static const String baseUrl = 'https://osta.technology92.com/api/v1';

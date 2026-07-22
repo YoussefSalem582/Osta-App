@@ -36,10 +36,8 @@ class SessionState extends Equatable {
   /// `me.type`. Drives the "switched you to …" toast, then cleared.
   final AppRole? correctedRole;
 
-  /// Whether the logged-out user has tapped through onboarding this session.
-  /// In-memory only (never persisted): a fresh [SessionState] on each launch —
-  /// via `bootstrap`/`clearingRole` — resets it to `false`, so a not-logged-in
-  /// user re-enters onboarding every cold start (see the redirect guard).
+  /// In-memory only; resets to `false` every cold start, so logged-out users
+  /// re-enter onboarding.
   final bool onboardingAcknowledged;
 
   /// Whether the logged-out user has picked a language this session. In-memory
@@ -47,28 +45,16 @@ class SessionState extends Equatable {
   /// but the screen re-shows every logged-out cold start.
   final bool languageAcknowledged;
 
-  /// Whether the logged-out user has picked a role this session. In-memory
-  /// only — the persisted [activeRole] is the default, but the chooser re-shows
-  /// every logged-out cold start (the guard also forces it whenever
-  /// [activeRole] is null, e.g. after "switch role").
+  /// In-memory only; re-shows every logged-out cold start, and is also forced
+  /// whenever [activeRole] is null.
   final bool roleAcknowledged;
 
-  /// Whether an authenticated `business` user has finished the onboarding
-  /// wizard (#53) — derived from their catalog being non-empty, since the
-  /// wizard cannot finish without attaching a service.
-  ///
-  /// Tri-state on the same terms as [hasVehicle]: `null` means "not known /
-  /// not applicable", and only an explicit `false` opens the wizard, so a
-  /// failed check can never trap an onboarded owner in it again.
+  /// Derived from a non-empty catalog. `null` means unknown; only an
+  /// explicit `false` opens the wizard.
   final bool? businessOnboarded;
 
-  /// Whether an authenticated `customer` has at least one vehicle — the gate
-  /// behind the required add-car step (#39).
-  ///
-  /// Tri-state on purpose. `null` means "not known / not applicable": a
-  /// logged-out user, a business user, or a customer whose `GET /vehicles`
-  /// check could not be completed. Only an explicit `false` gates, so a network
-  /// failure can never strand someone outside the app.
+  /// `null` means unknown (logged out, business user, or a failed vehicle
+  /// check); only explicit `false` gates.
   final bool? hasVehicle;
 
   bool get isLanguageSelected => locale != null;
@@ -98,12 +84,8 @@ class SessionState extends Equatable {
     hasVehicle: hasVehicle ?? this.hasVehicle,
   );
 
-  /// Copy that can null out [activeRole] — `copyWith` can't express "set to
-  /// null" (used by "switch role" and sign-out). Preserves the in-memory
-  /// language/onboarding/role acks so clearing the role mid-session doesn't
-  /// re-trigger those screens (a fresh cold `bootstrap` resets them anyway).
-  /// Both role gates drop to `null` with the role that scoped them —
-  /// `chooseRole` re-derives whichever one the new role needs.
+  /// Copy that nulls [activeRole] (`copyWith` can't); used by "switch role"
+  /// and sign-out. Preserves in-memory acks.
   SessionState clearingRole({required bool hasToken}) => SessionState(
     bootstrapped: bootstrapped,
     locale: locale,
