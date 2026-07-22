@@ -4,6 +4,10 @@ Thanks for working on OSTA. Read [`AGENTS.md`](AGENTS.md) (canonical conventions
 
 > ‏قبل أوّل تغيير اقرأ [`AGENTS.md`](AGENTS.md) (الاصطلاحات الأساسية) و[`ARCHITECTURE.md`](osta_readme_files/docs/ARCHITECTURE.md). معظم الميزات مُحدَّدة في epics مفتوحة على GitHub — اقرأ الـ epic المطابق و[ملفّ الميزة](osta_readme_files/features/README.md) قبل البناء.
 
+> **Team-only.** OSTA is **not open source** — the repo is public for progress-viewing and issues only ([LICENSE](LICENSE) · [OWNERSHIP.md](OWNERSHIP.md)). External pull requests are not accepted; this guide is for OSTA team members.
+>
+> ‏**للفريق فقط.** ‏OSTA **ليس مفتوح المصدر** — المستودع علني للاطّلاع وفتح المشاكل فقط ([LICENSE](LICENSE) · [OWNERSHIP.md](OWNERSHIP.md)). لا تُقبل طلبات دمج خارجية؛ هذا الدليل لأعضاء فريق OSTA.
+
 ## Branch model / نموذج الفروع
 
 - **`develop`** — the default integration branch. All working branches start from it and merge back into it.

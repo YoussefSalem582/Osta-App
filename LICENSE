@@ -1,0 +1,60 @@
+OSTA Proprietary License
+Source-Available · View-Only · All Rights Reserved
+
+Copyright (c) 2026 Youssef Salem Hassan and the OSTA Team
+("the Owners" — see OWNERSHIP.md)
+
+1. Purpose of publication. This repository is made publicly visible for one
+   purpose only: allowing anyone to follow the project's progress and to
+   report issues. Public visibility is NOT an open-source grant and does not
+   place any part of this repository in the public domain.
+
+2. No rights granted. Except as stated in Section 3, no right or license —
+   express or implied — is granted to any person. Without the Owners' prior
+   written permission you may NOT use, copy, reproduce, modify, adapt,
+   translate, merge, publish, distribute, sublicense, sell, or create
+   derivative works from any part of this repository — source code, tests,
+   documentation, designs, images, icons, screenshots, data, or any other
+   asset — in any form, for any purpose, commercial or non-commercial.
+
+3. Viewing and issues. You may (a) view this repository on the hosting
+   platform, and (b) open and comment on issues. Any fork or clone made
+   through the hosting platform's built-in features is permitted only to the
+   extent the platform's Terms of Service require (e.g. GitHub Terms of
+   Service § D.5) and conveys no rights beyond this Section.
+
+4. Name and brand. "OSTA" / "أسطى", the OSTA logo, app icons, mascot, and
+   all design assets are the exclusive property of the Owners. They may not
+   be used to name, brand, promote, or misrepresent any other product or
+   service.
+
+5. Team-only use. Use, modification, and distribution of this project are
+   reserved exclusively for team members authorized by the project owner
+   (see OWNERSHIP.md).
+
+6. Contributions. External code contributions are not accepted. By
+   submitting any material to this repository (including issue text and
+   suggestions), you grant the Owners a perpetual, irrevocable, worldwide,
+   royalty-free license to use it in the project.
+
+7. No warranty. THE CONTENTS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+   KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+   IN NO EVENT SHALL THE OWNERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+   LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION WITH THIS REPOSITORY OR
+   ITS CONTENTS.
+
+8. Reservation and termination. All rights not expressly granted here are
+   reserved. Any violation of these terms automatically terminates the
+   permissions in Section 3.
+
+Contact for permissions: youssef.salem.hassan582@gmail.com
+
+---
+
+ملخص بالعربية (غير مُلزِم — النص الإنجليزي أعلاه هو المرجع):
+هذا المستودع منشور للاطّلاع فقط: لمتابعة تقدّم المشروع وفتح المشاكل لا غير.
+جميع الحقوق محفوظة لمالك المشروع وفريق OSTA — لا يجوز استخدام أو نسخ أو
+تعديل أو إعادة نشر أي جزء من الكود أو التوثيق أو الأصول أو اسم "OSTA / أسطى"
+أو الشعار دون إذن كتابي مسبق. التطوير والمساهمة حكر على أعضاء الفريق
+المصرّح لهم. للتواصل: youssef.salem.hassan582@gmail.com
