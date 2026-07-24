@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
 import 'package:osta/core/theme/app_theme.dart';
-import 'package:osta/features/customer/map/data/model/center_summary.dart';
-import 'package:osta/features/customer/map/presentation/widgets/place_dialog.dart';
+import 'package:osta/features/customer/map/data/models/center_summary.dart';
+import 'package:osta/features/customer/map/presentation/map/widgets/place_dialog.dart';
 
 /// The real theme, not a bare MaterialApp: `context.appColors` reads the
 /// AppColors ThemeExtension and null-checks it.

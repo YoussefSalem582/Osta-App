@@ -2,10 +2,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:osta/core/network/api_exception.dart';
 import 'package:osta/core/session/session_store.dart';
 import 'package:osta/features/business/dashboard/data/model/business_dashboard.dart';
-import 'package:osta/features/business/onboarding/data/business_onboarding_repository.dart';
 import 'package:osta/features/business/onboarding/data/models/business_profile_input.dart';
 import 'package:osta/features/business/onboarding/data/models/catalog_preset.dart';
 import 'package:osta/features/business/onboarding/data/models/custom_service_input.dart';
+import 'package:osta/features/business/onboarding/domain/business_onboarding_repository.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
 
 const _oil = CatalogPreset(

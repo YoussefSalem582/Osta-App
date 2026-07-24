@@ -1,22 +1,13 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_exception.dart';
-import 'package:osta/features/shared/profile/data/model/profile_response/data.dart';
-import 'package:osta/features/shared/profile/data/model/profile_response/profile_response.dart';
-import 'package:osta/features/shared/profile/data/profile_cache.dart';
-import 'package:osta/features/shared/profile/data/repo/profile_repo.dart';
-import 'package:osta/features/shared/profile/presentation/cubit/profile_cubit.dart';
-import 'package:osta/features/shared/profile/presentation/cubit/profile_state.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:osta/features/shared/profile/data/models/profile_response/data.dart';
+import 'package:osta/features/shared/profile/data/models/profile_response/profile_response.dart';
+import 'package:osta/features/shared/profile/domain/profile_repository.dart';
+import 'package:osta/features/shared/profile/presentation/profile/cubit/profile_cubit.dart';
+import 'package:osta/features/shared/profile/presentation/profile/cubit/profile_state.dart';
 
-/// Overrides the read path only; the ApiClient/ProfileCache handed to `super`
-/// are never touched because every method below is stubbed.
-class _FakeRepo extends ProfileRepo {
-  // super params can't name the private `_api`/`_cache` fields across libraries.
-  // ignore: use_super_parameters
-  _FakeRepo(ApiClient api, ProfileCache cache) : super(api, cache);
-
+/// Stubs the read path only; the write methods are never touched here.
+class _FakeRepo implements ProfileRepository {
   Data? cachedValue;
   DateTime? cachedAtValue;
   ProfileResponse? networkResult;
@@ -34,24 +25,34 @@ class _FakeRepo extends ProfileRepo {
     if (error != null) throw error;
     return networkResult!;
   }
-}
 
-Future<_FakeRepo> _makeRepo() async {
-  SharedPreferences.setMockInitialValues({});
-  final prefs = await SharedPreferences.getInstance();
-  return _FakeRepo(ApiClient(Dio()), ProfileCache(prefs));
+  @override
+  Future<ProfileResponse?> updateProfile({
+    required String firstName,
+    required String lastName,
+    required String username,
+    required String email,
+    required String phone,
+  }) => throw UnimplementedError();
+
+  @override
+  Future<ProfileResponse?> uploadAvatar(String filePath) =>
+      throw UnimplementedError();
+
+  @override
+  Future<void> deleteAccount() => throw UnimplementedError();
 }
 
 void main() {
   test('cache-then-network: emits cached first, then fresh', () async {
-    final repo = await _makeRepo()
+    final repo = _FakeRepo()
       ..cachedValue = Data(fullName: 'Cached')
       ..cachedAtValue = DateTime.fromMillisecondsSinceEpoch(1)
       ..networkResult = ProfileResponse(
         success: true,
         data: Data(fullName: 'Fresh'),
       );
-    final cubit = ProfileCubit(repo: repo);
+    final cubit = ProfileCubit(repo);
     final states = <ProfileState>[];
     final sub = cubit.stream.listen(states.add);
 
@@ -69,10 +70,10 @@ void main() {
   });
 
   test('offline with a cache keeps the cached copy and no error', () async {
-    final repo = await _makeRepo()
+    final repo = _FakeRepo()
       ..cachedValue = Data(fullName: 'Cached')
       ..networkError = const NetworkException();
-    final cubit = ProfileCubit(repo: repo);
+    final cubit = ProfileCubit(repo);
     final states = <ProfileState>[];
     final sub = cubit.stream.listen(states.add);
 
@@ -85,9 +86,8 @@ void main() {
   });
 
   test('offline with no cache emits loading then error', () async {
-    final repo = await _makeRepo()
-      ..networkError = const NetworkException('down');
-    final cubit = ProfileCubit(repo: repo);
+    final repo = _FakeRepo()..networkError = const NetworkException('down');
+    final cubit = ProfileCubit(repo);
     final states = <ProfileState>[];
     final sub = cubit.stream.listen(states.add);
 

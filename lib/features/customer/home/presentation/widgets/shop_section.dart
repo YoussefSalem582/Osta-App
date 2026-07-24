@@ -3,8 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/features/customer/home/presentation/widgets/home_empty_card.dart';
 import 'package:osta/features/customer/home/presentation/widgets/home_rail.dart';
-import 'package:osta/features/shop/data/models/product.dart';
-import 'package:osta/features/shop/presentation/widgets/product_grid_card.dart';
+import 'package:osta/features/shared/shop/data/models/product.dart';
+import 'package:osta/features/shared/shop/presentation/widgets/product_grid_card.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 /// Home shop rail. Reuses the Store screen's [ProductGridCard] so a product

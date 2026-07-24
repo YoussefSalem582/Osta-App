@@ -26,9 +26,7 @@ void main() {
             .toList()
           ..sort();
 
-    // `shop/` is a known holdout: #48 (two-sided) and #57 (business) disagree
-    // on its bucket. Drop it here once they settle.
-    expect(entries, ['business', 'customer', 'shared', 'shop']);
+    expect(entries, ['business', 'customer', 'shared']);
   });
 
   test('roles do not import each other', () {
