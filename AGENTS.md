@@ -92,12 +92,10 @@ The codebase was **intentionally simplified** so a team new to Flutter can be pr
 | Bucket | Holds | Examples |
 |--------|-------|----------|
 | `business/` | Only the `business` role sees it | `onboarding/` (post-auth wizard) · `intro/` (logged-out carousel) · `dashboard/` · `bookings/` · `services/` · `shell/` |
-| `customer/` | Only the `customer` role sees it | `home/` · `booking/` · `garage/` · `map/` · `profile/` · `onboarding/` (logged-out carousel) · `shell/` |
-| `shared/` | Both roles, or pre-role | `auth/` · `splash/` · `role/` · `onboarding/` (language) · `shell/` (`RoleShell`) · `notifications/` |
+| `customer/` | Only the `customer` role sees it | `home/` · `booking/` · `garage/` · `map/` · `onboarding/` (logged-out carousel) · `shell/` |
+| `shared/` | Both roles, or pre-role | `auth/` · `profile/` · `shop/` · `splash/` · `role/` · `onboarding/` (language) · `shell/` (`RoleShell`) · `notifications/` |
 
-**`business/` and `customer/` must never import each other** — `test/structure/role_boundary_test.dart` fails the build if they do. Anything both need goes to `shared/` (a screen flow), `lib/shared/ui/` (a widget), or `lib/core/` (plumbing, e.g. `core/services/location_service.dart`).
-
-> One exception: `features/shop/` is unbucketed pending [#48](https://github.com/YoussefSalem582/Osta-App/issues/48) (two-sided) vs [#57](https://github.com/YoussefSalem582/Osta-App/issues/57) (business-only). The boundary test lists it explicitly; drop it once that settles.
+**`business/` and `customer/` must never import each other** — `test/structure/role_boundary_test.dart` fails the build if they do. Anything both need goes to `shared/` (a screen flow), `lib/shared/ui/` (a widget), or `lib/core/` (plumbing, e.g. `core/services/location_service.dart`). The same test asserts `lib/features/` holds **only** these three folders — there is no unbucketed feature (`shop/` was the last one; [#48](https://github.com/YoussefSalem582/Osta-App/issues/48)'s two-sided reading won over [#57](https://github.com/YoussefSalem582/Osta-App/issues/57), so it sits in `shared/`).
 
 Note `lib/shared/` (reusable **UI kit**) and `lib/features/shared/` (role-neutral **feature flows**) are different things at different scopes.
 
