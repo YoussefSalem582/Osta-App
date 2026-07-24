@@ -43,6 +43,12 @@ import 'package:osta/features/shared/profile/domain/address_repository.dart';
 import 'package:osta/features/shared/profile/domain/profile_repository.dart';
 import 'package:osta/features/shared/profile/presentation/addresses/bloc/address_bloc.dart';
 import 'package:osta/features/shared/profile/presentation/profile/cubit/profile_cubit.dart';
+import 'package:osta/features/shared/shop/data/shop_repository_impl.dart';
+import 'package:osta/features/shared/shop/domain/shop_repository.dart';
+import 'package:osta/features/shared/shop/presentation/bloc/shop_list_bloc.dart';
+import 'package:osta/features/shared/shop/presentation/my_products/bloc/my_products_bloc.dart';
+import 'package:osta/features/shared/shop/presentation/product_detail/bloc/product_detail_bloc.dart';
+import 'package:osta/features/shared/shop/presentation/seller_catalog/seller_catalog_args.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Global service locator.
@@ -120,6 +126,9 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<BookingRepository>(
       () => BookingRepositoryImpl(getIt()),
     )
+    ..registerLazySingleton<ShopRepository>(
+      () => ShopRepositoryImpl(getIt()),
+    )
     ..registerLazySingleton<GarageRepository>(
       () => GarageRepositoryImpl(getIt()),
     )
@@ -131,6 +140,16 @@ Future<void> configureDependencies() async {
     ..registerFactory<BookingsBloc>(() => BookingsBloc(getIt()))
     ..registerFactory<ProfileCubit>(() => ProfileCubit(getIt()))
     ..registerFactory<AddressBloc>(() => AddressBloc(getIt()))
+    ..registerFactory<MyProductsBloc>(() => MyProductsBloc(getIt()))
+    // Shared by browse and seller catalog: param1 null → the marketplace feed,
+    // a SellerCatalogArgs → that seller's storefront.
+    ..registerFactoryParam<ShopListBloc, SellerCatalogArgs?, void>(
+      (seller, _) => ShopListBloc(getIt(), seller: seller),
+    )
+    // Per-product bloc: the page passes the product id as param1.
+    ..registerFactoryParam<ProductDetailBloc, Object, void>(
+      (productId, _) => ProductDetailBloc(getIt(), productId),
+    )
     // Per-center funnel bloc: the page passes the center id as param1.
     ..registerFactoryParam<BookingCreateBloc, Object, void>(
       (centerId, _) => BookingCreateBloc(getIt(), getIt(), centerId),

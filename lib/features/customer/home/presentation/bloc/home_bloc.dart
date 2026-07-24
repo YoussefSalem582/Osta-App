@@ -6,8 +6,8 @@ import 'package:osta/features/customer/booking/domain/booking_repository.dart';
 import 'package:osta/features/customer/map/data/models/center_summary.dart';
 import 'package:osta/features/customer/map/domain/centers_repository.dart';
 import 'package:osta/features/shared/profile/domain/profile_repository.dart';
-import 'package:osta/features/shop/data/models/product.dart';
-import 'package:osta/features/shop/data/repo/shop_repo.dart';
+import 'package:osta/features/shared/shop/data/models/product.dart';
+import 'package:osta/features/shared/shop/domain/shop_repository.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
@@ -15,7 +15,13 @@ part 'home_state.dart';
 /// Loads the Home feed from four endpoints concurrently; a failed rail
 /// degrades to empty instead of blanking the whole page.
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc(this._centers, this._location, this._profile, this._bookings)
+  HomeBloc(
+    this._centers,
+    this._location,
+    this._profile,
+    this._bookings,
+    this._shop,
+  )
     // Seed the name from cache for an instant header while /me is in flight.
     : super(HomeState(customerName: _profile.cachedProfile?.fullName ?? '')) {
     on<HomeStarted>(_onStarted);
@@ -23,6 +29,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   final CentersRepository _centers;
   final BookingRepository _bookings;
+  final ShopRepository _shop;
   final LocationService _location;
   final ProfileRepository _profile;
 
@@ -100,7 +107,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<List<Product>> _loadProducts() async {
     try {
-      final res = await ShopRepo.browse(perPage: 8);
+      final res = await _shop.browse(perPage: 8);
       return res.data;
     } on Object {
       return const [];

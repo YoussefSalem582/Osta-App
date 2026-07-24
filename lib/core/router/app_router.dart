@@ -44,13 +44,14 @@ import 'package:osta/features/shared/profile/presentation/profile/edit_profile_p
 import 'package:osta/features/shared/profile/presentation/profile/profile_page.dart';
 import 'package:osta/features/shared/role/presentation/coming_soon_page.dart';
 import 'package:osta/features/shared/role/presentation/page/role_selection_page.dart';
+import 'package:osta/features/shared/shop/data/models/product.dart';
+import 'package:osta/features/shared/shop/presentation/browse/shop_browse_page.dart';
+import 'package:osta/features/shared/shop/presentation/my_products/pages/my_products_page.dart';
+import 'package:osta/features/shared/shop/presentation/my_products/pages/product_form_page.dart';
+import 'package:osta/features/shared/shop/presentation/product_detail/product_detail_page.dart';
+import 'package:osta/features/shared/shop/presentation/seller_catalog/seller_catalog_args.dart';
+import 'package:osta/features/shared/shop/presentation/seller_catalog/seller_catalog_page.dart';
 import 'package:osta/features/shared/splash/presentation/splash_page.dart';
-import 'package:osta/features/shop/data/models/product.dart';
-import 'package:osta/features/shop/presentation/pages/my_products_page.dart';
-import 'package:osta/features/shop/presentation/pages/product_detail_page.dart';
-import 'package:osta/features/shop/presentation/pages/product_form_page.dart';
-import 'package:osta/features/shop/presentation/pages/seller_catalog_page.dart';
-import 'package:osta/features/shop/presentation/pages/shop_browse_page.dart';
 
 /// Declarative router; all navigation is gated by a single [resolveRedirect]
 /// guard on [SessionController] state. Registered by hand — no injectable

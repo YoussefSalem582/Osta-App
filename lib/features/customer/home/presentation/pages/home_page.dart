@@ -11,7 +11,7 @@ import 'package:osta/features/customer/home/presentation/widgets/home_header.dar
 import 'package:osta/features/customer/home/presentation/widgets/nearby_centers_section.dart';
 import 'package:osta/features/customer/home/presentation/widgets/shop_section.dart';
 import 'package:osta/features/customer/map/data/models/center_summary.dart';
-import 'package:osta/features/shop/data/models/product.dart';
+import 'package:osta/features/shared/shop/data/models/product.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 /// Customer Home tab: header, active booking, quick book, nearby centers and
@@ -22,7 +22,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocProvider(
     create: (_) =>
-        HomeBloc(getIt(), getIt(), getIt(), getIt())..add(const HomeStarted()),
+        HomeBloc(getIt(), getIt(), getIt(), getIt(), getIt())
+          ..add(const HomeStarted()),
     child: Scaffold(
       // The greeting header replaces the shell's app bar for this tab (the tab
       // is `chromeless`); an AppBar keeps status-bar icon styling correct.

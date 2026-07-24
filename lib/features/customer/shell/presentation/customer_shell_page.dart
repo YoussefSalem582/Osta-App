@@ -4,7 +4,7 @@ import 'package:osta/features/customer/home/presentation/pages/home_page.dart';
 import 'package:osta/features/customer/map/presentation/map/map_page.dart';
 import 'package:osta/features/shared/profile/presentation/profile/profile_page.dart';
 import 'package:osta/features/shared/shell/presentation/role_shell.dart';
-import 'package:osta/features/shop/presentation/pages/shop_browse_page.dart';
+import 'package:osta/features/shared/shop/presentation/browse/shop_browse_page.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_bottom_nav_bar.dart';
 
