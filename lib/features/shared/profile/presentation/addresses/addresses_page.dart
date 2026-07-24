@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/shared/profile/data/model/address.dart';
-import 'package:osta/features/shared/profile/presentation/bloc/address_bloc.dart';
-import 'package:osta/features/shared/profile/presentation/pages/address_form_screen.dart';
-import 'package:osta/features/shared/profile/presentation/widgets/address_card.dart';
+import 'package:osta/features/shared/profile/data/models/address.dart';
+import 'package:osta/features/shared/profile/presentation/addresses/address_form_page.dart';
+import 'package:osta/features/shared/profile/presentation/addresses/bloc/address_bloc.dart';
+import 'package:osta/features/shared/profile/presentation/addresses/widgets/address_card.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_confirm_dialog.dart';
 import 'package:osta/shared/ui/app_toaster.dart';
@@ -15,12 +16,12 @@ import 'package:osta/shared/ui/status_states.dart';
 
 /// Address book (`/me/addresses`) — list + add / edit / delete. Reached from the
 /// "Addresses" row on the profile/More tab.
-class AddressesScreen extends StatelessWidget {
-  const AddressesScreen({super.key});
+class AddressesPage extends StatelessWidget {
+  const AddressesPage({super.key});
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (_) => AddressBloc()..add(const AddressLoadRequested()),
+    create: (_) => getIt<AddressBloc>()..add(const AddressLoadRequested()),
     child: const _AddressesView(),
   );
 }
@@ -37,7 +38,7 @@ class _AddressesViewState extends State<_AddressesView> {
 
   Future<void> _openForm(BuildContext context, {Address? address}) async {
     final saved = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(builder: (_) => AddressFormScreen(address: address)),
+      MaterialPageRoute(builder: (_) => AddressFormPage(address: address)),
     );
     if (saved == true && context.mounted) {
       context.read<AddressBloc>().add(const AddressLoadRequested());

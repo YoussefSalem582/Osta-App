@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/shared/profile/data/model/address.dart';
-import 'package:osta/features/shared/profile/presentation/widgets/profile/profile_item.dart';
+import 'package:osta/features/shared/profile/data/models/address.dart';
+import 'package:osta/features/shared/profile/presentation/profile/widgets/profile_item.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_pill.dart';
 

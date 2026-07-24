@@ -5,7 +5,7 @@ import 'package:osta/features/customer/booking/data/models/booking.dart';
 import 'package:osta/features/customer/booking/domain/booking_repository.dart';
 import 'package:osta/features/customer/map/data/models/center_summary.dart';
 import 'package:osta/features/customer/map/domain/centers_repository.dart';
-import 'package:osta/features/shared/profile/data/repo/profile_repo.dart';
+import 'package:osta/features/shared/profile/domain/profile_repository.dart';
 import 'package:osta/features/shop/data/models/product.dart';
 import 'package:osta/features/shop/data/repo/shop_repo.dart';
 
@@ -24,7 +24,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final CentersRepository _centers;
   final BookingRepository _bookings;
   final LocationService _location;
-  final ProfileRepo _profile;
+  final ProfileRepository _profile;
 
   /// Non-terminal statuses — the booking still "active" enough to surface on
   /// the home hero card.

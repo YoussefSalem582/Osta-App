@@ -26,15 +26,15 @@ import 'package:osta/shared/ui/status_states.dart';
 
 /// Center profile editor — prefills from `GET` and saves via partial
 /// `PUT /business/profile`; mirrors onboarding's identity step but lives under the business More tab.
-class BusinessProfileScreen extends StatefulWidget {
-  const BusinessProfileScreen({super.key});
+class BusinessProfilePage extends StatefulWidget {
+  const BusinessProfilePage({super.key});
 
   @override
-  State<BusinessProfileScreen> createState() => _BusinessProfileScreenState();
+  State<BusinessProfilePage> createState() => _BusinessProfilePageState();
 }
 
-class _BusinessProfileScreenState extends State<BusinessProfileScreen>
-    with BusinessLocationPickerMixin<BusinessProfileScreen> {
+class _BusinessProfilePageState extends State<BusinessProfilePage>
+    with BusinessLocationPickerMixin<BusinessProfilePage> {
   final _formKey = GlobalKey<FormState>();
   final _tradeName = TextEditingController();
   final _legalName = TextEditingController();
@@ -97,7 +97,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen>
       _loadError = null;
     });
     await loadBusinessProfile(
-      logTag: 'BusinessProfileScreen',
+      logTag: 'BusinessProfilePage',
       onLoaded: (profile) {
         if (!mounted) return;
         setState(() {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:osta/features/customer/booking/presentation/my_bookings/my_bookings_page.dart';
 import 'package:osta/features/customer/home/presentation/pages/home_page.dart';
 import 'package:osta/features/customer/map/presentation/map/map_page.dart';
-import 'package:osta/features/shared/profile/presentation/pages/profile_screen.dart';
+import 'package:osta/features/shared/profile/presentation/profile/profile_page.dart';
 import 'package:osta/features/shared/shell/presentation/role_shell.dart';
 import 'package:osta/features/shop/presentation/pages/shop_browse_page.dart';
 import 'package:osta/shared/extensions/context_ext.dart';

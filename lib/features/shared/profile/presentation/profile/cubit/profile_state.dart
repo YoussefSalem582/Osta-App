@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:osta/features/shared/profile/data/model/profile_response/profile_response.dart';
+import 'package:osta/features/shared/profile/data/models/profile_response/profile_response.dart';
 
 abstract class ProfileState extends Equatable {
   const ProfileState();

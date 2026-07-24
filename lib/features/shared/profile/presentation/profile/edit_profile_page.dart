@@ -4,25 +4,26 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/shared/profile/data/model/profile_response/data.dart';
-import 'package:osta/features/shared/profile/presentation/cubit/profile_cubit.dart';
-import 'package:osta/features/shared/profile/presentation/cubit/profile_state.dart';
-import 'package:osta/features/shared/profile/presentation/widgets/edit_profile/avatar_picker.dart';
+import 'package:osta/features/shared/profile/data/models/profile_response/data.dart';
+import 'package:osta/features/shared/profile/presentation/profile/cubit/profile_cubit.dart';
+import 'package:osta/features/shared/profile/presentation/profile/cubit/profile_state.dart';
+import 'package:osta/features/shared/profile/presentation/profile/widgets/avatar_picker.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_text_field.dart';
 import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
-class EditProfileScreen extends StatelessWidget {
-  const EditProfileScreen({required this.profileData, super.key});
+class EditProfilePage extends StatelessWidget {
+  const EditProfilePage({required this.profileData, super.key});
 
   final Data profileData;
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (_) => ProfileCubit(),
+    create: (_) => getIt<ProfileCubit>(),
     child: EditProfileView(profileData: profileData),
   );
 }

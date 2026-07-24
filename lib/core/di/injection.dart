@@ -35,8 +35,13 @@ import 'package:osta/features/shared/auth/domain/auth_repository.dart';
 import 'package:osta/features/shared/auth/presentation/login/bloc/login_bloc.dart';
 import 'package:osta/features/shared/auth/presentation/password_recovery/bloc/password_recovery_bloc.dart';
 import 'package:osta/features/shared/auth/presentation/register/bloc/register_bloc.dart';
+import 'package:osta/features/shared/profile/data/address_repository_impl.dart';
 import 'package:osta/features/shared/profile/data/profile_cache.dart';
-import 'package:osta/features/shared/profile/data/repo/profile_repo.dart';
+import 'package:osta/features/shared/profile/data/profile_repository_impl.dart';
+import 'package:osta/features/shared/profile/domain/address_repository.dart';
+import 'package:osta/features/shared/profile/domain/profile_repository.dart';
+import 'package:osta/features/shared/profile/presentation/addresses/bloc/address_bloc.dart';
+import 'package:osta/features/shared/profile/presentation/profile/cubit/profile_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Global service locator.
@@ -99,7 +104,12 @@ Future<void> configureDependencies() async {
     )
     // Profile: cache-then-network read-cache on the prefs singleton.
     ..registerLazySingleton<ProfileCache>(() => ProfileCache(getIt()))
-    ..registerLazySingleton<ProfileRepo>(() => ProfileRepo(getIt(), getIt()))
+    ..registerLazySingleton<ProfileRepository>(
+      () => ProfileRepositoryImpl(getIt(), getIt()),
+    )
+    ..registerLazySingleton<AddressRepository>(
+      () => AddressRepositoryImpl(getIt()),
+    )
     ..registerLazySingleton<LocationService>(
       GeolocatorLocationService.new,
     )
@@ -118,6 +128,8 @@ Future<void> configureDependencies() async {
     ..registerFactory<GarageCubit>(() => GarageCubit(getIt()))
     ..registerFactory<MapBloc>(() => MapBloc(getIt(), getIt()))
     ..registerFactory<BookingsBloc>(() => BookingsBloc(getIt()))
+    ..registerFactory<ProfileCubit>(() => ProfileCubit(getIt()))
+    ..registerFactory<AddressBloc>(() => AddressBloc(getIt()))
     // Per-center funnel bloc: the page passes the center id as param1.
     ..registerFactoryParam<BookingCreateBloc, Object, void>(
       (centerId, _) => BookingCreateBloc(getIt(), getIt(), centerId),

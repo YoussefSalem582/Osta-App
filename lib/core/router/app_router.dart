@@ -37,11 +37,11 @@ import 'package:osta/features/shared/auth/presentation/register/pages/business_r
 import 'package:osta/features/shared/auth/presentation/register/pages/customer_register_page.dart';
 import 'package:osta/features/shared/notifications/presentation/pages/notifications_page.dart';
 import 'package:osta/features/shared/onboarding/presentation/language_page.dart';
-import 'package:osta/features/shared/profile/data/model/profile_response/data.dart'
+import 'package:osta/features/shared/profile/data/models/profile_response/data.dart'
     as profile_data;
-import 'package:osta/features/shared/profile/presentation/pages/addresses_screen.dart';
-import 'package:osta/features/shared/profile/presentation/pages/edit_profile_screen.dart';
-import 'package:osta/features/shared/profile/presentation/pages/profile_screen.dart';
+import 'package:osta/features/shared/profile/presentation/addresses/addresses_page.dart';
+import 'package:osta/features/shared/profile/presentation/profile/edit_profile_page.dart';
+import 'package:osta/features/shared/profile/presentation/profile/profile_page.dart';
 import 'package:osta/features/shared/role/presentation/coming_soon_page.dart';
 import 'package:osta/features/shared/role/presentation/page/role_selection_page.dart';
 import 'package:osta/features/shared/splash/presentation/splash_page.dart';
@@ -193,14 +193,14 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.profile,
-        builder: (context, state) => const ProfileScreen(),
+        builder: (context, state) => const ProfilePage(),
       ),
       GoRoute(
         path: AppRoutes.editProfile,
         builder: (context, state) {
           final data = state.extra as profile_data.Data?;
-          if (data == null) return const ProfileScreen();
-          return EditProfileScreen(profileData: data);
+          if (data == null) return const ProfilePage();
+          return EditProfilePage(profileData: data);
         },
       ),
       GoRoute(
@@ -226,11 +226,11 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.addresses,
-        builder: (context, state) => const AddressesScreen(),
+        builder: (context, state) => const AddressesPage(),
       ),
       GoRoute(
         path: AppRoutes.businessProfile,
-        builder: (context, state) => const BusinessProfileScreen(),
+        builder: (context, state) => const BusinessProfilePage(),
       ),
       GoRoute(
         path: AppRoutes.businessAddress,

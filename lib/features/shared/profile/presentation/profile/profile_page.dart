@@ -3,21 +3,22 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/core/theme/theme_mode_controller.dart';
-import 'package:osta/features/shared/profile/data/model/profile_response/data.dart';
-import 'package:osta/features/shared/profile/presentation/cubit/profile_cubit.dart';
-import 'package:osta/features/shared/profile/presentation/cubit/profile_state.dart';
-import 'package:osta/features/shared/profile/presentation/widgets/edit_profile/delete_account_button.dart';
-import 'package:osta/features/shared/profile/presentation/widgets/profile/offline_saved_chip.dart';
-import 'package:osta/features/shared/profile/presentation/widgets/profile/profile_card.dart';
-import 'package:osta/features/shared/profile/presentation/widgets/profile/profile_header_card.dart';
-import 'package:osta/features/shared/profile/presentation/widgets/profile/profile_item.dart';
-import 'package:osta/features/shared/profile/presentation/widgets/profile/settings_toggle_row.dart';
+import 'package:osta/features/shared/profile/data/models/profile_response/data.dart';
+import 'package:osta/features/shared/profile/presentation/profile/cubit/profile_cubit.dart';
+import 'package:osta/features/shared/profile/presentation/profile/cubit/profile_state.dart';
+import 'package:osta/features/shared/profile/presentation/profile/widgets/delete_account_button.dart';
+import 'package:osta/features/shared/profile/presentation/profile/widgets/offline_saved_chip.dart';
+import 'package:osta/features/shared/profile/presentation/profile/widgets/profile_card.dart';
+import 'package:osta/features/shared/profile/presentation/profile/widgets/profile_header_card.dart';
+import 'package:osta/features/shared/profile/presentation/profile/widgets/profile_item.dart';
+import 'package:osta/features/shared/profile/presentation/profile/widgets/settings_toggle_row.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
@@ -29,8 +30,8 @@ final _fakeData = Data(
   supportId: 'OSTA-000000',
 );
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -47,7 +48,7 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        final cubit = ProfileCubit();
+        final cubit = getIt<ProfileCubit>();
         unawaited(cubit.getProfile());
         return cubit;
       },

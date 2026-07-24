@@ -1,18 +1,15 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:osta/core/network/api_exception.dart';
-import 'package:osta/features/shared/profile/data/model/profile_response/profile_response.dart';
-import 'package:osta/features/shared/profile/data/repo/profile_repo.dart';
-import 'package:osta/features/shared/profile/presentation/cubit/profile_state.dart';
+import 'package:osta/features/shared/profile/data/models/profile_response/profile_response.dart';
+import 'package:osta/features/shared/profile/domain/profile_repository.dart';
+import 'package:osta/features/shared/profile/presentation/profile/cubit/profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
-  ProfileCubit({ProfileRepo? repo})
-    : _repo = repo ?? GetIt.instance<ProfileRepo>(),
-      super(const ProfileInitial());
+  ProfileCubit(this._repo) : super(const ProfileInitial());
 
-  final ProfileRepo _repo;
+  final ProfileRepository _repo;
 
   Future<void> getProfile() async {
     final cached = _repo.cachedProfile;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/shared/profile/presentation/widgets/profile/profile_card.dart';
-import 'package:osta/features/shared/profile/presentation/widgets/profile/profile_item.dart';
+import 'package:osta/features/shared/profile/presentation/profile/widgets/profile_card.dart';
+import 'package:osta/features/shared/profile/presentation/profile/widgets/profile_item.dart';
 import 'package:osta/shared/ui/app_segmented_toggle.dart';
 
 /// A `ProfileCard` row pairing an icon + label with a segmented toggle —

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_colors.dart';
-import 'package:osta/features/shared/profile/data/model/profile_response/data.dart';
+import 'package:osta/features/shared/profile/data/models/profile_response/data.dart';
 
 class AvatarPicker extends StatelessWidget {
   const AvatarPicker({

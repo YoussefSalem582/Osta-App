@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/network/api_exception.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/shared/profile/data/model/address.dart';
-import 'package:osta/features/shared/profile/data/repo/address_repo.dart';
+import 'package:osta/features/shared/profile/data/models/address.dart';
+import 'package:osta/features/shared/profile/domain/address_repository.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_segmented_toggle.dart';
@@ -12,17 +13,17 @@ import 'package:osta/shared/ui/app_top_bar.dart';
 
 /// Create / edit a saved address; pops `true` on save. PUT is full-replace, so
 /// the map pin (lat/lng) is carried through unseen to avoid wiping it.
-class AddressFormScreen extends StatefulWidget {
-  const AddressFormScreen({this.address, super.key});
+class AddressFormPage extends StatefulWidget {
+  const AddressFormPage({this.address, super.key});
 
   /// Null = create mode; non-null = edit that address.
   final Address? address;
 
   @override
-  State<AddressFormScreen> createState() => _AddressFormScreenState();
+  State<AddressFormPage> createState() => _AddressFormPageState();
 }
 
-class _AddressFormScreenState extends State<AddressFormScreen> {
+class _AddressFormPageState extends State<AddressFormPage> {
   static const _labels = ['home', 'work', 'other'];
 
   final _formKey = GlobalKey<FormState>();
@@ -115,9 +116,9 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
       final body = _buildBody();
       final existing = widget.address;
       if (existing == null) {
-        await AddressRepo.create(body);
+        await getIt<AddressRepository>().create(body);
       } else {
-        await AddressRepo.update(existing.id, body);
+        await getIt<AddressRepository>().update(existing.id, body);
       }
       if (!mounted) return;
       AppToaster.showMessage(l10n.addressSaved);

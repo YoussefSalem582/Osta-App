@@ -19,7 +19,7 @@ import 'package:osta/shared/ui/app_top_bar.dart';
 import 'package:osta/shared/ui/status_states.dart';
 
 /// Address-only editor (map pin + city/street/district) — a subset of
-/// `BusinessProfileScreen`; the partial PUT leaves the rest of the profile
+/// `BusinessProfilePage`; the partial PUT leaves the rest of the profile
 /// untouched.
 class BusinessAddressScreen extends StatefulWidget {
   const BusinessAddressScreen({super.key});
