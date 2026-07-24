@@ -19,7 +19,12 @@ import 'package:osta/features/customer/garage/domain/garage_repository.dart';
 import 'package:osta/features/customer/garage/domain/maintenance_repository.dart';
 import 'package:osta/features/customer/garage/presentation/garage/cubit/garage_cubit.dart';
 import 'package:osta/features/customer/garage/presentation/maintenance/cubit/maintenance_cubit.dart';
-import 'package:osta/features/customer/map/data/repo/centers_repo.dart';
+import 'package:osta/features/customer/map/data/center_detail_repository_impl.dart';
+import 'package:osta/features/customer/map/data/centers_repository_impl.dart';
+import 'package:osta/features/customer/map/domain/center_detail_repository.dart';
+import 'package:osta/features/customer/map/domain/centers_repository.dart';
+import 'package:osta/features/customer/map/presentation/center_detail/bloc/center_detail_bloc.dart';
+import 'package:osta/features/customer/map/presentation/map/bloc/map_bloc.dart';
 import 'package:osta/features/shared/auth/data/auth_repository_impl.dart';
 import 'package:osta/features/shared/auth/domain/auth_repository.dart';
 import 'package:osta/features/shared/auth/presentation/login/bloc/login_bloc.dart';
@@ -82,7 +87,10 @@ Future<void> configureDependencies() async {
       () => SessionController(getIt(), getIt(), getIt(), getIt()),
     )
     ..registerLazySingleton<CentersRepository>(
-      () => CentersRepository(getIt()),
+      () => CentersRepositoryImpl(getIt()),
+    )
+    ..registerLazySingleton<CenterDetailRepository>(
+      () => CenterDetailRepositoryImpl(getIt()),
     )
     // Profile: cache-then-network read-cache on the prefs singleton.
     ..registerLazySingleton<ProfileCache>(() => ProfileCache(getIt()))
@@ -100,6 +108,11 @@ Future<void> configureDependencies() async {
       () => MaintenanceRepositoryImpl(getIt(), getIt()),
     )
     ..registerFactory<GarageCubit>(() => GarageCubit(getIt()))
+    ..registerFactory<MapBloc>(() => MapBloc(getIt(), getIt()))
+    // Per-center bloc: the page passes the center id as param1.
+    ..registerFactoryParam<CenterDetailBloc, Object, void>(
+      (centerId, _) => CenterDetailBloc(getIt(), centerId),
+    )
     // Per-vehicle cubit: the page passes the vehicle id as param1.
     ..registerFactoryParam<MaintenanceCubit, Object, void>(
       (vehicleId, _) => MaintenanceCubit(getIt(), vehicleId),

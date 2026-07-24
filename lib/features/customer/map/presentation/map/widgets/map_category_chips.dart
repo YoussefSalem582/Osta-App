@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/map/presentation/bloc/map_bloc.dart';
+import 'package:osta/features/customer/map/presentation/map/bloc/map_bloc.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 /// Horizontal category quick-filters sitting under the search bar. Tapping the

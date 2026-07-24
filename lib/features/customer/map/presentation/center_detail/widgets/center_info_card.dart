@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/map/data/model/center_detail.dart';
+import 'package:osta/features/customer/map/data/models/center_detail.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_section_title.dart';

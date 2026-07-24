@@ -26,7 +26,7 @@ import 'package:osta/features/customer/garage/presentation/garage/pages/add_car_
 import 'package:osta/features/customer/garage/presentation/maintenance/maintenance_page.dart';
 import 'package:osta/features/customer/garage/presentation/garage/pages/my_garage_page.dart';
 import 'package:osta/features/customer/home/presentation/pages/home_page.dart';
-import 'package:osta/features/customer/map/presentation/pages/center_detail_page.dart';
+import 'package:osta/features/customer/map/presentation/center_detail/center_detail_page.dart';
 import 'package:osta/features/customer/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:osta/features/customer/shell/presentation/customer_shell_page.dart';
 import 'package:osta/features/shared/auth/presentation/choose/auth_choose_page.dart';

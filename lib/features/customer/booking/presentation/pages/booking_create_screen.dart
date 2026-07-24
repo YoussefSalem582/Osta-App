@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/customer/booking/presentation/bloc/booking_create/booking_create_bloc.dart';
@@ -8,7 +9,7 @@ import 'package:osta/features/customer/booking/presentation/widgets/booking_date
 import 'package:osta/features/customer/booking/presentation/widgets/booking_date/day_selector.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/booking_slots.dart';
 import 'package:osta/features/customer/booking/presentation/widgets/service_check_tile.dart';
-import 'package:osta/features/customer/map/data/model/center_detail.dart';
+import 'package:osta/features/customer/map/data/models/center_detail.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_section_title.dart';
 import 'package:osta/shared/ui/app_toaster.dart';
@@ -34,7 +35,8 @@ class BookingCreateScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocProvider(
     create: (_) =>
-        BookingCreateBloc(args.centerId)..add(const BookingCreateStarted()),
+        BookingCreateBloc(getIt(), args.centerId)
+          ..add(const BookingCreateStarted()),
     child: _BookingCreateView(args: args),
   );
 }

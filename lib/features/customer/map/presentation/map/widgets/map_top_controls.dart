@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/map/presentation/bloc/map_bloc.dart';
-import 'package:osta/features/customer/map/presentation/widgets/map_category_chips.dart';
-import 'package:osta/features/customer/map/presentation/widgets/map_filter_button.dart';
+import 'package:osta/features/customer/map/presentation/map/bloc/map_bloc.dart';
+import 'package:osta/features/customer/map/presentation/map/widgets/map_category_chips.dart';
+import 'package:osta/features/customer/map/presentation/map/widgets/map_filter_button.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/app_text_field.dart';

@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/map/data/model/center_summary.dart';
+import 'package:osta/features/customer/map/data/models/center_summary.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/formatters/app_formatters.dart';
 import 'package:osta/shared/ui/app_button.dart';

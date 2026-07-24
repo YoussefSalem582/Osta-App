@@ -10,7 +10,7 @@ import 'package:osta/features/customer/home/presentation/widgets/book_service_ca
 import 'package:osta/features/customer/home/presentation/widgets/home_header.dart';
 import 'package:osta/features/customer/home/presentation/widgets/nearby_centers_section.dart';
 import 'package:osta/features/customer/home/presentation/widgets/shop_section.dart';
-import 'package:osta/features/customer/map/data/model/center_summary.dart';
+import 'package:osta/features/customer/map/data/models/center_summary.dart';
 import 'package:osta/features/shop/data/models/product.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 

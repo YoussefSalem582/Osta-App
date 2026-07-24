@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:osta/features/customer/map/data/model/center_summary.dart';
+import 'package:osta/features/customer/map/data/models/center_summary.dart';
 
 void main() {
   group('CenterSummary.fromJson', () {

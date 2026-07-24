@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/core/network/api_exception.dart';
 import 'package:osta/core/services/location_service.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/map/presentation/bloc/map_bloc.dart';
+import 'package:osta/features/customer/map/presentation/map/bloc/map_bloc.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_card.dart';
 import 'package:osta/shared/ui/status_states.dart';

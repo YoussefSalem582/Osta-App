@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/customer/booking/presentation/pages/booking_create_screen.dart';
-import 'package:osta/features/customer/map/presentation/bloc/center_detail_bloc.dart';
-import 'package:osta/features/customer/map/presentation/widgets/center_hero.dart';
-import 'package:osta/features/customer/map/presentation/widgets/center_info_card.dart';
-import 'package:osta/features/customer/map/presentation/widgets/center_overview_card.dart';
-import 'package:osta/features/customer/map/presentation/widgets/center_review_row.dart';
-import 'package:osta/features/customer/map/presentation/widgets/center_section_card.dart';
-import 'package:osta/features/customer/map/presentation/widgets/center_service_row.dart';
-import 'package:osta/features/customer/map/presentation/widgets/write_review_sheet.dart';
+import 'package:osta/features/customer/map/presentation/center_detail/bloc/center_detail_bloc.dart';
+import 'package:osta/features/customer/map/presentation/center_detail/widgets/center_hero.dart';
+import 'package:osta/features/customer/map/presentation/center_detail/widgets/center_info_card.dart';
+import 'package:osta/features/customer/map/presentation/center_detail/widgets/center_overview_card.dart';
+import 'package:osta/features/customer/map/presentation/center_detail/widgets/center_review_row.dart';
+import 'package:osta/features/customer/map/presentation/center_detail/widgets/center_section_card.dart';
+import 'package:osta/features/customer/map/presentation/center_detail/widgets/center_service_row.dart';
+import 'package:osta/features/customer/map/presentation/center_detail/widgets/write_review_sheet.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
 import 'package:osta/shared/ui/app_toaster.dart';
@@ -27,7 +28,9 @@ class CenterDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (_) => CenterDetailBloc(centerId)..add(const CenterDetailStarted()),
+    create: (_) =>
+        getIt<CenterDetailBloc>(param1: centerId)
+          ..add(const CenterDetailStarted()),
     child: const _CenterDetailView(),
   );
 }

@@ -1,17 +1,14 @@
 import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
-import 'package:osta/features/customer/map/data/model/center_summary.dart';
+import 'package:osta/features/customer/map/data/models/center_summary.dart';
+import 'package:osta/features/customer/map/domain/centers_repository.dart';
 
-/// Discovery reads for the customer map; errors aren't caught here since
-/// [ApiClient] already throws typed `ApiException` — `MapBloc` owns try/catch.
-class CentersRepository {
-  const CentersRepository(this._api);
+class CentersRepositoryImpl implements CentersRepository {
+  const CentersRepositoryImpl(this._api);
 
   final ApiClient _api;
 
-  /// Nearest-first centers around a point. [category] maps to the backend's
-  /// `service` query param (matches `services.category`, not a field on the
-  /// center itself).
+  @override
   Future<List<CenterSummary>> nearby({
     required double lat,
     required double lng,
@@ -33,7 +30,7 @@ class CentersRepository {
     return result.data;
   }
 
-  /// Free-text search over centers (backend orders these by rating).
+  @override
   Future<List<CenterSummary>> search({
     required String query,
     String? category,

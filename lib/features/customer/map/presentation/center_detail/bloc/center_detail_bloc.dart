@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/core/network/api_exception.dart';
-import 'package:osta/features/customer/map/data/model/center_detail.dart';
-import 'package:osta/features/customer/map/data/repo/center_detail_repo.dart';
+import 'package:osta/features/customer/map/data/models/center_detail.dart';
+import 'package:osta/features/customer/map/domain/center_detail_repository.dart';
 import 'package:osta/features/shared/reviews/data/model/review.dart';
 import 'package:osta/features/shared/reviews/data/repo/review_repo.dart';
 
@@ -14,11 +14,14 @@ part 'center_detail_state.dart';
 /// Loads a center's profile, services and reviews together; a posted review
 /// comes back pending, so it won't reappear in the approved index yet.
 class CenterDetailBloc extends Bloc<CenterDetailEvent, CenterDetailState> {
-  CenterDetailBloc(this.centerId) : super(const CenterDetailInitial()) {
+  CenterDetailBloc(this._repo, this.centerId)
+    : super(const CenterDetailInitial()) {
     on<CenterDetailStarted>(_onStarted);
     on<CenterDetailReviewSubmitted>(_onReviewSubmitted);
     on<CenterDetailReviewNoticeCleared>(_onReviewNoticeCleared);
   }
+
+  final CenterDetailRepository _repo;
 
   final Object centerId;
 
@@ -28,7 +31,7 @@ class CenterDetailBloc extends Bloc<CenterDetailEvent, CenterDetailState> {
   ) async {
     emit(const CenterDetailLoading());
     try {
-      final detail = await CenterDetailRepo.detail(centerId);
+      final detail = await _repo.detail(centerId);
       // Services / reviews are secondary — a failure there shouldn't blank the
       // whole page, so they degrade to empty.
       final services = await _servicesOrEmpty(detail);
@@ -81,7 +84,7 @@ class CenterDetailBloc extends Bloc<CenterDetailEvent, CenterDetailState> {
   Future<List<CenterService>> _servicesOrEmpty(CenterDetail detail) async {
     if (detail.services.isNotEmpty) return detail.services;
     try {
-      return await CenterDetailRepo.services(centerId);
+      return await _repo.services(centerId);
     } on Object {
       return const [];
     }

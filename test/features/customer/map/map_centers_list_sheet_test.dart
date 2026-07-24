@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
 import 'package:osta/core/theme/app_theme.dart';
-import 'package:osta/features/customer/map/data/model/center_summary.dart';
-import 'package:osta/features/customer/map/presentation/widgets/map_centers_list_sheet.dart';
+import 'package:osta/features/customer/map/data/models/center_summary.dart';
+import 'package:osta/features/customer/map/presentation/map/widgets/map_centers_list_sheet.dart';
 
 /// Pumps a button that opens the sheet, then taps it — the sheet's real entry
 /// point (`showModalBottomSheet`) needs a host with a Navigator.

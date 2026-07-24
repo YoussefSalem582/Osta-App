@@ -8,23 +8,23 @@ import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/services/location_service.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/map/data/model/center_summary.dart';
-import 'package:osta/features/customer/map/presentation/bloc/map_bloc.dart';
-import 'package:osta/features/customer/map/presentation/widgets/map_centers_list_sheet.dart';
-import 'package:osta/features/customer/map/presentation/widgets/map_filter_sheet.dart';
-import 'package:osta/features/customer/map/presentation/widgets/map_recenter_button.dart';
-import 'package:osta/features/customer/map/presentation/widgets/map_status_overlay.dart';
-import 'package:osta/features/customer/map/presentation/widgets/map_top_controls.dart';
-import 'package:osta/features/customer/map/presentation/widgets/place_dialog.dart';
+import 'package:osta/features/customer/map/data/models/center_summary.dart';
+import 'package:osta/features/customer/map/presentation/map/bloc/map_bloc.dart';
+import 'package:osta/features/customer/map/presentation/map/widgets/map_centers_list_sheet.dart';
+import 'package:osta/features/customer/map/presentation/map/widgets/map_filter_sheet.dart';
+import 'package:osta/features/customer/map/presentation/map/widgets/map_recenter_button.dart';
+import 'package:osta/features/customer/map/presentation/map/widgets/map_status_overlay.dart';
+import 'package:osta/features/customer/map/presentation/map/widgets/map_top_controls.dart';
+import 'package:osta/features/customer/map/presentation/map/widgets/place_dialog.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 /// Full-screen discovery map, shown by the customer shell's center FAB.
-class MapScreen extends StatelessWidget {
-  const MapScreen({super.key});
+class MapPage extends StatelessWidget {
+  const MapPage({super.key});
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (_) => MapBloc(getIt(), getIt())..add(const MapStarted()),
+    create: (_) => getIt<MapBloc>()..add(const MapStarted()),
     child: const _MapView(),
   );
 }

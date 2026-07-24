@@ -5,20 +5,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/core/network/api_exception.dart';
 import 'package:osta/features/customer/booking/data/model/booking.dart';
 import 'package:osta/features/customer/booking/data/repo/booking_repo.dart';
-import 'package:osta/features/customer/map/data/model/center_detail.dart';
-import 'package:osta/features/customer/map/data/repo/center_detail_repo.dart';
+import 'package:osta/features/customer/map/data/models/center_detail.dart';
+import 'package:osta/features/customer/map/domain/center_detail_repository.dart';
 
 part 'booking_create_event.dart';
 part 'booking_create_state.dart';
 
 class BookingCreateBloc extends Bloc<BookingCreateEvent, BookingCreateState> {
-  BookingCreateBloc(this.centerId) : super(BookingCreateState(date: _today())) {
+  BookingCreateBloc(this._centerDetail, this.centerId)
+    : super(BookingCreateState(date: _today())) {
     on<BookingCreateStarted>(_onStarted);
     on<BookingCreateServiceToggled>(_onServiceToggled);
     on<BookingCreateDateSelected>(_onDateSelected);
     on<BookingCreateSlotSelected>(_onSlotSelected);
     on<BookingCreateSubmitted>(_onSubmitted);
   }
+
+  final CenterDetailRepository _centerDetail;
 
   final Object centerId;
 
@@ -67,7 +70,7 @@ class BookingCreateBloc extends Bloc<BookingCreateEvent, BookingCreateState> {
     try {
       final d = state.date;
       final date = '${d.year}-${_two(d.month)}-${_two(d.day)}';
-      final availability = await CenterDetailRepo.availability(
+      final availability = await _centerDetail.availability(
         centerId,
         date: date,
       );
