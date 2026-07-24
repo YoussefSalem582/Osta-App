@@ -22,8 +22,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocProvider(
     create: (_) =>
-        HomeBloc(getIt(), getIt(), getIt(), getIt())
-          ..add(const HomeStarted()),
+        HomeBloc(getIt(), getIt(), getIt(), getIt())..add(const HomeStarted()),
     child: Scaffold(
       // The greeting header replaces the shell's app bar for this tab (the tab
       // is `chromeless`); an AppBar keeps status-bar icon styling correct.
