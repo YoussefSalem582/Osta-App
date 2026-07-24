@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:osta/features/customer/garage/data/model/garage_response/garage_response.dart';
+import 'package:osta/features/customer/garage/data/models/garage_response/garage_response.dart';
 
 abstract class GarageState extends Equatable {
   const GarageState();

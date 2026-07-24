@@ -1,16 +1,18 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:osta/features/customer/garage/data/repo/garage_repo.dart';
-import 'package:osta/features/customer/garage/presentation/cubit/garage_state.dart';
+import 'package:osta/features/customer/garage/domain/garage_repository.dart';
+import 'package:osta/features/customer/garage/presentation/garage/cubit/garage_state.dart';
 
 class GarageCubit extends Cubit<GarageState> {
-  GarageCubit() : super(const GarageInitial());
+  GarageCubit(this._repo) : super(const GarageInitial());
+
+  final GarageRepository _repo;
 
   Future<void> getVehicles() async {
     emit(const GarageLoading());
     try {
-      final response = await GarageRepo.getVehicles();
+      final response = await _repo.getVehicles();
       if (response != null && response.success == true) {
         emit(GarageSuccess(response));
       } else {
@@ -32,7 +34,7 @@ class GarageCubit extends Cubit<GarageState> {
   }) async {
     emit(const GarageAddLoading());
     try {
-      await GarageRepo.addVehicle(
+      await _repo.addVehicle(
         make: make,
         model: model,
         year: year,
@@ -58,7 +60,7 @@ class GarageCubit extends Cubit<GarageState> {
   }) async {
     emit(const GarageUpdateLoading());
     try {
-      await GarageRepo.updateVehicle(
+      await _repo.updateVehicle(
         vehicleId: vehicleId,
         make: make,
         model: model,
@@ -77,7 +79,7 @@ class GarageCubit extends Cubit<GarageState> {
   Future<void> setPrimary(Object vehicleId) async {
     emit(const GarageSetPrimaryLoading());
     try {
-      await GarageRepo.setPrimary(vehicleId);
+      await _repo.setPrimary(vehicleId);
       emit(const GarageSetPrimarySuccess());
     } on Object catch (e, s) {
       log('Error in GarageCubit.setPrimary', error: e, stackTrace: s);
@@ -88,7 +90,7 @@ class GarageCubit extends Cubit<GarageState> {
   Future<void> deleteVehicle(Object vehicleId) async {
     emit(const GarageDeleteLoading());
     try {
-      await GarageRepo.deleteVehicle(vehicleId);
+      await _repo.deleteVehicle(vehicleId);
       emit(const GarageDeleteSuccess());
     } on Object catch (e, s) {
       log('Error in GarageCubit.deleteVehicle', error: e, stackTrace: s);

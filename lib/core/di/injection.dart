@@ -13,6 +13,12 @@ import 'package:osta/core/session/session_store.dart';
 import 'package:osta/core/theme/theme_mode_controller.dart';
 import 'package:osta/features/business/onboarding/data/business_onboarding_repository.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
+import 'package:osta/features/customer/garage/data/garage_repository_impl.dart';
+import 'package:osta/features/customer/garage/data/maintenance_repository_impl.dart';
+import 'package:osta/features/customer/garage/domain/garage_repository.dart';
+import 'package:osta/features/customer/garage/domain/maintenance_repository.dart';
+import 'package:osta/features/customer/garage/presentation/garage/cubit/garage_cubit.dart';
+import 'package:osta/features/customer/garage/presentation/maintenance/cubit/maintenance_cubit.dart';
 import 'package:osta/features/customer/map/data/repo/centers_repo.dart';
 import 'package:osta/features/shared/auth/data/auth_repository_impl.dart';
 import 'package:osta/features/shared/auth/domain/auth_repository.dart';
@@ -86,6 +92,17 @@ Future<void> configureDependencies() async {
     )
     ..registerLazySingleton<BusinessOnboardingRepository>(
       () => BusinessOnboardingRepository(getIt()),
+    )
+    ..registerLazySingleton<GarageRepository>(
+      () => GarageRepositoryImpl(getIt()),
+    )
+    ..registerLazySingleton<MaintenanceRepository>(
+      () => MaintenanceRepositoryImpl(getIt(), getIt()),
+    )
+    ..registerFactory<GarageCubit>(() => GarageCubit(getIt()))
+    // Per-vehicle cubit: the page passes the vehicle id as param1.
+    ..registerFactoryParam<MaintenanceCubit, Object, void>(
+      (vehicleId, _) => MaintenanceCubit(getIt(), vehicleId),
     )
     ..registerFactory<LoginBloc>(() => LoginBloc(getIt(), getIt()))
     ..registerFactory<RegisterBloc>(() => RegisterBloc(getIt(), getIt()))

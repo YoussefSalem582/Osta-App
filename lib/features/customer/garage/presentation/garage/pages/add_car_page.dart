@@ -3,14 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/customer/garage/data/car_catalog.dart';
-import 'package:osta/features/customer/garage/data/model/garage_response/datum.dart';
-import 'package:osta/features/customer/garage/presentation/cubit/garage_cubit.dart';
-import 'package:osta/features/customer/garage/presentation/cubit/garage_state.dart';
+import 'package:osta/features/customer/garage/data/models/garage_response/datum.dart';
+import 'package:osta/features/customer/garage/presentation/garage/cubit/garage_cubit.dart';
+import 'package:osta/features/customer/garage/presentation/garage/cubit/garage_state.dart';
 import 'package:osta/features/shared/auth/presentation/validators/auth_validators.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_button.dart';
@@ -18,8 +19,8 @@ import 'package:osta/shared/ui/app_text_field.dart';
 import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
-class AddCarScreen extends StatefulWidget {
-  const AddCarScreen({this.vehicle, this.parentCubit, super.key});
+class AddCarPage extends StatefulWidget {
+  const AddCarPage({this.vehicle, this.parentCubit, super.key});
 
   /// Non-null in edit mode; prefills the form and switches the submit call
   /// from `addVehicle` to `updateVehicle`.
@@ -30,10 +31,10 @@ class AddCarScreen extends StatefulWidget {
   final GarageCubit? parentCubit;
 
   @override
-  State<AddCarScreen> createState() => _AddCarScreenState();
+  State<AddCarPage> createState() => _AddCarPageState();
 }
 
-class _AddCarScreenState extends State<AddCarScreen> {
+class _AddCarPageState extends State<AddCarPage> {
   final _formKey = GlobalKey<FormState>();
 
   final _brandController = TextEditingController();
@@ -164,7 +165,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<GarageCubit>(
-      create: (_) => GarageCubit(),
+      create: (_) => getIt<GarageCubit>(),
       child: BlocConsumer<GarageCubit, GarageState>(
         listenWhen: (_, current) =>
             current is GarageAddSuccess ||

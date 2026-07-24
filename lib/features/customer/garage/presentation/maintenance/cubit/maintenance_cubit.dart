@@ -1,20 +1,23 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:osta/features/customer/garage/data/repo/maintenance_repo.dart';
-import 'package:osta/features/customer/garage/presentation/cubit/maintenance_state.dart';
+import 'package:osta/features/customer/garage/domain/maintenance_repository.dart';
+import 'package:osta/features/customer/garage/presentation/maintenance/cubit/maintenance_state.dart';
 
 /// One instance per vehicle, unlike `GarageCubit` which takes the vehicle id
 /// per-method.
 class MaintenanceCubit extends Cubit<MaintenanceState> {
-  MaintenanceCubit(this.vehicleId) : super(const MaintenanceInitial());
+  MaintenanceCubit(this._repo, this.vehicleId)
+    : super(const MaintenanceInitial());
+
+  final MaintenanceRepository _repo;
 
   final Object vehicleId;
 
   Future<void> loadHistory({int page = 1, int perPage = 15}) async {
     emit(const MaintenanceLoading());
     try {
-      final result = await MaintenanceRepo.history(
+      final result = await _repo.history(
         vehicleId,
         page: page,
         perPage: perPage,
@@ -35,7 +38,7 @@ class MaintenanceCubit extends Cubit<MaintenanceState> {
   }) async {
     emit(const MaintenanceAddLoading());
     try {
-      await MaintenanceRepo.addRecord(
+      await _repo.addRecord(
         vehicleId,
         type: type,
         performedAt: performedAt,

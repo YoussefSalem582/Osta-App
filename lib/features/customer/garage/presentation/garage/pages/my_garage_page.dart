@@ -3,26 +3,27 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/garage/data/model/garage_response/datum.dart';
-import 'package:osta/features/customer/garage/presentation/cubit/garage_cubit.dart';
-import 'package:osta/features/customer/garage/presentation/cubit/garage_state.dart';
-import 'package:osta/features/customer/garage/presentation/widgets/empty_garage_view.dart';
-import 'package:osta/features/customer/garage/presentation/widgets/vehicle_card.dart';
+import 'package:osta/features/customer/garage/data/models/garage_response/datum.dart';
+import 'package:osta/features/customer/garage/presentation/garage/cubit/garage_cubit.dart';
+import 'package:osta/features/customer/garage/presentation/garage/cubit/garage_state.dart';
+import 'package:osta/features/customer/garage/presentation/garage/widgets/empty_garage_view.dart';
+import 'package:osta/features/customer/garage/presentation/garage/widgets/vehicle_card.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_confirm_dialog.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
-class MyGarageScreen extends StatefulWidget {
-  const MyGarageScreen({super.key});
+class MyGaragePage extends StatefulWidget {
+  const MyGaragePage({super.key});
 
   @override
-  State<MyGarageScreen> createState() => _MyGarageScreenState();
+  State<MyGaragePage> createState() => _MyGaragePageState();
 }
 
-class _MyGarageScreenState extends State<MyGarageScreen> {
+class _MyGaragePageState extends State<MyGaragePage> {
   List<Datum> vehicles = [];
 
   Future<void> onDelete(BuildContext ctx, Datum vehicle) async {
@@ -65,7 +66,7 @@ class _MyGarageScreenState extends State<MyGarageScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        final cubit = GarageCubit();
+        final cubit = getIt<GarageCubit>();
         unawaited(cubit.getVehicles());
         return cubit;
       },

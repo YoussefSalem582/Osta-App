@@ -1,11 +1,16 @@
 import 'package:dio/dio.dart';
-import 'package:get_it/get_it.dart';
 import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
-import 'package:osta/features/customer/garage/data/model/maintenance_record.dart';
+import 'package:osta/features/customer/garage/data/models/maintenance_record.dart';
+import 'package:osta/features/customer/garage/domain/maintenance_repository.dart';
 
-abstract final class MaintenanceRepo {
-  static ApiClient get _api => GetIt.instance<ApiClient>();
+class MaintenanceRepositoryImpl implements MaintenanceRepository {
+  MaintenanceRepositoryImpl(this._api, this._dio);
+
+  final ApiClient _api;
+
+  /// PDF export needs raw bytes, which [ApiClient] does not expose.
+  final Dio _dio;
 
   static List<MaintenanceRecord> _parseList(Object? data) =>
       (data! as List<dynamic>)
@@ -15,7 +20,8 @@ abstract final class MaintenanceRepo {
   static MaintenanceRecord _parseOne(Object? data) =>
       MaintenanceRecord.fromJson(data! as Map<String, dynamic>);
 
-  static Future<ApiResult<List<MaintenanceRecord>>> history(
+  @override
+  Future<ApiResult<List<MaintenanceRecord>>> history(
     Object vehicleId, {
     int page = 1,
     int perPage = 15,
@@ -25,7 +31,8 @@ abstract final class MaintenanceRepo {
     query: {'page': page, 'per_page': perPage},
   );
 
-  static Future<MaintenanceRecord> addRecord(
+  @override
+  Future<MaintenanceRecord> addRecord(
     Object vehicleId, {
     required String type,
     required DateTime performedAt,
@@ -51,9 +58,9 @@ abstract final class MaintenanceRepo {
     return result.data;
   }
 
-  static Future<List<int>> exportPdf(Object vehicleId) async {
-    final dio = GetIt.instance<Dio>();
-    final response = await dio.get<List<int>>(
+  @override
+  Future<List<int>> exportPdf(Object vehicleId) async {
+    final response = await _dio.get<List<int>>(
       ApiEndpoints.vehicleMaintenanceExport(vehicleId),
       options: Options(responseType: ResponseType.bytes),
     );

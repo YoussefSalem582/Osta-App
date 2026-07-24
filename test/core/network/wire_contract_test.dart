@@ -12,7 +12,7 @@ import 'package:osta/core/network/dio_client.dart';
 import 'package:osta/core/session/app_role.dart';
 import 'package:osta/features/business/onboarding/data/business_onboarding_repository.dart';
 import 'package:osta/features/business/onboarding/data/models/business_profile_input.dart';
-import 'package:osta/features/customer/garage/data/repo/garage_repo.dart';
+import 'package:osta/features/customer/garage/data/garage_repository_impl.dart';
 import 'package:osta/features/shared/auth/data/auth_repository_impl.dart';
 
 /// Every bug these cover shipped green: each one sent a wrong path, verb, key
@@ -215,7 +215,7 @@ void main() {
         data: Matchers.any,
       );
 
-      await GarageRepo.addVehicle(
+      await GarageRepositoryImpl(ApiClient(dio)).addVehicle(
         make: 'Toyota',
         model: 'Corolla',
         year: 2020,

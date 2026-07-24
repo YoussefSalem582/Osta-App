@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/theme/app_colors.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/garage/data/model/maintenance_record.dart';
-import 'package:osta/features/customer/garage/presentation/cubit/maintenance_cubit.dart';
-import 'package:osta/features/customer/garage/presentation/cubit/maintenance_state.dart';
-import 'package:osta/features/customer/garage/presentation/widgets/add_maintenance_record_sheet.dart';
+import 'package:osta/features/customer/garage/data/models/maintenance_record.dart';
+import 'package:osta/features/customer/garage/presentation/maintenance/cubit/maintenance_cubit.dart';
+import 'package:osta/features/customer/garage/presentation/maintenance/cubit/maintenance_state.dart';
+import 'package:osta/features/customer/garage/presentation/maintenance/widgets/add_maintenance_record_sheet.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
@@ -16,16 +17,16 @@ import 'package:osta/shared/ui/status_states.dart';
 
 /// One vehicle's maintenance/expense history. Add-only — no update/delete
 /// endpoint exists; PDF export is a deliberate scope cut for this pass.
-class MaintenanceScreen extends StatefulWidget {
-  const MaintenanceScreen({required this.vehicleId, super.key});
+class MaintenancePage extends StatefulWidget {
+  const MaintenancePage({required this.vehicleId, super.key});
 
   final String vehicleId;
 
   @override
-  State<MaintenanceScreen> createState() => _MaintenanceScreenState();
+  State<MaintenancePage> createState() => _MaintenancePageState();
 }
 
-class _MaintenanceScreenState extends State<MaintenanceScreen> {
+class _MaintenancePageState extends State<MaintenancePage> {
   List<MaintenanceRecord> _records = [];
 
   Future<void> _onAddRecord(BuildContext context) async {
@@ -50,7 +51,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) {
-        final cubit = MaintenanceCubit(widget.vehicleId);
+        final cubit = getIt<MaintenanceCubit>(param1: widget.vehicleId);
         unawaited(cubit.loadHistory());
         return cubit;
       },

@@ -1,4 +1,4 @@
-import 'package:osta/features/customer/garage/data/model/garage_response/datum.dart';
+import 'package:osta/features/customer/garage/data/models/garage_response/datum.dart';
 
 class GarageResponse {
   GarageResponse({this.success, this.data});

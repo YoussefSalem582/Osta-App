@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:osta/core/network/api_client.dart';
-import 'package:osta/features/customer/garage/data/model/maintenance_record.dart';
+import 'package:osta/features/customer/garage/data/models/maintenance_record.dart';
 
 abstract class MaintenanceState extends Equatable {
   const MaintenanceState();

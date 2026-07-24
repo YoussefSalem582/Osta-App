@@ -20,11 +20,11 @@ import 'package:osta/features/business/shell/presentation/business_shell_page.da
 import 'package:osta/features/customer/booking/presentation/pages/booking_create_screen.dart';
 import 'package:osta/features/customer/booking/presentation/pages/live_booking_screen.dart';
 import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
-import 'package:osta/features/customer/garage/data/model/garage_response/datum.dart';
-import 'package:osta/features/customer/garage/presentation/cubit/garage_cubit.dart';
-import 'package:osta/features/customer/garage/presentation/pages/add_car_screen.dart';
-import 'package:osta/features/customer/garage/presentation/pages/maintenance_screen.dart';
-import 'package:osta/features/customer/garage/presentation/pages/my_garage_screen.dart';
+import 'package:osta/features/customer/garage/data/models/garage_response/datum.dart';
+import 'package:osta/features/customer/garage/presentation/garage/cubit/garage_cubit.dart';
+import 'package:osta/features/customer/garage/presentation/garage/pages/add_car_page.dart';
+import 'package:osta/features/customer/garage/presentation/maintenance/maintenance_page.dart';
+import 'package:osta/features/customer/garage/presentation/garage/pages/my_garage_page.dart';
 import 'package:osta/features/customer/home/presentation/pages/home_page.dart';
 import 'package:osta/features/customer/map/presentation/pages/center_detail_page.dart';
 import 'package:osta/features/customer/onboarding/presentation/pages/onboarding_page.dart';
@@ -167,7 +167,7 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.garage,
-        builder: (context, state) => const MyGarageScreen(),
+        builder: (context, state) => const MyGaragePage(),
       ),
       GoRoute(
         path: AppRoutes.addCar,
@@ -175,7 +175,7 @@ class AppRouter {
         // GarageCubit in add mode (so the new car refreshes the caller's list).
         builder: (context, state) {
           final extra = state.extra;
-          return AddCarScreen(
+          return AddCarPage(
             vehicle: extra is Datum ? extra : null,
             parentCubit: extra is GarageCubit ? extra : null,
           );
@@ -184,7 +184,7 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.maintenance,
         builder: (context, state) =>
-            MaintenanceScreen(vehicleId: (state.extra as String?) ?? ''),
+            MaintenancePage(vehicleId: (state.extra as String?) ?? ''),
       ),
       GoRoute(
         path: AppRoutes.bookingStatus,
