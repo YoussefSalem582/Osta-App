@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/core/network/api_exception.dart';
-import 'package:osta/features/customer/booking/data/model/booking.dart';
-import 'package:osta/features/customer/booking/data/repo/booking_repo.dart';
+import 'package:osta/features/customer/booking/data/models/booking.dart';
+import 'package:osta/features/customer/booking/domain/booking_repository.dart';
 import 'package:osta/features/customer/map/data/models/center_detail.dart';
 import 'package:osta/features/customer/map/domain/center_detail_repository.dart';
 
@@ -12,7 +12,7 @@ part 'booking_create_event.dart';
 part 'booking_create_state.dart';
 
 class BookingCreateBloc extends Bloc<BookingCreateEvent, BookingCreateState> {
-  BookingCreateBloc(this._centerDetail, this.centerId)
+  BookingCreateBloc(this._bookings, this._centerDetail, this.centerId)
     : super(BookingCreateState(date: _today())) {
     on<BookingCreateStarted>(_onStarted);
     on<BookingCreateServiceToggled>(_onServiceToggled);
@@ -20,6 +20,8 @@ class BookingCreateBloc extends Bloc<BookingCreateEvent, BookingCreateState> {
     on<BookingCreateSlotSelected>(_onSlotSelected);
     on<BookingCreateSubmitted>(_onSubmitted);
   }
+
+  final BookingRepository _bookings;
 
   final CenterDetailRepository _centerDetail;
 
@@ -110,7 +112,7 @@ class BookingCreateBloc extends Bloc<BookingCreateEvent, BookingCreateState> {
     if (slot?.start == null || state.selectedServiceIds.isEmpty) return;
     emit(state.copyWith(submitting: true));
     try {
-      final booking = await BookingRepo.create(
+      final booking = await _bookings.create(
         serviceCenterId: centerId.toString(),
         scheduledAt: slot!.start!,
         serviceIds: state.selectedServiceIds.toList(),

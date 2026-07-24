@@ -13,6 +13,11 @@ import 'package:osta/core/session/session_store.dart';
 import 'package:osta/core/theme/theme_mode_controller.dart';
 import 'package:osta/features/business/onboarding/data/business_onboarding_repository.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
+import 'package:osta/features/customer/booking/data/booking_repository_impl.dart';
+import 'package:osta/features/customer/booking/domain/booking_repository.dart';
+import 'package:osta/features/customer/booking/presentation/create/bloc/booking_create_bloc.dart';
+import 'package:osta/features/customer/booking/presentation/live/bloc/booking_detail_bloc.dart';
+import 'package:osta/features/customer/booking/presentation/my_bookings/bloc/bookings_bloc.dart';
 import 'package:osta/features/customer/garage/data/garage_repository_impl.dart';
 import 'package:osta/features/customer/garage/data/maintenance_repository_impl.dart';
 import 'package:osta/features/customer/garage/domain/garage_repository.dart';
@@ -101,6 +106,9 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<BusinessOnboardingRepository>(
       () => BusinessOnboardingRepository(getIt()),
     )
+    ..registerLazySingleton<BookingRepository>(
+      () => BookingRepositoryImpl(getIt()),
+    )
     ..registerLazySingleton<GarageRepository>(
       () => GarageRepositoryImpl(getIt()),
     )
@@ -109,6 +117,15 @@ Future<void> configureDependencies() async {
     )
     ..registerFactory<GarageCubit>(() => GarageCubit(getIt()))
     ..registerFactory<MapBloc>(() => MapBloc(getIt(), getIt()))
+    ..registerFactory<BookingsBloc>(() => BookingsBloc(getIt()))
+    // Per-center funnel bloc: the page passes the center id as param1.
+    ..registerFactoryParam<BookingCreateBloc, Object, void>(
+      (centerId, _) => BookingCreateBloc(getIt(), getIt(), centerId),
+    )
+    // Per-booking bloc: the page passes the booking id as param1.
+    ..registerFactoryParam<BookingDetailBloc, Object, void>(
+      (bookingId, _) => BookingDetailBloc(getIt(), bookingId),
+    )
     // Per-center bloc: the page passes the center id as param1.
     ..registerFactoryParam<CenterDetailBloc, Object, void>(
       (centerId, _) => CenterDetailBloc(getIt(), centerId),

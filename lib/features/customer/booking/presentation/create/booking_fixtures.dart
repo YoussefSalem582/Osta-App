@@ -1,4 +1,4 @@
-import 'package:osta/features/customer/booking/data/model/booking_item.dart';
+import 'package:osta/features/customer/booking/data/models/booking_item.dart';
 
 abstract final class BookingFixtures {
   static const upcoming = [

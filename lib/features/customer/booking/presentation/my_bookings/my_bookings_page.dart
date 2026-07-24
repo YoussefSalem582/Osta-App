@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/booking/data/model/booking.dart';
-import 'package:osta/features/customer/booking/data/model/booking_item.dart';
-import 'package:osta/features/customer/booking/presentation/bloc/bookings/bookings_bloc.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/booking_list.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/tab_pill.dart';
+import 'package:osta/features/customer/booking/data/models/booking.dart';
+import 'package:osta/features/customer/booking/data/models/booking_item.dart';
+import 'package:osta/features/customer/booking/presentation/my_bookings/bloc/bookings_bloc.dart';
+import 'package:osta/features/customer/booking/presentation/my_bookings/widgets/booking_list.dart';
+import 'package:osta/features/customer/booking/presentation/my_bookings/widgets/tab_pill.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/status_states.dart';
 
-class MyBookingsScreen extends StatelessWidget {
-  const MyBookingsScreen({super.key});
+class MyBookingsPage extends StatelessWidget {
+  const MyBookingsPage({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -24,7 +25,7 @@ class MyBookingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (_) => BookingsBloc()..add(const BookingsLoadRequested()),
+    create: (_) => getIt<BookingsBloc>()..add(const BookingsLoadRequested()),
     child: const _MyBookingsBody(),
   );
 }

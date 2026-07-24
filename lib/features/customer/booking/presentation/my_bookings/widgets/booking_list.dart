@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/booking/data/model/booking_item.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/booking_card.dart';
+import 'package:osta/features/customer/booking/data/models/booking_item.dart';
+import 'package:osta/features/customer/booking/presentation/my_bookings/widgets/booking_card.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 class BookingList extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:osta/features/customer/booking/data/model/booking_item.dart';
+import 'package:osta/features/customer/booking/data/models/booking_item.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_pill.dart';
 

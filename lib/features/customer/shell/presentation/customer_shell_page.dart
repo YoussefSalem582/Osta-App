@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
+import 'package:osta/features/customer/booking/presentation/my_bookings/my_bookings_page.dart';
 import 'package:osta/features/customer/home/presentation/pages/home_page.dart';
 import 'package:osta/features/customer/map/presentation/map/map_page.dart';
 import 'package:osta/features/shared/profile/presentation/pages/profile_screen.dart';
@@ -32,7 +32,7 @@ class CustomerShellPage extends StatelessWidget {
         AppBottomNavItem(
           icon: Icons.calendar_month_outlined,
           label: l10n.navBookings,
-          body: const MyBookingsScreen(),
+          body: const MyBookingsPage(),
         ),
         // Store — the two-sided marketplace: browse, detail, enquire (#48).
         AppBottomNavItem(

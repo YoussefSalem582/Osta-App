@@ -4,11 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/booking/presentation/bloc/booking_create/booking_create_bloc.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/booking_date/booking_bottom_bar.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/booking_date/day_selector.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/booking_slots.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/service_check_tile.dart';
+import 'package:osta/features/customer/booking/presentation/create/bloc/booking_create_bloc.dart';
+import 'package:osta/features/customer/booking/presentation/create/widgets/booking_bottom_bar.dart';
+import 'package:osta/features/customer/booking/presentation/create/widgets/booking_slots.dart';
+import 'package:osta/features/customer/booking/presentation/create/widgets/day_selector.dart';
+import 'package:osta/features/customer/booking/presentation/create/widgets/service_check_tile.dart';
 import 'package:osta/features/customer/map/data/models/center_detail.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_section_title.dart';
@@ -27,15 +27,15 @@ class BookingCreateArgs {
   final List<CenterService> services;
 }
 
-class BookingCreateScreen extends StatelessWidget {
-  const BookingCreateScreen({required this.args, super.key});
+class BookingCreatePage extends StatelessWidget {
+  const BookingCreatePage({required this.args, super.key});
 
   final BookingCreateArgs args;
 
   @override
   Widget build(BuildContext context) => BlocProvider(
     create: (_) =>
-        BookingCreateBloc(getIt(), args.centerId)
+        getIt<BookingCreateBloc>(param1: args.centerId)
           ..add(const BookingCreateStarted()),
     child: _BookingCreateView(args: args),
   );

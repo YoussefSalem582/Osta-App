@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/booking/presentation/pages/booking_create_screen.dart';
+import 'package:osta/features/customer/booking/presentation/create/pages/booking_create_page.dart';
 import 'package:osta/features/customer/map/presentation/center_detail/bloc/center_detail_bloc.dart';
 import 'package:osta/features/customer/map/presentation/center_detail/widgets/center_hero.dart';
 import 'package:osta/features/customer/map/presentation/center_detail/widgets/center_info_card.dart';

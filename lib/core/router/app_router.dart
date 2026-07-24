@@ -17,14 +17,14 @@ import 'package:osta/features/business/onboarding/presentation/pages/business_ca
 import 'package:osta/features/business/onboarding/presentation/pages/business_identity_page.dart';
 import 'package:osta/features/business/onboarding/presentation/pages/business_profile_screen.dart';
 import 'package:osta/features/business/shell/presentation/business_shell_page.dart';
-import 'package:osta/features/customer/booking/presentation/pages/booking_create_screen.dart';
-import 'package:osta/features/customer/booking/presentation/pages/live_booking_screen.dart';
-import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
+import 'package:osta/features/customer/booking/presentation/create/pages/booking_create_page.dart';
+import 'package:osta/features/customer/booking/presentation/live/live_booking_page.dart';
+import 'package:osta/features/customer/booking/presentation/my_bookings/my_bookings_page.dart';
 import 'package:osta/features/customer/garage/data/models/garage_response/datum.dart';
 import 'package:osta/features/customer/garage/presentation/garage/cubit/garage_cubit.dart';
 import 'package:osta/features/customer/garage/presentation/garage/pages/add_car_page.dart';
-import 'package:osta/features/customer/garage/presentation/maintenance/maintenance_page.dart';
 import 'package:osta/features/customer/garage/presentation/garage/pages/my_garage_page.dart';
+import 'package:osta/features/customer/garage/presentation/maintenance/maintenance_page.dart';
 import 'package:osta/features/customer/home/presentation/pages/home_page.dart';
 import 'package:osta/features/customer/map/presentation/center_detail/center_detail_page.dart';
 import 'package:osta/features/customer/onboarding/presentation/pages/onboarding_page.dart';
@@ -189,7 +189,7 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.bookingStatus,
         builder: (context, state) =>
-            LiveBookingScreen(bookingId: (state.extra as String?) ?? ''),
+            LiveBookingPage(bookingId: (state.extra as String?) ?? ''),
       ),
       GoRoute(
         path: AppRoutes.profile,
@@ -205,7 +205,7 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.myBookings,
-        builder: (context, state) => const MyBookingsScreen(),
+        builder: (context, state) => const MyBookingsPage(),
       ),
       GoRoute(
         path: AppRoutes.centerDetail,
@@ -216,8 +216,8 @@ class AppRouter {
         path: AppRoutes.bookingCreate,
         builder: (context, state) {
           final args = state.extra as BookingCreateArgs?;
-          if (args == null) return const MyBookingsScreen();
-          return BookingCreateScreen(args: args);
+          if (args == null) return const MyBookingsPage();
+          return BookingCreatePage(args: args);
         },
       ),
       GoRoute(

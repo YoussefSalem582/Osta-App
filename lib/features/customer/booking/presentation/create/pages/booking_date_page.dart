@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/booking/presentation/booking_fixtures.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/booking_date/booking_bottom_bar.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/booking_date/booking_summary_card.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/booking_date/day_selector.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/booking_date/temporary_reservation_banner.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/booking_date/time_slot_grid.dart';
+import 'package:osta/features/customer/booking/presentation/create/booking_fixtures.dart';
+import 'package:osta/features/customer/booking/presentation/create/widgets/booking_bottom_bar.dart';
+import 'package:osta/features/customer/booking/presentation/create/widgets/booking_summary_card.dart';
+import 'package:osta/features/customer/booking/presentation/create/widgets/day_selector.dart';
+import 'package:osta/features/customer/booking/presentation/create/widgets/temporary_reservation_banner.dart';
+import 'package:osta/features/customer/booking/presentation/create/widgets/time_slot_grid.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 
@@ -19,14 +19,14 @@ const List<String> availableSlots = [
   '03:00',
 ];
 
-class BookingDateScreen extends StatefulWidget {
-  const BookingDateScreen({super.key});
+class BookingDatePage extends StatefulWidget {
+  const BookingDatePage({super.key});
 
   @override
-  State<BookingDateScreen> createState() => BookingDateScreenState();
+  State<BookingDatePage> createState() => BookingDatePageState();
 }
 
-class BookingDateScreenState extends State<BookingDateScreen> {
+class BookingDatePageState extends State<BookingDatePage> {
   DateTime selectedDate = DateTime.now();
   String? selectedTime;
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/booking/data/model/booking.dart';
+import 'package:osta/features/customer/booking/data/models/booking.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 /// Home hero for the customer's current booking. Only rendered when there is a

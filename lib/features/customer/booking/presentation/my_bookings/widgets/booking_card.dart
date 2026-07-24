@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/booking/data/model/booking_item.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/my_bookings/status_badge.dart';
+import 'package:osta/features/customer/booking/data/models/booking_item.dart';
+import 'package:osta/features/customer/booking/presentation/my_bookings/widgets/status_badge.dart';
 
 class BookingCard extends StatelessWidget {
   const BookingCard({

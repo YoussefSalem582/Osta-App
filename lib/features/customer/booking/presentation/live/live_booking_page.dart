@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:osta/core/di/injection.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/booking/data/model/booking.dart';
-import 'package:osta/features/customer/booking/presentation/bloc/booking_detail/booking_detail_bloc.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/live_booking/booking_timeline.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/live_booking/status_card.dart';
+import 'package:osta/features/customer/booking/data/models/booking.dart';
+import 'package:osta/features/customer/booking/presentation/live/bloc/booking_detail_bloc.dart';
+import 'package:osta/features/customer/booking/presentation/live/widgets/booking_timeline.dart';
+import 'package:osta/features/customer/booking/presentation/live/widgets/status_card.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/adaptive_pickers.dart';
 import 'package:osta/shared/ui/app_button.dart';
@@ -15,15 +16,16 @@ import 'package:osta/shared/ui/app_toaster.dart';
 import 'package:osta/shared/ui/app_top_bar.dart';
 import 'package:osta/shared/ui/status_states.dart';
 
-class LiveBookingScreen extends StatelessWidget {
-  const LiveBookingScreen({required this.bookingId, super.key});
+class LiveBookingPage extends StatelessWidget {
+  const LiveBookingPage({required this.bookingId, super.key});
 
   final String bookingId;
 
   @override
   Widget build(BuildContext context) => BlocProvider(
     create: (_) =>
-        BookingDetailBloc(bookingId)..add(const BookingDetailLoadRequested()),
+        getIt<BookingDetailBloc>(param1: bookingId)
+          ..add(const BookingDetailLoadRequested()),
     child: const _LiveBookingView(),
   );
 }

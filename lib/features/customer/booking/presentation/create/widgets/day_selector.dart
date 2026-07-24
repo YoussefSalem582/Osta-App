@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/booking_date/day_card.dart';
+import 'package:osta/features/customer/booking/presentation/create/widgets/day_card.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 class DaySelector extends StatelessWidget {

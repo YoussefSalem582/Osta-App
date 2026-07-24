@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/core/theme/app_tokens.dart';
-import 'package:osta/features/customer/booking/presentation/bloc/booking_create/booking_create_bloc.dart';
-import 'package:osta/features/customer/booking/presentation/widgets/booking_date/time_slot_grid.dart';
+import 'package:osta/features/customer/booking/presentation/create/bloc/booking_create_bloc.dart';
+import 'package:osta/features/customer/booking/presentation/create/widgets/time_slot_grid.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 
 /// Renders the available-time-slots section: loading/error/empty states, or
