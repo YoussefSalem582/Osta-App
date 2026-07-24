@@ -10,7 +10,7 @@ import 'package:osta/core/network/api_client.dart';
 import 'package:osta/core/network/api_endpoints.dart';
 import 'package:osta/core/network/dio_client.dart';
 import 'package:osta/core/session/app_role.dart';
-import 'package:osta/features/business/onboarding/data/business_onboarding_repository.dart';
+import 'package:osta/features/business/onboarding/data/business_onboarding_repository_impl.dart';
 import 'package:osta/features/business/onboarding/data/models/business_profile_input.dart';
 import 'package:osta/features/customer/garage/data/garage_repository_impl.dart';
 import 'package:osta/features/shared/auth/data/auth_repository_impl.dart';
@@ -234,7 +234,7 @@ void main() {
   group('PUT /business/profile transport', () {
     late Dio dio;
     late DioAdapter adapter;
-    late BusinessOnboardingRepository repo;
+    late BusinessOnboardingRepositoryImpl repo;
     RequestOptions? sent;
 
     setUp(() {
@@ -249,7 +249,7 @@ void main() {
           },
         ),
       );
-      repo = BusinessOnboardingRepository(ApiClient(dio));
+      repo = BusinessOnboardingRepositoryImpl(ApiClient(dio));
     });
 
     test('a logo forces POST with _method=PUT, not a real PUT', () async {

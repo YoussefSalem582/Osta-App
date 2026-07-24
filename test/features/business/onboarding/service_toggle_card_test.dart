@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:osta/core/l10n/app_localizations.dart';
-import 'package:osta/features/business/onboarding/presentation/widgets/service_toggle_card.dart';
+import 'package:osta/features/business/onboarding/presentation/catalog/widgets/service_toggle_card.dart';
 
 /// The custom-service row used to be a `Switch` wired to remove-on-off — a
 /// merchant flipping it off silently deleted their typed service. These pin the

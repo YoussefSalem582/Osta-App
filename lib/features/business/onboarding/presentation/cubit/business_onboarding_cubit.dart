@@ -6,10 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:osta/core/network/api_exception.dart';
 import 'package:osta/core/services/location_service.dart';
 import 'package:osta/core/session/session_store.dart';
-import 'package:osta/features/business/onboarding/data/business_onboarding_repository.dart';
 import 'package:osta/features/business/onboarding/data/models/business_profile_input.dart';
 import 'package:osta/features/business/onboarding/data/models/catalog_preset.dart';
 import 'package:osta/features/business/onboarding/data/models/custom_service_input.dart';
+import 'package:osta/features/business/onboarding/domain/business_onboarding_repository.dart';
 import 'package:osta/features/shared/auth/presentation/validators/auth_validators.dart';
 
 part 'business_onboarding_state.dart';

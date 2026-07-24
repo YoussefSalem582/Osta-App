@@ -11,11 +11,11 @@ import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/features/business/dashboard/presentation/screens/capacity_screen.dart';
 import 'package:osta/features/business/dashboard/presentation/screens/tech_screen.dart';
 import 'package:osta/features/business/intro/presentation/pages/merchant_onboarding_page.dart';
+import 'package:osta/features/business/onboarding/presentation/address/business_address_page.dart';
+import 'package:osta/features/business/onboarding/presentation/catalog/business_catalog_page.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
-import 'package:osta/features/business/onboarding/presentation/pages/business_address_screen.dart';
-import 'package:osta/features/business/onboarding/presentation/pages/business_catalog_page.dart';
-import 'package:osta/features/business/onboarding/presentation/pages/business_identity_page.dart';
-import 'package:osta/features/business/onboarding/presentation/pages/business_profile_screen.dart';
+import 'package:osta/features/business/onboarding/presentation/identity/business_identity_page.dart';
+import 'package:osta/features/business/onboarding/presentation/profile/business_profile_page.dart';
 import 'package:osta/features/business/shell/presentation/business_shell_page.dart';
 import 'package:osta/features/customer/booking/presentation/create/pages/booking_create_page.dart';
 import 'package:osta/features/customer/booking/presentation/live/live_booking_page.dart';
@@ -234,7 +234,7 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.businessAddress,
-        builder: (context, state) => const BusinessAddressScreen(),
+        builder: (context, state) => const BusinessAddressPage(),
       ),
       GoRoute(
         path: AppRoutes.businessCapacity,

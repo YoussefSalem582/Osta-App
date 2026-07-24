@@ -6,8 +6,8 @@ import 'package:osta/core/network/api_exception.dart';
 import 'package:osta/core/services/location_service.dart';
 import 'package:osta/core/theme/app_tokens.dart';
 import 'package:osta/features/business/dashboard/data/model/business_dashboard.dart';
-import 'package:osta/features/business/onboarding/data/business_onboarding_repository.dart';
 import 'package:osta/features/business/onboarding/data/models/business_profile_input.dart';
+import 'package:osta/features/business/onboarding/domain/business_onboarding_repository.dart';
 import 'package:osta/features/business/onboarding/presentation/business_location_picker_mixin.dart';
 import 'package:osta/features/business/onboarding/presentation/business_profile_loader.dart';
 import 'package:osta/features/business/onboarding/presentation/widgets/location_picker_card.dart';
@@ -21,15 +21,15 @@ import 'package:osta/shared/ui/status_states.dart';
 /// Address-only editor (map pin + city/street/district) — a subset of
 /// `BusinessProfilePage`; the partial PUT leaves the rest of the profile
 /// untouched.
-class BusinessAddressScreen extends StatefulWidget {
-  const BusinessAddressScreen({super.key});
+class BusinessAddressPage extends StatefulWidget {
+  const BusinessAddressPage({super.key});
 
   @override
-  State<BusinessAddressScreen> createState() => _BusinessAddressScreenState();
+  State<BusinessAddressPage> createState() => _BusinessAddressPageState();
 }
 
-class _BusinessAddressScreenState extends State<BusinessAddressScreen>
-    with BusinessLocationPickerMixin<BusinessAddressScreen> {
+class _BusinessAddressPageState extends State<BusinessAddressPage>
+    with BusinessLocationPickerMixin<BusinessAddressPage> {
   final _formKey = GlobalKey<FormState>();
   final _city = TextEditingController();
   final _address = TextEditingController();
@@ -77,7 +77,7 @@ class _BusinessAddressScreenState extends State<BusinessAddressScreen>
       _loadError = null;
     });
     await loadBusinessProfile(
-      logTag: 'BusinessAddressScreen',
+      logTag: 'BusinessAddressPage',
       onLoaded: (profile) {
         if (!mounted) return;
         setState(() {

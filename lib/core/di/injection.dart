@@ -11,7 +11,8 @@ import 'package:osta/core/services/location_service.dart';
 import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/core/session/session_store.dart';
 import 'package:osta/core/theme/theme_mode_controller.dart';
-import 'package:osta/features/business/onboarding/data/business_onboarding_repository.dart';
+import 'package:osta/features/business/onboarding/data/business_onboarding_repository_impl.dart';
+import 'package:osta/features/business/onboarding/domain/business_onboarding_repository.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
 import 'package:osta/features/customer/booking/data/booking_repository_impl.dart';
 import 'package:osta/features/customer/booking/domain/booking_repository.dart';
@@ -114,7 +115,7 @@ Future<void> configureDependencies() async {
       GeolocatorLocationService.new,
     )
     ..registerLazySingleton<BusinessOnboardingRepository>(
-      () => BusinessOnboardingRepository(getIt()),
+      () => BusinessOnboardingRepositoryImpl(getIt()),
     )
     ..registerLazySingleton<BookingRepository>(
       () => BookingRepositoryImpl(getIt()),
