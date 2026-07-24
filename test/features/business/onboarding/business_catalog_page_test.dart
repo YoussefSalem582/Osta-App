@@ -5,13 +5,13 @@ import 'package:osta/core/l10n/app_localizations.dart';
 import 'package:osta/core/session/session_store.dart';
 import 'package:osta/core/theme/app_theme.dart';
 import 'package:osta/features/business/dashboard/data/model/business_dashboard.dart';
-import 'package:osta/features/business/onboarding/data/business_onboarding_repository.dart';
 import 'package:osta/features/business/onboarding/data/models/business_profile_input.dart';
 import 'package:osta/features/business/onboarding/data/models/catalog_preset.dart';
 import 'package:osta/features/business/onboarding/data/models/custom_service_input.dart';
+import 'package:osta/features/business/onboarding/domain/business_onboarding_repository.dart';
+import 'package:osta/features/business/onboarding/presentation/catalog/business_catalog_page.dart';
+import 'package:osta/features/business/onboarding/presentation/catalog/widgets/service_toggle_card.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
-import 'package:osta/features/business/onboarding/presentation/pages/business_catalog_page.dart';
-import 'package:osta/features/business/onboarding/presentation/widgets/service_toggle_card.dart';
 
 /// Drives the real catalog page through its full build with the real cubit —
 /// the changed footer (count label + review gate) and the add-all card exercise

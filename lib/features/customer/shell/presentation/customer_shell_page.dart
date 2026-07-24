@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
+import 'package:osta/features/customer/booking/presentation/my_bookings/my_bookings_page.dart';
 import 'package:osta/features/customer/home/presentation/pages/home_page.dart';
-import 'package:osta/features/customer/map/presentation/pages/map_screen.dart';
-import 'package:osta/features/shared/profile/presentation/pages/profile_screen.dart';
+import 'package:osta/features/customer/map/presentation/map/map_page.dart';
+import 'package:osta/features/shared/profile/presentation/profile/profile_page.dart';
 import 'package:osta/features/shared/shell/presentation/role_shell.dart';
-import 'package:osta/features/shop/presentation/pages/shop_browse_page.dart';
+import 'package:osta/features/shared/shop/presentation/browse/shop_browse_page.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/ui/app_bottom_nav_bar.dart';
 
@@ -19,7 +19,7 @@ class CustomerShellPage extends StatelessWidget {
       // Raised center action: find nearby service centers on the map, shown
       // full-screen inside the shell so the bottom nav stays reachable.
       centerIcon: Icons.location_on_outlined,
-      centerBody: const MapScreen(),
+      centerBody: const MapPage(),
       centerFullBleed: true,
       tabs: [
         AppBottomNavItem(
@@ -32,7 +32,7 @@ class CustomerShellPage extends StatelessWidget {
         AppBottomNavItem(
           icon: Icons.calendar_month_outlined,
           label: l10n.navBookings,
-          body: const MyBookingsScreen(),
+          body: const MyBookingsPage(),
         ),
         // Store — the two-sided marketplace: browse, detail, enquire (#48).
         AppBottomNavItem(

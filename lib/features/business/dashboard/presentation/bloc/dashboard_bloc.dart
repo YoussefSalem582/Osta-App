@@ -8,7 +8,7 @@ import 'package:osta/features/business/bookings/data/model/business_booking.dart
 import 'package:osta/features/business/bookings/data/repo/business_booking_repo.dart';
 import 'package:osta/features/business/dashboard/data/model/business_dashboard.dart';
 import 'package:osta/features/business/dashboard/data/repo/dashboard_repo.dart';
-import 'package:osta/features/business/onboarding/data/business_onboarding_repository.dart';
+import 'package:osta/features/business/onboarding/domain/business_onboarding_repository.dart';
 
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';

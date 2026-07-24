@@ -11,22 +11,22 @@ import 'package:osta/core/session/session_controller.dart';
 import 'package:osta/features/business/dashboard/presentation/screens/capacity_screen.dart';
 import 'package:osta/features/business/dashboard/presentation/screens/tech_screen.dart';
 import 'package:osta/features/business/intro/presentation/pages/merchant_onboarding_page.dart';
+import 'package:osta/features/business/onboarding/presentation/address/business_address_page.dart';
+import 'package:osta/features/business/onboarding/presentation/catalog/business_catalog_page.dart';
 import 'package:osta/features/business/onboarding/presentation/cubit/business_onboarding_cubit.dart';
-import 'package:osta/features/business/onboarding/presentation/pages/business_address_screen.dart';
-import 'package:osta/features/business/onboarding/presentation/pages/business_catalog_page.dart';
-import 'package:osta/features/business/onboarding/presentation/pages/business_identity_page.dart';
-import 'package:osta/features/business/onboarding/presentation/pages/business_profile_screen.dart';
+import 'package:osta/features/business/onboarding/presentation/identity/business_identity_page.dart';
+import 'package:osta/features/business/onboarding/presentation/profile/business_profile_page.dart';
 import 'package:osta/features/business/shell/presentation/business_shell_page.dart';
-import 'package:osta/features/customer/booking/presentation/pages/booking_create_screen.dart';
-import 'package:osta/features/customer/booking/presentation/pages/live_booking_screen.dart';
-import 'package:osta/features/customer/booking/presentation/pages/my_bookings_screen.dart';
-import 'package:osta/features/customer/garage/data/model/garage_response/datum.dart';
-import 'package:osta/features/customer/garage/presentation/cubit/garage_cubit.dart';
-import 'package:osta/features/customer/garage/presentation/pages/add_car_screen.dart';
-import 'package:osta/features/customer/garage/presentation/pages/maintenance_screen.dart';
-import 'package:osta/features/customer/garage/presentation/pages/my_garage_screen.dart';
+import 'package:osta/features/customer/booking/presentation/create/pages/booking_create_page.dart';
+import 'package:osta/features/customer/booking/presentation/live/live_booking_page.dart';
+import 'package:osta/features/customer/booking/presentation/my_bookings/my_bookings_page.dart';
+import 'package:osta/features/customer/garage/data/models/garage_response/datum.dart';
+import 'package:osta/features/customer/garage/presentation/garage/cubit/garage_cubit.dart';
+import 'package:osta/features/customer/garage/presentation/garage/pages/add_car_page.dart';
+import 'package:osta/features/customer/garage/presentation/garage/pages/my_garage_page.dart';
+import 'package:osta/features/customer/garage/presentation/maintenance/maintenance_page.dart';
 import 'package:osta/features/customer/home/presentation/pages/home_page.dart';
-import 'package:osta/features/customer/map/presentation/pages/center_detail_page.dart';
+import 'package:osta/features/customer/map/presentation/center_detail/center_detail_page.dart';
 import 'package:osta/features/customer/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:osta/features/customer/shell/presentation/customer_shell_page.dart';
 import 'package:osta/features/shared/auth/presentation/choose/auth_choose_page.dart';
@@ -37,20 +37,21 @@ import 'package:osta/features/shared/auth/presentation/register/pages/business_r
 import 'package:osta/features/shared/auth/presentation/register/pages/customer_register_page.dart';
 import 'package:osta/features/shared/notifications/presentation/pages/notifications_page.dart';
 import 'package:osta/features/shared/onboarding/presentation/language_page.dart';
-import 'package:osta/features/shared/profile/data/model/profile_response/data.dart'
+import 'package:osta/features/shared/profile/data/models/profile_response/data.dart'
     as profile_data;
-import 'package:osta/features/shared/profile/presentation/pages/addresses_screen.dart';
-import 'package:osta/features/shared/profile/presentation/pages/edit_profile_screen.dart';
-import 'package:osta/features/shared/profile/presentation/pages/profile_screen.dart';
+import 'package:osta/features/shared/profile/presentation/addresses/addresses_page.dart';
+import 'package:osta/features/shared/profile/presentation/profile/edit_profile_page.dart';
+import 'package:osta/features/shared/profile/presentation/profile/profile_page.dart';
 import 'package:osta/features/shared/role/presentation/coming_soon_page.dart';
 import 'package:osta/features/shared/role/presentation/page/role_selection_page.dart';
+import 'package:osta/features/shared/shop/data/models/product.dart';
+import 'package:osta/features/shared/shop/presentation/browse/shop_browse_page.dart';
+import 'package:osta/features/shared/shop/presentation/my_products/pages/my_products_page.dart';
+import 'package:osta/features/shared/shop/presentation/my_products/pages/product_form_page.dart';
+import 'package:osta/features/shared/shop/presentation/product_detail/product_detail_page.dart';
+import 'package:osta/features/shared/shop/presentation/seller_catalog/seller_catalog_args.dart';
+import 'package:osta/features/shared/shop/presentation/seller_catalog/seller_catalog_page.dart';
 import 'package:osta/features/shared/splash/presentation/splash_page.dart';
-import 'package:osta/features/shop/data/models/product.dart';
-import 'package:osta/features/shop/presentation/pages/my_products_page.dart';
-import 'package:osta/features/shop/presentation/pages/product_detail_page.dart';
-import 'package:osta/features/shop/presentation/pages/product_form_page.dart';
-import 'package:osta/features/shop/presentation/pages/seller_catalog_page.dart';
-import 'package:osta/features/shop/presentation/pages/shop_browse_page.dart';
 
 /// Declarative router; all navigation is gated by a single [resolveRedirect]
 /// guard on [SessionController] state. Registered by hand — no injectable
@@ -167,7 +168,7 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.garage,
-        builder: (context, state) => const MyGarageScreen(),
+        builder: (context, state) => const MyGaragePage(),
       ),
       GoRoute(
         path: AppRoutes.addCar,
@@ -175,7 +176,7 @@ class AppRouter {
         // GarageCubit in add mode (so the new car refreshes the caller's list).
         builder: (context, state) {
           final extra = state.extra;
-          return AddCarScreen(
+          return AddCarPage(
             vehicle: extra is Datum ? extra : null,
             parentCubit: extra is GarageCubit ? extra : null,
           );
@@ -184,28 +185,28 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.maintenance,
         builder: (context, state) =>
-            MaintenanceScreen(vehicleId: (state.extra as String?) ?? ''),
+            MaintenancePage(vehicleId: (state.extra as String?) ?? ''),
       ),
       GoRoute(
         path: AppRoutes.bookingStatus,
         builder: (context, state) =>
-            LiveBookingScreen(bookingId: (state.extra as String?) ?? ''),
+            LiveBookingPage(bookingId: (state.extra as String?) ?? ''),
       ),
       GoRoute(
         path: AppRoutes.profile,
-        builder: (context, state) => const ProfileScreen(),
+        builder: (context, state) => const ProfilePage(),
       ),
       GoRoute(
         path: AppRoutes.editProfile,
         builder: (context, state) {
           final data = state.extra as profile_data.Data?;
-          if (data == null) return const ProfileScreen();
-          return EditProfileScreen(profileData: data);
+          if (data == null) return const ProfilePage();
+          return EditProfilePage(profileData: data);
         },
       ),
       GoRoute(
         path: AppRoutes.myBookings,
-        builder: (context, state) => const MyBookingsScreen(),
+        builder: (context, state) => const MyBookingsPage(),
       ),
       GoRoute(
         path: AppRoutes.centerDetail,
@@ -216,8 +217,8 @@ class AppRouter {
         path: AppRoutes.bookingCreate,
         builder: (context, state) {
           final args = state.extra as BookingCreateArgs?;
-          if (args == null) return const MyBookingsScreen();
-          return BookingCreateScreen(args: args);
+          if (args == null) return const MyBookingsPage();
+          return BookingCreatePage(args: args);
         },
       ),
       GoRoute(
@@ -226,15 +227,15 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.addresses,
-        builder: (context, state) => const AddressesScreen(),
+        builder: (context, state) => const AddressesPage(),
       ),
       GoRoute(
         path: AppRoutes.businessProfile,
-        builder: (context, state) => const BusinessProfileScreen(),
+        builder: (context, state) => const BusinessProfilePage(),
       ),
       GoRoute(
         path: AppRoutes.businessAddress,
-        builder: (context, state) => const BusinessAddressScreen(),
+        builder: (context, state) => const BusinessAddressPage(),
       ),
       GoRoute(
         path: AppRoutes.businessCapacity,

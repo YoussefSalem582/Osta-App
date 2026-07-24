@@ -4,7 +4,7 @@ import 'package:osta/core/router/app_routes.dart';
 import 'package:osta/features/customer/home/presentation/widgets/center_card.dart';
 import 'package:osta/features/customer/home/presentation/widgets/home_empty_card.dart';
 import 'package:osta/features/customer/home/presentation/widgets/home_rail.dart';
-import 'package:osta/features/customer/map/data/model/center_summary.dart';
+import 'package:osta/features/customer/map/data/models/center_summary.dart';
 import 'package:osta/shared/extensions/context_ext.dart';
 import 'package:osta/shared/formatters/app_formatters.dart';
 

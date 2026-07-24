@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:osta/core/network/api_exception.dart';
 import 'package:osta/core/services/location_service.dart';
-import 'package:osta/features/customer/map/data/model/center_summary.dart';
-import 'package:osta/features/customer/map/data/repo/centers_repo.dart';
-import 'package:osta/features/customer/map/presentation/bloc/map_bloc.dart';
+import 'package:osta/features/customer/map/data/models/center_summary.dart';
+import 'package:osta/features/customer/map/domain/centers_repository.dart';
+import 'package:osta/features/customer/map/presentation/map/bloc/map_bloc.dart';
 
 const _center = CenterSummary(
   id: '1',

@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:osta/core/network/api_exception.dart';
 import 'package:osta/features/business/dashboard/data/model/business_dashboard.dart';
-import 'package:osta/features/business/onboarding/data/business_onboarding_repository.dart';
+import 'package:osta/features/business/onboarding/domain/business_onboarding_repository.dart';
 
 /// Fetches `GET /business/profile`; falls back to [onBlank] on 404/405 since
 /// the endpoint isn't deployed everywhere yet.

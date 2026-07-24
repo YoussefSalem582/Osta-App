@@ -190,7 +190,7 @@ void main() {
         // /add-car stays legal once a car exists.
         //
         // Which means releasing the gate does NOT evict anyone from it: this
-        // returns null, i.e. "stay put". AddCarScreen has to navigate itself
+        // returns null, i.e. "stay put". AddCarPage has to navigate itself
         // on success — and when the gate forced the screen there is nothing to
         // pop, so it must `go` explicitly. Reading this null as "the redirect
         // will carry them to the shell" is what stranded users on a dead

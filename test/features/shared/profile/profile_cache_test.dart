@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:osta/core/session/session_store.dart';
-import 'package:osta/features/shared/profile/data/model/profile_response/data.dart';
+import 'package:osta/features/shared/profile/data/models/profile_response/data.dart';
 import 'package:osta/features/shared/profile/data/profile_cache.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

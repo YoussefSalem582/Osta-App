@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:osta/core/session/session_store.dart';
-import 'package:osta/features/shared/profile/data/model/profile_response/data.dart';
+import 'package:osta/features/shared/profile/data/models/profile_response/data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileCache {
