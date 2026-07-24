@@ -14,6 +14,7 @@
 ![Dart](https://img.shields.io/badge/Dart-%5E3.12.1-0175C2?logo=dart&logoColor=white)
 ![Lints](https://img.shields.io/badge/lints-very__good__analysis-0E7A3B)
 ![l10n](https://img.shields.io/badge/l10n-EN%20%C2%B7%20AR%20(RTL)-F5A623)
+![License](https://img.shields.io/badge/license-All_Rights_Reserved-B00020)
 
 </div>
 
@@ -170,3 +171,18 @@ A red step fails the PR. (Platform build jobs — APK / iOS — are deferred; se
 - PR description in **Arabic + English**; reference the issue (`Closes #<n>`).
 
 > ‏**`develop`** فرع التكامل لكل العمل، و**`main`** فرع الإصدار المحميّ (لا يُحدَّث إلا بطلب دمج `develop → main`). افرِّع من `develop` بالنمط `feat/<issue>-<slug>` (مثل `feat/28-app-scaffolding-ci`) — أسماء الفروع تُكتب يدويًا فقط، ويُمنع الإبقاء على الأسماء المولَّدة من الأدوات مثل `claude/...` (أعد التسمية بـ `git branch -m` أولًا). قاعدة الـ PR هي `develop`، وحافظ على الـ CI باللون الأخضر؛ وتصل النسخة المكتملة إلى `main` عبر طلب دمج `develop → main` (بوسم `v0.<n>.0`، و`v1.0.0` للـ MVP). واكتب وصف الـ PR **بالعربية والإنجليزية**، مع الإشارة إلى الـ issue (`Closes #<n>`).
+
+## License & ownership / الرخصة والملكية
+
+**All rights reserved — source-available, view-only.** This repository is
+public **only** so anyone can follow the project's progress and open issues.
+No part of the code, documentation, assets, or the **OSTA / أسطى** name and
+brand may be used, copied, modified, or redistributed without prior written
+permission. Development is restricted to the OSTA team. See
+[LICENSE](LICENSE) · [OWNERSHIP.md](OWNERSHIP.md).
+
+> ‏**جميع الحقوق محفوظة — الكود معروض للاطّلاع فقط.** المستودع علني فقط
+> لمتابعة تقدّم المشروع وفتح المشاكل؛ ولا يجوز استخدام أو نسخ أو تعديل أو
+> إعادة نشر أي جزء من الكود أو التوثيق أو الأصول أو اسم **OSTA / أسطى**
+> والعلامة دون إذن كتابي مسبق. التطوير حكر على فريق OSTA. راجع
+> [LICENSE](LICENSE) و[OWNERSHIP.md](OWNERSHIP.md).
