@@ -42,6 +42,19 @@ Background `#ffffff` (so text stays readable in a dark README theme). Font stack
 dashed edges = return/recovery; the orange **gate** color marks a server-derived
 check that **fails open** (fires on an explicit `false`, falls through on `null`).
 
+## Presentation assets / أصول العرض
+
+Not part of the code-diagram family above — presentation slides carry their own
+visual system and don't follow the palette table.
+
+| Asset | What it is | Source of truth |
+|---|---|---|
+| [`depi_roadmap_infographic.html`](depi_roadmap_infographic.html) | One-slide 16:9 (2560×1440) project-roadmap infographic for the DEPI track (*AST — Cross Platform Mobile App Developer · GIZ4_SWD8_S2*): journey cards, architecture chain, milestone timeline, tech stack, outcomes | the HTML itself — self-contained (Inter subsets inlined as data URIs); render at an exact 2560×1440 viewport (headless Chromium `--screenshot`) to regenerate the PNG beside it |
+
+> ‏شرائح العرض ليست جزءًا من عائلة مخططات الكود أعلاه ولها نظامها البصري الخاص.
+> المصدر هو ملف HTML المكتفي بذاته، وتُولَّد صورة PNG المجاورة منه بلقطة متصفح
+> بمقاس 2560×1440 بالضبط.
+
 ## Adding a diagram / إضافة مخطط
 
 1. Copy the `<defs>` + `<style>` header from any existing SVG.
