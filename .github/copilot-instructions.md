@@ -37,7 +37,8 @@ When generating from a TODO / `//` comment:
 
 ### Shell
 
-- macOS / zsh. Suggest Unix syntax; quote paths under `/Volumes/...`.
+- macOS / zsh. Suggest Unix syntax; quote paths.
+- **This repository is PUBLIC.** Never suggest committing secrets, real hosts/IPs, personal data or absolute local paths — see `AGENTS.md` § Public Repository.
 
 ### Git commits
 

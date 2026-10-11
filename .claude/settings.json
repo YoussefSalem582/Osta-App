@@ -17,7 +17,7 @@
       "Bash(git push origin:*)",
       "Bash(git push -u origin:*)",
       "Bash(rg:*)",
-      "Read(//Volumes/files/projects/depi/osta/osta_app/**)"
+      "Bash(tool/check_public.sh:*)"
     ],
     "deny": [
       "Read(./lib/core/l10n/**)",

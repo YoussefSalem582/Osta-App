@@ -87,3 +87,9 @@ git clone --depth 1 https://github.com/dart-lang/skills.git /tmp/dart-skills
 
 Upstream's own installer (`npx skills add flutter/skills --skill '*' --agent universal --yes`)
 installs **all** skills into `.agents/skills/` — don't use it here; it bypasses this curation.
+
+## Project-owned skills / مهارات خاصة بالمشروع
+
+Not vendored — maintained here, edit freely:
+
+- [`osta-public-repo-check`](osta-public-repo-check/SKILL.md) — the repository is public; what must never be committed and how to check before every commit.

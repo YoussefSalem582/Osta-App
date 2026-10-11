@@ -63,3 +63,7 @@ time. Canonical conventions: [`../../AGENTS.md`](../../AGENTS.md).
 - Upcoming secrets (Google Maps API key, Firebase config) are **platform-native**
   (`android/`, `ios/` config files) — they are **not** Dart `--dart-define`s
   and do not belong in `lib/**`.
+
+## Public repository
+
+This repository is **public**. Before every commit read `git diff --cached`: no secrets (API keys, tokens, passwords, `.env*`, `key.properties`, keystores), no personal data, no infrastructure beyond the documented `BASE_URL`, no absolute local paths, no code from other private projects. Fakes that look real carry `public-ok` on the same line. `tool/check_public.sh` runs as the pre-commit hook and in CI. Full rule: `AGENTS.md` § Public Repository.

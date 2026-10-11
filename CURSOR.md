@@ -23,7 +23,8 @@ Project-tuned skills live in [`.cursor/skills/`](.cursor/skills/) (`add-feature`
 - **Errors are thrown, not returned** — sealed `Failure` + `try`/`catch`; no `Either`/`Result<T>`/`.fold()`.
 - **No codegen** — plain `Equatable` models, manual `get_it`; no `build_runner`/`freezed`/`injectable` without a [`docs/ROADMAP.md`](docs/ROADMAP.md) phase.
 - **Git**: never add `Co-authored-by:`/`Made-with:` trailers. Disable Cursor Settings → Agents → Attribution.
-- **Shell**: macOS/zsh — Unix syntax; quote paths under `/Volumes/...`.
+- **Shell**: macOS/zsh — Unix syntax; quote paths.
+- **Public repository** — read [`AGENTS.md` § Public Repository](AGENTS.md#public-repository--read-before-every-commit--مستودع-علني--اقرأ-قبل-كل-commit) before every commit; local paths and machine notes go in the git-ignored `CLAUDE.local.md`.
 - After every meaningful change, update `CHANGELOG.md` + `osta_readme_files/DOCUMENTATION_UPDATE_SUMMARY.md` + `osta_readme_files/CURRENT_STATUS.md`.
 
 ## Where to look / أين تبحث
