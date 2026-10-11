@@ -9,6 +9,16 @@ env:
   FLUTTER_VERSION: 3.44.1
 
 jobs:
+  public-check:
+    name: public-repo guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # The repo is public: fail if added lines look like secrets or local paths.
+      - run: sh tool/check_public.sh "origin/${{ github.base_ref || 'main' }}"
+
   analyze-test:
     name: format · analyze · test
     runs-on: ubuntu-latest

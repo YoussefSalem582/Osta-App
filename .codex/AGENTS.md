@@ -7,7 +7,7 @@
 ## Codex runtime conventions / اصطلاحات تشغيل Codex
 
 - **Approval mode**: default `auto-edit` for documentation, `suggest` for `lib/**`, `ios/**`, `android/**`. Never `full-auto` for native iOS/Android source.
-- **Shell**: this project is developed on **macOS / zsh**. Use Unix shell syntax; quote paths (the repo lives under `/Volumes/...`). `&&`/`;` chaining is fine.
+- **Shell**: this project is developed on **macOS / zsh**. Use Unix shell syntax; quote paths. `&&`/`;` chaining is fine.
 - **Network / commands**: Codex may run `flutter pub get`, `flutter gen-l10n`, `flutter analyze`, `flutter test`, `dart format .` without prompting. Anything else (`gh`, `git push`, `curl`, `brew`, dependency changes) requires explicit user approval. **There is no `build_runner`** — the project uses no codegen.
 
 ## Codex-specific workflow tips / نصائح سير العمل
@@ -50,3 +50,7 @@ Codex reads universal-format `SKILL.md` files from [`../.agents/skills/`](../.ag
 | Troubleshooting recipes | [`../osta_readme_files/reference/TROUBLESHOOTING.md`](../osta_readme_files/reference/TROUBLESHOOTING.md) |
 | Common pitfalls | [`../osta_readme_files/reference/COMMON_PITFALLS.md`](../osta_readme_files/reference/COMMON_PITFALLS.md) |
 | Architecture decisions | [`../osta_readme_files/decisions/`](../osta_readme_files/decisions/README.md) |
+
+## Public repository
+
+This repository is **public**. Read [`../AGENTS.md` § Public Repository](../AGENTS.md#public-repository--read-before-every-commit--مستودع-علني--اقرأ-قبل-كل-commit) before every commit; never commit secrets, real hosts/IPs, personal data or absolute local paths.

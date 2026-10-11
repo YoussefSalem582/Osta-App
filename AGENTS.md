@@ -15,6 +15,7 @@
 
 ## Table of Contents
 
+- [Public Repository — Read Before Every Commit](#public-repository--read-before-every-commit--مستودع-علني--اقرأ-قبل-كل-commit)
 - [Project Overview](#project-overview--نظرة-عامة)
 - [Current Stage — Read This First](#current-stage--read-this-first--المرحلة-الحالية--اقرأ-هذا-أولًا)
 - [Plain-Dart, No Codegen](#plain-dart-no-codegen--دارت-بسيط-بلا-توليد-كود)
@@ -33,6 +34,20 @@
 - [Mandatory Documentation](#mandatory-documentation-after-every-change--التوثيق-الإلزامي)
 - [Approved Commands](#approved-commands--الأوامر-المعتمدة)
 - [Issue Trackers & Roadmap](#issue-trackers--roadmap--متتبّعات-القضايا-وخارطة-الطريق)
+
+## Public Repository — Read Before Every Commit / مستودع علني — اقرأ قبل كل commit
+
+This repository is **public** (view-only — see [`LICENSE`](LICENSE) and [`OWNERSHIP.md`](OWNERSHIP.md)). The licence keeps the rights with the team; it does **not** hide anything. Every tracked file and every commit in history is readable by anyone, forever. **Never commit:**
+
+- **Secrets** — API keys (Google Maps, Firebase), tokens, passwords, `.env*`, `key.properties`, keystores, signing certificates.
+- **Personal data** — real customer/test-user emails, phone numbers, addresses, or screenshots showing them. Team names live only in `OWNERSHIP.md`.
+- **Infrastructure beyond the documented `BASE_URL`** — server IPs, SSH hosts, admin panels, database names.
+- **Local machine details** — absolute paths (`/Volumes/…`, `/Users/…`); put them in the git-ignored `CLAUDE.local.md`. <!-- public-ok -->
+- **Material from other private or client projects** — copy patterns, never code or assets.
+
+Use placeholders (`test@example.com`, `fake-token`); a deliberate fake that looks real carries `public-ok` on the same line. Guards: the pre-commit hook [`tool/check_public.sh`](tool/check_public.sh) (enable once per clone: `git config core.hooksPath tool/hooks`) and the CI `public-check` job. They catch the obvious patterns only — **read `git diff --cached` before committing**. Agents: load the `osta-public-repo-check` skill. If a secret was pushed: stop, tell the owner, rotate it — history rewriting is the owner's call.
+
+> ‏**المستودع علني** (للاطّلاع فقط). الرخصة تحفظ الحقوق لكنها لا تُخفي شيئًا: كل ملف وكل commit في السجل مرئي للجميع وإلى الأبد. لا تُضِف أبدًا: الأسرار (مفاتيح API، الرموز، كلمات المرور، ملفات `.env` ومفاتيح التوقيع)، أو البيانات الشخصية، أو عناوين الخوادم غير `BASE_URL` الموثّق، أو المسارات المحلية (مكانها `CLAUDE.local.md` غير المتتبَّع)، أو شيفرة مشاريع خاصة أخرى. استخدم قيمًا وهمية، واقرأ `git diff --cached` قبل كل commit. الحارس `tool/check_public.sh` وفحص `public-check` في CI يلتقطان الأنماط الواضحة فقط. إن دُفع سرّ: توقّف وأبلغ المالك وغيّر السرّ.
 
 ## Project Overview / نظرة عامة
 

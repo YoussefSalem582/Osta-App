@@ -44,4 +44,4 @@ owner and team:
 
 ## Contact / التواصل
 
-Permission requests and inquiries: **youssef.salem.hassan582@gmail.com**
+Permission requests and inquiries: **`youssef.salem.hassan582@gmail.com`**

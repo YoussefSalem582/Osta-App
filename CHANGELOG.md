@@ -5,6 +5,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the pro
 
 ## [Unreleased]
 
+### Added
+
+- **Public-repository safeguards** (2026-10-11) — the repo is public (view-only licence), so every tracked file and commit is readable by anyone. Added a `Public Repository` section to `AGENTS.md` (what must never be committed), one-line pointers in every agent shim (`CLAUDE.md`, `CURSOR.md`, `.codex/`, `.agents/`, `.github/copilot-instructions.md`, both `security` rules), a project-owned `osta-public-repo-check` skill (`.claude/skills/` + `.agents/skills/`), the guard script `tool/check_public.sh` (pre-commit hook via `git config core.hooksPath tool/hooks`, plus a CI `public-check` job on every PR), `.gitignore` entries for `.env*`/keystores/`key.properties`/`CLAUDE.local.md`, and removed the absolute local path from `.claude/settings.json` and the agent shims. History was scanned: no secrets or key files were ever committed. Docs/tooling only — no app code change.
+
+  > ‏**ضمانات المستودع العلني** (٢٠٢٦-١٠-١١) — المستودع علني، فكل ملف وكل commit مرئي للجميع. أُضيف قسم «مستودع علني» إلى `AGENTS.md`، وإشارة في كل ملفات الوكلاء، ومهارة `osta-public-repo-check`، وسكربت الحارس `tool/check_public.sh` (خطّاف قبل الـcommit وفحص `public-check` في CI)، وإدخالات `.gitignore` للأسرار، وأُزيل المسار المحلي المطلق من الإعدادات. فُحص السجل: لم تُرفع أي أسرار أو مفاتيح. توثيق وأدوات فقط.
+
 ### Fixed
 
 - **`PUT /business/capacity` rejected every save with a 422** (2026-07-18) — the new Capacity editor (see Added, below) sent all 7 weekday keys on every save, closed days as `slots.<day>: []`. The live backend's `UpdateCapacityRequest` validates a present day as `['array', 'size:2']` — there is no "closed" shape, so an empty array always fails (`"The slots.tue field must contain 2 items."`). Confirmed by reading `osta_backend`'s `UpdateCapacityRequest`/`UpdateCapacityAction` directly: `slots` fully replaces `working_hours` server-side (no per-day merge), so omitting a closed day's key is both valid and correct — it still clears any hours that day previously had. `CapacityScreen._submit()` now only includes open days in the `slots` map. `flutter analyze` clean, full suite 147/147.

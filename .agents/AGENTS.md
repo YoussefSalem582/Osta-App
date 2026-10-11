@@ -5,6 +5,10 @@
 >
 > ‏الاصطلاحات الأساسية في [`../AGENTS.md`](../AGENTS.md) — اقرأه أولًا. هذا الملفّ طبقة رفيعة للوكلاء العامّين تحوي فقط خريطة القواعد والمهارات.
 
+## Public repository / مستودع علني
+
+This repository is **public**: read [`../AGENTS.md` § Public Repository](../AGENTS.md#public-repository--read-before-every-commit--مستودع-علني--اقرأ-قبل-كل-commit) and use the [`public-repo-check`](./skills/public-repo-check/SKILL.md) skill before every commit.
+
 ## Scope / النطاق
 
 - Edit files **only** inside this repo (`osta_app`). Do not touch the sibling backend repo.

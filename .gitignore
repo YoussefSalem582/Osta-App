@@ -46,3 +46,13 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Secrets and private machine notes — this repository is PUBLIC
+.env
+.env.*
+*.jks
+*.keystore
+*.p12
+key.properties
+CLAUDE.local.md
+.claude/settings.local.json

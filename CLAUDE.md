@@ -16,7 +16,8 @@
 
 ## Environment / البيئة
 
-- **Platform**: macOS (zsh) — Unix shell syntax; quote paths (repo lives under `/Volumes/files/...`).
+- **Platform**: macOS (zsh) — Unix shell syntax; quote paths (they may contain spaces).
+- **Public repository** — read [`AGENTS.md` § Public Repository](AGENTS.md#public-repository--read-before-every-commit--مستودع-علني--اقرأ-قبل-كل-commit) before every commit; local paths and machine notes go in the git-ignored `CLAUDE.local.md`.
 - **Flutter**: SDK on PATH; CI pins Flutter 3.44.1.
 - **No codegen**: the project uses **no `build_runner`**, and the codegen packages are not dependencies at all — models are plain `Equatable`, DI is manual `get_it`, errors are a `sealed ApiException` (`core/network/api_exception.dart`); see [`docs/ROADMAP.md`](docs/ROADMAP.md) for the deferred codegen plan. Only l10n is generated, and `flutter gen-l10n` runs automatically on `flutter run`/`build`.
 - **Approved commands** (no prompt needed): `flutter pub get`, `flutter gen-l10n`, `flutter analyze`, `flutter test`, `dart format .`
